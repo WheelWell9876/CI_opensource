@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 main_blueprint = Blueprint('main', __name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, "static", "resources", "data", "split_parquet")
+DATA_DIR = os.path.join(BASE_DIR, "static", "data", "split_parquet")
 
 # --------------------
 # Page Routes
@@ -219,7 +219,7 @@ def list_weighted_datasets():
     Scan the weighted_parquet/custom directory and return available weighted datasets.
     Returns a list of objects with 'display' and 'value'.
     """
-    base_weighted = os.path.join(BASE_DIR, "static", "resources", "data", "weighted_parquet", "custom")
+    base_weighted = os.path.join(BASE_DIR, "static", "data", "weighted_parquet", "custom")
     dataset_list = []
     for mode in ['economic_normalized', 'energy_normalized', 'military_normalized']:
         mode_path = os.path.join(base_weighted, mode)
@@ -247,7 +247,7 @@ def fetch_weighted_data():
     if not dataset:
         logger.error("No dataset provided in payload.")
         return jsonify({"error": "No dataset provided"}), 400
-    file_path = os.path.join(BASE_DIR, "static", "resources", "data", dataset)
+    file_path = os.path.join(BASE_DIR, "static", "data", dataset)
     logger.debug("Computed file path: %s", file_path)
     if not os.path.exists(file_path):
         logger.error("File not found: %s", file_path)
