@@ -1,3 +1,6 @@
 webapp/static/data/split_parquet
 webapp/static/data/weighted_parquet
-temp
+temp/cleaned/
+temp/raw/
+temp/reprojected/
+temp/weighted/
