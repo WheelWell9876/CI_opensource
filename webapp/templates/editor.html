@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Custom API Crafter - CI Sentinel</title>
+  <!-- Use a specific stylesheet for the editor if desired -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/editor.css') }}">
+  <style>
+    /* Additional inline styles if needed */
+    #fields-container label { display: block; margin: 5px 0; }
+    #api-preview { background: #f0f0f0; padding: 10px; border: 1px solid #ccc; margin-top: 10px; }
+    .input-group { margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span class="logo-title">CI Sentinel - API Crafter</span>
+    </div>
+    <nav>
+      <ul class="nav-links-container">
+        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
+        <li><a href="{{ url_for('main.docs_page') }}">Docs</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="centered-content">
+    <h2>Custom API Crafter</h2>
+    <div class="input-group">
+      <label for="api-url-input">Enter ArcGIS API URL:</label>
+      <input type="text" id="api-url-input" size="100" placeholder="https://services1.arcgis.com/.../query?...">
+      <button id="load-fields">Load Fields</button>
+    </div>
+    <div id="fields-container">
+      <!-- Dynamically loaded field checkboxes will appear here -->
+    </div>
+    <div id="output-options" class="input-group">
+      <h3>Output Options</h3>
+      <label>
+        <input type="checkbox" id="toggle-geometry" checked> Return Geometry
+      </label>
+      <label>
+        <input type="checkbox" id="toggle-ids"> Return IDs Only
+      </label>
+      <label>
+        <input type="checkbox" id="toggle-count"> Return Count Only
+      </label>
+    </div>
+    <button id="update-api">Update API Preview</button>
+    <h3>Generated API URL</h3>
+    <div id="api-preview"></div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="{{ url_for('static', filename='scripts/editor.js') }}"></script>
+</body>
+</html>

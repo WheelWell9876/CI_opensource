@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CI Sentinel Documentation</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/docs.css') }}">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span class="logo-title">CI Sentinel Docs</span>
+    </div>
+    <nav>
+      <ul class="nav-links-container">
+        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
+        <li><a href="{{ url_for('main.editor_page') }}">Editor</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="docs-container">
+    <nav class="docs-sidebar">
+      <a href="#intro">Introduction</a>
+      <a href="#installation">Installation</a>
+      <a href="#usage">Usage</a>
+      <a href="#api">API Reference</a>
+      <a href="#customization">Customization</a>
+      <a href="#contributing">Contributing</a>
+    </nav>
+    <main class="docs-content">
+      <section id="intro">
+        <h1>Introduction</h1>
+        <p>
+          This documentation provides an overview of CI Sentinel and explains how to use
+          and customize the open source project.
+        </p>
+      </section>
+      <section id="installation">
+        <h2>Installation</h2>
+        <p>
+          Steps to install and run the project locally (e.g., cloning the repo, installing dependencies,
+          and running the Flask server).
+        </p>
+      </section>
+      <section id="usage">
+        <h2>Usage</h2>
+        <p>
+          Instructions for using the custom API crafter, dataset viewer, and interactive map.
+        </p>
+      </section>
+      <section id="api">
+        <h2>API Reference</h2>
+        <p>
+          Details on the backend endpoints (such as /fetch_fields, /generate_api, /fetch_data, etc.).
+        </p>
+      </section>
+      <section id="customization">
+        <h2>Customization</h2>
+        <p>
+          Information on how to modify and extend the system to work with different datasets or
+          change map styles and processing pipelines.
+        </p>
+      </section>
+      <section id="contributing">
+        <h2>Contributing</h2>
+        <p>
+          Guidelines for contributing to this open source project.
+        </p>
+      </section>
+    </main>
+  </div>
+  <footer>
+    <p>&copy; 2025 CI Sentinel</p>
+  </footer>
+  <script src="{{ url_for('static', filename='scripts/docs.js') }}"></script>
+</body>
+</html>

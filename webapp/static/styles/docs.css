@@ -1,0 +1,87 @@
+/* webapp/static/styles/docs.css */
+
+/* Base styles for the docs page */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #22577a;
+  padding: 14px 20px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.nav-links-container {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links-container a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.docs-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.docs-sidebar {
+  width: 20%;
+  background-color: #22577a;
+  color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.docs-sidebar a {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.docs-sidebar a:hover {
+  text-decoration: underline;
+}
+
+.docs-content {
+  width: 80%;
+  padding: 20px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.docs-content h1,
+.docs-content h2,
+.docs-content h3 {
+  color: #22577a;
+  margin-bottom: 15px;
+}
+
+.docs-content p {
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+footer {
+  background-color: #22577a;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  margin-top: 20px;
+}

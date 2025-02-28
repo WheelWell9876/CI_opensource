@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CI Sentinel - Datasets</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/datasets.css') }}">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="custom-loader"></div>
+      <span class="logo-title">Solarpunk CI Sentinel</span>
+    </div>
+    <nav>
+      <ul class="nav-links-container">
+        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li><a href="{{ url_for('main.editor_page') }}">Editor</a></li>
+        <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
+        <li><a href="{{ url_for('main.docs_page') }}">Docs</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="centered-content">
+    <h1>Datasets Information</h1>
+    <p>
+      Below is an extremely detailed breakdown of datasets, their attributes,
+      and reasons for importance.
+    </p>
+    <p>
+      Expand any category to see its datasets, then expand each dataset to see the three modes
+      (<strong>Military</strong>, <strong>Economic</strong>, <strong>Energy</strong>).
+    </p>
+  </div>
+
+  <!-- Container for dynamic categories & datasets -->
+  <div class="centered-content" id="datasetsContainer">
+    <!-- JavaScript will insert category bento boxes here -->
+  </div>
+
+  <footer>
+    <p>&copy; 2024 CI Sentinel</p>
+  </footer>
+
+  <!-- Load Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Load graphs and datasets scripts -->
+  <script src="{{ url_for('static', filename='scripts/graphs.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/datasets.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+flask
+geopandas
+plotly
+scipy
+pyarrow
+tqdm
+requests

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Open Source CI Sentinel</title>
+
+  <!-- Plotly for interactive map -->
+  <script src="https://cdn.plot.ly/plotly-2.20.0.min.js"></script>
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.all.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+</head>
+
+<body>
+  <!-- HEADER with custom nav -->
+  <header>
+    <div class="logo">
+      <div class="custom-loader"></div>
+      <span class="logo-title">CI Sentinel</span>
+    </div>
+    <nav>
+      <div class="nav-links-container">
+        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li><a href="{{ url_for('main.editor_page') }}">Editor</a></li>
+        <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
+        <li><a href="{{ url_for('main.docs_page') }}">Docs</a></li>
+        <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+      </div>
+    </nav>
+  </header>
+
+  <!-- INTRO from your Solarpunk snippet -->
+  <main>
+    <div class="intro">
+      <h1>Solarpunk</h1>
+      <p>Your tool for measuring the world's critical infrastructure.</p>
+    </div>
+  </main>
+
+  <!-- BENTO BOX with Plotly & dropdowns -->
+  <div class="bento-box">
+    <h2>Select Data &amp; View Map</h2>
+
+    <!-- Mode Selection -->
+    <div class="filters-row">
+      <div>
+        <label for="modeSelect">Mode:</label>
+        <select id="modeSelect">
+          <option value="regular" selected>Regular Data</option>
+          <option value="weighted">Weighted Data</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Regular filters -->
+    <div id="regularFilters">
+      <!-- State -->
+      <div>
+        <label for="stateSelect">State:</label>
+        <select id="stateSelect">
+          <option value="">Loading States...</option>
+        </select>
+      </div>
+      <!-- County -->
+      <div>
+        <label for="countySelect">County:</label>
+        <select id="countySelect" disabled>
+          <option value="">(Optional) Choose County</option>
+        </select>
+      </div>
+      <!-- Category -->
+      <div>
+        <label for="categorySelect">Category:</label>
+        <select id="categorySelect" disabled>
+          <option value="">(Optional) Choose Category</option>
+        </select>
+      </div>
+      <!-- Dataset -->
+      <div>
+        <label for="datasetSelect">Dataset:</label>
+        <select id="datasetSelect" disabled>
+          <option value="">(Optional) Choose Dataset</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Weighted filters -->
+    <div id="weightedFilters" style="display:none;">
+      <label for="weightedDatasetSelect">Weighted Dataset:</label>
+      <select id="weightedDatasetSelect">
+        <option value="">Loading Weighted Datasets...</option>
+      </select>
+    </div>
+
+    <!-- Display Options -->
+    <div class="filters-row" id="displayOptionsRow">
+      <div>
+        <label for="displayMethodSelect">Display Method:</label>
+        <select id="displayMethodSelect">
+          <option value="default" selected>Default (Points)</option>
+          <option value="basic_heatmap">Basic Density Heatmap</option>
+          <option value="weighted_heatmap">Weighted Density Heatmap</option>
+          <option value="convex_hull">Convex Hull Over High-Weight Points</option>
+          <option value="gaussian_kde">Gaussian KDE Contours</option>
+          <option value="bubble_map">Bubble Map</option>
+          <option value="choropleth">Choropleth Map</option>
+          <option value="animated">Animated Transitions</option>
+          <option value="extrusion">3D Extrusion</option>
+          <option value="comparative">Comparative Overlays</option>
+          <option value="interactive_filter">Interactive Filtering</option>
+          <option value="voronoi">Voronoi Tessellation</option>
+        </select>
+      </div>
+      <div id="weightTypeRow" style="display: none;">
+        <label for="weightTypeSelect">Weight Type:</label>
+        <select id="weightTypeSelect">
+          <option value="original" selected>Original Weight</option>
+          <option value="normalizedDatasetWeight">Normalized Dataset Weight</option>
+          <option value="normalizedCategoryWeight">Normalized Category Weight</option>
+          <option value="normalizedOverallWeight">Normalized Overall Weight</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Advanced Controls -->
+    <div id="advancedControls">
+      <div>
+        <label for="dataFractionSlider">Data Fraction (%):</label>
+        <input type="range" id="dataFractionSlider" min="1" max="100" value="10">
+        <span id="dataFractionValue">10</span>
+      </div>
+      <div>
+        <label>Geometry Types:</label>
+        <label><input type="checkbox" name="geomType" value="Point" checked>Point</label>
+        <label><input type="checkbox" name="geomType" value="MultiPoint" checked>MultiPoint</label>
+        <label><input type="checkbox" name="geomType" value="LineString" checked>LineString</label>
+        <label><input type="checkbox" name="geomType" value="MultiLineString" checked>MultiLineString</label>
+        <label><input type="checkbox" name="geomType" value="Polygon" checked>Polygon</label>
+        <label><input type="checkbox" name="geomType" value="MultiPolygon" checked>MultiPolygon</label>
+      </div>
+    </div>
+
+    <!-- Show/Hide Unavailable -->
+    <div class="radio-container">
+      <input type="radio" name="showUnavailable" id="showUnavailable" value="show">
+      <label for="showUnavailable">Show Unavailable</label>
+    </div>
+    <div class="radio-container">
+      <input type="radio" name="showUnavailable" id="hideUnavailable" value="hide" checked>
+      <label for="hideUnavailable">Hide Unavailable</label>
+    </div>
+
+    <!-- Buttons -->
+    <div class="btn-row">
+      <button id="submitBtn">Submit</button>
+      <button id="submitDisplayBtn">Custom Display</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+
+    <!-- Map Container -->
+    <div id="mapContainer"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section contact">
+        <h3>Contact</h3>
+        <p><i class="material-icons">email</i>Coming soon...</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>CI Sentinel &copy; 2025 | coding by <a href="https://github.com/WheelWell9876/">Thomas Numnum</a></p>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/displayCustom.js') }}"></script>
+</body>
+</html>
