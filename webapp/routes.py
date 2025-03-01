@@ -4,6 +4,8 @@ from flask import Blueprint, render_template, request, jsonify
 import geopandas as gpd
 import logging
 import requests
+import urllib
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -317,24 +319,32 @@ def fetch_fields():
 
 def generate_api_response_preview(api_url, preview_limit):
     try:
+        # Use absolute import (adjust as necessary)
         from .fetch_and_update import get_api_preview
         return get_api_preview(api_url, limit=preview_limit)
     except Exception as e:
         logger.exception("Error generating API response preview:")
         return f"Error fetching API response: {e}"
 
+
 def generate_api_creation_preview(api_url, selected_fields, config):
-    import urllib.parse
     params = {
         "where": "1=1",
-        "outFields": ",".join(selected_fields) if selected_fields else "*",
         "f": "json"
     }
+    if not selected_fields or selected_fields == "*" :
+        params["outFields"] = "*"
+    else:
+        params["outFields"] = ",".join(selected_fields)
+
+    # If spatial input is envelope, add those parameters.
     if config.get("spatial_input", "None").lower() == "envelope":
         params["geometry"] = ""
         params["geometryType"] = "esriGeometryEnvelope"
         params["inSR"] = config.get("inSR", "4326")
         params["spatialRel"] = config.get("spatialRel", "esriSpatialRelIntersects")
+
+    # Add output options.
     output_options = config.get("output_options", {})
     if "returnGeometry" in output_options:
         params["returnGeometry"] = "true" if output_options["returnGeometry"] else "false"
@@ -357,13 +367,12 @@ def generate_api_creation_preview(api_url, selected_fields, config):
     ))
     return generated_api_url
 
+
 def generate_json_creation_preview(config):
-    # For example, you might simply return the JSON string of the config as a stub
-    import json
     return json.dumps(config, indent=2)
 
+
 def generate_python_creation_preview(config):
-    # Build a stub Python function based on the configuration
     dataset_name = config.get("dataset_name", "my_dataset").replace(" ", "_").lower()
     preview = f"""def process_{dataset_name}():
     \"\"\"Process the {dataset_name} dataset based on the specified configuration.\"\"\"
@@ -394,8 +403,4 @@ def generate_preview():
     }
     logger.info("Sending generated preview to client.")
     return jsonify(generated_preview)
-
-
-
-
 

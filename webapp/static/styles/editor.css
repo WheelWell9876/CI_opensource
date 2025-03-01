@@ -70,50 +70,27 @@ header {
   border-radius: 4px;
 }
 
-.input-group select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-#provided-api-group {
-  display: block;
-}
-
-.bento-box {
-  border: 1px dashed #ccc;
-  padding: 10px;
-  margin-bottom: 15px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-/* Left Panel Collapsibles*/
-
+/* Collapsible sections */
 .collapsible {
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-
 .collapsible-header {
   background-color: #e0e0e0;
   padding: 8px 12px;
   font-weight: bold;
   cursor: pointer;
 }
-
 .collapsible-content {
   padding: 10px;
   display: none;
 }
-
 .collapsible-content.active {
   display: block;
 }
 
-/* Field row styles in API Fields section */
+/* Field rows in API Fields section */
 .field-row {
   display: flex;
   padding: 4px 0;
@@ -129,6 +106,14 @@ header {
   padding: 0 5px;
 }
 
+/* Bento box for fields */
+.bento-box {
+  border: 1px dashed #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
+  max-height: 300px;
+  overflow-y: auto;
+}
 
 /* Right Panel Styles */
 .editor-preview {
@@ -140,23 +125,19 @@ header {
   display: flex;
   flex-direction: column;
 }
-
 .preview-header {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
 }
-
 .preview-header label {
   font-weight: bold;
 }
-
 .code-container {
   position: relative;
   flex-grow: 1;
 }
-
 #code-preview {
   width: 100%;
   height: 400px;
@@ -167,7 +148,6 @@ header {
   border-radius: 4px;
   resize: vertical;
 }
-
 #copy-code {
   position: absolute;
   top: 10px;
@@ -179,12 +159,10 @@ header {
   border-radius: 4px;
   cursor: pointer;
 }
-
 #copy-code:hover {
   background: #80ed99;
   color: #22577a;
 }
-
 button {
   padding: 10px 20px;
   background-color: #22577a;
@@ -193,7 +171,6 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
-
 button:hover {
   background-color: #80ed99;
   color: #22577a;

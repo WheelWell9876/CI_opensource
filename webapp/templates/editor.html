@@ -34,7 +34,7 @@
       <div class="input-group" id="provided-api-group">
         <label for="provided-api-select">Choose an API:</label>
         <select id="provided-api-select">
-          <!-- Populated dynamically (see JS below) -->
+          <!-- Populated dynamically -->
         </select>
       </div>
 
@@ -45,21 +45,23 @@
         <button id="load-fields">Load Fields</button>
       </div>
 
-      <!-- Available Fields (collapsible under API Options) -->
+      <!-- Collapsible Section: API Fields (expanded by default) -->
       <div class="collapsible">
-        <div class="collapsible-header">API Fields</div>
-        <div class="collapsible-content" id="fields-container">
-          <!-- Header Row -->
+        <div class="collapsible-header active">API Fields</div>
+        <div class="collapsible-content active" id="fields-container">
+          <div class="input-group">
+            <label><input type="checkbox" id="all-fields" checked> All Fields</label>
+          </div>
           <div class="field-row header">
             <span class="field-name">Name</span>
             <span class="field-type">Data Type</span>
             <span class="field-select">Select</span>
           </div>
-          <!-- Dynamically loaded field rows will be appended here -->
+          <!-- Field rows will be appended here dynamically -->
         </div>
       </div>
 
-      <!-- Spatial Inputs Section -->
+      <!-- Collapsible Section: Spatial Inputs -->
       <div class="collapsible">
         <div class="collapsible-header">Spatial Inputs</div>
         <div class="collapsible-content">
@@ -92,7 +94,7 @@
         </div>
       </div>
 
-      <!-- Output Options Section -->
+      <!-- Collapsible Section: Output Options -->
       <div class="collapsible">
         <div class="collapsible-header">Output Options</div>
         <div class="collapsible-content">
@@ -101,7 +103,7 @@
               <input type="checkbox" id="out-return-geometry" checked> Return Geometry
             </label>
             <label>
-              <input type="checkbox" id="out-return-ids"> Return Ids Only
+              <input type="checkbox" id="out-return-ids"> Return IDs Only
             </label>
             <label>
               <input type="checkbox" id="out-return-count"> Return Count Only
@@ -128,7 +130,7 @@
       <div class="preview-header">
         <label for="code-type-select">Preview Type:</label>
         <select id="code-type-select">
-          <!-- "api_response" is default -->
+          <!-- Default option is API Response -->
           <option value="api_response" selected>API Response</option>
           <option value="api">API Creation</option>
           <option value="json">JSON Creation</option>
