@@ -1,28 +1,32 @@
 import requests
 import json
 import logging
+from arcgis.gis import GIS
+from arcgis.features import FeatureLayer
 
 logger = logging.getLogger(__name__)
 
+# This function replaces your previous get_api_preview (which was called in generate_api_response_preview)
 def get_api_preview(api_url, limit=10):
     """
-    Fetches the API response from the given URL, prints only the first 'limit' features for debugging,
-    and returns a pretty-printed JSON string containing only those features.
+    Uses the ArcGIS API for Python to query the given service and return a preview of the first
+    `limit` features as a JSON list.
     """
-    logger.info("Fetching API response from URL: %s", api_url)
-    response = requests.get(api_url, timeout=60)
-    response.raise_for_status()
-    data = response.json()
-
-    features = data.get("features", [])
-    logger.info("Total features received: %d", len(features))
-
-    preview_features = features[:limit]
-
-    # Debug: log the first 'limit' features (only first 500 characters per feature)
-    for idx, feature in enumerate(preview_features):
-        logger.debug("Feature %d preview: %s", idx + 1, json.dumps(feature, indent=2)[:500])
-
-    pretty_preview = json.dumps(preview_features, indent=2)
-    logger.info("Returning API preview with %d features", len(preview_features))
-    return pretty_preview
+    try:
+        # Create a FeatureLayer from the base URL
+        base_url = api_url.split('/query')[0]
+        layer = FeatureLayer(base_url)
+        # You can pass additional parameters if needed – here we use a simple query:
+        result = layer.query(
+            where="1=1",
+            out_fields="*",
+            return_geometry=True,
+            out_sr="4326"
+        )
+        # Get only the first `limit` features. Use the as_dict property to get JSON–serializable dictionaries.
+        preview_features = [feat.as_dict for feat in result.features[:limit]]
+        logger.info("Preview features: %s", preview_features)
+        return preview_features
+    except Exception as e:
+        logger.exception("Error in get_api_preview:")
+        raise e

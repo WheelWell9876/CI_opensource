@@ -23,103 +23,140 @@
     <div class="editor-options">
       <h2>Options &amp; Fields</h2>
 
-      <!-- Source Selection -->
-      <div class="input-group">
-        <label for="source-type-select">Source Type:</label>
-        <select id="source-type-select">
-          <option value="provided">Provided API</option>
-          <option value="custom">Custom API</option>
-        </select>
-      </div>
-      <div class="input-group" id="provided-api-group">
-        <label for="provided-api-select">Choose an API:</label>
-        <select id="provided-api-select">
-          <!-- Populated dynamically -->
-        </select>
-      </div>
-
-      <!-- API URL Input -->
-      <div class="input-group">
-        <label for="api-url-input">API URL:</label>
-        <input type="text" id="api-url-input" placeholder="https://services1.arcgis.com/.../query?..." />
-        <button id="load-fields">Load Fields</button>
-      </div>
-
-      <!-- Collapsible Section: API Fields (expanded by default) -->
+      <!-- Collapsible: API Options -->
       <div class="collapsible">
-        <div class="collapsible-header active">API Fields</div>
-        <div class="collapsible-content active" id="fields-container">
+        <div class="collapsible-header active">API Options</div>
+        <div class="collapsible-content active">
+          <!-- Source Selection -->
           <div class="input-group">
-            <label><input type="checkbox" id="all-fields" checked> All Fields</label>
-          </div>
-          <div class="field-row header">
-            <span class="field-name">Name</span>
-            <span class="field-type">Data Type</span>
-            <span class="field-select">Select</span>
-          </div>
-          <!-- Field rows will be appended here dynamically -->
-        </div>
-      </div>
-
-      <!-- Collapsible Section: Spatial Inputs -->
-      <div class="collapsible">
-        <div class="collapsible-header">Spatial Inputs</div>
-        <div class="collapsible-content">
-          <div class="input-group">
-            <label for="spatial-input-select">Spatial Input:</label>
-            <select id="spatial-input-select">
-              <option value="None">None</option>
-              <option value="Envelope">Envelope</option>
+            <label for="source-type-select">Source Type:</label>
+            <select id="source-type-select">
+              <option value="provided">Provided API</option>
+              <option value="custom">Custom API</option>
             </select>
           </div>
-          <div id="spatial-envelope-options" style="display: none;">
-            <div class="input-group">
-              <label for="inSR-input">Input Spatial Reference:</label>
-              <input type="text" id="inSR-input" value="4326" />
+          <div class="input-group" id="provided-api-group">
+            <label for="provided-api-select">Choose an API:</label>
+            <select id="provided-api-select">
+              <!-- Sample API options; populate dynamically in JS -->
+              <option value="https://services.example.com/api1?f=geojson">API Option 1</option>
+              <option value="https://services.example.com/api2?f=geojson">API Option 2</option>
+            </select>
+          </div>
+          <!-- API URL Input -->
+          <div class="input-group">
+            <label for="api-url-input">API URL:</label>
+            <input type="text" id="api-url-input" placeholder="https://services.example.com/..." />
+            <button id="load-fields">Load Fields</button>
+          </div>
+          <!-- API Fields Section -->
+          <div class="collapsible">
+            <div class="collapsible-header active">API Fields</div>
+            <div class="collapsible-content active" id="fields-container">
+              <div class="input-group">
+                <label><input type="checkbox" id="all-fields" checked> All Fields</label>
+              </div>
+              <div class="field-row header">
+                <span class="field-name">Name</span>
+                <span class="field-type">Data Type</span>
+                <span class="field-select">Select</span>
+              </div>
+              <!-- Field rows will be added here dynamically -->
             </div>
-            <div class="input-group">
-              <label for="spatial-rel-select">Spatial Relationship:</label>
-              <select id="spatial-rel-select">
-                <option value="esriSpatialRelIntersects">Intersects</option>
-                <option value="esriSpatialRelContains">Contains</option>
-                <option value="esriSpatialRelCrosses">Crosses</option>
-                <option value="esriSpatialRelEnvelopeIntersects">EnvelopeIntersects</option>
-                <option value="esriSpatialRelIndexIntersects">IndexIntersects</option>
-                <option value="esriSpatialRelOverlaps">Overlaps</option>
-                <option value="esriSpatialRelTouches">Touches</option>
-                <option value="esriSpatialRelWithin">Within</option>
-              </select>
+          </div>
+          <!-- Spatial Inputs -->
+          <div class="collapsible">
+            <div class="collapsible-header">Spatial Inputs</div>
+            <div class="collapsible-content">
+              <div class="input-group">
+                <label for="spatial-input-select">Spatial Input:</label>
+                <select id="spatial-input-select">
+                  <option value="None">None</option>
+                  <option value="Envelope">Envelope</option>
+                </select>
+              </div>
+              <div id="spatial-envelope-options" style="display: none;">
+                <div class="input-group">
+                  <label for="inSR-input">Input Spatial Reference:</label>
+                  <input type="text" id="inSR-input" value="4326" />
+                </div>
+                <div class="input-group">
+                  <label for="spatial-rel-select">Spatial Relationship:</label>
+                  <select id="spatial-rel-select">
+                    <option value="esriSpatialRelIntersects">Intersects</option>
+                    <option value="esriSpatialRelContains">Contains</option>
+                    <option value="esriSpatialRelCrosses">Crosses</option>
+                    <option value="esriSpatialRelEnvelopeIntersects">EnvelopeIntersects</option>
+                    <option value="esriSpatialRelIndexIntersects">IndexIntersects</option>
+                    <option value="esriSpatialRelOverlaps">Overlaps</option>
+                    <option value="esriSpatialRelTouches">Touches</option>
+                    <option value="esriSpatialRelWithin">Within</option>
+                  </select>
+                </div>
+              </div>
             </div>
+          </div>
+          <!-- Output Options -->
+          <div class="collapsible">
+            <div class="collapsible-header">Output Options</div>
+            <div class="collapsible-content">
+              <div class="bento-box">
+                <label>
+                  <input type="checkbox" id="out-return-geometry" checked> Return Geometry
+                </label>
+                <label>
+                  <input type="checkbox" id="out-return-ids"> Return IDs Only
+                </label>
+                <label>
+                  <input type="checkbox" id="out-return-count"> Return Count Only
+                </label>
+                <div class="input-group">
+                  <label for="outSR-input">Output Spatial Reference:</label>
+                  <input type="text" id="outSR-input" value="4326" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Preview Limit -->
+          <div class="input-group">
+            <label for="preview-limit">Number of Objects to Load:</label>
+            <input type="number" id="preview-limit" value="10" min="1" max="100">
           </div>
         </div>
       </div>
 
-      <!-- Collapsible Section: Output Options -->
+      <!-- Collapsible: JSON Options -->
       <div class="collapsible">
-        <div class="collapsible-header">Output Options</div>
+        <div class="collapsible-header">JSON Options</div>
         <div class="collapsible-content">
-          <div class="bento-box">
-            <label>
-              <input type="checkbox" id="out-return-geometry" checked> Return Geometry
-            </label>
-            <label>
-              <input type="checkbox" id="out-return-ids"> Return IDs Only
-            </label>
-            <label>
-              <input type="checkbox" id="out-return-count"> Return Count Only
-            </label>
-            <div class="input-group">
-              <label for="outSR-input">Output Spatial Reference:</label>
-              <input type="text" id="outSR-input" value="4326" />
-            </div>
+          <div class="input-group">
+            <label for="json-upload">Upload JSON Configuration:</label>
+            <input type="file" id="json-upload" accept=".json">
+          </div>
+          <div id="json-editor">
+            <!-- Once a JSON is loaded, dynamically populate input fields for field weights, grades, etc. -->
+            <p>JSON configuration will appear here after upload.</p>
           </div>
         </div>
       </div>
 
-      <!-- Preview Limit Input -->
-      <div class="input-group">
-        <label for="preview-limit">Number of Objects to Load:</label>
-        <input type="number" id="preview-limit" value="10" min="1" max="100">
+      <!-- Collapsible: Python Options -->
+      <div class="collapsible">
+        <div class="collapsible-header">Python Options</div>
+        <div class="collapsible-content">
+          <!-- Sub-category for Quant/Qual Selector -->
+          <div class="collapsible">
+            <div class="collapsible-header">Quant/Qual Selector</div>
+            <div class="collapsible-content" id="quant-qual-section">
+              <!-- Dynamically generated checkboxes or selectors for each field -->
+              <p>Select quantitative and qualitative fields here.</p>
+              <!-- For example: -->
+              <!-- <label><input type="checkbox" data-field="FIELD_NAME" class="quant-field"> Quantitative</label>
+                   <label><input type="checkbox" data-field="FIELD_NAME" class="qual-field"> Qualitative</label> -->
+            </div>
+          </div>
+          <!-- Additional Python function creator options can be added here -->
+        </div>
       </div>
 
       <button id="update-preview">Update Preview</button>
@@ -130,7 +167,6 @@
       <div class="preview-header">
         <label for="code-type-select">Preview Type:</label>
         <select id="code-type-select">
-          <!-- Default option is API Response -->
           <option value="api_response" selected>API Response</option>
           <option value="api">API Creation</option>
           <option value="json">JSON Creation</option>

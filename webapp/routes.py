@@ -1,11 +1,15 @@
 import os
 import numpy as np
 from flask import Blueprint, render_template, request, jsonify
+from arcgis.gis import GIS
+from arcgis.features import FeatureLayer
 import geopandas as gpd
 import logging
 import requests
 import urllib
 import json
+
+from .fetch_and_update import get_api_preview
 
 logger = logging.getLogger(__name__)
 
@@ -291,36 +295,37 @@ def gdf_to_geojson_dict(gdf):
 @main_blueprint.route('/editor/fetch_fields', methods=['POST'])
 def fetch_fields():
     """
-    Accepts a JSON payload with an API URL, calls that URL, and returns the available fields
-    from the first feature's properties. If no features are found or an error occurs, returns an error.
+    Uses the ArcGIS API for Python to retrieve a FeatureLayer from the given API URL,
+    then returns the field names (keys from the first feature’s attributes).
     """
     data = request.get_json()
     api_url = data.get("api_url")
     if not api_url:
         return jsonify({"error": "Missing API URL"}), 400
-
     try:
-        response = requests.get(api_url, timeout=60)
-        response.raise_for_status()
-        json_data = response.json()
-        features = json_data.get("features", [])
+        # Remove any query string so we can create a FeatureLayer object.
+        base_url = api_url.split('/query')[0]
+        layer = FeatureLayer(base_url)
+        # Query using simple parameters (we don’t need geometry here)
+        result = layer.query(where="1=1", out_fields="*", return_geometry=False)
+        features = result.features
         if not features:
             return jsonify({"error": "No features found in the API response."}), 400
-
         first_feature = features[0]
-        properties = first_feature.get("properties") or first_feature.get("attributes")
+        properties = first_feature.attributes  # attributes holds the field values
         if not properties:
             return jsonify({"error": "No properties found in the first feature."}), 400
-
         field_list = list(properties.keys())
+        logger.info("Fetched fields: %s", field_list)
         return jsonify({"fields": field_list})
     except Exception as e:
+        logger.exception("Error in fetch_fields:")
         return jsonify({"error": str(e)}), 500
+
+
 
 def generate_api_response_preview(api_url, preview_limit):
     try:
-        # Use absolute import (adjust as necessary)
-        from .fetch_and_update import get_api_preview
         return get_api_preview(api_url, limit=preview_limit)
     except Exception as e:
         logger.exception("Error generating API response preview:")
@@ -328,6 +333,7 @@ def generate_api_response_preview(api_url, preview_limit):
 
 
 def generate_api_creation_preview(api_url, selected_fields, config):
+    # Build query parameters manually (or you could use similar logic as above)
     params = {
         "where": "1=1",
         "f": "json"
@@ -370,7 +376,6 @@ def generate_api_creation_preview(api_url, selected_fields, config):
 
 def generate_json_creation_preview(config):
     return json.dumps(config, indent=2)
-
 
 def generate_python_creation_preview(config):
     dataset_name = config.get("dataset_name", "my_dataset").replace(" ", "_").lower()

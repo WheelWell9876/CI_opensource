@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Sample Provided APIs list (sorted alphabetically)
-    const providedAPIs = {
+  // Provided APIs list – insert your API list here (omitted for brevity)
+  const providedAPIs = {
         "EPA Disaster Debris Recovery Data": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/EPA_Disaster_Debris_Recovery_Data/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "EPA Emergency Response (ER) Risk Management Plan (RMP) Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/FRS_INTERESTS_RMP/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "EPA Emergency Response (ER) Toxic Release Inventory (TRI) Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_INTERESTS_TRI/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
@@ -272,249 +272,267 @@ document.addEventListener('DOMContentLoaded', function() {
         "National Inventory of Dams (NID)": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/NID_v1/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "Reclamation Reservoirs": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Reclamation_Reservoirs/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "US Army Corps of Engineers (USACE) Owned and Operated Reservoirs": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_rez/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"
+  };
+
+  // Populate provided APIs dropdown
+  function populateProvidedAPIs() {
+    const select = document.getElementById('provided-api-select');
+    select.innerHTML = '';
+    const keys = Object.keys(providedAPIs).sort();
+    keys.forEach(apiName => {
+      const option = document.createElement('option');
+      option.value = providedAPIs[apiName];
+      option.textContent = apiName;
+      select.appendChild(option);
+    });
+  }
+  populateProvidedAPIs();
+
+  // Handle source type changes
+  document.getElementById('source-type-select').addEventListener('change', function() {
+    const sourceType = this.value;
+    const providedGroup = document.getElementById('provided-api-group');
+    if (sourceType === 'provided') {
+      providedGroup.style.display = 'block';
+      const providedAPI = document.getElementById('provided-api-select').value;
+      document.getElementById('api-url-input').value = providedAPI;
+      console.debug("Source type set to provided. API URL:", providedAPI);
+    } else {
+      providedGroup.style.display = 'none';
+      document.getElementById('api-url-input').value = '';
+      console.debug("Source type set to custom. API URL cleared.");
+    }
+  });
+
+  document.getElementById('provided-api-select').addEventListener('change', function() {
+    document.getElementById('api-url-input').value = this.value;
+    console.debug("Provided API selected. API URL updated to:", this.value);
+  });
+
+  // Toggle collapsible sections
+  const collapsibles = document.querySelectorAll('.collapsible-header');
+  collapsibles.forEach(header => {
+    header.addEventListener('click', function() {
+      const content = this.nextElementSibling;
+      content.classList.toggle('active');
+      console.debug("Toggled section:", this.textContent, "New state:", content.classList.contains('active'));
+    });
+  });
+
+  // Load fields from API and populate the API Fields section
+  document.getElementById('load-fields').addEventListener('click', function() {
+    const apiUrl = document.getElementById('api-url-input').value;
+    console.debug("Load Fields clicked. API URL:", apiUrl);
+    if (!apiUrl) {
+      alert("Please enter an API URL.");
+      return;
+    }
+    fetch('/editor/fetch_fields', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_url: apiUrl })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        alert("Error: " + data.error);
+        return;
+      }
+      const container = document.getElementById('fields-container');
+      // Clear container and re-add "All Fields" toggle and header row
+      container.innerHTML = "";
+      const allFieldsDiv = document.createElement('div');
+      allFieldsDiv.classList.add('input-group');
+      allFieldsDiv.innerHTML = '<label><input type="checkbox" id="all-fields" checked> All Fields</label>';
+      container.appendChild(allFieldsDiv);
+      const headerRow = document.createElement('div');
+      headerRow.classList.add('field-row', 'header');
+      headerRow.innerHTML = "<span class='field-name'>Name</span><span class='field-type'>Data Type</span><span class='field-select'>Select</span>";
+      container.appendChild(headerRow);
+      // Create a row for each field (assume type "String" for now)
+      data.fields.forEach(field => {
+        const row = document.createElement('div');
+        row.classList.add('field-row');
+        const nameSpan = document.createElement('span');
+        nameSpan.classList.add('field-name');
+        nameSpan.textContent = field;
+        const typeSpan = document.createElement('span');
+        typeSpan.classList.add('field-type');
+        typeSpan.textContent = "String";
+        const selectSpan = document.createElement('span');
+        selectSpan.classList.add('field-select');
+        const checkbox = document.createElement('input');
+        checkbox.type = "checkbox";
+        checkbox.value = field;
+        checkbox.checked = true;
+        selectSpan.appendChild(checkbox);
+        row.appendChild(nameSpan);
+        row.appendChild(typeSpan);
+        row.appendChild(selectSpan);
+        container.appendChild(row);
+      });
+      bindAllFieldsToggle();
+      console.debug("Loaded fields:", data.fields);
+    })
+    .catch(err => {
+      console.error("Error loading fields:", err);
+      alert("Failed to load fields.");
+    });
+  });
+
+  // Bind the "All Fields" checkbox to toggle individual checkboxes
+  function bindAllFieldsToggle() {
+    const allFieldsCheckbox = document.getElementById('all-fields');
+    if (allFieldsCheckbox) {
+      allFieldsCheckbox.addEventListener('change', function() {
+        const fieldRows = document.querySelectorAll('#fields-container .field-row:not(.header)');
+        fieldRows.forEach(row => {
+          const cb = row.querySelector('input[type="checkbox"]');
+          if (cb) {
+            cb.checked = allFieldsCheckbox.checked;
+          }
+        });
+        console.debug("All Fields toggled:", allFieldsCheckbox.checked);
+      });
+    }
+  }
+
+  // Show/hide spatial envelope options based on selection.
+  document.getElementById('spatial-input-select').addEventListener('change', function() {
+    const envelopeOptions = document.getElementById('spatial-envelope-options');
+    if (this.value === "Envelope") {
+      envelopeOptions.style.display = 'block';
+      console.debug("Spatial Input set to Envelope.");
+    } else {
+      envelopeOptions.style.display = 'none';
+      console.debug("Spatial Input set to None.");
+    }
+  });
+
+  // Update Preview: gather config and send to backend
+  function updatePreview() {
+    console.debug("Update Preview clicked.");
+    const apiUrl = document.getElementById('api-url-input').value;
+    console.debug("API URL:", apiUrl);
+    const fieldsContainer = document.getElementById('fields-container');
+    const allFieldsCheckbox = document.getElementById('all-fields');
+    let selectedFields;
+    if (allFieldsCheckbox && allFieldsCheckbox.checked) {
+      selectedFields = "*";
+      console.debug("Using '*' for outFields (All Fields checked).");
+    } else {
+      selectedFields = [];
+      const fieldRows = fieldsContainer.querySelectorAll('.field-row:not(.header)');
+      fieldRows.forEach(row => {
+        const cb = row.querySelector('input[type="checkbox"]');
+        if (cb) {
+          console.debug("Field:", cb.value, "Checked:", cb.checked);
+          if (cb.checked) {
+            selectedFields.push(cb.value);
+          }
+        }
+      });
+      console.debug("Selected fields:", selectedFields);
+    }
+
+    // Get output options
+    const outReturnGeometryElem = document.getElementById('out-return-geometry');
+    const outReturnIdsElem = document.getElementById('out-return-ids');
+    const outReturnCountElem = document.getElementById('out-return-count');
+    const previewLimitElem = document.getElementById('preview-limit');
+
+    if (!outReturnGeometryElem || !outReturnIdsElem || !outReturnCountElem || !previewLimitElem) {
+      console.error("Missing one or more output option elements.");
+      return;
+    }
+
+    const outReturnGeometry = outReturnGeometryElem.checked;
+    const outReturnIds = outReturnIdsElem.checked;
+    const outReturnCount = outReturnCountElem.checked;
+    const previewLimit = previewLimitElem.value;
+    console.debug("Output options:", { outReturnGeometry, outReturnIds, outReturnCount, previewLimit });
+
+    // Spatial input options
+    const spatialInput = document.getElementById('spatial-input-select').value;
+    let inSR = "";
+    let spatialRel = "";
+    if (spatialInput === "Envelope") {
+      const inSRElem = document.getElementById('inSR-input');
+      const spatialRelElem = document.getElementById('spatial-rel-select');
+      if (inSRElem && spatialRelElem) {
+        inSR = inSRElem.value;
+        spatialRel = spatialRelElem.value;
+        console.debug("Spatial envelope options:", { inSR, spatialRel });
+      } else {
+        console.warn("Spatial envelope elements missing.");
+      }
+    }
+    const outSRElem = document.getElementById('outSR-input');
+    const outSR = outSRElem ? outSRElem.value : "";
+    console.debug("Output Spatial Reference:", outSR);
+
+    // Build configuration object
+    const config = {
+      api_url: apiUrl,
+      selected_fields: selectedFields,
+      preview_limit: previewLimit,
+      spatial_input: spatialInput,
+      output_options: {
+        returnGeometry: outReturnGeometry,
+        returnIdsOnly: outReturnIds,
+        returnCountOnly: outReturnCount,
+        outSR: outSR
+      }
     };
-
-    // Populate the provided APIs dropdown in alphabetical order
-    function populateProvidedAPIs() {
-        const select = document.getElementById('provided-api-select');
-        select.innerHTML = '';
-        const keys = Object.keys(providedAPIs).sort();
-        keys.forEach(apiName => {
-            const option = document.createElement('option');
-            option.value = providedAPIs[apiName];
-            option.textContent = apiName;
-            select.appendChild(option);
-        });
+    if (spatialInput === "Envelope") {
+      config.inSR = inSR;
+      config.spatialRel = spatialRel;
     }
-    populateProvidedAPIs();
+    console.debug("Final config object:", config);
 
-    // When source type changes, update the API URL input accordingly.
-    document.getElementById('source-type-select').addEventListener('change', function() {
-        const sourceType = this.value;
-        const providedGroup = document.getElementById('provided-api-group');
-        if (sourceType === 'provided') {
-            providedGroup.style.display = 'block';
-            const providedAPI = document.getElementById('provided-api-select').value;
-            document.getElementById('api-url-input').value = providedAPI;
-        } else {
-            providedGroup.style.display = 'none';
-            document.getElementById('api-url-input').value = '';
-        }
+    // Send to backend for preview generation
+    fetch('/editor/generate_preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config)
+    })
+    .then(response => {
+      console.debug("Raw response:", response);
+      return response.json();
+    })
+    .then(data => {
+      console.debug("Preview data received:", data);
+      window.generatedCode = data;
+      refreshCodePreview();
+    })
+    .catch(err => {
+      console.error("Error in updatePreview:", err);
     });
-    document.getElementById('provided-api-select').addEventListener('change', function() {
-        document.getElementById('api-url-input').value = this.value;
-    });
+  }
 
-    // Toggle collapsible sections
-    const collapsibles = document.querySelectorAll('.collapsible-header');
-    collapsibles.forEach(header => {
-        header.addEventListener('click', function() {
-            const content = this.nextElementSibling;
-            content.classList.toggle('active');
-        });
-    });
-
-    // Load fields from API and populate the API Fields section
-    document.getElementById('load-fields').addEventListener('click', function() {
-        const apiUrl = document.getElementById('api-url-input').value;
-        if (!apiUrl) {
-            alert("Please enter an API URL.");
-            return;
-        }
-        fetch('/editor/fetch_fields', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ api_url: apiUrl })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert("Error: " + data.error);
-                return;
-            }
-            const container = document.getElementById('fields-container');
-            // Clear container and re-add "All Fields" checkbox and header row
-            container.innerHTML = "";
-            const allFieldsDiv = document.createElement('div');
-            allFieldsDiv.classList.add('input-group');
-            allFieldsDiv.innerHTML = '<label><input type="checkbox" id="all-fields" checked> All Fields</label>';
-            container.appendChild(allFieldsDiv);
-            const headerRow = document.createElement('div');
-            headerRow.classList.add('field-row', 'header');
-            headerRow.innerHTML = "<span class='field-name'>Name</span><span class='field-type'>Data Type</span><span class='field-select'>Select</span>";
-            container.appendChild(headerRow);
-            // Create a row for each field; here, we assume all fields are of type "String"
-            data.fields.forEach(field => {
-                const row = document.createElement('div');
-                row.classList.add('field-row');
-                const nameSpan = document.createElement('span');
-                nameSpan.classList.add('field-name');
-                nameSpan.textContent = field;
-                const typeSpan = document.createElement('span');
-                typeSpan.classList.add('field-type');
-                typeSpan.textContent = "String";
-                const selectSpan = document.createElement('span');
-                selectSpan.classList.add('field-select');
-                const checkbox = document.createElement('input');
-                checkbox.type = "checkbox";
-                checkbox.value = field;
-                checkbox.checked = true;
-                selectSpan.appendChild(checkbox);
-                row.appendChild(nameSpan);
-                row.appendChild(typeSpan);
-                row.appendChild(selectSpan);
-                container.appendChild(row);
-            });
-            // Bind the "All Fields" toggle event
-            bindAllFieldsToggle();
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Failed to load fields.");
-        });
-    });
-
-    // Bind the "All Fields" checkbox to toggle individual field checkboxes
-    function bindAllFieldsToggle() {
-        const allFieldsCheckbox = document.getElementById('all-fields');
-        if (allFieldsCheckbox) {
-            allFieldsCheckbox.addEventListener('change', function() {
-                const fieldRows = document.querySelectorAll('#fields-container .field-row:not(.header)');
-                fieldRows.forEach(row => {
-                    const cb = row.querySelector('input[type="checkbox"]');
-                    if (cb) {
-                        cb.checked = allFieldsCheckbox.checked;
-                    }
-                });
-            });
-        }
+  // Refresh the code preview text area
+  function refreshCodePreview() {
+    const codeType = document.getElementById('code-type-select').value;
+    const codePreview = document.getElementById('code-preview');
+    if (window.generatedCode) {
+      let previewContent = window.generatedCode[codeType] || "";
+      // If previewContent is an object, stringify it
+      if (typeof previewContent === 'object') {
+        previewContent = JSON.stringify(previewContent, null, 2);
+      }
+      codePreview.value = previewContent;
+    } else {
+      codePreview.value = "// Preview code will appear here once you update.";
     }
+  }
 
-    // Show/hide spatial envelope options based on selection.
-    document.getElementById('spatial-input-select').addEventListener('change', function() {
-        const envelopeOptions = document.getElementById('spatial-envelope-options');
-        if (this.value === "Envelope") {
-            envelopeOptions.style.display = 'block';
-        } else {
-            envelopeOptions.style.display = 'none';
-        }
-    });
-
-    // Update preview function: gather all config values and send to backend
-    function updatePreview() {
-        const apiUrl = document.getElementById('api-url-input').value;
-        const fieldsContainer = document.getElementById('fields-container');
-        const allFieldsCheckbox = document.getElementById('all-fields');
-
-        let selectedFields;
-        if (allFieldsCheckbox && allFieldsCheckbox.checked) {
-            selectedFields = "*";
-            console.debug("All Fields is checked, using '*' for outFields.");
-        } else {
-            selectedFields = [];
-            // Iterate over each field row (skip the header row)
-            const fieldRows = fieldsContainer.querySelectorAll('.field-row:not(.header)');
-            fieldRows.forEach(row => {
-                const cb = row.querySelector('input[type="checkbox"]');
-                if (cb) {
-                    console.debug("Field:", cb.value, "Checked:", cb.checked);
-                    if (cb.checked) {
-                        selectedFields.push(cb.value);
-                    }
-                }
-            });
-            console.debug("Selected fields array:", selectedFields);
-        }
-
-        // Get output options using the new IDs
-        const outReturnGeometryElem = document.getElementById('out-return-geometry');
-        const outReturnIdsElem = document.getElementById('out-return-ids');
-        const outReturnCountElem = document.getElementById('out-return-count');
-        const previewLimitElem = document.getElementById('preview-limit');
-
-        if (!outReturnGeometryElem || !outReturnIdsElem || !outReturnCountElem || !previewLimitElem) {
-            console.error("One or more required output option elements are missing.");
-            return;
-        }
-
-        const outReturnGeometry = outReturnGeometryElem.checked;
-        const outReturnIds = outReturnIdsElem.checked;
-        const outReturnCount = outReturnCountElem.checked;
-        const previewLimit = previewLimitElem.value;
-
-        // Spatial input options
-        const spatialInput = document.getElementById('spatial-input-select').value;
-        let inSR = "";
-        let spatialRel = "";
-        if (spatialInput === "Envelope") {
-            const inSRElem = document.getElementById('inSR-input');
-            const spatialRelElem = document.getElementById('spatial-rel-select');
-            if (inSRElem && spatialRelElem) {
-                inSR = inSRElem.value;
-                spatialRel = spatialRelElem.value;
-                console.debug("Spatial input is Envelope, inSR:", inSR, "spatialRel:", spatialRel);
-            } else {
-                console.warn("Spatial envelope elements missing.");
-            }
-        }
-        // Output spatial reference
-        const outSRElem = document.getElementById('outSR-input');
-        let outSR = outSRElem ? outSRElem.value : "";
-
-        // Build configuration object to send to the server
-        const config = {
-            api_url: apiUrl,
-            selected_fields: selectedFields,
-            preview_limit: previewLimit,
-            spatial_input: spatialInput,
-            output_options: {
-                returnGeometry: outReturnGeometry,
-                returnIdsOnly: outReturnIds,
-                returnCountOnly: outReturnCount,
-                outSR: outSR
-            }
-        };
-        if (spatialInput === "Envelope") {
-            config["inSR"] = inSR;
-            config["spatialRel"] = spatialRel;
-        }
-        console.debug("Final config to send:", config);
-
-        fetch('/editor/generate_preview', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(config)
-        })
-        .then(response => {
-            console.debug("Raw response received:", response);
-            return response.json();
-        })
-        .then(data => {
-            console.debug("Parsed preview data:", data);
-            window.generatedCode = data;
-            refreshCodePreview();
-        })
-        .catch(err => {
-            console.error("Error generating preview:", err);
-        });
-    }
-
-    function refreshCodePreview() {
-        const codeType = document.getElementById('code-type-select').value;
-        const codePreview = document.getElementById('code-preview');
-        if (window.generatedCode) {
-            codePreview.value = window.generatedCode[codeType] || "";
-        } else {
-            codePreview.value = "// Preview code will appear here once you update.";
-        }
-    }
-
-    document.getElementById('update-preview').addEventListener('click', updatePreview);
-    document.getElementById('code-type-select').addEventListener('change', refreshCodePreview);
-    document.getElementById('copy-code').addEventListener('click', function() {
-        const codePreview = document.getElementById('code-preview');
-        codePreview.select();
-        document.execCommand("copy");
-        alert("Code copied to clipboard!");
-    });
+  // Bind events for update preview, preview type change, and copy
+  document.getElementById('update-preview').addEventListener('click', updatePreview);
+  document.getElementById('code-type-select').addEventListener('change', refreshCodePreview);
+  document.getElementById('copy-code').addEventListener('click', function() {
+    const codePreview = document.getElementById('code-preview');
+    codePreview.select();
+    document.execCommand("copy");
+    alert("Code copied to clipboard!");
+  });
 });

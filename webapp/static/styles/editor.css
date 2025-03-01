@@ -1,11 +1,11 @@
-/* webapp/static/styles/editor.css */
-
+/* Basic resets */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
 }
 
+/* Header and Navigation */
 header {
   background-color: #22577a;
   padding: 14px 20px;
@@ -14,30 +14,26 @@ header {
   justify-content: space-between;
   align-items: center;
 }
-
 .logo .logo-title {
   font-size: 2rem;
 }
-
 .nav-links-container {
   list-style: none;
   display: flex;
   gap: 20px;
 }
-
 .nav-links-container a {
   color: #fff;
   text-decoration: none;
   font-size: 1.2rem;
 }
 
+/* Editor Layout */
 .editor-wrapper {
   display: flex;
   margin: 20px;
   gap: 20px;
 }
-
-/* Left Panel Styles */
 .editor-options {
   width: 38%;
   background: #fff;
@@ -45,22 +41,18 @@ header {
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
-
 .editor-options h2 {
   text-align: center;
   margin-bottom: 15px;
 }
-
 .input-group {
   margin-bottom: 15px;
 }
-
 .input-group label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
 }
-
 .input-group input,
 .input-group textarea,
 .input-group select {
@@ -70,7 +62,7 @@ header {
   border-radius: 4px;
 }
 
-/* Collapsible sections */
+/* Collapsible Sections */
 .collapsible {
   margin-bottom: 15px;
   border: 1px solid #ccc;
@@ -90,7 +82,7 @@ header {
   display: block;
 }
 
-/* Field rows in API Fields section */
+/* Field Rows in API Fields */
 .field-row {
   display: flex;
   padding: 4px 0;
@@ -106,7 +98,7 @@ header {
   padding: 0 5px;
 }
 
-/* Bento box for fields */
+/* Bento Box for Fields */
 .bento-box {
   border: 1px dashed #ccc;
   padding: 10px;
@@ -115,7 +107,7 @@ header {
   overflow-y: auto;
 }
 
-/* Right Panel Styles */
+/* Right Panel: Preview */
 .editor-preview {
   width: 60%;
   background: #fff;
