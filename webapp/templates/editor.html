@@ -22,10 +22,12 @@
     <!-- Left Panel: Options -->
     <div class="editor-options">
       <h2>Options &amp; Fields</h2>
+
       <!-- Collapsible: API Options -->
       <div class="collapsible">
         <div class="collapsible-header active">API Options</div>
         <div class="collapsible-content active">
+          <!-- Source Selection -->
           <div class="input-group">
             <label for="source-type-select">Source Type:</label>
             <select id="source-type-select">
@@ -40,6 +42,7 @@
               <option value="https://services.example.com/api2?f=geojson">API Option 2</option>
             </select>
           </div>
+          <!-- API URL Input -->
           <div class="input-group">
             <label for="api-url-input">API URL:</label>
             <input type="text" id="api-url-input" placeholder="https://services.example.com/..." />
@@ -49,15 +52,7 @@
           <div class="collapsible">
             <div class="collapsible-header active">API Fields</div>
             <div class="collapsible-content active" id="fields-container">
-              <div class="input-group">
-                <label><input type="checkbox" id="all-fields" checked> All Fields</label>
-              </div>
-              <div class="field-row header">
-                <span class="field-name">Name</span>
-                <span class="field-type">Data Type</span>
-                <span class="field-select">Select</span>
-              </div>
-              <!-- Field rows will be added dynamically -->
+              <!-- Fields are dynamically inserted here -->
             </div>
           </div>
           <!-- Spatial Inputs -->
@@ -143,6 +138,17 @@
           <div id="json-editor">
             <p>JSON configuration will appear here after dataset load.</p>
           </div>
+          <!-- New JSON Maker controls -->
+          <h3>JSON Maker</h3>
+          <div class="input-group">
+            <label for="dataset-name">Dataset Name:</label>
+            <input type="text" id="dataset-name" placeholder="Enter dataset name">
+          </div>
+          <div class="input-group">
+            <label for="dataset-link">Dataset Link:</label>
+            <input type="text" id="dataset-link" placeholder="Enter dataset link">
+          </div>
+          <button id="create-json-btn">Create JSON</button>
         </div>
       </div>
 
@@ -154,6 +160,7 @@
             <div class="collapsible-header">Quant/Qual Selector</div>
             <div class="collapsible-content" id="quant-qual-section">
               <p>Select quantitative and qualitative fields here.</p>
+              <!-- The content is updated automatically based on the selected fields -->
             </div>
           </div>
         </div>

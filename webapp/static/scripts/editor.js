@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Placeholder for provided APIs – add your API endpoints here.
+  // Provided APIs – update as needed.
   const providedAPIs = {
         "EPA Disaster Debris Recovery Data": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/EPA_Disaster_Debris_Recovery_Data/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "EPA Emergency Response (ER) Risk Management Plan (RMP) Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/FRS_INTERESTS_RMP/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
         "US Army Corps of Engineers (USACE) Owned and Operated Reservoirs": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_rez/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"
   };
 
-  // Populate provided APIs dropdown.
+  // --- Populate provided APIs dropdown ---
   function populateProvidedAPIs() {
     const select = document.getElementById('provided-api-select');
     select.innerHTML = '';
@@ -287,11 +287,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   populateProvidedAPIs();
 
-  // Handle source type selection.
+  // --- Source Type selection ---
   document.getElementById('source-type-select').addEventListener('change', function() {
-    const sourceType = this.value;
     const providedGroup = document.getElementById('provided-api-group');
-    if (sourceType === 'provided') {
+    if (this.value === 'provided') {
       providedGroup.style.display = 'block';
       document.getElementById('api-url-input').value = document.getElementById('provided-api-select').value;
     } else {
@@ -303,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('api-url-input').value = this.value;
   });
 
-  // Toggle collapsible sections.
+  // --- Toggle collapsible sections ---
   const collapsibles = document.querySelectorAll('.collapsible-header');
   collapsibles.forEach(header => {
     header.addEventListener('click', function() {
@@ -312,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Load fields from API.
+  // --- Load fields from API ---
   document.getElementById('load-fields').addEventListener('click', function() {
     const apiUrl = document.getElementById('api-url-input').value;
     if (!apiUrl) {
@@ -330,50 +329,10 @@ document.addEventListener('DOMContentLoaded', function() {
         alert("Error: " + data.error);
         return;
       }
-      const container = document.getElementById('fields-container');
-      container.innerHTML = "";
-      // All Fields toggle.
-      const allFieldsDiv = document.createElement('div');
-      allFieldsDiv.classList.add('input-group');
-      allFieldsDiv.innerHTML = '<label><input type="checkbox" id="all-fields" checked> All Fields</label>';
-      container.appendChild(allFieldsDiv);
-      // Header row.
-      const headerRow = document.createElement('div');
-      headerRow.classList.add('field-row', 'header');
-      headerRow.innerHTML = "<span class='field-name'>Name</span><span class='field-type'>Data Type</span><span class='field-select'>Select</span>";
-      container.appendChild(headerRow);
-      // Create a row for each field (assuming type "String" by default).
-      data.fields.forEach(field => {
-        const row = document.createElement('div');
-        row.classList.add('field-row');
-        const nameSpan = document.createElement('span');
-        nameSpan.classList.add('field-name');
-        nameSpan.textContent = field;
-        const typeSpan = document.createElement('span');
-        typeSpan.classList.add('field-type');
-        typeSpan.textContent = "String";
-        const selectSpan = document.createElement('span');
-        selectSpan.classList.add('field-select');
-        const checkbox = document.createElement('input');
-        checkbox.type = "checkbox";
-        checkbox.value = field;
-        checkbox.checked = true;
-        // (Optional: add an event listener so that unchecking any field unchecks "All Fields")
-        checkbox.addEventListener('change', function() {
-          const allCbs = container.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
-          const allChecked = Array.from(allCbs).every(cb => cb.checked);
-          document.getElementById('all-fields').checked = allChecked;
-        });
-        selectSpan.appendChild(checkbox);
-        row.appendChild(nameSpan);
-        row.appendChild(typeSpan);
-        row.appendChild(selectSpan);
-        container.appendChild(row);
-      });
-      bindAllFieldsToggle();
-      // Populate JSON Editor and Quant/Qual options.
-      populateJSONEditor(data.fields);
-      populateQuantQualOptions(data.fields);
+      updateFieldsUI(data.fields);
+      // Also update the JSON editor and the quant/qual options
+      updateJSONEditor();
+      updateQuantQualOptions();
     })
     .catch(err => {
       console.error("Error loading fields:", err);
@@ -381,7 +340,55 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Bind "All Fields" toggle.
+  // --- Update the Fields UI (in the API Fields section) ---
+  function updateFieldsUI(fields) {
+    const container = document.getElementById('fields-container');
+    container.innerHTML = "";
+    // "All Fields" toggle
+    const allFieldsDiv = document.createElement('div');
+    allFieldsDiv.classList.add('input-group');
+    allFieldsDiv.innerHTML = '<label><input type="checkbox" id="all-fields" checked> All Fields</label>';
+    container.appendChild(allFieldsDiv);
+    // Header row
+    const headerRow = document.createElement('div');
+    headerRow.classList.add('field-row', 'header');
+    headerRow.innerHTML = "<span class='field-name'>Name</span><span class='field-type'>Data Type</span><span class='field-select'>Select</span>";
+    container.appendChild(headerRow);
+    // For each field, create a row with a checkbox
+    fields.forEach(field => {
+      const row = document.createElement('div');
+      row.classList.add('field-row');
+      const nameSpan = document.createElement('span');
+      nameSpan.classList.add('field-name');
+      nameSpan.textContent = field;
+      const typeSpan = document.createElement('span');
+      typeSpan.classList.add('field-type');
+      // For simplicity, default type to "String" (or you can later improve this)
+      typeSpan.textContent = "String";
+      const selectSpan = document.createElement('span');
+      selectSpan.classList.add('field-select');
+      const checkbox = document.createElement('input');
+      checkbox.type = "checkbox";
+      checkbox.value = field;
+      checkbox.checked = true;
+      // When a checkbox is changed, update the "All Fields" checkbox and update the JSON editor
+      checkbox.addEventListener('change', function() {
+        const allCbs = container.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
+        const allChecked = Array.from(allCbs).every(cb => cb.checked);
+        document.getElementById('all-fields').checked = allChecked;
+        // When a field is toggled, update the JSON editor
+        updateJSONEditor();
+      });
+      selectSpan.appendChild(checkbox);
+      row.appendChild(nameSpan);
+      row.appendChild(typeSpan);
+      row.appendChild(selectSpan);
+      container.appendChild(row);
+    });
+    bindAllFieldsToggle();
+  }
+
+  // --- Bind "All Fields" toggle ---
   function bindAllFieldsToggle() {
     const allFieldsCheckbox = document.getElementById('all-fields');
     if (allFieldsCheckbox) {
@@ -389,32 +396,169 @@ document.addEventListener('DOMContentLoaded', function() {
         const fieldRows = document.querySelectorAll('#fields-container .field-row:not(.header)');
         fieldRows.forEach(row => {
           const cb = row.querySelector('input[type="checkbox"]');
-          if (cb) {
-            cb.checked = allFieldsCheckbox.checked;
-          }
+          if (cb) { cb.checked = allFieldsCheckbox.checked; }
         });
+        updateJSONEditor();
       });
     }
   }
 
-  // Spatial input toggle.
-  document.getElementById('spatial-input-select').addEventListener('change', function() {
-    const envelopeOptions = document.getElementById('spatial-envelope-options');
-    envelopeOptions.style.display = (this.value === "Envelope") ? 'block' : 'none';
+  // --- Simple Predictor function ---
+  function predictFieldType(fieldName) {
+    // A very basic heuristic: if field name contains keywords often associated with numbers, return "Quantitative"
+    const lower = fieldName.toLowerCase();
+    if (lower.includes("id") || lower.includes("number") || lower.includes("area") || lower.includes("value") || lower.includes("count") || lower.includes("accuracy") ) {
+      return "Quantitative";
+    }
+    return "Qualitative";
+  }
+
+  // --- Update JSON Editor based on selected fields ---
+  function updateJSONEditor() {
+    const container = document.getElementById('fields-container');
+    const checkboxes = container.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
+    // Get list of selected fields
+    const selectedFields = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+    const jsonContainer = document.getElementById('json-editor');
+    jsonContainer.innerHTML = "";
+    // For each selected field, add an input group with a prediction
+    selectedFields.forEach(field => {
+      const fieldDiv = document.createElement('div');
+      fieldDiv.classList.add('json-field');
+      fieldDiv.style.border = "1px solid #ccc";
+      fieldDiv.style.marginBottom = "10px";
+      fieldDiv.style.padding = "5px";
+      // Run the predictor function and show its output
+      const prediction = predictFieldType(field);
+      fieldDiv.innerHTML = `
+        <h4>${field} <span class="prediction-box">(Prediction: ${prediction})</span></h4>
+        <label>Weight: <input type="number" step="0.01" name="${field}_weight" /></label><br>
+        <label>Meaning: <input type="text" name="${field}_meaning" /></label><br>
+        <label>Importance: <input type="text" name="${field}_importance" /></label><br>
+        <label>Grade: <input type="number" step="0.01" name="${field}_grade" /></label>
+      `;
+      jsonContainer.appendChild(fieldDiv);
+    });
+  }
+
+  // --- Update Quant/Qual Options UI based on selected fields ---
+  function updateQuantQualOptions() {
+    const container = document.getElementById('quant-qual-section');
+    const fieldsContainer = document.getElementById('fields-container');
+    const checkboxes = fieldsContainer.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
+    const selectedFields = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+    container.innerHTML = "";
+    selectedFields.forEach(field => {
+      const row = document.createElement('div');
+      row.style.marginBottom = "5px";
+      // Also display the predictor result next to each field
+      const prediction = predictFieldType(field);
+      row.innerHTML = `
+        <span style="font-weight:bold;">${field}</span>
+        <span style="margin-left:10px; font-style: italic;">(${prediction})</span>
+        <label style="margin-left:10px;">
+          <input type="checkbox" class="quant-field" value="${field}" /> Quantitative
+        </label>
+        <label style="margin-left:10px;">
+          <input type="checkbox" class="qual-field" value="${field}" /> Qualitative
+        </label>
+      `;
+      container.appendChild(row);
+    });
+    // Append a button to generate the Python function (if needed)
+    const pyGenerateBtn = document.createElement('button');
+    pyGenerateBtn.textContent = "Generate Python Function";
+    pyGenerateBtn.addEventListener('click', generatePythonFunction);
+    container.appendChild(pyGenerateBtn);
+  }
+
+  // --- JSON file upload handler (unchanged) ---
+  document.getElementById('json-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const jsonData = JSON.parse(e.target.result);
+          if (validateJSONStructure(jsonData)) {
+            populateJSONEditorFromData(jsonData);
+          } else {
+            alert("Uploaded JSON does not match the required structure.");
+          }
+        } catch(err) {
+          alert("Error parsing JSON file: " + err);
+        }
+      }
+      reader.readAsText(file);
+    }
   });
 
-  // Update preview: gather config and send to backend.
+  function validateJSONStructure(data) {
+    return data.hasOwnProperty("datasetName") && data.hasOwnProperty("qualitativeFields");
+  }
+
+  function populateJSONEditorFromData(data) {
+    // Optionally, you could update the JSON editor with the uploaded configuration.
+    const jsonContainer = document.getElementById('json-editor');
+    jsonContainer.innerHTML = "";
+    data.qualitativeFields.forEach(fieldObj => {
+      const fieldDiv = document.createElement('div');
+      fieldDiv.classList.add('json-field');
+      fieldDiv.style.border = "1px solid #ccc";
+      fieldDiv.style.marginBottom = "10px";
+      fieldDiv.style.padding = "5px";
+      const prediction = predictFieldType(fieldObj.fieldName);
+      fieldDiv.innerHTML = `
+        <h4>${fieldObj.fieldName} (Prediction: ${prediction})</h4>
+        <label>Meaning: <input type="text" name="${fieldObj.fieldName}_meaning" value="${fieldObj.meaning}" /></label><br>
+        <label>Importance: <input type="text" name="${fieldObj.fieldName}_importance" value="${fieldObj.importance}" /></label><br>
+        <label>Overall Field Grade: <input type="number" step="0.01" name="${fieldObj.fieldName}_grade" value="${fieldObj.overallFieldImportanceGrade || ''}" /></label>
+      `;
+      jsonContainer.appendChild(fieldDiv);
+    });
+  }
+
+  // --- Generate Python function code based on Quant/Qual selections ---
+  function generatePythonFunction() {
+    const quantFields = Array.from(document.querySelectorAll('.quant-field:checked')).map(cb => cb.value);
+    const qualFields = Array.from(document.querySelectorAll('.qual-field:checked')).map(cb => cb.value);
+    let pythonCode = "import json\nimport numpy as np\n\ndef quant_and_qual_analysis(geojson_path):\n";
+    pythonCode += "    with open(geojson_path, 'r') as f:\n";
+    pythonCode += "        data = json.load(f)\n";
+    pythonCode += "    quant_stats = {}\n";
+    pythonCode += "    qual_counts = {}\n";
+    pythonCode += `    quant_fields = ${JSON.stringify(quantFields)}\n`;
+    pythonCode += `    qual_fields = ${JSON.stringify(qualFields)}\n`;
+    pythonCode += "    for field in quant_fields:\n";
+    pythonCode += "        quant_stats[field] = []\n";
+    pythonCode += "    for field in qual_fields:\n";
+    pythonCode += "        qual_counts[field] = {}\n";
+    pythonCode += "    for feature in data['features']:\n";
+    pythonCode += "        let props = feature['properties'];\n";
+    pythonCode += "        for (let field of quant_fields) {\n";
+    pythonCode += "            if (props.hasOwnProperty(field) && typeof props[field] === 'number') {\n";
+    pythonCode += "                quant_stats[field].push(props[field]);\n";
+    pythonCode += "            }\n";
+    pythonCode += "        }\n";
+    pythonCode += "        for (let field of qual_fields) {\n";
+    pythonCode += "            if (props.hasOwnProperty(field)) {\n";
+    pythonCode += "                let value = props[field];\n";
+    pythonCode += "                qual_counts[field][value] = (qual_counts[field][value] || 0) + 1;\n";
+    pythonCode += "            }\n";
+    pythonCode += "        }\n";
+    pythonCode += "    return quant_stats, qual_counts\n";
+    window.generatedCode = window.generatedCode || {};
+    window.generatedCode.python = pythonCode;
+    refreshCodePreview();
+  }
+
+  // --- Update preview: gather config and send to backend ---
   function updatePreview() {
     const apiUrl = document.getElementById('api-url-input').value;
     const fieldsContainer = document.getElementById('fields-container');
-    let selectedFields = [];
+    // Get selected fields from the API Fields section
     const checkboxes = fieldsContainer.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
-    checkboxes.forEach(cb => {
-      if (cb.checked) {
-        selectedFields.push(cb.value);
-      }
-    });
-    // If all checkboxes are checked, use "*" for outFields.
+    let selectedFields = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
     if (checkboxes.length > 0 && selectedFields.length === checkboxes.length) {
       selectedFields = "*";
     }
@@ -450,8 +594,8 @@ document.addEventListener('DOMContentLoaded', function() {
       config.inSR = inSR;
       config.spatialRel = spatialRel;
     }
-    // Read Advanced Query Parameters (if any).
-    let advParamsText = document.getElementById('advanced-params').value;
+    // Read Advanced Query Parameters (if any)
+    const advParamsText = document.getElementById('advanced-params').value;
     if (advParamsText) {
       try {
         config.advanced_params = JSON.parse(advParamsText);
@@ -459,7 +603,7 @@ document.addEventListener('DOMContentLoaded', function() {
         alert("Error parsing advanced query parameters: " + e);
       }
     }
-    // Send config to backend.
+    // Send config to backend to generate the preview.
     fetch('/editor/generate_preview', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -475,7 +619,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Refresh the code preview.
+  // --- Refresh the code preview area ---
   function refreshCodePreview() {
     const codeType = document.getElementById('code-type-select').value;
     const codePreview = document.getElementById('code-preview');
@@ -494,124 +638,4 @@ document.addEventListener('DOMContentLoaded', function() {
     document.execCommand("copy");
     alert("Code copied to clipboard!");
   });
-
-  // Populate JSON Editor with a form for each field.
-  function populateJSONEditor(fields) {
-    const jsonContainer = document.getElementById('json-editor');
-    jsonContainer.innerHTML = "";
-    fields.forEach(field => {
-      const fieldDiv = document.createElement('div');
-      fieldDiv.classList.add('json-field');
-      fieldDiv.style.border = "1px solid #ccc";
-      fieldDiv.style.marginBottom = "10px";
-      fieldDiv.style.padding = "5px";
-      fieldDiv.innerHTML = `
-        <h4>${field}</h4>
-        <label>Weight: <input type="number" step="0.01" name="${field}_weight" /></label><br>
-        <label>Meaning: <input type="text" name="${field}_meaning" /></label><br>
-        <label>Importance: <input type="text" name="${field}_importance" /></label><br>
-        <label>Grade: <input type="number" step="0.01" name="${field}_grade" /></label>
-      `;
-      jsonContainer.appendChild(fieldDiv);
-    });
-  }
-
-  // Populate Quant/Qual selector for Python Options.
-  function populateQuantQualOptions(fields) {
-    const container = document.getElementById('quant-qual-section');
-    container.innerHTML = "";
-    fields.forEach(field => {
-      const row = document.createElement('div');
-      row.style.marginBottom = "5px";
-      row.innerHTML = `
-        <span style="font-weight:bold;">${field}</span>
-        <label style="margin-left:10px;">
-          <input type="checkbox" class="quant-field" value="${field}" /> Quantitative
-        </label>
-        <label style="margin-left:10px;">
-          <input type="checkbox" class="qual-field" value="${field}" /> Qualitative
-        </label>
-      `;
-      container.appendChild(row);
-    });
-    // Append button to generate Python function.
-    const pyGenerateBtn = document.createElement('button');
-    pyGenerateBtn.textContent = "Generate Python Function";
-    pyGenerateBtn.addEventListener('click', generatePythonFunction);
-    container.appendChild(pyGenerateBtn);
-  }
-
-  // JSON file upload handler.
-  document.getElementById('json-upload').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const jsonData = JSON.parse(e.target.result);
-          if (validateJSONStructure(jsonData)) {
-            populateJSONEditorFromData(jsonData);
-          } else {
-            alert("Uploaded JSON does not match the required structure.");
-          }
-        } catch(err) {
-          alert("Error parsing JSON file: " + err);
-        }
-      }
-      reader.readAsText(file);
-    }
-  });
-
-  function validateJSONStructure(data) {
-    return data.hasOwnProperty("datasetName") && data.hasOwnProperty("qualitativeFields");
-  }
-
-  function populateJSONEditorFromData(data) {
-    const jsonContainer = document.getElementById('json-editor');
-    jsonContainer.innerHTML = "";
-    data.qualitativeFields.forEach(fieldObj => {
-      const fieldDiv = document.createElement('div');
-      fieldDiv.classList.add('json-field');
-      fieldDiv.style.border = "1px solid #ccc";
-      fieldDiv.style.marginBottom = "10px";
-      fieldDiv.style.padding = "5px";
-      fieldDiv.innerHTML = `
-        <h4>${fieldObj.fieldName} (Qualitative)</h4>
-        <label>Meaning: <input type="text" name="${fieldObj.fieldName}_meaning" value="${fieldObj.meaning}" /></label><br>
-        <label>Importance: <input type="text" name="${fieldObj.fieldName}_importance" value="${fieldObj.importance}" /></label><br>
-        <label>Overall Field Grade: <input type="number" step="0.01" name="${fieldObj.fieldName}_grade" value="${fieldObj.overallFieldImportanceGrade || ''}" /></label>
-      `;
-      jsonContainer.appendChild(fieldDiv);
-    });
-  }
-
-  // Generate Python function code based on Quant/Qual selections.
-  function generatePythonFunction() {
-    const quantFields = Array.from(document.querySelectorAll('.quant-field:checked')).map(cb => cb.value);
-    const qualFields = Array.from(document.querySelectorAll('.qual-field:checked')).map(cb => cb.value);
-    let pythonCode = "import json\nimport numpy as np\n\ndef quant_and_qual_analysis(geojson_path):\n";
-    pythonCode += "    with open(geojson_path, 'r') as f:\n";
-    pythonCode += "        data = json.load(f)\n";
-    pythonCode += "    quant_stats = {}\n";
-    pythonCode += "    qual_counts = {}\n";
-    pythonCode += `    quant_fields = ${JSON.stringify(quantFields)}\n`;
-    pythonCode += `    qual_fields = ${JSON.stringify(qualFields)}\n`;
-    pythonCode += "    for field in quant_fields:\n";
-    pythonCode += "        quant_stats[field] = []\n";
-    pythonCode += "    for field in qual_fields:\n";
-    pythonCode += "        qual_counts[field] = {}\n";
-    pythonCode += "    for feature in data['features']:\n";
-    pythonCode += "        props = feature['properties']\n";
-    pythonCode += "        for field in quant_fields:\n";
-    pythonCode += "            if (field in props && typeof props[field] === 'number'):\n";
-    pythonCode += "                quant_stats[field].push(props[field])\n";
-    pythonCode += "        for field in qual_fields:\n";
-    pythonCode += "            if (field in props):\n";
-    pythonCode += "                let value = props[field];\n";
-    pythonCode += "                qual_counts[field][value] = (qual_counts[field][value] || 0) + 1\n";
-    pythonCode += "    return quant_stats, qual_counts\n";
-    window.generatedCode = window.generatedCode || {};
-    window.generatedCode.python = pythonCode;
-    refreshCodePreview();
-  }
 });

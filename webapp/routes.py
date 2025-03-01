@@ -1,13 +1,11 @@
 import os
 import numpy as np
 from flask import Blueprint, render_template, request, jsonify
-from arcgis.gis import GIS
 from arcgis.features import FeatureLayer
-# from arcgis._impl.common._urlencode import urlencode_params
+from .pipeline.json_maker import create_dataset_json
 from urllib.parse import urlencode
 import geopandas as gpd
 import logging
-import requests
 import urllib
 import json
 
@@ -67,7 +65,7 @@ def run_pipeline_route():
     options = data.get("options", {})
     try:
         # Import run_pipeline here to ensure proper relative resolution.
-        from ..pipeline.pipeline_runner import run_pipeline
+        from geo_open_source.webapp.pipeline.pipeline_runner import run_pipeline
         final_output = run_pipeline(dataset_name, input_geojson, options)
         return jsonify({"status": "success", "final_output": final_output})
     except Exception as e:
@@ -395,6 +393,26 @@ def generate_python_creation_preview(config):
     pass
 """
     return preview
+
+@main_blueprint.route('/editor/create_json', methods=['POST'])
+def create_json():
+    """
+    Create a JSON object for a dataset using posted parameters.
+    Validates that field grades are normalized.
+    """
+    try:
+        data = request.get_json()
+        dataset_json = create_dataset_json(
+            dataset_name=data.get("datasetName"),
+            dataset_link=data.get("datasetLink"),
+            qualitative_fields=data.get("qualitativeFields", []),
+            quantitative_fields=data.get("quantitativeProperties", []),
+            removed_fields=data.get("removedFields", []),
+            field_grade_summary=data.get("summaryOfGrades", {})
+        )
+        return jsonify(dataset_json)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 @main_blueprint.route('/editor/generate_preview', methods=['POST'])
 def generate_preview():
