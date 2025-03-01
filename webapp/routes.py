@@ -6,6 +6,7 @@ from .pipeline.json_maker import create_dataset_json
 from urllib.parse import urlencode
 import geopandas as gpd
 import logging
+import requests
 import urllib
 import json
 
@@ -332,6 +333,7 @@ def generate_api_response_preview(api_url, preview_limit):
         return f"Error fetching API response: {e}"
 
 
+# Existing helper: generate_api_creation_preview(api_url, selected_fields, config)
 def generate_api_creation_preview(api_url, selected_fields, config):
     # Use the FeatureLayer’s base URL.
     base_url = api_url.split('/query')[0]
@@ -341,7 +343,7 @@ def generate_api_creation_preview(api_url, selected_fields, config):
         "where": config.get("where", "1=1"),
         "f": "json"
     }
-    # Use selected fields if not empty; if all fields are selected, use "*".
+    # Use selected fields if provided.
     if not selected_fields or (isinstance(selected_fields, list) and len(selected_fields) == 0):
         params["outFields"] = "*"
     elif selected_fields == "*":
@@ -351,14 +353,14 @@ def generate_api_creation_preview(api_url, selected_fields, config):
 
     # Add spatial parameters if needed.
     if config.get("spatial_input", "None").lower() == "envelope":
-        params["geometry"] = ""
+        params["geometry"] = ""  # You may modify this to accept an actual envelope if needed.
         params["geometryType"] = "esriGeometryEnvelope"
         params["inSR"] = config.get("inSR", "4326")
         params["spatialRel"] = config.get("spatialRel", "esriSpatialRelIntersects")
 
-    # Add output options ONLY if they differ from defaults.
-    # (Defaults: returnGeometry = True, returnIdsOnly = False, returnCountOnly = False)
+    # Only add output options if they differ from defaults.
     output_options = config.get("output_options", {})
+    # Defaults: returnGeometry True, returnIdsOnly False, returnCountOnly False.
     if "returnGeometry" in output_options and output_options["returnGeometry"] != True:
         params["returnGeometry"] = "true" if output_options["returnGeometry"] else "false"
     if "returnIdsOnly" in output_options and output_options["returnIdsOnly"] != False:
@@ -373,10 +375,50 @@ def generate_api_creation_preview(api_url, selected_fields, config):
     if isinstance(advanced_params, dict):
         params.update(advanced_params)
 
-    # Build the query string using Python's standard library.
+    # Build the query string using urllib.
     query_string = urllib.parse.urlencode(params, doseq=True)
     generated_api_url = f"{base_url}/query?{query_string}"
     return generated_api_url
+
+# New helper: execute the full API URL via requests.
+def execute_api_request(api_url):
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        logger.exception("Error in execute_api_request:")
+        raise e
+
+# New endpoint to execute the updated API.
+@main_blueprint.route('/editor/execute_api', methods=['POST'])
+def execute_api():
+    """
+    Build the updated API URL using the modified configuration (including selected fields)
+    and execute that API. Returns a preview of the GeoJSON response.
+    If all fields are selected (or none are deselected), it falls back to the unedited API.
+    """
+    config = request.get_json()
+    logger.info("Received config for API execution: %s", config)
+    api_url = config.get("api_url")
+    selected_fields = config.get("selected_fields", "*")
+    try:
+        # Generate the full API URL using the current configuration.
+        generated_api_url = generate_api_creation_preview(api_url, selected_fields, config)
+        logger.info("Generated API URL: %s", generated_api_url)
+        # Execute the API request.
+        preview_response = execute_api_request(generated_api_url)
+        # Optionally limit the returned features to preview_limit.
+        try:
+            preview_limit = int(config.get("preview_limit", 10))
+        except ValueError:
+            preview_limit = 10
+        if "features" in preview_response:
+            preview_response["features"] = preview_response["features"][:preview_limit]
+        return jsonify({"api_response": preview_response})
+    except Exception as e:
+        logger.exception("Error executing API:")
+        return jsonify({"error": str(e)}), 500
 
 
 def generate_json_creation_preview(config):

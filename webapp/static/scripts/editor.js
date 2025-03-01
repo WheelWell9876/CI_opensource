@@ -553,71 +553,86 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // --- Update preview: gather config and send to backend ---
-  function updatePreview() {
-    const apiUrl = document.getElementById('api-url-input').value;
-    const fieldsContainer = document.getElementById('fields-container');
-    // Get selected fields from the API Fields section
-    const checkboxes = fieldsContainer.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
-    let selectedFields = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-    if (checkboxes.length > 0 && selectedFields.length === checkboxes.length) {
-      selectedFields = "*";
+    function updatePreview() {
+      const config = buildConfig();
+      // First, generate the API creation preview (URL).
+      fetch('/editor/generate_preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config)
+      })
+      .then(response => response.json())
+      .then(previewData => {
+        // Store the generated API URL (or API creation preview) if needed.
+        window.generatedCode = window.generatedCode || {};
+        window.generatedCode.api = previewData.api;
+        // Now, execute the updated API.
+        return fetch('/editor/execute_api', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(config)
+        });
+      })
+      .then(response => response.json())
+      .then(executeData => {
+        // Save the executed API response.
+        window.generatedCode.api_response = executeData.api_response;
+        // Now refresh the preview (this single update will reflect both pieces of information).
+        refreshCodePreview();
+      })
+      .catch(err => {
+        console.error("Error in updatePreview:", err);
+      });
     }
-    // Output options.
-    const outReturnGeometry = document.getElementById('out-return-geometry').checked;
-    const outReturnIds = document.getElementById('out-return-ids').checked;
-    const outReturnCount = document.getElementById('out-return-count').checked;
-    const previewLimit = document.getElementById('preview-limit').value;
-    // Spatial options.
-    const spatialInput = document.getElementById('spatial-input-select').value;
-    let inSR = "", spatialRel = "";
-    if (spatialInput === "Envelope") {
-      inSR = document.getElementById('inSR-input').value;
-      spatialRel = document.getElementById('spatial-rel-select').value;
-    }
-    const outSR = document.getElementById('outSR-input').value;
 
-    // Build configuration object.
-    const config = {
-      api_url: apiUrl,
-      selected_fields: selectedFields,
-      preview_limit: previewLimit,
-      where: document.getElementById('where-input').value || "1=1",
-      spatial_input: spatialInput,
-      output_options: {
-        returnGeometry: outReturnGeometry,
-        returnIdsOnly: outReturnIds,
-        returnCountOnly: outReturnCount,
-        outSR: outSR
+    // Helper function to build the configuration object once.
+    function buildConfig() {
+      const apiUrl = document.getElementById('api-url-input').value;
+      const fieldsContainer = document.getElementById('fields-container');
+      const checkboxes = fieldsContainer.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
+      let selectedFields = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+      if (checkboxes.length > 0 && selectedFields.length === checkboxes.length) {
+        selectedFields = "*";
       }
-    };
-    if (spatialInput === "Envelope") {
-      config.inSR = inSR;
-      config.spatialRel = spatialRel;
-    }
-    // Read Advanced Query Parameters (if any)
-    const advParamsText = document.getElementById('advanced-params').value;
-    if (advParamsText) {
-      try {
-        config.advanced_params = JSON.parse(advParamsText);
-      } catch(e) {
-        alert("Error parsing advanced query parameters: " + e);
+      const outReturnGeometry = document.getElementById('out-return-geometry').checked;
+      const outReturnIds = document.getElementById('out-return-ids').checked;
+      const outReturnCount = document.getElementById('out-return-count').checked;
+      const previewLimit = document.getElementById('preview-limit').value;
+      const spatialInput = document.getElementById('spatial-input-select').value;
+      let inSR = "", spatialRel = "";
+      if (spatialInput === "Envelope") {
+        inSR = document.getElementById('inSR-input').value;
+        spatialRel = document.getElementById('spatial-rel-select').value;
       }
+      const outSR = document.getElementById('outSR-input').value;
+      const config = {
+        api_url: apiUrl,
+        selected_fields: selectedFields,
+        preview_limit: previewLimit,
+        where: document.getElementById('where-input').value || "1=1",
+        spatial_input: spatialInput,
+        output_options: {
+          returnGeometry: outReturnGeometry,
+          returnIdsOnly: outReturnIds,
+          returnCountOnly: outReturnCount,
+          outSR: outSR
+        }
+      };
+      if (spatialInput === "Envelope") {
+        config.inSR = inSR;
+        config.spatialRel = spatialRel;
+      }
+      const advParamsText = document.getElementById('advanced-params').value;
+      if (advParamsText) {
+        try {
+          config.advanced_params = JSON.parse(advParamsText);
+        } catch (e) {
+          alert("Error parsing advanced query parameters: " + e);
+        }
+      }
+      return config;
     }
-    // Send config to backend to generate the preview.
-    fetch('/editor/generate_preview', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(config)
-    })
-    .then(response => response.json())
-    .then(data => {
-      window.generatedCode = data;
-      refreshCodePreview();
-    })
-    .catch(err => {
-      console.error("Error in updatePreview:", err);
-    });
-  }
+
 
   // --- Refresh the code preview area ---
   function refreshCodePreview() {
