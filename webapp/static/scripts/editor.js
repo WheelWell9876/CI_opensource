@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     "US Army Corps of Engineers (USACE) Owned and Operated Reservoirs": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_rez/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"
   };
 
+
   // ---------------------------------------------------------------------------
   // Populate provided APIs dropdown.
   // ---------------------------------------------------------------------------
@@ -209,73 +210,185 @@ document.addEventListener('DOMContentLoaded', function() {
   // ---------------------------------------------------------------------------
   // Update the qualitative fields section.
   // ---------------------------------------------------------------------------
-  function updateJSONEditorQual(selectedFields) {
-    const qualContainer = document.getElementById('qualitative-fields-container');
-    qualContainer.innerHTML = "";
-    selectedFields.forEach(field => {
-      if (predictFieldType(field) === "Qualitative") {
-        const div = document.createElement('div');
-        div.classList.add('json-qual-field');
-        div.innerHTML = `
-          <strong>${field}</strong> - <em>Qualitative Properties</em>
-          <select name="${field}_qual_props" id="${field}_qual_props">
-            <option value="">-- No Data --</option>
-          </select>
-        `;
-        qualContainer.appendChild(div);
-      }
-    });
-  }
+    function updateJSONEditorQual(selectedFields) {
+      const qualContainer = document.getElementById('qualitative-fields-container');
+      qualContainer.innerHTML = "";
+      selectedFields.forEach(field => {
+        // Check if the field is predicted as qualitative.
+        if (predictFieldType(field) === "Qualitative") {
+          const div = document.createElement('div');
+          div.classList.add('json-qual-field');
+          let optionsHtml = `<option value="">-- Select Property --</option>`;
+          // Use the analysis data stored in window.fieldAnalysis (set in processFieldAnalysis)
+          if (
+            window.fieldAnalysis &&
+            window.fieldAnalysis.qualitative_fields &&
+            window.fieldAnalysis.qualitative_fields[field]
+          ) {
+            const counts = window.fieldAnalysis.qualitative_fields[field].counts;
+            for (const prop in counts) {
+              optionsHtml += `<option value="${prop}">${prop} (Count: ${counts[prop]})</option>`;
+            }
+          } else {
+            optionsHtml = `<option value="">-- No Data Available --</option>`;
+          }
+          div.innerHTML = `
+            <strong>${field}</strong> - <em>Qualitative Properties</em>
+            <select name="${field}_qual_props" id="${field}_qual_props">
+              ${optionsHtml}
+            </select>
+            <div class="edit-group">
+              <label>Weight: <input type="number" step="0.01" name="${field}_weight" /></label><br>
+              <label>Meaning: <input type="text" name="${field}_meaning" /></label><br>
+              <label>Importance: <input type="text" name="${field}_importance" /></label><br>
+              <label>Grade: <input type="number" step="0.01" name="${field}_grade" /></label>
+            </div>
+          `;
+          qualContainer.appendChild(div);
+        }
+      });
+    }
+
 
   // ---------------------------------------------------------------------------
   // Update the quantitative fields section.
   // ---------------------------------------------------------------------------
-  function updateJSONEditorQuant(selectedFields) {
-    const quantContainer = document.getElementById('quantitative-fields-container');
-    quantContainer.innerHTML = "";
-    selectedFields.forEach(field => {
-      if (predictFieldType(field) === "Quantitative") {
-        const div = document.createElement('div');
-        div.classList.add('json-quant-field');
-        div.innerHTML = `
-          <strong>${field}</strong> - <em>Quantitative Metrics</em>
-          <div id="${field}_quant_metrics">
-            <p>No metrics processed yet.</p>
-          </div>
-        `;
-        quantContainer.appendChild(div);
-      }
-    });
-  }
+    function updateJSONEditorQuant(selectedFields) {
+      const quantContainer = document.getElementById('quantitative-fields-container');
+      quantContainer.innerHTML = "";
+      selectedFields.forEach(field => {
+        if (predictFieldType(field) === "Quantitative") {
+          const div = document.createElement('div');
+          div.classList.add('json-quant-field');
+          let metricsHtml = `<p>No metrics processed yet.</p>`;
+          if (
+            window.fieldAnalysis &&
+            window.fieldAnalysis.quantitative_fields &&
+            window.fieldAnalysis.quantitative_fields[field]
+          ) {
+            const metrics = window.fieldAnalysis.quantitative_fields[field].metrics;
+            metricsHtml = `<pre>${JSON.stringify(metrics, null, 2)}</pre>`;
+          }
+          div.innerHTML = `
+            <strong>${field}</strong> - <em>Quantitative Metrics</em>
+            <div id="${field}_quant_metrics">
+              ${metricsHtml}
+            </div>
+            <div class="edit-group">
+              <label>Weight: <input type="number" step="0.01" name="${field}_weight" /></label><br>
+              <label>Meaning: <input type="text" name="${field}_meaning" /></label><br>
+              <label>Importance: <input type="text" name="${field}_importance" /></label><br>
+              <label>Grade: <input type="number" step="0.01" name="${field}_grade" /></label>
+            </div>
+          `;
+          quantContainer.appendChild(div);
+        }
+      });
+    }
+
 
   // ---------------------------------------------------------------------------
   // Process Fields Button – Call the processing endpoint for field analysis.
   // ---------------------------------------------------------------------------
-  function processFieldAnalysis() {
-    if (!window.currentGeoJSON || Object.keys(window.currentGeoJSON).length === 0) {
-      alert("No GeoJSON available to analyze. Please load fields first.");
-      console.error("processFieldAnalysis: No GeoJSON available.");
-      return;
+    function processFieldAnalysis() {
+      console.log("processFieldAnalysis: Sending geojson to /editor/process_fields...");
+      const geojson = window.currentGeoJSON;
+      fetch('/editor/process_fields', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(geojson)
+      })
+      .then(response => {
+        console.log("processFieldAnalysis: Received response status", response.status);
+        return response.json();
+      })
+      .then(analysisData => {
+        console.log("processFieldAnalysis: Received analysis data:", analysisData);
+        // Save analysis data globally
+        window.fieldAnalysis = analysisData;
+        // Update the JSON editor UI based on the new analysis
+        updateJSONEditorFromAnalysis();
+      })
+      .catch(err => {
+        console.error("Error in processFieldAnalysis:", err);
+      });
     }
-    console.log("processFieldAnalysis: Sending geojson to /editor/process_fields...", window.currentGeoJSON);
-    fetch('/editor/process_fields', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(window.currentGeoJSON)
-    })
-    .then(response => {
-      console.log("processFieldAnalysis: Received response status", response.status);
-      return response.json();
-    })
-    .then(data => {
-      console.log("processFieldAnalysis: Received analysis data:", data);
-      renderFieldAnalysis(data);
-    })
-    .catch(err => {
-      console.error("Error processing fields:", err);
-      alert("Error processing fields: " + err);
-    });
-  }
+
+    function updateJSONEditorFromAnalysis() {
+      // Get the containers for qualitative and quantitative field editors.
+      const qualContainer = document.getElementById('qualitative-fields-container');
+      const quantContainer = document.getElementById('quantitative-fields-container');
+
+      // Clear any previous content.
+      qualContainer.innerHTML = "";
+      quantContainer.innerHTML = "";
+
+      // Update Qualitative Fields.
+      if (window.fieldAnalysis && window.fieldAnalysis.qualitative_fields) {
+        for (const field in window.fieldAnalysis.qualitative_fields) {
+          const analysis = window.fieldAnalysis.qualitative_fields[field];
+          let optionsHtml = `<option value="">-- Select Property --</option>`;
+
+          // Loop through the property counts and add an option for each.
+          for (const prop in analysis.counts) {
+            optionsHtml += `<option value="${prop}">${prop} (Count: ${analysis.counts[prop]})</option>`;
+          }
+
+          // Create a block for this field.
+          const div = document.createElement('div');
+          div.classList.add('json-qual-field');
+          div.style.border = "1px solid #ccc";
+          div.style.marginBottom = "10px";
+          div.style.padding = "5px";
+          div.innerHTML = `
+            <h4>${field} <span class="prediction-box">(Prediction: Qualitative)</span></h4>
+            <label>Qualitative Property:
+              <select name="${field}_qual_props" id="${field}_qual_props">
+                ${optionsHtml}
+              </select>
+            </label>
+            <div class="edit-group">
+              <label>Weight: <input type="number" step="0.01" name="${field}_weight" /></label><br>
+              <label>Meaning: <input type="text" name="${field}_meaning" /></label><br>
+              <label>Importance: <input type="text" name="${field}_importance" /></label><br>
+              <label>Grade: <input type="number" step="0.01" name="${field}_grade" /></label>
+            </div>
+          `;
+          qualContainer.appendChild(div);
+        }
+      }
+
+      // Update Quantitative Fields.
+      if (window.fieldAnalysis && window.fieldAnalysis.quantitative_fields) {
+        for (const field in window.fieldAnalysis.quantitative_fields) {
+          const analysis = window.fieldAnalysis.quantitative_fields[field];
+          let metricsHtml = `<p>No metrics processed yet.</p>`;
+          if (analysis.metrics) {
+            metricsHtml = `<pre>${JSON.stringify(analysis.metrics, null, 2)}</pre>`;
+          }
+          const div = document.createElement('div');
+          div.classList.add('json-quant-field');
+          div.style.border = "1px solid #ccc";
+          div.style.marginBottom = "10px";
+          div.style.padding = "5px";
+          div.innerHTML = `
+            <h4>${field} <span class="prediction-box">(Prediction: Quantitative)</span></h4>
+            <div id="${field}_quant_metrics">
+              ${metricsHtml}
+            </div>
+            <div class="edit-group">
+              <label>Weight: <input type="number" step="0.01" name="${field}_weight" /></label><br>
+              <label>Meaning: <input type="text" name="${field}_meaning" /></label><br>
+              <label>Importance: <input type="text" name="${field}_importance" /></label><br>
+              <label>Grade: <input type="number" step="0.01" name="${field}_grade" /></label>
+            </div>
+          `;
+          quantContainer.appendChild(div);
+        }
+      }
+    }
+
+
 
   // ---------------------------------------------------------------------------
   // Render analysis results into the JSON Options UI.
@@ -584,7 +697,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(executeData => {
       window.generatedCode.api_response = executeData.api_response;
-      console.log("API execution response received:", executeData.api_response);
+      window.currentGeoJSON = executeData.api_response;
       refreshCodePreview();
     })
     .catch(err => {

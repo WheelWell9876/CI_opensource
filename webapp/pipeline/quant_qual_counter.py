@@ -55,16 +55,40 @@ def analyze_fields(geojson):
     qualitative_fields = {}
     quantitative_fields = {}
     features = geojson.get("features", [])
-    if not features:
+    field_values = {}
+
+    if features:
+        # Use "attributes" if available; otherwise, try "properties"
+        first_props = features[0].get("attributes", {}) or features[0].get("properties", {})
+        if first_props:
+            field_names = list(first_props.keys())
+            print("DEBUG: Using field names from feature attributes/properties:", field_names)
+            field_values = {field: [] for field in field_names}
+            for feature in features:
+                props = feature.get("attributes", {}) or feature.get("properties", {})
+                for field in field_names:
+                    field_values[field].append(props.get(field))
+        else:
+            # Fallback: Use the top-level "fields" key.
+            if "fields" in geojson and geojson["fields"]:
+                # Extract the field names from each dictionary.
+                field_names = [field.get("name") for field in geojson["fields"]]
+                print("DEBUG: Using field names from geojson['fields']:", field_names)
+                field_values = {field: [] for field in field_names}
+                for feature in features:
+                    # Check in "attributes" first; if not, check directly in feature.
+                    for field in field_names:
+                        value = feature.get("attributes", {}).get(field)
+                        if value is None:
+                            value = feature.get(field)
+                        field_values[field].append(value)
+            else:
+                print("DEBUG: No field names found in attributes/properties or 'fields' key.")
+                return {"qualitative_fields": qualitative_fields, "quantitative_fields": quantitative_fields}
+    else:
         print("DEBUG: No features found in the GeoJSON.")
         return {"qualitative_fields": qualitative_fields, "quantitative_fields": quantitative_fields}
-    # Assume first feature contains all field names.
-    field_names = features[0].get("properties", {}).keys()
-    field_values = {field: [] for field in field_names}
-    for feature in features:
-        props = feature.get("properties", {})
-        for field in field_names:
-            field_values[field].append(props.get(field))
+
     print("DEBUG: Collected values for fields:", {k: len(v) for k, v in field_values.items()})
     for field, values in field_values.items():
         predicted, details = predict_field_type(values)
