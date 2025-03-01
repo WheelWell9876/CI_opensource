@@ -127,7 +127,7 @@
         </div>
       </div>
 
-      <!-- Collapsible: JSON Options -->
+      <!-- JSON Options Section -->
       <div class="collapsible">
         <div class="collapsible-header">JSON Options</div>
         <div class="collapsible-content">
@@ -135,7 +135,7 @@
             <label for="json-upload">Upload JSON Configuration:</label>
             <input type="file" id="json-upload" accept=".json">
           </div>
-          <!-- Container where uploaded or generated JSON is shown/editable -->
+          <!-- Main JSON Editor -->
           <div id="json-editor">
             <p>JSON configuration will appear here after dataset load.</p>
           </div>
@@ -156,24 +156,27 @@
           <div id="json-qualitative-section">
             <h4>Qualitative Fields</h4>
             <div id="qualitative-fields-container">
-              <!-- Dynamically populated with each qualitative field; each will include a “prediction” box -->
+              <!-- Will be populated by updateJSONEditorQual() -->
             </div>
           </div>
           <div id="json-quantitative-section">
             <h4>Quantitative Fields</h4>
             <div id="quantitative-fields-container">
-              <!-- Dynamically populated with each quantitative field -->
+              <!-- Will be populated by updateJSONEditorQuant() -->
             </div>
           </div>
           <div id="json-categories-section">
             <h4>Categories</h4>
             <div id="categories-container">
-              <!-- Allow user to add categories and assign datasets with weights -->
+              <!-- Allow user to add/edit categories and assign datasets -->
             </div>
           </div>
+          <!-- Button to trigger processing of field properties (counts/metrics) -->
+          <button id="process-fields-btn">Process Fields</button>
           <button id="create-json-btn">Create JSON</button>
         </div>
       </div>
+
 
 
       <!-- Collapsible: Python Options -->

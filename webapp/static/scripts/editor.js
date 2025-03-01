@@ -61,21 +61,29 @@ document.addEventListener('DOMContentLoaded', function() {
       alert("Please enter an API URL.");
       return;
     }
+    console.log("Loading fields from API:", apiUrl);
     fetch('/editor/fetch_fields', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ api_url: apiUrl })
     })
-    .then(response => response.json())
+    .then(response => {
+      console.log("Received response from fetch_fields with status:", response.status);
+      return response.json();
+    })
     .then(data => {
       if (data.error) {
         alert("Error: " + data.error);
+        console.error("Error in fetch_fields:", data.error);
         return;
       }
+      console.log("Fields loaded:", data.fields);
       updateFieldsUI(data.fields);
-      // Update JSON editor and quant/qual options based on all fields (initially all are selected).
+      // After fields are loaded, update JSON editor and quant/qual options.
       updateJSONEditor();
       updateQuantQualOptions();
+      // For testing, save the loaded fields as GeoJSON to window.currentGeoJSON for later processing.
+      window.currentGeoJSON = data.geojson || {};  // assuming the response might include a GeoJSON object
     })
     .catch(err => {
       console.error("Error loading fields:", err);
@@ -116,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
       checkbox.type = "checkbox";
       checkbox.value = field;
       checkbox.checked = true;
-      // Update JSON editor when a field is toggled.
+      // When a field is toggled, update the JSON editor and Quant/Qual options.
       checkbox.addEventListener('change', function() {
         const allCbs = container.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
         const allChecked = Array.from(allCbs).every(cb => cb.checked);
@@ -170,25 +178,212 @@ document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('fields-container');
     const checkboxes = container.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
     const selectedFields = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-    const jsonContainer = document.getElementById('json-editor');
-    jsonContainer.innerHTML = "";
+    const jsonEditor = document.getElementById('json-editor');
+    jsonEditor.innerHTML = "";
     selectedFields.forEach(field => {
       const prediction = predictFieldType(field);
-      const fieldDiv = document.createElement('div');
-      fieldDiv.classList.add('json-field');
-      fieldDiv.style.border = "1px solid #ccc";
-      fieldDiv.style.marginBottom = "10px";
-      fieldDiv.style.padding = "5px";
-      fieldDiv.innerHTML = `
-        <h4>${field} <span class="prediction-box">(Prediction: ${prediction})</span></h4>
-        <label>Weight: <input type="number" step="0.01" name="${field}_weight" placeholder="e.g. 0.1"></label><br>
-        <label>Meaning: <input type="text" name="${field}_meaning" placeholder="Enter meaning"></label><br>
-        <label>Importance: <input type="text" name="${field}_importance" placeholder="Enter importance"></label><br>
-        <label>Grade: <input type="number" step="0.01" name="${field}_grade" placeholder="Normalized grade"></label>
+      // Create a collapsible block for each field.
+      const fieldBlock = document.createElement('div');
+      fieldBlock.classList.add('json-field');
+      fieldBlock.style.border = "1px solid #ccc";
+      fieldBlock.style.marginBottom = "10px";
+      fieldBlock.style.padding = "5px";
+      fieldBlock.innerHTML = `
+        <div class="json-field-header">
+          <h4>${field} <span class="prediction-box">(Prediction: ${prediction})</span></h4>
+        </div>
+        <div class="props-content"></div>
+        <div class="edit-group">
+          <label>Weight: <input type="number" step="0.01" name="${field}_weight"></label><br>
+          <label>Meaning: <input type="text" name="${field}_meaning"></label><br>
+          <label>Importance: <input type="text" name="${field}_importance"></label><br>
+          <label>Grade: <input type="number" step="0.01" name="${field}_grade"></label>
+        </div>
       `;
-      jsonContainer.appendChild(fieldDiv);
+      jsonEditor.appendChild(fieldBlock);
+    });
+    updateJSONEditorQual(selectedFields);
+    updateJSONEditorQuant(selectedFields);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Update the qualitative fields section.
+  // ---------------------------------------------------------------------------
+  function updateJSONEditorQual(selectedFields) {
+    const qualContainer = document.getElementById('qualitative-fields-container');
+    qualContainer.innerHTML = "";
+    selectedFields.forEach(field => {
+      if (predictFieldType(field) === "Qualitative") {
+        const div = document.createElement('div');
+        div.classList.add('json-qual-field');
+        div.innerHTML = `
+          <strong>${field}</strong> - <em>Qualitative Properties</em>
+          <select name="${field}_qual_props" id="${field}_qual_props">
+            <option value="">-- No Data --</option>
+          </select>
+        `;
+        qualContainer.appendChild(div);
+      }
     });
   }
+
+  // ---------------------------------------------------------------------------
+  // Update the quantitative fields section.
+  // ---------------------------------------------------------------------------
+  function updateJSONEditorQuant(selectedFields) {
+    const quantContainer = document.getElementById('quantitative-fields-container');
+    quantContainer.innerHTML = "";
+    selectedFields.forEach(field => {
+      if (predictFieldType(field) === "Quantitative") {
+        const div = document.createElement('div');
+        div.classList.add('json-quant-field');
+        div.innerHTML = `
+          <strong>${field}</strong> - <em>Quantitative Metrics</em>
+          <div id="${field}_quant_metrics">
+            <p>No metrics processed yet.</p>
+          </div>
+        `;
+        quantContainer.appendChild(div);
+      }
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Process Fields Button – Call the processing endpoint for field analysis.
+  // ---------------------------------------------------------------------------
+  function processFieldAnalysis() {
+    if (!window.currentGeoJSON || Object.keys(window.currentGeoJSON).length === 0) {
+      alert("No GeoJSON available to analyze. Please load fields first.");
+      console.error("processFieldAnalysis: No GeoJSON available.");
+      return;
+    }
+    console.log("processFieldAnalysis: Sending geojson to /editor/process_fields...", window.currentGeoJSON);
+    fetch('/editor/process_fields', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(window.currentGeoJSON)
+    })
+    .then(response => {
+      console.log("processFieldAnalysis: Received response status", response.status);
+      return response.json();
+    })
+    .then(data => {
+      console.log("processFieldAnalysis: Received analysis data:", data);
+      renderFieldAnalysis(data);
+    })
+    .catch(err => {
+      console.error("Error processing fields:", err);
+      alert("Error processing fields: " + err);
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Render analysis results into the JSON Options UI.
+  // ---------------------------------------------------------------------------
+  function renderFieldAnalysis(analysis) {
+    console.log("renderFieldAnalysis: Rendering field analysis:", analysis);
+    // Update qualitative fields preview.
+    const qualContainer = document.getElementById('qualitative-fields-container');
+    for (const field in analysis.qualitative_fields) {
+      const fieldData = analysis.qualitative_fields[field];
+      // Find the matching field wrapper in qualContainer.
+      const wrapper = Array.from(qualContainer.getElementsByClassName('json-field'))
+                              .find(div => div.querySelector('.json-field-header') && div.querySelector('.json-field-header').textContent.includes(field));
+      if (wrapper) {
+        wrapper.querySelector('.props-content').innerHTML =
+          `<em>Counts:</em> ${JSON.stringify(fieldData.counts, null, 2)}`;
+      }
+    }
+    // Update quantitative fields preview.
+    const quantContainer = document.getElementById('quantitative-fields-container');
+    for (const field in analysis.quantitative_fields) {
+      const fieldData = analysis.quantitative_fields[field];
+      const wrapper = Array.from(quantContainer.getElementsByClassName('json-field'))
+                              .find(div => div.querySelector('.json-field-header') && div.querySelector('.json-field-header').textContent.includes(field));
+      if (wrapper) {
+        wrapper.querySelector('.props-content').innerHTML =
+          `<em>Metrics:</em> ${JSON.stringify(fieldData.metrics, null, 2)}`;
+      }
+    }
+    window.generatedCode = window.generatedCode || {};
+    window.generatedCode.processedFields = analysis;
+    refreshCodePreview();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Attach event listener to the "Process Fields" button.
+  // ---------------------------------------------------------------------------
+  const processFieldsBtn = document.getElementById('process-fields-btn');
+  if (processFieldsBtn) {
+    processFieldsBtn.addEventListener('click', processFieldAnalysis);
+  } else {
+    console.warn("Process Fields button (#process-fields-btn) not found in the DOM.");
+  }
+
+  // ---------------------------------------------------------------------------
+  // Create JSON Button – Build dataset JSON from the JSON Editor values.
+  // ---------------------------------------------------------------------------
+  document.getElementById('create-json-btn').addEventListener('click', function() {
+    const jsonEditor = document.getElementById('json-editor');
+    const fieldDivs = jsonEditor.querySelectorAll('.json-field');
+    let qualitativeFields = [];
+    let quantitativeFields = [];
+    fieldDivs.forEach(div => {
+      const fieldName = div.querySelector('h4').textContent.split(' (Prediction:')[0].trim();
+      const weight = div.querySelector(`input[name="${fieldName}_weight"]`).value;
+      const meaning = div.querySelector(`input[name="${fieldName}_meaning"]`).value;
+      const importance = div.querySelector(`input[name="${fieldName}_importance"]`).value;
+      const grade = div.querySelector(`input[name="${fieldName}_grade"]`).value;
+      const predictionText = div.querySelector('.prediction-box').textContent;
+      if (predictionText.includes("Qualitative")) {
+        qualitativeFields.push({
+          fieldName: fieldName,
+          type: "String",
+          meaning: meaning,
+          importance: importance,
+          overallFieldImportanceGrade: parseFloat(grade)
+        });
+      } else {
+        quantitativeFields.push({
+          fieldName: fieldName,
+          type: "Float",
+          meaning: meaning,
+          importance: importance
+        });
+      }
+    });
+    let removedFields = []; // (Assume none for now.)
+    let allGrades = {};
+    qualitativeFields.concat(quantitativeFields).forEach(field => {
+      allGrades[field.fieldName] = parseFloat(field.overallFieldImportanceGrade || 0);
+    });
+    const datasetName = document.getElementById('dataset-name').value;
+    const datasetLink = document.getElementById('dataset-link').value;
+    const datasetJSON = {
+      datasetName: datasetName,
+      datasetLink: datasetLink,
+      qualitativeFields: qualitativeFields,
+      quantitativeProperties: quantitativeFields,
+      removedFields: removedFields,
+      summaryOfGrades: allGrades
+    };
+    console.log("Creating JSON with dataset object:", datasetJSON);
+    fetch('/editor/create_json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datasetJSON)
+    })
+    .then(response => response.json())
+    .then(data => {
+      window.generatedCode = window.generatedCode || {};
+      window.generatedCode.json = data;
+      refreshCodePreview();
+    })
+    .catch(err => {
+      console.error("Error creating JSON:", err);
+      alert("Error creating JSON: " + err);
+    });
+  });
 
   // ---------------------------------------------------------------------------
   // Update Quant/Qual Options UI based on selected fields.
@@ -215,7 +410,6 @@ document.addEventListener('DOMContentLoaded', function() {
       `;
       container.appendChild(row);
     });
-    // Append a button to generate Python function code.
     const pyGenerateBtn = document.createElement('button');
     pyGenerateBtn.textContent = "Generate Python Function";
     pyGenerateBtn.addEventListener('click', generatePythonFunction);
@@ -244,109 +438,6 @@ document.addEventListener('DOMContentLoaded', function() {
       reader.readAsText(file);
     }
   });
-
-  // --- Handle JSON Maker: create JSON structure from user inputs ---
-    document.getElementById('create-json-btn').addEventListener('click', function() {
-      // Read dataset-level inputs.
-      const datasetName = document.getElementById('dataset-name').value;
-      const datasetLink = document.getElementById('dataset-link').value;
-
-      // Gather the fields that the user has edited in the JSON editor.
-      // (Assumes that each field is rendered as a .json-field div with inputs named like:
-      //  "[fieldName]_weight", "[fieldName]_meaning", "[fieldName]_importance", "[fieldName]_grade")
-      const jsonFields = document.querySelectorAll('#json-editor .json-field');
-      let qualitativeFields = [];
-      let quantitativeFields = [];
-
-      jsonFields.forEach(fieldDiv => {
-        // Extract field name from the header; assume header text is like "FIELD_NAME (Prediction: X)"
-        const header = fieldDiv.querySelector('h4');
-        let fieldName = header.textContent.split(' (Prediction:')[0].trim();
-
-        // Get the input values for weight, meaning, importance, and grade.
-        const weight = parseFloat(fieldDiv.querySelector(`input[name="${fieldName}_weight"]`).value) || 0;
-        const meaning = fieldDiv.querySelector(`input[name="${fieldName}_meaning"]`).value;
-        const importance = fieldDiv.querySelector(`input[name="${fieldName}_importance"]`).value;
-        const grade = parseFloat(fieldDiv.querySelector(`input[name="${fieldName}_grade"]`).value) || 0;
-
-        // Use the predictor function to determine if this field is quantitative or qualitative.
-        const prediction = predictFieldType(fieldName);
-        const fieldObj = {
-          fieldName: fieldName,
-          type: (prediction === "Quantitative") ? "Float" : "String",
-          meaning: meaning,
-          importance: importance,
-          overallFieldImportanceGrade: grade
-        };
-
-        // For qualitative fields, you may later add a UI for editing their sub-properties.
-        if (prediction === "Qualitative") {
-          fieldObj.qualitativeProperties = []; // Initialize an empty list; user can add properties later.
-          qualitativeFields.push(fieldObj);
-        } else {
-          quantitativeFields.push(fieldObj);
-        }
-      });
-
-      // Determine removed fields from the API fields UI.
-      // (Assumes that the API fields container checkboxes reflect the available fields.)
-      const fieldsCheckboxes = document.querySelectorAll('#fields-container .field-row:not(.header) input[type="checkbox"]');
-      let removedFields = [];
-      fieldsCheckboxes.forEach(cb => {
-        if (!cb.checked) {
-          removedFields.push({
-            fieldName: cb.value,
-            type: "String", // Default type; adjust if needed.
-            meaning: "",
-            importance: ""
-          });
-        }
-      });
-
-      // Build a field grade summary by reading each field's grade from the JSON editor.
-      let totalGrade = 0;
-      let fieldGradeSummary = {};
-      jsonFields.forEach(fieldDiv => {
-        const header = fieldDiv.querySelector('h4');
-        let fieldName = header.textContent.split(' (Prediction:')[0].trim();
-        const grade = parseFloat(fieldDiv.querySelector(`input[name="${fieldName}_grade"]`).value) || 0;
-        fieldGradeSummary[fieldName] = grade;
-        totalGrade += grade;
-      });
-      // Normalize the summary so that the grades sum to 1.
-      Object.keys(fieldGradeSummary).forEach(key => {
-        fieldGradeSummary[key] = fieldGradeSummary[key] / totalGrade;
-      });
-
-      // Build the dataset JSON object without dummy data.
-      const datasetJSON = {
-        datasetName: datasetName,
-        datasetLink: datasetLink,
-        qualitativeFields: qualitativeFields,
-        quantitativeProperties: quantitativeFields,
-        removedFields: removedFields,
-        summaryOfGrades: fieldGradeSummary
-      };
-
-      // Send the constructed dataset JSON to the backend endpoint.
-      fetch('/editor/create_json', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datasetJSON)
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Save the generated JSON and refresh the preview.
-        window.generatedCode = window.generatedCode || {};
-        window.generatedCode.json = data;
-        refreshCodePreview();
-      })
-      .catch(err => {
-        console.error("Error creating JSON:", err);
-        alert("Failed to create JSON: " + err);
-      });
-    });
-
 
   function validateJSONStructure(data) {
     return data.hasOwnProperty("datasetName") && data.hasOwnProperty("qualitativeFields");
@@ -416,8 +507,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // ---------------------------------------------------------------------------
   function buildConfig() {
     const apiUrl = document.getElementById('api-url-input').value;
-    const fieldsContainer = document.getElementById('fields-container');
-    const checkboxes = fieldsContainer.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
+    const container = document.getElementById('fields-container');
+    const checkboxes = container.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
     let selectedFields = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
     if (checkboxes.length > 0 && selectedFields.length === checkboxes.length) {
       selectedFields = "*";
@@ -458,6 +549,7 @@ document.addEventListener('DOMContentLoaded', function() {
         alert("Error parsing advanced query parameters: " + e);
       }
     }
+    console.log("Configuration built:", config);
     return config;
   }
 
@@ -466,26 +558,33 @@ document.addEventListener('DOMContentLoaded', function() {
   // ---------------------------------------------------------------------------
   function updatePreview() {
     const config = buildConfig();
-    // Generate the API creation preview (URL).
+    console.log("Updating preview with config:", config);
     fetch('/editor/generate_preview', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(config)
     })
-    .then(response => response.json())
+    .then(response => {
+      console.log("generate_preview response status:", response.status);
+      return response.json();
+    })
     .then(previewData => {
       window.generatedCode = window.generatedCode || {};
       window.generatedCode.api = previewData.api;
-      // Now execute the updated API.
+      console.log("Preview API code received:", previewData.api);
       return fetch('/editor/execute_api', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(config)
       });
     })
-    .then(response => response.json())
+    .then(response => {
+      console.log("execute_api response status:", response.status);
+      return response.json();
+    })
     .then(executeData => {
       window.generatedCode.api_response = executeData.api_response;
+      console.log("API execution response received:", executeData.api_response);
       refreshCodePreview();
     })
     .catch(err => {
@@ -517,4 +616,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.execCommand("copy");
     alert("Code copied to clipboard!");
   });
+
+  // ---------------------------------------------------------------------------
+  // (For debugging) Log that the integrated JS file has loaded.
+  // ---------------------------------------------------------------------------
+  console.log("Integrated editor.js loaded successfully.");
 });

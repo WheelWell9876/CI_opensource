@@ -51,26 +51,24 @@ def calculate_quantitative_metrics(values):
     }
 
 def analyze_fields(geojson):
-    """
-    Given a GeoJSON object, return an analysis of its fields.
-    Returns a dictionary with two keys:
-      qualitative_fields: dict mapping field names to dict with counts and predicted type.
-      quantitative_fields: dict mapping field names to dict with computed metrics.
-    """
+    print("DEBUG: Starting analyze_fields; number of features =", len(geojson.get("features", [])))
     qualitative_fields = {}
     quantitative_fields = {}
     features = geojson.get("features", [])
     if not features:
+        print("DEBUG: No features found in the GeoJSON.")
         return {"qualitative_fields": qualitative_fields, "quantitative_fields": quantitative_fields}
-    # Use the properties of the first feature to get field names.
+    # Assume first feature contains all field names.
     field_names = features[0].get("properties", {}).keys()
     field_values = {field: [] for field in field_names}
     for feature in features:
         props = feature.get("properties", {})
         for field in field_names:
             field_values[field].append(props.get(field))
+    print("DEBUG: Collected values for fields:", {k: len(v) for k, v in field_values.items()})
     for field, values in field_values.items():
         predicted, details = predict_field_type(values)
+        print(f"DEBUG: Field '{field}' predicted as {predicted} with details: {details}")
         if predicted == "quantitative":
             metrics = calculate_quantitative_metrics(values)
             quantitative_fields[field] = {
@@ -79,6 +77,7 @@ def analyze_fields(geojson):
                 "predicted_type": predicted,
                 "details": details
             }
+            print(f"DEBUG: Quantitative metrics for {field}:", metrics)
         else:
             counts = count_qualitative_properties(values)
             qualitative_fields[field] = {
@@ -87,4 +86,8 @@ def analyze_fields(geojson):
                 "predicted_type": predicted,
                 "details": details
             }
-    return {"qualitative_fields": qualitative_fields, "quantitative_fields": quantitative_fields}
+            print(f"DEBUG: Qualitative counts for {field}:", counts)
+    result = {"qualitative_fields": qualitative_fields, "quantitative_fields": quantitative_fields}
+    print("DEBUG: Final analysis result:", result)
+    return result
+

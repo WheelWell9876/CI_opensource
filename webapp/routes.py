@@ -447,6 +447,26 @@ def create_json():
         logger.exception("Error in create_json:")
         return jsonify({"error": str(e)}), 500
 
+
+@main_blueprint.route('/editor/process_fields', methods=['POST'])
+def process_fields():
+    """
+    Endpoint to process the loaded GeoJSON fields. It reads the JSON from the request,
+    passes it to the analyze_fields function, and returns the analysis.
+    """
+    try:
+        geojson_data = request.get_json()
+        if not geojson_data:
+            return jsonify({"error": "No GeoJSON data provided"}), 400
+
+        # Analyze the fields using the provided function.
+        analysis = analyze_fields(geojson_data)
+        return jsonify(analysis)
+    except Exception as e:
+        logger.exception("Error processing fields:")
+        return jsonify({"error": str(e)}), 500
+
+
 @main_blueprint.route('/editor/generate_preview', methods=['POST'])
 def generate_preview():
     config = request.get_json()
