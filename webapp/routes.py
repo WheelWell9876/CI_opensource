@@ -2,7 +2,8 @@ import os
 import numpy as np
 from flask import Blueprint, render_template, request, jsonify
 from arcgis.features import FeatureLayer
-from .pipeline.json_maker import create_dataset_json
+from .pipeline.quant_qual_counter import analyze_fields
+from .pipeline.json_maker import create_dataset_json, create_category_json, create_full_summary, create_json_object
 from urllib.parse import urlencode
 import geopandas as gpd
 import logging
@@ -438,23 +439,13 @@ def generate_python_creation_preview(config):
 
 @main_blueprint.route('/editor/create_json', methods=['POST'])
 def create_json():
-    """
-    Create a JSON object for a dataset using posted parameters.
-    Validates that field grades are normalized.
-    """
+    data = request.get_json()
     try:
-        data = request.get_json()
-        dataset_json = create_dataset_json(
-            dataset_name=data.get("datasetName"),
-            dataset_link=data.get("datasetLink"),
-            qualitative_fields=data.get("qualitativeFields", []),
-            quantitative_fields=data.get("quantitativeProperties", []),
-            removed_fields=data.get("removedFields", []),
-            field_grade_summary=data.get("summaryOfGrades", {})
-        )
-        return jsonify(dataset_json)
+        json_object = create_json_object(data, analysis=None)
+        return jsonify(json_object)
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        logger.exception("Error in create_json:")
+        return jsonify({"error": str(e)}), 500
 
 @main_blueprint.route('/editor/generate_preview', methods=['POST'])
 def generate_preview():

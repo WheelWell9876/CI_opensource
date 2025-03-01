@@ -135,22 +135,46 @@
             <label for="json-upload">Upload JSON Configuration:</label>
             <input type="file" id="json-upload" accept=".json">
           </div>
+          <!-- Container where uploaded or generated JSON is shown/editable -->
           <div id="json-editor">
             <p>JSON configuration will appear here after dataset load.</p>
           </div>
+
           <!-- New JSON Maker controls -->
           <h3>JSON Maker</h3>
-          <div class="input-group">
-            <label for="dataset-name">Dataset Name:</label>
-            <input type="text" id="dataset-name" placeholder="Enter dataset name">
+          <div id="json-dataset-section">
+            <h4>Dataset Information</h4>
+            <div class="input-group">
+              <label for="dataset-name">Dataset Name:</label>
+              <input type="text" id="dataset-name" placeholder="Enter dataset name">
+            </div>
+            <div class="input-group">
+              <label for="dataset-link">Dataset Link:</label>
+              <input type="text" id="dataset-link" placeholder="Enter dataset link">
+            </div>
           </div>
-          <div class="input-group">
-            <label for="dataset-link">Dataset Link:</label>
-            <input type="text" id="dataset-link" placeholder="Enter dataset link">
+          <div id="json-qualitative-section">
+            <h4>Qualitative Fields</h4>
+            <div id="qualitative-fields-container">
+              <!-- Dynamically populated with each qualitative field; each will include a “prediction” box -->
+            </div>
+          </div>
+          <div id="json-quantitative-section">
+            <h4>Quantitative Fields</h4>
+            <div id="quantitative-fields-container">
+              <!-- Dynamically populated with each quantitative field -->
+            </div>
+          </div>
+          <div id="json-categories-section">
+            <h4>Categories</h4>
+            <div id="categories-container">
+              <!-- Allow user to add categories and assign datasets with weights -->
+            </div>
           </div>
           <button id="create-json-btn">Create JSON</button>
         </div>
       </div>
+
 
       <!-- Collapsible: Python Options -->
       <div class="collapsible">

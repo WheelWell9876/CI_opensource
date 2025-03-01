@@ -1,280 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // ---------------------------------------------------------------------------
   // Provided APIs – update as needed.
+  // ---------------------------------------------------------------------------
   const providedAPIs = {
-        "EPA Disaster Debris Recovery Data": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/EPA_Disaster_Debris_Recovery_Data/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "EPA Emergency Response (ER) Risk Management Plan (RMP) Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/FRS_INTERESTS_RMP/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "EPA Emergency Response (ER) Toxic Release Inventory (TRI) Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_INTERESTS_TRI/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "EPA Emergency Response (ER) Toxic Substances Control Act (TSCA) Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/FRS_INTERESTS_TSCA/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "FRS Interests": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_INTERESTS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "EPA Power Generation Facilities By Source": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_PowerPlants/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "ICIS Wastewater Treatment Plants": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_Wastewater/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "RCRATSD_Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_INTERESTS_RCRA_TSD/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "EPA Superfund Enterprise Management System (SEMS) Sites": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_INTERESTS_SEMS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Manufacturing Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/General_Manufacturing_Facilities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Antenna Structure Registration (ASR)": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/asr/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Broadband Radio Service and Educational Broadband Service Transmitters": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/brs_ebs/FeatureServer/5/query?outFields=*&where=1%3D1&f=geojson",
-        "Cellular Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Cellular_Towers_New/FeatureServer/6/query?outFields=*&where=1%3D1&f=geojson",
-        "Land Mobile Broadcast Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Land_Mobile_Broadcast_Towers/FeatureServer/7/query?outFields=*&where=1%3D1&f=geojson",
-        "Land Mobile Commercial Transmission Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Land_Mobile_Commercial_Towers/FeatureServer/8/query?outFields=*&where=1%3D1&f=geojson",
-        "Land Mobile Private Transmission Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/_Land_Mobile_Private_Transmission_Towers/FeatureServer/9/query?outFields=*&where=1%3D1&f=geojson",
-        "Microwave Service Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Microwave_Service_Towers_New/FeatureServer/10/query?outFields=*&where=1%3D1&f=geojson",
-        "Paging Transmission Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Paging_Transmission_Towers/FeatureServer/11/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Child Care Centers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/ChildCareCenter1/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Colleges and Universities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Colleges_and_Universities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Colleges and Universities Campuses": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Colleges_and_Universities_Campuses/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Elementary School Districts": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/School/MapServer/2/query?outFields=*&where=1%3D1&f=geojson",
-        "Private Schools": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Private_Schools/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Public Schools": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Public_Schools/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "School District Administrative Areas": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/School/MapServer/3/query?outFields=*&where=1%3D1&f=geojson",
-        "Secondary School Districts": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/School/MapServer/1/query?outFields=*&where=1%3D1&f=geojson",
-        "Supplemental Colleges": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Supplemental_Colleges/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Truck Driving Schools": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Truck_Driving_Schools/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Unified School Districts": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/School/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "American Red Cross Chapter": "https://services.arcgis.com/pGfbNJoYypmNq86F/ArcGIS/rest/services/Master_ARC_Geography_2022/FeatureServer/3/query?outFields=*&where=1%3D1&f=geojson",
-        "American Red Cross Counties / Chapters / Regions / Divisions": "https://services.arcgis.com/pGfbNJoYypmNq86F/ArcGIS/rest/services/Master_ARC_Geography_2022/FeatureServer/5/query?outFields=*&where=1%3D1&f=geojson",
-        "American Red Cross Counties Divisions": "https://services.arcgis.com/pGfbNJoYypmNq86F/ArcGIS/rest/services/Master_ARC_Geography_2022/FeatureServer/1/query?outFields=*&where=1%3D1&f=geojson",
-        "American Red Cross Headquarters": "https://services.arcgis.com/pGfbNJoYypmNq86F/ArcGIS/rest/services/Master_ARC_Geography_2022/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "American Red Cross Regions": "https://services.arcgis.com/pGfbNJoYypmNq86F/ArcGIS/rest/services/Master_ARC_Geography_2022/FeatureServer/2/query?outFields=*&where=1%3D1&f=geojson",
-        "Federal Emergency Management Agency Recovery Offices": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/FEMARecoveryOffices/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Fire and Emergency Medical Service (EMS) Stations": "https://carto.nationalmap.gov/arcgis/rest/services/structures/MapServer/51/query?outFields=*&where=1%3D1&f=geojson",
-        "Hurricane Evacuation Routes": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Hurricane_Evacuation_Routes/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Local Emergency Operations Center (EOC)": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Local_Emergency_Operations_Centers_EOC/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "National Shelter System Facilities": "https://gis.fema.gov/arcgis/rest/services/NSS/FEMA_NSS/FeatureServer/5/query?outFields=*&where=1%3D1&f=geojson",
-        "PSAP 911 Service Area Boundaries": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/PSAP_911_Service_Area_Boundaries/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Above_Ground_LNG_Storage_Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Above_Ground_LNG_Storage_Facilities_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Alternative Fueling Stations": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/Alternative_Fueling_Stations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Biodiesel Plants": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/Alternative_Fueling_Stations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Border Crossings - Natural Gas": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Biodiesel_Plants_US_EIA/FeatureServer/113/query?outFields=*&where=1%3D1&f=geojson",
-        "Control Areas": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Control_Areas_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Electric Holding Company Areas": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Holding_Company_Areas/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Electric Planning Areas": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Planning_Areas/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Electric Retail Service Territories": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Retail_Service_Territories/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Ethanol Plants": "https://services7.arcgis.com/FGr1D95XCGALKXqM/ArcGIS/rest/services/Ethanol_Plants_US_EIA/FeatureServer/112/query?outFields=*&where=1%3D1&f=geojson",
-        "FERC Regions": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/FERC_Regions_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Generating Units": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/GeneratingUnits1/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Hydrocarbon Gas Liquid Pipelines": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/HGL_Pipelines_US_EIA/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Independent Systems Operators": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Independent_System_Operator/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Liquified Natural Gas (LNG) Import and Export Terminals": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Lng_ImportExportTerminals_US_EIA/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Natural Gas Interstate and Intrastate Pipelines": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/NaturalGas_InterIntrastate_Pipelines_US_EIA/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Natural Gas Processing Plants": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/NaturalGas_ProcessingPlants_US_EIA/FeatureServer/23/query?outFields=*&where=1%3D1&f=geojson",
-        "Natural Gas Service Territories": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Natural_Gas_Service_Territories/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Natural Gas Underground Storage": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Natural_Gas_Underground_Storage/FeatureServer/39/query?outFields=*&where=1%3D1&f=geojson",
-        "Natural Gas Wells": "https://services7.arcgis.com/FGr1D95XCGALKXqM/ArcGIS/rest/services/Natural_Gas_Wells/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Northeast Petroleum Reserve": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Northeast_Petroleum_Reserves/FeatureServer/41/query?outFields=*&where=1%3D1&f=geojson",
-        "Oil Wells": "https://services7.arcgis.com/FGr1D95XCGALKXqM/ArcGIS/rest/services/Oil_Wells/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Oil and Natural Gas Platforms": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Oil_and_Natural_Gas_Platforms/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Outer Continental Shelf (OCS) Oil and Natural Gas Wells": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Oil_and_Natural_Gas_Platforms/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "POL Terminals": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/POL_Terminals/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Peak Shaving Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Peak_Shaving_Facilities_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Petroleum Product Terminals": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/PetroleumProduct_Terminals_US_EIA/FeatureServer/36/query?outFields=*&where=1%3D1&f=geojson",
-        "Petroleum Refineries": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Petroleum_Refineries_US_EIA/FeatureServer/22/query?outFields=*&where=1%3D1&f=geojson",
-        "Power Plants": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Plants_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Strategic Petroleum Reserve": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/SPR_US_EIA/FeatureServer/42/query?outFields=*&where=1%3D1&f=geojson",
-        "Transmission Lines": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Transmission_Lines/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "FDIC Insured Banks": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/FDIC_InsuredBanks/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "NCUA Insured Credit Unions": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/NCUA_Insured_Credit_Unions/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Public Refrigerated Warehouses": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Public_Refrigerated_Warehouses/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Incorporated Places (Civil)": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/1/query?outFields=*&where=1%3D1&f=geojson",
-        "Unincorporated Places (Census)": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/2/query?outFields=*&where=1%3D1&f=geojson",
-        "Populated Places": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/3/query?outFields=*&where=1%3D1&f=geojson",
-        "Landforms": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/5/query?outFields=*&where=1%3D1&f=geojson",
-        "Streams (Mouth)": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/6/query?outFields=*&where=1%3D1&f=geojson",
-        "Other Hydrographic Features": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/7/query?outFields=*&where=1%3D1&f=geojson",
-        "Antarctica": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/8/query?outFields=*&where=1%3D1&f=geojson",
-        "Crossings": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/10/query?outFields=*&where=1%3D1&f=geojson",
-        "Historical Cultural-Political Points": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/12/query?outFields=*&where=1%3D1&f=geojson",
-        "Historical Hydrographic Points": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/13/query?outFields=*&where=1%3D1&f=geojson",
-        "Historical Physical Points": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/14/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Courthouses": "https://carto.nationalmap.gov/arcgis/rest/services/structures/MapServer/40/query?outFields=*&where=1%3D1&f=geojson",
-        "Food and Drug Administration (FDA) Office Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Food_and_Drug_Administration_FDA_Office_Facilities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Formerly Used Defense Sites (FUDS) Program District Boundaries": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/fuds/FeatureServer/9/query?outFields=*&where=1%3D1&f=geojson",
-        "Formerly Used Defense Sites (FUDS) Projects (Points)": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/fuds/FeatureServer/2/query?outFields=*&where=1%3D1&f=geojson",
-        "Formerly Used Defense Sites (FUDS) Public Munitions Response Sites (MRS)": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/fuds/FeatureServer/3/query?outFields=*&where=1%3D1&f=geojson",
-        "Formerly Used Defense Sites (FUDS) Public Properties": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/fuds/FeatureServer/1/query?outFields=*&where=1%3D1&f=geojson",
-        "Military Installations, Ranges, and Training Areas (MIRTA) DoD Sites - Points": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/FY22_MIRTA_Points_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "US Army Corps of Engineers (USACE) Civil Works Districts": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_cw_districts/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "US Army Corps of Engineers (USACE) Military Districts": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_mil_dist/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "US Army Corps of Engineers (USACE) Offices": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_offices/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "USCG Districts": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/USCG_Districts_/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "USCG Sectors": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/USCG_Sectors_/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Local Law Enforcement Locations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Local_Law_Enforcement_Locations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "US District Court Jurisdictions": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/US_District_Court_Jurisdictions/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Agricultural Minerals Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Agricultural_Minerals_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Construction Minerals Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Construction_Minerals_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Crushed Stone Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Crushed_Stone_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Ferrous Metal Mines": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Ferrous_Metal_Mines/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Ferrous Metal Processing Plants": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Ferrous_Metal_Process_Plants/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Mines and Mineral Resources": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Mines_and_Mineral_Resources/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Miscellaneous Industrial Mineral Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Miscellaneous_Industrial_Mineral_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Nonferrous Metal Mines": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Nonferrous_Metal_Mines/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Nonferrous Metal Processing Plants": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Nonferrous_Metal_Processing_Plants/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Refractory Abrasive and Other Industrial Mineral Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Refractory_Abrasive_and_Other_Industrial_Mineral_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Sand and Gravel Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Sand_and_Gravel_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "US Coal Fields": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Coal_Fields_of_the_Conterminous_United_States/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Uranium and Vanadium Deposits": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Uranium_and_Vanadium_Deposits/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Deep Ocean Assessment and Reporting of Tsunamis (DART) Stations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/8/query?outFields=*&where=1%3D1&f=geojson",
-        "Historical Holocene Volcano Locations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/7/query?outFields=*&where=1%3D1&f=geojson",
-        "Historical Significant Earthquake Locations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/5/query?outFields=*&where=1%3D1&f=geojson",
-        "Historical Significant Volcanic Eruption Locations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/5/query?outFields=*&where=1%3D1&f=geojson",
-        "Historical Tsunami Event Locations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Historical Tsunami Event Locations with Runups": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/4/query?outFields=*&where=1%3D1&f=geojson",
-        "Historical Wildfire Perimeters": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Historical_Fire_Perimeters/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Quaternary Fault Lines": "https://earthquake.usgs.gov/arcgis/rest/services/haz/Qfaults/MapServer/21/query?outFields=*&where=1%3D1&f=geojson",
-        "Tsunami Capable Tide Stations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/11/query?outFields=*&where=1%3D1",
-        "US Landslide Regions": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/US_Landslide_poly_v2/FeatureServer/1/query?outFields=*&where=1%3D1&f=geojson",
-        "USGS Hydro Network Linked Data Index (NLDI) Streamgage Monitoring Locations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/USGS_NLDI_Reference_Gages/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "WFIGS Interagency Fire Perimeters": "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Interagency_Perimeters/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Dialysis Centers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Dialysis_Centers/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Hospitals": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Hospitals_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Nursing Homes": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/NursingHomes2024/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Urgent Care Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Urgent_Care_Facilities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Veterans Health Administration Medical Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Veterans_Health_Administration_Medical_Facilities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Mobile Home Parks": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Mobile_Home_Parks/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Airspace Boundaries": "https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/arcgis/rest/services/Boundary_Airspace/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Aviation Facilities": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_Aviation_Facilities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Runways": "https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/arcgis/rest/services/Runways/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Spaceports": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_Spaceports/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Amtrak Stations": "https://geo.dot.gov/server/rest/services/Hosted/Amtrak_Stations_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Intermodal Freight Facilities Pipeline Terminals": "https://geo.dot.gov/server/rest/services/Hosted/Intermodal_Freight_Facilities_Pipeline_Terminals_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Intermodal Passenger Connectivity Database (IPCD)": "https://geo.dot.gov/server/rest/services/Hosted/Intermodal_Passenger_Connectivity_Database_IPCD_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "National Bridge Inventory (NBI)": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_National_Bridge_Inventory/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "National Transit Map Agencies": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTM_Agencies/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "National Transit Map Stops": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTM_Stops/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "National Tunnel Inventory": "https://geo.dot.gov/server/rest/services/Hosted/National_Tunnel_Inventory_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "North American Rail Network Lines": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_North_American_Rail_Network_Lines/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "North American Rail Network Nodes": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_North_American_Rail_Network_Nodes/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Primary Roads": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer/2/query?outFields=*&where=1%3D1&f=geojson",
-        "Railroad Grade Crossings": "https://geo.dot.gov/server/rest/services/Hosted/Railroad_Grade_Crossings_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Railroads": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer/9/query?outFields=*&where=1%3D1&f=geojson",
-        "Trails": "https://carto.nationalmap.gov/arcgis/rest/services/transportation/MapServer/11/query?outFields=*&where=1%3D1&f=geojson",
-        "Travel Monitoring Analysis System (TMAS) Stations": "https://geo.dot.gov/server/rest/services/Hosted/Travel_Monitoring_Analysis_System_TMAS_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Administrative Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/ADMINISTRATIVE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Airport Area (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/AIRPORT_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Anchorages (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/ANCHOR_BERTH_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Berths Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/BERTHS_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Bridge Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/BRIDGE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Building Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/BUILDING_SINGLE_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Built Up Areas Point": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/BUILT_UP_AREA_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Buoys (USACE IENC)": "https://services3.arcgis.com/JR1tf2VoTNNjWen5/ArcGIS/rest/services/USACE_Buoys_Service/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Cable Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/CABLE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Caution Area Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/CAUTION_AREA_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Coastlines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/COASTLINE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Conveyor Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/CONVEYOR_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Crane Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/CRANES_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Dam Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DAM_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Data Coverage Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DATA_COVERAGE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Data Quality Assessment Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DATA_QUALITY_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Daymark Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DAYMARK_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Distance Marks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DISTANCE_MARK_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Dry Docks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DRY_DOCK_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Dumping Ground Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DUMPING_GROUND_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Ferry Routes": "https://geo.dot.gov/server/rest/services/Hosted/Ferry_Routes_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Ferry Terminals": "https://geo.dot.gov/server/rest/services/Hosted/Ferry_Terminals_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Floating Docks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/FLOATING_DOCK_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Floodwalls (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/FLOODWALL_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Harbor Administrative Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/HARBOUR_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Harbor Facility Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/HARBOUR_FACILITY_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Harbor Facility Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/HARBOUR_FACILITY_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Hulke Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/HULKES_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-//        "Inland Waterway Mile Markers (USACE IENC)": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/ArcGIS/rest/services/usace_river_mile_markers/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Isolated Danger Buoy Point (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/ISOLATED_DANGER_BUOY_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Land Region Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LAND_REGION_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-//        "Land Region Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LAND_REGION_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Land Surface Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LAND_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Landmark Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LANDMARK_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Landmark Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LANDMARK_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Lateral Beacons (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LATERAL_BEACON_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Lateral Buoys (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LATERAL_BUOY_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Levee Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LEVEE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Levee Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LEVEE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Lock Basins (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LOCK_BASIN_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Lock Gate Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LOCK_GATE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Lock Gate Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LOCK_GATE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Lock Traffic Signal Stations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/TRAFFIC_SIGNAL_STATION_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Locks (USACE IENC)": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/ArcGIS/rest/services/ndc/FeatureServer/3/query?outFields=*&where=1%3D1&f=geojson",
-        "Marine Jurisdiction Boundaries": "https://maritimeboundaries.noaa.gov/arcgis/rest/services/MaritimeBoundaries/US_Maritime_Limits_Boundaries/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Mooring Facility Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/MOORING_FACILITY_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Mooring Facility Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/MOORING_FACILITY_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Mooring Facility Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/MOORING_FACILITY_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "National Marine Service Regions": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/National_Marine_Service_Regions/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-//        "Nautical Publication Information Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/NAUTICAL_PUBLICATION_INFORMATION_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Navigable Waterway Network Lines": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/ndc/FeatureServer/7/query?outFields=*&where=1%3D1&f=geojson",
-        "Navigable Waterway Network Node Locations": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/ArcGIS/rest/services/ndc/FeatureServer/6/query?outFields=*&where=1%3D1&f=geojson",
-        "Navigation Lights (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LIGHTS_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Navigation System of Marks Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/NAVIGATIONAL_SYSTEM_OF_MARKS_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Notice Marks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/NOTICE_MARK_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Obstruction Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/OBSTRUCTION_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Obstruction Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/OBSTRUCTION_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Obstruction Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/OBSTRUCTION_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Overhead Cables (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/OVERHEAD_CABLE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Overhead Pipeline Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/OVERHEAD_PIPELINE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Pile Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/PILE_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Pipeline Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/PIPE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        // "Pontoon Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/PONTOON_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Principal Ports": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/ArcGIS/rest/services/ndc/FeatureServer/1/query?outFields=*&where=1%3D1&f=geojson",
-        "Pylon Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/PYLONS_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Pylon Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/PYLONS_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        // "Railways (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/RAILROAD_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Recommended Tracks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/RECOMMENDED_TRACK_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        // "Regulated Navigational Areas": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Regulated_Navigational_Areas/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Restricted Navigation Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/RESTRICTED_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "River Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/RIVERS_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "River Gauges (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/WATERWAY_GAUGE_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        // "River Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/RIVERS_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Roads (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/ROADWAY_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        // "Safety Zones": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Safety_Zones/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Sea Area Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SEA_AREA_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Sea Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SEA_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        // "Security Zones": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Security_Zones/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Shipping Fairways": "https://encdirect.noaa.gov/arcgis/rest/services/NavigationChartData/MarineTransportation/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Shoreline Construction Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SHORELINE_CONSTRUCTION_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Shoreline Construction Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SHORELINE_CONSTRUCTION_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Shoreline Construction Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SHORELINE_CONSTRUCTION_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Sloped Ground Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SLOPING_GROUND_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Sloped Ground Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SLOPE_TOPLINE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Small Craft Facility Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SMALL_CRAFT_FACILITY_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Small Craft Facility Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SMALL_CRAFT_FACILITY_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Special Purpose Buoys (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/BUOY_SPECIAL_PURPOSE_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Storage Tank or Silo Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/STORAGE_TANK_SILO_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Storage Tank or Silo Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/STORAGE_TANK_SILO_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Submarine Cable Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SUBMARINE_CABLE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Submarine Pipeline Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SUBMARINE_PIPELINE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Submarine Pipeline Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SUBMARINE_PIPELINE_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Terminal Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/TERMINAL_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Terminal Points (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/TERMINAL_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "US Coast Guard (USCG) Captain of the Port Zones": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/US_Coast_Guard_USCG_Captain_of_the_Port_Zones/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "US Coast Guard (USCG) Maritime Differential GPS (DGPS) Locations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/US_Coast_Guard_USCG_Maritime_Differential_GPS_DGPS_Locations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "US Maritime Limits Boundaries": "https://maritimeboundaries.noaa.gov/arcgis/rest/services/MaritimeBoundaries/US_Maritime_Limits_Boundaries/MapServer/3/query?outFields=*&where=1%3D1&f=geojson",
-        "Underwater Rock Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/UNDERWATER_ROCK_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Warning Signal Stations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/WARNING_SIGNAL_STATION_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Wreck Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/WRECKS_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Wrecks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/WRECKS_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Wrecks and Obstructions": "https://coast.noaa.gov/arcgismc/rest/services/hosted/WrecksObstructions/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-
-        "Aquifers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Aquifers/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "National Inventory of Dams (NID)": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/NID_v1/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "Reclamation Reservoirs": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Reclamation_Reservoirs/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-        "US Army Corps of Engineers (USACE) Owned and Operated Reservoirs": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_rez/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"
+    "EPA Disaster Debris Recovery Data": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/EPA_Disaster_Debris_Recovery_Data/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Agricultural Minerals Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Agricultural_Minerals_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Construction Minerals Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Construction_Minerals_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "US Army Corps of Engineers (USACE) Owned and Operated Reservoirs": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_rez/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"
   };
 
-  // --- Populate provided APIs dropdown ---
+  // ---------------------------------------------------------------------------
+  // Populate provided APIs dropdown.
+  // ---------------------------------------------------------------------------
   function populateProvidedAPIs() {
     const select = document.getElementById('provided-api-select');
     select.innerHTML = '';
@@ -287,7 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   populateProvidedAPIs();
 
-  // --- Source Type selection ---
+  // ---------------------------------------------------------------------------
+  // Source Type selection.
+  // ---------------------------------------------------------------------------
   document.getElementById('source-type-select').addEventListener('change', function() {
     const providedGroup = document.getElementById('provided-api-group');
     if (this.value === 'provided') {
@@ -302,7 +41,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('api-url-input').value = this.value;
   });
 
-  // --- Toggle collapsible sections ---
+  // ---------------------------------------------------------------------------
+  // Toggle collapsible sections.
+  // ---------------------------------------------------------------------------
   const collapsibles = document.querySelectorAll('.collapsible-header');
   collapsibles.forEach(header => {
     header.addEventListener('click', function() {
@@ -311,7 +52,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // --- Load fields from API ---
+  // ---------------------------------------------------------------------------
+  // Load fields from API and update the UI, JSON editor, and Quant/Qual options.
+  // ---------------------------------------------------------------------------
   document.getElementById('load-fields').addEventListener('click', function() {
     const apiUrl = document.getElementById('api-url-input').value;
     if (!apiUrl) {
@@ -330,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       updateFieldsUI(data.fields);
-      // Also update the JSON editor and the quant/qual options
+      // Update JSON editor and quant/qual options based on all fields (initially all are selected).
       updateJSONEditor();
       updateQuantQualOptions();
     })
@@ -340,21 +83,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // --- Update the Fields UI (in the API Fields section) ---
+  // ---------------------------------------------------------------------------
+  // Update the Fields UI in the API Fields section.
+  // ---------------------------------------------------------------------------
   function updateFieldsUI(fields) {
     const container = document.getElementById('fields-container');
     container.innerHTML = "";
-    // "All Fields" toggle
+    // "All Fields" toggle.
     const allFieldsDiv = document.createElement('div');
     allFieldsDiv.classList.add('input-group');
     allFieldsDiv.innerHTML = '<label><input type="checkbox" id="all-fields" checked> All Fields</label>';
     container.appendChild(allFieldsDiv);
-    // Header row
+    // Header row.
     const headerRow = document.createElement('div');
     headerRow.classList.add('field-row', 'header');
     headerRow.innerHTML = "<span class='field-name'>Name</span><span class='field-type'>Data Type</span><span class='field-select'>Select</span>";
     container.appendChild(headerRow);
-    // For each field, create a row with a checkbox
+    // For each field, create a row.
     fields.forEach(field => {
       const row = document.createElement('div');
       row.classList.add('field-row');
@@ -363,21 +108,21 @@ document.addEventListener('DOMContentLoaded', function() {
       nameSpan.textContent = field;
       const typeSpan = document.createElement('span');
       typeSpan.classList.add('field-type');
-      // For simplicity, default type to "String" (or you can later improve this)
-      typeSpan.textContent = "String";
+      // Use our predictor to display predicted type.
+      typeSpan.textContent = predictFieldType(field);
       const selectSpan = document.createElement('span');
       selectSpan.classList.add('field-select');
       const checkbox = document.createElement('input');
       checkbox.type = "checkbox";
       checkbox.value = field;
       checkbox.checked = true;
-      // When a checkbox is changed, update the "All Fields" checkbox and update the JSON editor
+      // Update JSON editor when a field is toggled.
       checkbox.addEventListener('change', function() {
         const allCbs = container.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
         const allChecked = Array.from(allCbs).every(cb => cb.checked);
         document.getElementById('all-fields').checked = allChecked;
-        // When a field is toggled, update the JSON editor
         updateJSONEditor();
+        updateQuantQualOptions();
       });
       selectSpan.appendChild(checkbox);
       row.appendChild(nameSpan);
@@ -388,7 +133,9 @@ document.addEventListener('DOMContentLoaded', function() {
     bindAllFieldsToggle();
   }
 
-  // --- Bind "All Fields" toggle ---
+  // ---------------------------------------------------------------------------
+  // Bind "All Fields" toggle.
+  // ---------------------------------------------------------------------------
   function bindAllFieldsToggle() {
     const allFieldsCheckbox = document.getElementById('all-fields');
     if (allFieldsCheckbox) {
@@ -399,49 +146,53 @@ document.addEventListener('DOMContentLoaded', function() {
           if (cb) { cb.checked = allFieldsCheckbox.checked; }
         });
         updateJSONEditor();
+        updateQuantQualOptions();
       });
     }
   }
 
-  // --- Simple Predictor function ---
+  // ---------------------------------------------------------------------------
+  // Simple Predictor function to guess field type.
+  // ---------------------------------------------------------------------------
   function predictFieldType(fieldName) {
-    // A very basic heuristic: if field name contains keywords often associated with numbers, return "Quantitative"
     const lower = fieldName.toLowerCase();
-    if (lower.includes("id") || lower.includes("number") || lower.includes("area") || lower.includes("value") || lower.includes("count") || lower.includes("accuracy") ) {
+    // A simple heuristic: if field name contains "id", "number", "area", "value", "count", or "accuracy", assume quantitative.
+    if (lower.includes("id") || lower.includes("number") || lower.includes("area") || lower.includes("value") || lower.includes("count") || lower.includes("accuracy")) {
       return "Quantitative";
     }
     return "Qualitative";
   }
 
-  // --- Update JSON Editor based on selected fields ---
+  // ---------------------------------------------------------------------------
+  // Update the JSON Editor section based on selected fields.
+  // ---------------------------------------------------------------------------
   function updateJSONEditor() {
     const container = document.getElementById('fields-container');
     const checkboxes = container.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
-    // Get list of selected fields
     const selectedFields = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
     const jsonContainer = document.getElementById('json-editor');
     jsonContainer.innerHTML = "";
-    // For each selected field, add an input group with a prediction
     selectedFields.forEach(field => {
+      const prediction = predictFieldType(field);
       const fieldDiv = document.createElement('div');
       fieldDiv.classList.add('json-field');
       fieldDiv.style.border = "1px solid #ccc";
       fieldDiv.style.marginBottom = "10px";
       fieldDiv.style.padding = "5px";
-      // Run the predictor function and show its output
-      const prediction = predictFieldType(field);
       fieldDiv.innerHTML = `
         <h4>${field} <span class="prediction-box">(Prediction: ${prediction})</span></h4>
-        <label>Weight: <input type="number" step="0.01" name="${field}_weight" /></label><br>
-        <label>Meaning: <input type="text" name="${field}_meaning" /></label><br>
-        <label>Importance: <input type="text" name="${field}_importance" /></label><br>
-        <label>Grade: <input type="number" step="0.01" name="${field}_grade" /></label>
+        <label>Weight: <input type="number" step="0.01" name="${field}_weight" placeholder="e.g. 0.1"></label><br>
+        <label>Meaning: <input type="text" name="${field}_meaning" placeholder="Enter meaning"></label><br>
+        <label>Importance: <input type="text" name="${field}_importance" placeholder="Enter importance"></label><br>
+        <label>Grade: <input type="number" step="0.01" name="${field}_grade" placeholder="Normalized grade"></label>
       `;
       jsonContainer.appendChild(fieldDiv);
     });
   }
 
-  // --- Update Quant/Qual Options UI based on selected fields ---
+  // ---------------------------------------------------------------------------
+  // Update Quant/Qual Options UI based on selected fields.
+  // ---------------------------------------------------------------------------
   function updateQuantQualOptions() {
     const container = document.getElementById('quant-qual-section');
     const fieldsContainer = document.getElementById('fields-container');
@@ -449,10 +200,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectedFields = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
     container.innerHTML = "";
     selectedFields.forEach(field => {
+      const prediction = predictFieldType(field);
       const row = document.createElement('div');
       row.style.marginBottom = "5px";
-      // Also display the predictor result next to each field
-      const prediction = predictFieldType(field);
       row.innerHTML = `
         <span style="font-weight:bold;">${field}</span>
         <span style="margin-left:10px; font-style: italic;">(${prediction})</span>
@@ -465,14 +215,16 @@ document.addEventListener('DOMContentLoaded', function() {
       `;
       container.appendChild(row);
     });
-    // Append a button to generate the Python function (if needed)
+    // Append a button to generate Python function code.
     const pyGenerateBtn = document.createElement('button');
     pyGenerateBtn.textContent = "Generate Python Function";
     pyGenerateBtn.addEventListener('click', generatePythonFunction);
     container.appendChild(pyGenerateBtn);
   }
 
-  // --- JSON file upload handler (unchanged) ---
+  // ---------------------------------------------------------------------------
+  // JSON file upload handler.
+  // ---------------------------------------------------------------------------
   document.getElementById('json-upload').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -493,21 +245,123 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // --- Handle JSON Maker: create JSON structure from user inputs ---
+    document.getElementById('create-json-btn').addEventListener('click', function() {
+      // Read dataset-level inputs.
+      const datasetName = document.getElementById('dataset-name').value;
+      const datasetLink = document.getElementById('dataset-link').value;
+
+      // Gather the fields that the user has edited in the JSON editor.
+      // (Assumes that each field is rendered as a .json-field div with inputs named like:
+      //  "[fieldName]_weight", "[fieldName]_meaning", "[fieldName]_importance", "[fieldName]_grade")
+      const jsonFields = document.querySelectorAll('#json-editor .json-field');
+      let qualitativeFields = [];
+      let quantitativeFields = [];
+
+      jsonFields.forEach(fieldDiv => {
+        // Extract field name from the header; assume header text is like "FIELD_NAME (Prediction: X)"
+        const header = fieldDiv.querySelector('h4');
+        let fieldName = header.textContent.split(' (Prediction:')[0].trim();
+
+        // Get the input values for weight, meaning, importance, and grade.
+        const weight = parseFloat(fieldDiv.querySelector(`input[name="${fieldName}_weight"]`).value) || 0;
+        const meaning = fieldDiv.querySelector(`input[name="${fieldName}_meaning"]`).value;
+        const importance = fieldDiv.querySelector(`input[name="${fieldName}_importance"]`).value;
+        const grade = parseFloat(fieldDiv.querySelector(`input[name="${fieldName}_grade"]`).value) || 0;
+
+        // Use the predictor function to determine if this field is quantitative or qualitative.
+        const prediction = predictFieldType(fieldName);
+        const fieldObj = {
+          fieldName: fieldName,
+          type: (prediction === "Quantitative") ? "Float" : "String",
+          meaning: meaning,
+          importance: importance,
+          overallFieldImportanceGrade: grade
+        };
+
+        // For qualitative fields, you may later add a UI for editing their sub-properties.
+        if (prediction === "Qualitative") {
+          fieldObj.qualitativeProperties = []; // Initialize an empty list; user can add properties later.
+          qualitativeFields.push(fieldObj);
+        } else {
+          quantitativeFields.push(fieldObj);
+        }
+      });
+
+      // Determine removed fields from the API fields UI.
+      // (Assumes that the API fields container checkboxes reflect the available fields.)
+      const fieldsCheckboxes = document.querySelectorAll('#fields-container .field-row:not(.header) input[type="checkbox"]');
+      let removedFields = [];
+      fieldsCheckboxes.forEach(cb => {
+        if (!cb.checked) {
+          removedFields.push({
+            fieldName: cb.value,
+            type: "String", // Default type; adjust if needed.
+            meaning: "",
+            importance: ""
+          });
+        }
+      });
+
+      // Build a field grade summary by reading each field's grade from the JSON editor.
+      let totalGrade = 0;
+      let fieldGradeSummary = {};
+      jsonFields.forEach(fieldDiv => {
+        const header = fieldDiv.querySelector('h4');
+        let fieldName = header.textContent.split(' (Prediction:')[0].trim();
+        const grade = parseFloat(fieldDiv.querySelector(`input[name="${fieldName}_grade"]`).value) || 0;
+        fieldGradeSummary[fieldName] = grade;
+        totalGrade += grade;
+      });
+      // Normalize the summary so that the grades sum to 1.
+      Object.keys(fieldGradeSummary).forEach(key => {
+        fieldGradeSummary[key] = fieldGradeSummary[key] / totalGrade;
+      });
+
+      // Build the dataset JSON object without dummy data.
+      const datasetJSON = {
+        datasetName: datasetName,
+        datasetLink: datasetLink,
+        qualitativeFields: qualitativeFields,
+        quantitativeProperties: quantitativeFields,
+        removedFields: removedFields,
+        summaryOfGrades: fieldGradeSummary
+      };
+
+      // Send the constructed dataset JSON to the backend endpoint.
+      fetch('/editor/create_json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datasetJSON)
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Save the generated JSON and refresh the preview.
+        window.generatedCode = window.generatedCode || {};
+        window.generatedCode.json = data;
+        refreshCodePreview();
+      })
+      .catch(err => {
+        console.error("Error creating JSON:", err);
+        alert("Failed to create JSON: " + err);
+      });
+    });
+
+
   function validateJSONStructure(data) {
     return data.hasOwnProperty("datasetName") && data.hasOwnProperty("qualitativeFields");
   }
 
   function populateJSONEditorFromData(data) {
-    // Optionally, you could update the JSON editor with the uploaded configuration.
     const jsonContainer = document.getElementById('json-editor');
     jsonContainer.innerHTML = "";
     data.qualitativeFields.forEach(fieldObj => {
+      const prediction = predictFieldType(fieldObj.fieldName);
       const fieldDiv = document.createElement('div');
       fieldDiv.classList.add('json-field');
       fieldDiv.style.border = "1px solid #ccc";
       fieldDiv.style.marginBottom = "10px";
       fieldDiv.style.padding = "5px";
-      const prediction = predictFieldType(fieldObj.fieldName);
       fieldDiv.innerHTML = `
         <h4>${fieldObj.fieldName} (Prediction: ${prediction})</h4>
         <label>Meaning: <input type="text" name="${fieldObj.fieldName}_meaning" value="${fieldObj.meaning}" /></label><br>
@@ -518,7 +372,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // --- Generate Python function code based on Quant/Qual selections ---
+  // ---------------------------------------------------------------------------
+  // Generate Python function code based on Quant/Qual selections.
+  // ---------------------------------------------------------------------------
   function generatePythonFunction() {
     const quantFields = Array.from(document.querySelectorAll('.quant-field:checked')).map(cb => cb.value);
     const qualFields = Array.from(document.querySelectorAll('.qual-field:checked')).map(cb => cb.value);
@@ -529,11 +385,13 @@ document.addEventListener('DOMContentLoaded', function() {
     pythonCode += "    qual_counts = {}\n";
     pythonCode += `    quant_fields = ${JSON.stringify(quantFields)}\n`;
     pythonCode += `    qual_fields = ${JSON.stringify(qualFields)}\n`;
-    pythonCode += "    for field in quant_fields:\n";
-    pythonCode += "        quant_stats[field] = []\n";
-    pythonCode += "    for field in qual_fields:\n";
-    pythonCode += "        qual_counts[field] = {}\n";
-    pythonCode += "    for feature in data['features']:\n";
+    pythonCode += "    for (let field of quant_fields) {\n";
+    pythonCode += "        quant_stats[field] = [];\n";
+    pythonCode += "    }\n";
+    pythonCode += "    for (let field of qual_fields) {\n";
+    pythonCode += "        qual_counts[field] = {};\n";
+    pythonCode += "    }\n";
+    pythonCode += "    for (let feature of data['features']) {\n";
     pythonCode += "        let props = feature['properties'];\n";
     pythonCode += "        for (let field of quant_fields) {\n";
     pythonCode += "            if (props.hasOwnProperty(field) && typeof props[field] === 'number') {\n";
@@ -546,95 +404,98 @@ document.addEventListener('DOMContentLoaded', function() {
     pythonCode += "                qual_counts[field][value] = (qual_counts[field][value] || 0) + 1;\n";
     pythonCode += "            }\n";
     pythonCode += "        }\n";
-    pythonCode += "    return quant_stats, qual_counts\n";
+    pythonCode += "    }\n";
+    pythonCode += "    return quant_stats, qual_counts;\n";
     window.generatedCode = window.generatedCode || {};
     window.generatedCode.python = pythonCode;
     refreshCodePreview();
   }
 
-  // --- Update preview: gather config and send to backend ---
-    function updatePreview() {
-      const config = buildConfig();
-      // First, generate the API creation preview (URL).
-      fetch('/editor/generate_preview', {
+  // ---------------------------------------------------------------------------
+  // Build configuration object from current UI values.
+  // ---------------------------------------------------------------------------
+  function buildConfig() {
+    const apiUrl = document.getElementById('api-url-input').value;
+    const fieldsContainer = document.getElementById('fields-container');
+    const checkboxes = fieldsContainer.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
+    let selectedFields = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+    if (checkboxes.length > 0 && selectedFields.length === checkboxes.length) {
+      selectedFields = "*";
+    }
+    const outReturnGeometry = document.getElementById('out-return-geometry').checked;
+    const outReturnIds = document.getElementById('out-return-ids').checked;
+    const outReturnCount = document.getElementById('out-return-count').checked;
+    const previewLimit = document.getElementById('preview-limit').value;
+    const spatialInput = document.getElementById('spatial-input-select').value;
+    let inSR = "", spatialRel = "";
+    if (spatialInput === "Envelope") {
+      inSR = document.getElementById('inSR-input').value;
+      spatialRel = document.getElementById('spatial-rel-select').value;
+    }
+    const outSR = document.getElementById('outSR-input').value;
+    const config = {
+      api_url: apiUrl,
+      selected_fields: selectedFields,
+      preview_limit: previewLimit,
+      where: document.getElementById('where-input').value || "1=1",
+      spatial_input: spatialInput,
+      output_options: {
+        returnGeometry: outReturnGeometry,
+        returnIdsOnly: outReturnIds,
+        returnCountOnly: outReturnCount,
+        outSR: outSR
+      }
+    };
+    if (spatialInput === "Envelope") {
+      config.inSR = inSR;
+      config.spatialRel = spatialRel;
+    }
+    const advParamsText = document.getElementById('advanced-params').value;
+    if (advParamsText) {
+      try {
+        config.advanced_params = JSON.parse(advParamsText);
+      } catch (e) {
+        alert("Error parsing advanced query parameters: " + e);
+      }
+    }
+    return config;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Update preview: first generate API URL then execute it.
+  // ---------------------------------------------------------------------------
+  function updatePreview() {
+    const config = buildConfig();
+    // Generate the API creation preview (URL).
+    fetch('/editor/generate_preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config)
+    })
+    .then(response => response.json())
+    .then(previewData => {
+      window.generatedCode = window.generatedCode || {};
+      window.generatedCode.api = previewData.api;
+      // Now execute the updated API.
+      return fetch('/editor/execute_api', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(config)
-      })
-      .then(response => response.json())
-      .then(previewData => {
-        // Store the generated API URL (or API creation preview) if needed.
-        window.generatedCode = window.generatedCode || {};
-        window.generatedCode.api = previewData.api;
-        // Now, execute the updated API.
-        return fetch('/editor/execute_api', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(config)
-        });
-      })
-      .then(response => response.json())
-      .then(executeData => {
-        // Save the executed API response.
-        window.generatedCode.api_response = executeData.api_response;
-        // Now refresh the preview (this single update will reflect both pieces of information).
-        refreshCodePreview();
-      })
-      .catch(err => {
-        console.error("Error in updatePreview:", err);
       });
-    }
+    })
+    .then(response => response.json())
+    .then(executeData => {
+      window.generatedCode.api_response = executeData.api_response;
+      refreshCodePreview();
+    })
+    .catch(err => {
+      console.error("Error in updatePreview:", err);
+    });
+  }
 
-    // Helper function to build the configuration object once.
-    function buildConfig() {
-      const apiUrl = document.getElementById('api-url-input').value;
-      const fieldsContainer = document.getElementById('fields-container');
-      const checkboxes = fieldsContainer.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
-      let selectedFields = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-      if (checkboxes.length > 0 && selectedFields.length === checkboxes.length) {
-        selectedFields = "*";
-      }
-      const outReturnGeometry = document.getElementById('out-return-geometry').checked;
-      const outReturnIds = document.getElementById('out-return-ids').checked;
-      const outReturnCount = document.getElementById('out-return-count').checked;
-      const previewLimit = document.getElementById('preview-limit').value;
-      const spatialInput = document.getElementById('spatial-input-select').value;
-      let inSR = "", spatialRel = "";
-      if (spatialInput === "Envelope") {
-        inSR = document.getElementById('inSR-input').value;
-        spatialRel = document.getElementById('spatial-rel-select').value;
-      }
-      const outSR = document.getElementById('outSR-input').value;
-      const config = {
-        api_url: apiUrl,
-        selected_fields: selectedFields,
-        preview_limit: previewLimit,
-        where: document.getElementById('where-input').value || "1=1",
-        spatial_input: spatialInput,
-        output_options: {
-          returnGeometry: outReturnGeometry,
-          returnIdsOnly: outReturnIds,
-          returnCountOnly: outReturnCount,
-          outSR: outSR
-        }
-      };
-      if (spatialInput === "Envelope") {
-        config.inSR = inSR;
-        config.spatialRel = spatialRel;
-      }
-      const advParamsText = document.getElementById('advanced-params').value;
-      if (advParamsText) {
-        try {
-          config.advanced_params = JSON.parse(advParamsText);
-        } catch (e) {
-          alert("Error parsing advanced query parameters: " + e);
-        }
-      }
-      return config;
-    }
-
-
-  // --- Refresh the code preview area ---
+  // ---------------------------------------------------------------------------
+  // Refresh the code preview area.
+  // ---------------------------------------------------------------------------
   function refreshCodePreview() {
     const codeType = document.getElementById('code-type-select').value;
     const codePreview = document.getElementById('code-preview');
@@ -645,6 +506,9 @@ document.addEventListener('DOMContentLoaded', function() {
     codePreview.value = previewContent;
   }
 
+  // ---------------------------------------------------------------------------
+  // Event listeners for update preview, code type selection, and copy button.
+  // ---------------------------------------------------------------------------
   document.getElementById('update-preview').addEventListener('click', updatePreview);
   document.getElementById('code-type-select').addEventListener('change', refreshCodePreview);
   document.getElementById('copy-code').addEventListener('click', function() {
