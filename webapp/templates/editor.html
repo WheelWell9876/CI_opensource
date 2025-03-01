@@ -27,7 +27,6 @@
       <div class="collapsible">
         <div class="collapsible-header active">API Options</div>
         <div class="collapsible-content active">
-          <!-- Source Selection -->
           <div class="input-group">
             <label for="source-type-select">Source Type:</label>
             <select id="source-type-select">
@@ -38,12 +37,10 @@
           <div class="input-group" id="provided-api-group">
             <label for="provided-api-select">Choose an API:</label>
             <select id="provided-api-select">
-              <!-- Sample API options; populate dynamically in JS -->
               <option value="https://services.example.com/api1?f=geojson">API Option 1</option>
               <option value="https://services.example.com/api2?f=geojson">API Option 2</option>
             </select>
           </div>
-          <!-- API URL Input -->
           <div class="input-group">
             <label for="api-url-input">API URL:</label>
             <input type="text" id="api-url-input" placeholder="https://services.example.com/..." />
@@ -61,7 +58,7 @@
                 <span class="field-type">Data Type</span>
                 <span class="field-select">Select</span>
               </div>
-              <!-- Field rows will be added here dynamically -->
+              <!-- Field rows will be added dynamically -->
             </div>
           </div>
           <!-- Spatial Inputs -->
@@ -117,7 +114,6 @@
               </div>
             </div>
           </div>
-          <!-- Preview Limit -->
           <div class="input-group">
             <label for="preview-limit">Number of Objects to Load:</label>
             <input type="number" id="preview-limit" value="10" min="1" max="100">
@@ -134,8 +130,7 @@
             <input type="file" id="json-upload" accept=".json">
           </div>
           <div id="json-editor">
-            <!-- Once a JSON is loaded, dynamically populate input fields for field weights, grades, etc. -->
-            <p>JSON configuration will appear here after upload.</p>
+            <p>JSON configuration will appear here after dataset load.</p>
           </div>
         </div>
       </div>
@@ -144,18 +139,12 @@
       <div class="collapsible">
         <div class="collapsible-header">Python Options</div>
         <div class="collapsible-content">
-          <!-- Sub-category for Quant/Qual Selector -->
           <div class="collapsible">
             <div class="collapsible-header">Quant/Qual Selector</div>
             <div class="collapsible-content" id="quant-qual-section">
-              <!-- Dynamically generated checkboxes or selectors for each field -->
               <p>Select quantitative and qualitative fields here.</p>
-              <!-- For example: -->
-              <!-- <label><input type="checkbox" data-field="FIELD_NAME" class="quant-field"> Quantitative</label>
-                   <label><input type="checkbox" data-field="FIELD_NAME" class="qual-field"> Qualitative</label> -->
             </div>
           </div>
-          <!-- Additional Python function creator options can be added here -->
         </div>
       </div>
 

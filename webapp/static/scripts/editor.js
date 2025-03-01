@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Provided APIs list – insert your API list here (omitted for brevity)
+  // Placeholder for provided APIs; add your API endpoints here.
   const providedAPIs = {
         "EPA Disaster Debris Recovery Data": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/EPA_Disaster_Debris_Recovery_Data/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "EPA Emergency Response (ER) Risk Management Plan (RMP) Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/FRS_INTERESTS_RMP/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
@@ -274,12 +274,11 @@ document.addEventListener('DOMContentLoaded', function() {
         "US Army Corps of Engineers (USACE) Owned and Operated Reservoirs": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_rez/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"
   };
 
-  // Populate provided APIs dropdown
+  // Populate the provided APIs dropdown.
   function populateProvidedAPIs() {
     const select = document.getElementById('provided-api-select');
     select.innerHTML = '';
-    const keys = Object.keys(providedAPIs).sort();
-    keys.forEach(apiName => {
+    Object.keys(providedAPIs).sort().forEach(apiName => {
       const option = document.createElement('option');
       option.value = providedAPIs[apiName];
       option.textContent = apiName;
@@ -288,41 +287,34 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   populateProvidedAPIs();
 
-  // Handle source type changes
+  // Handle source type selection.
   document.getElementById('source-type-select').addEventListener('change', function() {
     const sourceType = this.value;
     const providedGroup = document.getElementById('provided-api-group');
     if (sourceType === 'provided') {
       providedGroup.style.display = 'block';
-      const providedAPI = document.getElementById('provided-api-select').value;
-      document.getElementById('api-url-input').value = providedAPI;
-      console.debug("Source type set to provided. API URL:", providedAPI);
+      document.getElementById('api-url-input').value = document.getElementById('provided-api-select').value;
     } else {
       providedGroup.style.display = 'none';
       document.getElementById('api-url-input').value = '';
-      console.debug("Source type set to custom. API URL cleared.");
     }
   });
-
   document.getElementById('provided-api-select').addEventListener('change', function() {
     document.getElementById('api-url-input').value = this.value;
-    console.debug("Provided API selected. API URL updated to:", this.value);
   });
 
-  // Toggle collapsible sections
+  // Collapsible section toggles.
   const collapsibles = document.querySelectorAll('.collapsible-header');
   collapsibles.forEach(header => {
     header.addEventListener('click', function() {
       const content = this.nextElementSibling;
       content.classList.toggle('active');
-      console.debug("Toggled section:", this.textContent, "New state:", content.classList.contains('active'));
     });
   });
 
-  // Load fields from API and populate the API Fields section
+  // Load fields from the API and populate the API Fields section.
   document.getElementById('load-fields').addEventListener('click', function() {
     const apiUrl = document.getElementById('api-url-input').value;
-    console.debug("Load Fields clicked. API URL:", apiUrl);
     if (!apiUrl) {
       alert("Please enter an API URL.");
       return;
@@ -339,17 +331,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       const container = document.getElementById('fields-container');
-      // Clear container and re-add "All Fields" toggle and header row
       container.innerHTML = "";
+      // All Fields toggle.
       const allFieldsDiv = document.createElement('div');
       allFieldsDiv.classList.add('input-group');
       allFieldsDiv.innerHTML = '<label><input type="checkbox" id="all-fields" checked> All Fields</label>';
       container.appendChild(allFieldsDiv);
+      // Header row.
       const headerRow = document.createElement('div');
       headerRow.classList.add('field-row', 'header');
       headerRow.innerHTML = "<span class='field-name'>Name</span><span class='field-type'>Data Type</span><span class='field-select'>Select</span>";
       container.appendChild(headerRow);
-      // Create a row for each field (assume type "String" for now)
+      // Create a row for each field (assume type "String" by default).
       data.fields.forEach(field => {
         const row = document.createElement('div');
         row.classList.add('field-row');
@@ -372,7 +365,9 @@ document.addEventListener('DOMContentLoaded', function() {
         container.appendChild(row);
       });
       bindAllFieldsToggle();
-      console.debug("Loaded fields:", data.fields);
+      // Populate JSON Editor and Quant/Qual options now that fields are available.
+      populateJSONEditor(data.fields);
+      populateQuantQualOptions(data.fields);
     })
     .catch(err => {
       console.error("Error loading fields:", err);
@@ -380,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Bind the "All Fields" checkbox to toggle individual checkboxes
+  // Bind "All Fields" checkbox toggle.
   function bindAllFieldsToggle() {
     const allFieldsCheckbox = document.getElementById('all-fields');
     if (allFieldsCheckbox) {
@@ -392,86 +387,49 @@ document.addEventListener('DOMContentLoaded', function() {
             cb.checked = allFieldsCheckbox.checked;
           }
         });
-        console.debug("All Fields toggled:", allFieldsCheckbox.checked);
       });
     }
   }
 
-  // Show/hide spatial envelope options based on selection.
+  // Spatial input toggle.
   document.getElementById('spatial-input-select').addEventListener('change', function() {
     const envelopeOptions = document.getElementById('spatial-envelope-options');
-    if (this.value === "Envelope") {
-      envelopeOptions.style.display = 'block';
-      console.debug("Spatial Input set to Envelope.");
-    } else {
-      envelopeOptions.style.display = 'none';
-      console.debug("Spatial Input set to None.");
-    }
+    envelopeOptions.style.display = (this.value === "Envelope") ? 'block' : 'none';
   });
 
-  // Update Preview: gather config and send to backend
+  // Update preview: gather config and send to the backend.
   function updatePreview() {
-    console.debug("Update Preview clicked.");
     const apiUrl = document.getElementById('api-url-input').value;
-    console.debug("API URL:", apiUrl);
     const fieldsContainer = document.getElementById('fields-container');
     const allFieldsCheckbox = document.getElementById('all-fields');
     let selectedFields;
     if (allFieldsCheckbox && allFieldsCheckbox.checked) {
       selectedFields = "*";
-      console.debug("Using '*' for outFields (All Fields checked).");
     } else {
       selectedFields = [];
       const fieldRows = fieldsContainer.querySelectorAll('.field-row:not(.header)');
       fieldRows.forEach(row => {
         const cb = row.querySelector('input[type="checkbox"]');
-        if (cb) {
-          console.debug("Field:", cb.value, "Checked:", cb.checked);
-          if (cb.checked) {
-            selectedFields.push(cb.value);
-          }
+        if (cb && cb.checked) {
+          selectedFields.push(cb.value);
         }
       });
-      console.debug("Selected fields:", selectedFields);
     }
-
-    // Get output options
-    const outReturnGeometryElem = document.getElementById('out-return-geometry');
-    const outReturnIdsElem = document.getElementById('out-return-ids');
-    const outReturnCountElem = document.getElementById('out-return-count');
-    const previewLimitElem = document.getElementById('preview-limit');
-
-    if (!outReturnGeometryElem || !outReturnIdsElem || !outReturnCountElem || !previewLimitElem) {
-      console.error("Missing one or more output option elements.");
-      return;
-    }
-
-    const outReturnGeometry = outReturnGeometryElem.checked;
-    const outReturnIds = outReturnIdsElem.checked;
-    const outReturnCount = outReturnCountElem.checked;
-    const previewLimit = previewLimitElem.value;
-    console.debug("Output options:", { outReturnGeometry, outReturnIds, outReturnCount, previewLimit });
-
-    // Spatial input options
+    // Output options.
+    const outReturnGeometry = document.getElementById('out-return-geometry').checked;
+    const outReturnIds = document.getElementById('out-return-ids').checked;
+    const outReturnCount = document.getElementById('out-return-count').checked;
+    const previewLimit = document.getElementById('preview-limit').value;
+    // Spatial input options.
     const spatialInput = document.getElementById('spatial-input-select').value;
-    let inSR = "";
-    let spatialRel = "";
+    let inSR = "", spatialRel = "";
     if (spatialInput === "Envelope") {
-      const inSRElem = document.getElementById('inSR-input');
-      const spatialRelElem = document.getElementById('spatial-rel-select');
-      if (inSRElem && spatialRelElem) {
-        inSR = inSRElem.value;
-        spatialRel = spatialRelElem.value;
-        console.debug("Spatial envelope options:", { inSR, spatialRel });
-      } else {
-        console.warn("Spatial envelope elements missing.");
-      }
+      inSR = document.getElementById('inSR-input').value;
+      spatialRel = document.getElementById('spatial-rel-select').value;
     }
-    const outSRElem = document.getElementById('outSR-input');
-    const outSR = outSRElem ? outSRElem.value : "";
-    console.debug("Output Spatial Reference:", outSR);
+    const outSR = document.getElementById('outSR-input').value;
 
-    // Build configuration object
+    // Build configuration object.
     const config = {
       api_url: apiUrl,
       selected_fields: selectedFields,
@@ -488,20 +446,14 @@ document.addEventListener('DOMContentLoaded', function() {
       config.inSR = inSR;
       config.spatialRel = spatialRel;
     }
-    console.debug("Final config object:", config);
-
-    // Send to backend for preview generation
+    // Send config to backend.
     fetch('/editor/generate_preview', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(config)
     })
-    .then(response => {
-      console.debug("Raw response:", response);
-      return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-      console.debug("Preview data received:", data);
       window.generatedCode = data;
       refreshCodePreview();
     })
@@ -510,23 +462,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Refresh the code preview text area
+  // Refresh code preview based on selected preview type.
   function refreshCodePreview() {
     const codeType = document.getElementById('code-type-select').value;
     const codePreview = document.getElementById('code-preview');
-    if (window.generatedCode) {
-      let previewContent = window.generatedCode[codeType] || "";
-      // If previewContent is an object, stringify it
-      if (typeof previewContent === 'object') {
-        previewContent = JSON.stringify(previewContent, null, 2);
-      }
-      codePreview.value = previewContent;
-    } else {
-      codePreview.value = "// Preview code will appear here once you update.";
+    let previewContent = window.generatedCode ? window.generatedCode[codeType] || "" : "// Preview will appear here.";
+    if (typeof previewContent === 'object') {
+      previewContent = JSON.stringify(previewContent, null, 2);
     }
+    codePreview.value = previewContent;
   }
 
-  // Bind events for update preview, preview type change, and copy
   document.getElementById('update-preview').addEventListener('click', updatePreview);
   document.getElementById('code-type-select').addEventListener('change', refreshCodePreview);
   document.getElementById('copy-code').addEventListener('click', function() {
@@ -535,4 +481,125 @@ document.addEventListener('DOMContentLoaded', function() {
     document.execCommand("copy");
     alert("Code copied to clipboard!");
   });
+
+  // Helper: Populate JSON Editor with a form for each field.
+  function populateJSONEditor(fields) {
+    const jsonContainer = document.getElementById('json-editor');
+    jsonContainer.innerHTML = "";
+    fields.forEach(field => {
+      const fieldDiv = document.createElement('div');
+      fieldDiv.classList.add('json-field');
+      fieldDiv.style.border = "1px solid #ccc";
+      fieldDiv.style.marginBottom = "10px";
+      fieldDiv.style.padding = "5px";
+      fieldDiv.innerHTML = `
+        <h4>${field}</h4>
+        <label>Weight: <input type="number" step="0.01" name="${field}_weight" /></label><br>
+        <label>Meaning: <input type="text" name="${field}_meaning" /></label><br>
+        <label>Importance: <input type="text" name="${field}_importance" /></label><br>
+        <label>Grade: <input type="number" step="0.01" name="${field}_grade" /></label>
+      `;
+      jsonContainer.appendChild(fieldDiv);
+    });
+  }
+
+  // Helper: Populate Quant/Qual selector for Python Options.
+  function populateQuantQualOptions(fields) {
+    const container = document.getElementById('quant-qual-section');
+    container.innerHTML = "";
+    fields.forEach(field => {
+      const row = document.createElement('div');
+      row.style.marginBottom = "5px";
+      row.innerHTML = `
+        <span style="font-weight:bold;">${field}</span>
+        <label style="margin-left:10px;">
+          <input type="checkbox" class="quant-field" value="${field}" /> Quantitative
+        </label>
+        <label style="margin-left:10px;">
+          <input type="checkbox" class="qual-field" value="${field}" /> Qualitative
+        </label>
+      `;
+      container.appendChild(row);
+    });
+    // Append a button to generate the Python function.
+    const pyGenerateBtn = document.createElement('button');
+    pyGenerateBtn.textContent = "Generate Python Function";
+    pyGenerateBtn.addEventListener('click', generatePythonFunction);
+    container.appendChild(pyGenerateBtn);
+  }
+
+  // JSON file upload handler: parses and populates the JSON editor if valid.
+  document.getElementById('json-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const jsonData = JSON.parse(e.target.result);
+          if (validateJSONStructure(jsonData)) {
+            populateJSONEditorFromData(jsonData);
+          } else {
+            alert("Uploaded JSON does not match the required structure.");
+          }
+        } catch(err) {
+          alert("Error parsing JSON file: " + err);
+        }
+      }
+      reader.readAsText(file);
+    }
+  });
+
+  function validateJSONStructure(data) {
+    // Simple validation: check for expected keys.
+    return data.hasOwnProperty("datasetName") && data.hasOwnProperty("qualitativeFields");
+  }
+
+  function populateJSONEditorFromData(data) {
+    const jsonContainer = document.getElementById('json-editor');
+    jsonContainer.innerHTML = "";
+    data.qualitativeFields.forEach(fieldObj => {
+      const fieldDiv = document.createElement('div');
+      fieldDiv.classList.add('json-field');
+      fieldDiv.style.border = "1px solid #ccc";
+      fieldDiv.style.marginBottom = "10px";
+      fieldDiv.style.padding = "5px";
+      fieldDiv.innerHTML = `
+        <h4>${fieldObj.fieldName} (Qualitative)</h4>
+        <label>Meaning: <input type="text" name="${fieldObj.fieldName}_meaning" value="${fieldObj.meaning}" /></label><br>
+        <label>Importance: <input type="text" name="${fieldObj.fieldName}_importance" value="${fieldObj.importance}" /></label><br>
+        <label>Overall Field Grade: <input type="number" step="0.01" name="${fieldObj.fieldName}_grade" value="${fieldObj.overallFieldImportanceGrade || ''}" /></label>
+      `;
+      jsonContainer.appendChild(fieldDiv);
+    });
+  }
+
+  // Generate Python function code based on Quant/Qual selections.
+  function generatePythonFunction() {
+    const quantFields = Array.from(document.querySelectorAll('.quant-field:checked')).map(cb => cb.value);
+    const qualFields = Array.from(document.querySelectorAll('.qual-field:checked')).map(cb => cb.value);
+    let pythonCode = "import json\nimport numpy as np\n\ndef quant_and_qual_analysis(geojson_path):\n";
+    pythonCode += "    with open(geojson_path, 'r') as f:\n";
+    pythonCode += "        data = json.load(f)\n";
+    pythonCode += "    quant_stats = {}\n";
+    pythonCode += "    qual_counts = {}\n";
+    pythonCode += `    quant_fields = ${JSON.stringify(quantFields)}\n`;
+    pythonCode += `    qual_fields = ${JSON.stringify(qualFields)}\n`;
+    pythonCode += "    for field in quant_fields:\n";
+    pythonCode += "        quant_stats[field] = []\n";
+    pythonCode += "    for field in qual_fields:\n";
+    pythonCode += "        qual_counts[field] = {}\n";
+    pythonCode += "    for feature in data['features']:\n";
+    pythonCode += "        props = feature['properties']\n";
+    pythonCode += "        for field in quant_fields:\n";
+    pythonCode += "            if (field in props && typeof props[field] === 'number'):\n";
+    pythonCode += "                quant_stats[field].push(props[field])\n";
+    pythonCode += "        for field in qual_fields:\n";
+    pythonCode += "            if (field in props):\n";
+    pythonCode += "                let value = props[field];\n";
+    pythonCode += "                qual_counts[field][value] = (qual_counts[field][value] || 0) + 1\n";
+    pythonCode += "    return quant_stats, qual_counts\n";
+    window.generatedCode = window.generatedCode || {};
+    window.generatedCode.python = pythonCode;
+    refreshCodePreview();
+  }
 });

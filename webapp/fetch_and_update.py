@@ -13,17 +13,14 @@ def get_api_preview(api_url, limit=10):
     `limit` features as a JSON list.
     """
     try:
-        # Create a FeatureLayer from the base URL
         base_url = api_url.split('/query')[0]
         layer = FeatureLayer(base_url)
-        # You can pass additional parameters if needed – here we use a simple query:
         result = layer.query(
             where="1=1",
             out_fields="*",
             return_geometry=True,
             out_sr="4326"
         )
-        # Get only the first `limit` features. Use the as_dict property to get JSON–serializable dictionaries.
         preview_features = [feat.as_dict for feat in result.features[:limit]]
         logger.info("Preview features: %s", preview_features)
         return preview_features

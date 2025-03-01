@@ -306,13 +306,13 @@ def fetch_fields():
         # Remove any query string so we can create a FeatureLayer object.
         base_url = api_url.split('/query')[0]
         layer = FeatureLayer(base_url)
-        # Query using simple parameters (we don’t need geometry here)
+        # Query using simple parameters (geometry is not needed here)
         result = layer.query(where="1=1", out_fields="*", return_geometry=False)
         features = result.features
         if not features:
             return jsonify({"error": "No features found in the API response."}), 400
         first_feature = features[0]
-        properties = first_feature.attributes  # attributes holds the field values
+        properties = first_feature.attributes  # attributes hold the field values
         if not properties:
             return jsonify({"error": "No properties found in the first feature."}), 400
         field_list = list(properties.keys())
@@ -333,23 +333,21 @@ def generate_api_response_preview(api_url, preview_limit):
 
 
 def generate_api_creation_preview(api_url, selected_fields, config):
-    # Build query parameters manually (or you could use similar logic as above)
+    # Build query parameters.
     params = {
         "where": "1=1",
         "f": "json"
     }
-    if not selected_fields or selected_fields == "*" :
+    if not selected_fields or selected_fields == "*":
         params["outFields"] = "*"
     else:
         params["outFields"] = ",".join(selected_fields)
-
-    # If spatial input is envelope, add those parameters.
+    # If spatial input is envelope, add parameters.
     if config.get("spatial_input", "None").lower() == "envelope":
         params["geometry"] = ""
         params["geometryType"] = "esriGeometryEnvelope"
         params["inSR"] = config.get("inSR", "4326")
         params["spatialRel"] = config.get("spatialRel", "esriSpatialRelIntersects")
-
     # Add output options.
     output_options = config.get("output_options", {})
     if "returnGeometry" in output_options:
@@ -360,7 +358,6 @@ def generate_api_creation_preview(api_url, selected_fields, config):
         params["returnCountOnly"] = "true" if output_options["returnCountOnly"] else "false"
     if "outSR" in output_options:
         params["outSR"] = output_options["outSR"]
-
     parsed = urllib.parse.urlparse(api_url)
     query = urllib.parse.urlencode(params, doseq=True)
     generated_api_url = urllib.parse.urlunparse((
