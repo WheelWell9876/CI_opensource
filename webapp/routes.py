@@ -317,33 +317,30 @@ def fetch_fields():
 
 @main_blueprint.route('/editor/generate_preview', methods=['POST'])
 def generate_preview():
-    """
-    Receives configuration from the editor (including API URL, selected fields, output options, and preview limit).
-    It then fetches the API response and returns:
-      - a formatted preview of the first N features (as "api_response"),
-      - plus stub strings for "api", "json", and "python" previews.
-    """
     config = request.get_json()
+    logger.info("Received preview config: %s", config)
     api_url = config.get("api_url")
     try:
         preview_limit = int(config.get("preview_limit", 10))
     except ValueError:
         preview_limit = 10
 
-    # Generate API response preview (only first N objects)
     try:
-        from .fetch_and_update import get_api_preview  # Ensure proper import
+        from .fetch_and_update import get_api_preview
         api_response_preview = get_api_preview(api_url, limit=preview_limit)
+        logger.info("Generated API response preview successfully.")
     except Exception as e:
+        logger.exception("Error in get_api_preview:")
         api_response_preview = f"Error fetching API response: {e}"
 
-    # For now, stubs for the other preview options
     generated_preview = {
         "api_response": api_response_preview,
         "api": "// Generated API creation code goes here...",
         "json": "// Generated JSON creation code goes here...",
         "python": "// Generated Python function code goes here..."
     }
+    logger.info("Sending generated preview to client.")
     return jsonify(generated_preview)
+
 
 
