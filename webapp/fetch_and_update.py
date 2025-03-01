@@ -1,0 +1,341 @@
+import requests
+import json
+import logging
+
+# ARC_GIS_ENDPOINTS is a mapping of dataset_name -> URL
+ARC_GIS_ENDPOINTS = {
+    "EPA Disaster Debris Recovery Data": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/EPA_Disaster_Debris_Recovery_Data/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "EPA Emergency Response (ER) Risk Management Plan (RMP) Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/FRS_INTERESTS_RMP/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "EPA Emergency Response (ER) Toxic Release Inventory (TRI) Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_INTERESTS_TRI/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "EPA Emergency Response (ER) Toxic Substances Control Act (TSCA) Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/FRS_INTERESTS_TSCA/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "FRS Interests": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_INTERESTS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "EPA Power Generation Facilities By Source": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_PowerPlants/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "ICIS Wastewater Treatment Plants": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_Wastewater/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "RCRATSD_Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_INTERESTS_RCRA_TSD/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "EPA Superfund Enterprise Management System (SEMS) Sites": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/FRS_INTERESTS_SEMS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Manufacturing Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/General_Manufacturing_Facilities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Antenna Structure Registration (ASR)": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/asr/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Broadband Radio Service and Educational Broadband Service Transmitters": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/brs_ebs/FeatureServer/5/query?outFields=*&where=1%3D1&f=geojson",
+    "Cellular Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Cellular_Towers_New/FeatureServer/6/query?outFields=*&where=1%3D1&f=geojson",
+    "Land Mobile Broadcast Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Land_Mobile_Broadcast_Towers/FeatureServer/7/query?outFields=*&where=1%3D1&f=geojson",
+    "Land Mobile Commercial Transmission Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Land_Mobile_Commercial_Towers/FeatureServer/8/query?outFields=*&where=1%3D1&f=geojson",
+    "Land Mobile Private Transmission Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/_Land_Mobile_Private_Transmission_Towers/FeatureServer/9/query?outFields=*&where=1%3D1&f=geojson",
+    "Microwave Service Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Microwave_Service_Towers_New/FeatureServer/10/query?outFields=*&where=1%3D1&f=geojson",
+    "Paging Transmission Towers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Paging_Transmission_Towers/FeatureServer/11/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Child Care Centers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/ChildCareCenter1/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Colleges and Universities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Colleges_and_Universities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Colleges and Universities Campuses": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Colleges_and_Universities_Campuses/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Elementary School Districts": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/School/MapServer/2/query?outFields=*&where=1%3D1&f=geojson",
+    "Private Schools": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Private_Schools/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Public Schools": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Public_Schools/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "School District Administrative Areas": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/School/MapServer/3/query?outFields=*&where=1%3D1&f=geojson",
+    "Secondary School Districts": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/School/MapServer/1/query?outFields=*&where=1%3D1&f=geojson",
+    "Supplemental Colleges": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Supplemental_Colleges/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Truck Driving Schools": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Truck_Driving_Schools/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Unified School Districts": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/School/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "American Red Cross Chapter": "https://services.arcgis.com/pGfbNJoYypmNq86F/ArcGIS/rest/services/Master_ARC_Geography_2022/FeatureServer/3/query?outFields=*&where=1%3D1&f=geojson",
+    "American Red Cross Counties / Chapters / Regions / Divisions": "https://services.arcgis.com/pGfbNJoYypmNq86F/ArcGIS/rest/services/Master_ARC_Geography_2022/FeatureServer/5/query?outFields=*&where=1%3D1&f=geojson",
+    "American Red Cross Counties Divisions": "https://services.arcgis.com/pGfbNJoYypmNq86F/ArcGIS/rest/services/Master_ARC_Geography_2022/FeatureServer/1/query?outFields=*&where=1%3D1&f=geojson",
+    "American Red Cross Headquarters": "https://services.arcgis.com/pGfbNJoYypmNq86F/ArcGIS/rest/services/Master_ARC_Geography_2022/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "American Red Cross Regions": "https://services.arcgis.com/pGfbNJoYypmNq86F/ArcGIS/rest/services/Master_ARC_Geography_2022/FeatureServer/2/query?outFields=*&where=1%3D1&f=geojson",
+    "Federal Emergency Management Agency Recovery Offices": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/FEMARecoveryOffices/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Fire and Emergency Medical Service (EMS) Stations": "https://carto.nationalmap.gov/arcgis/rest/services/structures/MapServer/51/query?outFields=*&where=1%3D1&f=geojson",
+    "Hurricane Evacuation Routes": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Hurricane_Evacuation_Routes/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Local Emergency Operations Center (EOC)": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Local_Emergency_Operations_Centers_EOC/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "National Shelter System Facilities": "https://gis.fema.gov/arcgis/rest/services/NSS/FEMA_NSS/FeatureServer/5/query?outFields=*&where=1%3D1&f=geojson",
+    "PSAP 911 Service Area Boundaries": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/PSAP_911_Service_Area_Boundaries/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Above_Ground_LNG_Storage_Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Above_Ground_LNG_Storage_Facilities_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Alternative Fueling Stations": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/Alternative_Fueling_Stations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Biodiesel Plants": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/Alternative_Fueling_Stations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Border Crossings - Natural Gas": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Biodiesel_Plants_US_EIA/FeatureServer/113/query?outFields=*&where=1%3D1&f=geojson",
+    "Control Areas": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Control_Areas_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Electric Holding Company Areas": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Holding_Company_Areas/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Electric Planning Areas": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Planning_Areas/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Electric Retail Service Territories": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Retail_Service_Territories/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Ethanol Plants": "https://services7.arcgis.com/FGr1D95XCGALKXqM/ArcGIS/rest/services/Ethanol_Plants_US_EIA/FeatureServer/112/query?outFields=*&where=1%3D1&f=geojson",
+    "FERC Regions": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/FERC_Regions_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Generating Units": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/GeneratingUnits1/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Hydrocarbon Gas Liquid Pipelines": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/HGL_Pipelines_US_EIA/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Independent Systems Operators": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Independent_System_Operator/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Liquified Natural Gas (LNG) Import and Export Terminals": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Lng_ImportExportTerminals_US_EIA/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Natural Gas Interstate and Intrastate Pipelines": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/NaturalGas_InterIntrastate_Pipelines_US_EIA/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Natural Gas Processing Plants": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/NaturalGas_ProcessingPlants_US_EIA/FeatureServer/23/query?outFields=*&where=1%3D1&f=geojson",
+    "Natural Gas Service Territories": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Natural_Gas_Service_Territories/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Natural Gas Underground Storage": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Natural_Gas_Underground_Storage/FeatureServer/39/query?outFields=*&where=1%3D1&f=geojson",
+    "Natural Gas Wells": "https://services7.arcgis.com/FGr1D95XCGALKXqM/ArcGIS/rest/services/Natural_Gas_Wells/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Northeast Petroleum Reserve": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Northeast_Petroleum_Reserves/FeatureServer/41/query?outFields=*&where=1%3D1&f=geojson",
+    "Oil Wells": "https://services7.arcgis.com/FGr1D95XCGALKXqM/ArcGIS/rest/services/Oil_Wells/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Oil and Natural Gas Platforms": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Oil_and_Natural_Gas_Platforms/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Outer Continental Shelf (OCS) Oil and Natural Gas Wells": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Oil_and_Natural_Gas_Platforms/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "POL Terminals": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/POL_Terminals/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Peak Shaving Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Peak_Shaving_Facilities_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Petroleum Product Terminals": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/PetroleumProduct_Terminals_US_EIA/FeatureServer/36/query?outFields=*&where=1%3D1&f=geojson",
+    "Petroleum Refineries": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Petroleum_Refineries_US_EIA/FeatureServer/22/query?outFields=*&where=1%3D1&f=geojson",
+    "Power Plants": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Plants_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Strategic Petroleum Reserve": "https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/SPR_US_EIA/FeatureServer/42/query?outFields=*&where=1%3D1&f=geojson",
+    "Transmission Lines": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Transmission_Lines/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "FDIC Insured Banks": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/FDIC_InsuredBanks/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "NCUA Insured Credit Unions": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/NCUA_Insured_Credit_Unions/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Public Refrigerated Warehouses": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Public_Refrigerated_Warehouses/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Incorporated Places (Civil)": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/1/query?outFields=*&where=1%3D1&f=geojson",
+    "Unincorporated Places (Census)": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/2/query?outFields=*&where=1%3D1&f=geojson",
+    "Populated Places": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/3/query?outFields=*&where=1%3D1&f=geojson",
+    "Landforms": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/5/query?outFields=*&where=1%3D1&f=geojson",
+    "Streams (Mouth)": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/6/query?outFields=*&where=1%3D1&f=geojson",
+    "Other Hydrographic Features": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/7/query?outFields=*&where=1%3D1&f=geojson",
+    "Antarctica": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/8/query?outFields=*&where=1%3D1&f=geojson",
+    "Crossings": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/10/query?outFields=*&where=1%3D1&f=geojson",
+    "Historical Cultural-Political Points": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/12/query?outFields=*&where=1%3D1&f=geojson",
+    "Historical Hydrographic Points": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/13/query?outFields=*&where=1%3D1&f=geojson",
+    "Historical Physical Points": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/14/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Courthouses": "https://carto.nationalmap.gov/arcgis/rest/services/structures/MapServer/40/query?outFields=*&where=1%3D1&f=geojson",
+    "Food and Drug Administration (FDA) Office Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Food_and_Drug_Administration_FDA_Office_Facilities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Formerly Used Defense Sites (FUDS) Program District Boundaries": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/fuds/FeatureServer/9/query?outFields=*&where=1%3D1&f=geojson",
+    "Formerly Used Defense Sites (FUDS) Projects (Points)": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/fuds/FeatureServer/2/query?outFields=*&where=1%3D1&f=geojson",
+    "Formerly Used Defense Sites (FUDS) Public Munitions Response Sites (MRS)": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/fuds/FeatureServer/3/query?outFields=*&where=1%3D1&f=geojson",
+    "Formerly Used Defense Sites (FUDS) Public Properties": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/fuds/FeatureServer/1/query?outFields=*&where=1%3D1&f=geojson",
+    "Military Installations, Ranges, and Training Areas (MIRTA) DoD Sites - Points": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/FY22_MIRTA_Points_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "US Army Corps of Engineers (USACE) Civil Works Districts": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_cw_districts/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "US Army Corps of Engineers (USACE) Military Districts": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_mil_dist/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "US Army Corps of Engineers (USACE) Offices": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_offices/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "USCG Districts": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/USCG_Districts_/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "USCG Sectors": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/USCG_Sectors_/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Local Law Enforcement Locations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Local_Law_Enforcement_Locations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "US District Court Jurisdictions": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/US_District_Court_Jurisdictions/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Agricultural Minerals Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Agricultural_Minerals_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Construction Minerals Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Construction_Minerals_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Crushed Stone Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Crushed_Stone_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Ferrous Metal Mines": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Ferrous_Metal_Mines/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Ferrous Metal Processing Plants": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Ferrous_Metal_Process_Plants/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Mines and Mineral Resources": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Mines_and_Mineral_Resources/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Miscellaneous Industrial Mineral Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Miscellaneous_Industrial_Mineral_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Nonferrous Metal Mines": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Nonferrous_Metal_Mines/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Nonferrous Metal Processing Plants": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Nonferrous_Metal_Processing_Plants/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Refractory Abrasive and Other Industrial Mineral Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Refractory_Abrasive_and_Other_Industrial_Mineral_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Sand and Gravel Operations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Sand_and_Gravel_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "US Coal Fields": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Coal_Fields_of_the_Conterminous_United_States/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Uranium and Vanadium Deposits": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Uranium_and_Vanadium_Deposits/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Deep Ocean Assessment and Reporting of Tsunamis (DART) Stations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/8/query?outFields=*&where=1%3D1&f=geojson",
+    "Historical Holocene Volcano Locations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/7/query?outFields=*&where=1%3D1&f=geojson",
+    "Historical Significant Earthquake Locations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/5/query?outFields=*&where=1%3D1&f=geojson",
+    "Historical Significant Volcanic Eruption Locations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/5/query?outFields=*&where=1%3D1&f=geojson",
+    "Historical Tsunami Event Locations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Historical Tsunami Event Locations with Runups": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/4/query?outFields=*&where=1%3D1&f=geojson",
+    "Historical Wildfire Perimeters": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Historical_Fire_Perimeters/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Quaternary Fault Lines": "https://earthquake.usgs.gov/arcgis/rest/services/haz/Qfaults/MapServer/21/query?outFields=*&where=1%3D1&f=geojson",
+    "Tsunami Capable Tide Stations": "https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/hazards/MapServer/11/query?outFields=*&where=1%3D1",
+    "US Landslide Regions": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/US_Landslide_poly_v2/FeatureServer/1/query?outFields=*&where=1%3D1&f=geojson",
+    "USGS Hydro Network Linked Data Index (NLDI) Streamgage Monitoring Locations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/USGS_NLDI_Reference_Gages/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "WFIGS Interagency Fire Perimeters": "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Interagency_Perimeters/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Dialysis Centers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Dialysis_Centers/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Hospitals": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Hospitals_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Nursing Homes": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/NursingHomes2024/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Urgent Care Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Urgent_Care_Facilities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Veterans Health Administration Medical Facilities": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Veterans_Health_Administration_Medical_Facilities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Mobile Home Parks": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Mobile_Home_Parks/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Airspace Boundaries": "https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/arcgis/rest/services/Boundary_Airspace/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Aviation Facilities": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_Aviation_Facilities/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Runways": "https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/arcgis/rest/services/Runways/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Spaceports": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_Spaceports/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Amtrak Stations": "https://geo.dot.gov/server/rest/services/Hosted/Amtrak_Stations_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Intermodal Freight Facilities Pipeline Terminals": "https://geo.dot.gov/server/rest/services/Hosted/Intermodal_Freight_Facilities_Pipeline_Terminals_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Intermodal Passenger Connectivity Database (IPCD)": "https://geo.dot.gov/server/rest/services/Hosted/Intermodal_Passenger_Connectivity_Database_IPCD_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "National Bridge Inventory (NBI)": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_National_Bridge_Inventory/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "National Transit Map Agencies": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTM_Agencies/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "National Transit Map Stops": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTM_Stops/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "National Tunnel Inventory": "https://geo.dot.gov/server/rest/services/Hosted/National_Tunnel_Inventory_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "North American Rail Network Lines": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_North_American_Rail_Network_Lines/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "North American Rail Network Nodes": "https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_North_American_Rail_Network_Nodes/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Primary Roads": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer/2/query?outFields=*&where=1%3D1&f=geojson",
+    "Railroad Grade Crossings": "https://geo.dot.gov/server/rest/services/Hosted/Railroad_Grade_Crossings_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Railroads": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer/9/query?outFields=*&where=1%3D1&f=geojson",
+    "Trails": "https://carto.nationalmap.gov/arcgis/rest/services/transportation/MapServer/11/query?outFields=*&where=1%3D1&f=geojson",
+    "Travel Monitoring Analysis System (TMAS) Stations": "https://geo.dot.gov/server/rest/services/Hosted/Travel_Monitoring_Analysis_System_TMAS_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Administrative Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/ADMINISTRATIVE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Airport Area (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/AIRPORT_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Anchorages (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/ANCHOR_BERTH_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Berths Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/BERTHS_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Bridge Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/BRIDGE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Building Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/BUILDING_SINGLE_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Built Up Areas Point": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/BUILT_UP_AREA_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Buoys (USACE IENC)": "https://services3.arcgis.com/JR1tf2VoTNNjWen5/ArcGIS/rest/services/USACE_Buoys_Service/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Cable Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/CABLE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Caution Area Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/CAUTION_AREA_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Coastlines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/COASTLINE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Conveyor Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/CONVEYOR_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Crane Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/CRANES_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Dam Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DAM_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Data Coverage Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DATA_COVERAGE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Data Quality Assessment Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DATA_QUALITY_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Daymark Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DAYMARK_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Distance Marks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DISTANCE_MARK_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Dry Docks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DRY_DOCK_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Dumping Ground Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DUMPING_GROUND_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Ferry Routes": "https://geo.dot.gov/server/rest/services/Hosted/Ferry_Routes_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Ferry Terminals": "https://geo.dot.gov/server/rest/services/Hosted/Ferry_Terminals_DS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Floating Docks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/FLOATING_DOCK_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Floodwalls (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/FLOODWALL_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Harbor Administrative Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/HARBOUR_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Harbor Facility Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/HARBOUR_FACILITY_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Harbor Facility Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/HARBOUR_FACILITY_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Hulke Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/HULKES_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    # "Inland Waterway Mile Markers (USACE IENC)": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/ArcGIS/rest/services/usace_river_mile_markers/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Isolated Danger Buoy Point (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/ISOLATED_DANGER_BUOY_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Land Region Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LAND_REGION_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Land Region Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LAND_REGION_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    # "Land Surface Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LAND_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Landmark Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LANDMARK_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Landmark Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LANDMARK_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Lateral Beacons (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LATERAL_BEACON_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Lateral Buoys (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LATERAL_BUOY_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Levee Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LEVEE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Levee Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LEVEE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Lock Basins (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LOCK_BASIN_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Lock Gate Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LOCK_GATE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Lock Gate Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LOCK_GATE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Lock Traffic Signal Stations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/TRAFFIC_SIGNAL_STATION_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Locks (USACE IENC)": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/ArcGIS/rest/services/ndc/FeatureServer/3/query?outFields=*&where=1%3D1&f=geojson",
+    "Marine Jurisdiction Boundaries": "https://maritimeboundaries.noaa.gov/arcgis/rest/services/MaritimeBoundaries/US_Maritime_Limits_Boundaries/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Mooring Facility Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/MOORING_FACILITY_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Mooring Facility Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/MOORING_FACILITY_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Mooring Facility Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/MOORING_FACILITY_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "National Marine Service Regions": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/National_Marine_Service_Regions/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    # "Nautical Publication Information Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/NAUTICAL_PUBLICATION_INFORMATION_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Navigable Waterway Network Lines": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/ndc/FeatureServer/7/query?outFields=*&where=1%3D1&f=geojson",
+    "Navigable Waterway Network Node Locations": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/ArcGIS/rest/services/ndc/FeatureServer/6/query?outFields=*&where=1%3D1&f=geojson",
+    "Navigation Lights (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/LIGHTS_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Navigation System of Marks Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/NAVIGATIONAL_SYSTEM_OF_MARKS_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Notice Marks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/NOTICE_MARK_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Obstruction Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/OBSTRUCTION_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Obstruction Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/OBSTRUCTION_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Obstruction Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/OBSTRUCTION_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Overhead Cables (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/OVERHEAD_CABLE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Overhead Pipeline Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/OVERHEAD_PIPELINE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Pile Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/PILE_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Pipeline Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/PIPE_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    # "Pontoon Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/PONTOON_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Principal Ports": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/ArcGIS/rest/services/ndc/FeatureServer/1/query?outFields=*&where=1%3D1&f=geojson",
+    "Pylon Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/PYLONS_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Pylon Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/PYLONS_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    # "Railways (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/RAILROAD_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Recommended Tracks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/RECOMMENDED_TRACK_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    # "Regulated Navigational Areas": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Regulated_Navigational_Areas/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Restricted Navigation Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/RESTRICTED_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "River Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/RIVERS_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "River Gauges (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/WATERWAY_GAUGE_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    # "River Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/RIVERS_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Roads (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/ROADWAY_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    # "Safety Zones": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Safety_Zones/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Sea Area Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SEA_AREA_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Sea Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SEA_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    # "Security Zones": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Security_Zones/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Shipping Fairways": "https://encdirect.noaa.gov/arcgis/rest/services/NavigationChartData/MarineTransportation/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Shoreline Construction Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SHORELINE_CONSTRUCTION_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Shoreline Construction Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SHORELINE_CONSTRUCTION_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Shoreline Construction Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SHORELINE_CONSTRUCTION_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Sloped Ground Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SLOPING_GROUND_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Sloped Ground Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SLOPE_TOPLINE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Small Craft Facility Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SMALL_CRAFT_FACILITY_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Small Craft Facility Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SMALL_CRAFT_FACILITY_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Special Purpose Buoys (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/BUOY_SPECIAL_PURPOSE_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Storage Tank or Silo Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/STORAGE_TANK_SILO_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Storage Tank or Silo Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/STORAGE_TANK_SILO_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Submarine Cable Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SUBMARINE_CABLE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Submarine Pipeline Lines (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SUBMARINE_PIPELINE_LINE/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Submarine Pipeline Locations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/SUBMARINE_PIPELINE_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Terminal Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/TERMINAL_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Terminal Points (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/TERMINAL_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "US Coast Guard (USCG) Captain of the Port Zones": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/US_Coast_Guard_USCG_Captain_of_the_Port_Zones/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "US Coast Guard (USCG) Maritime Differential GPS (DGPS) Locations": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/US_Coast_Guard_USCG_Maritime_Differential_GPS_DGPS_Locations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "US Maritime Limits Boundaries": "https://maritimeboundaries.noaa.gov/arcgis/rest/services/MaritimeBoundaries/US_Maritime_Limits_Boundaries/MapServer/3/query?outFields=*&where=1%3D1&f=geojson",
+    "Underwater Rock Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/UNDERWATER_ROCK_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Warning Signal Stations (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/WARNING_SIGNAL_STATION_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Wreck Areas (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/WRECKS_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Wrecks (USACE IENC)": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/WRECKS_POINT/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Wrecks and Obstructions": "https://coast.noaa.gov/arcgismc/rest/services/hosted/WrecksObstructions/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+    "Aquifers": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Aquifers/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "National Inventory of Dams (NID)": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/NID_v1/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "Reclamation Reservoirs": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Reclamation_Reservoirs/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+    "US Army Corps of Engineers (USACE) Owned and Operated Reservoirs": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_rez/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+
+}
+
+
+def get_api_preview(api_url, limit=10):
+    """
+    Fetches the API response from the given URL, prints only the first 'limit' features for debugging,
+    and returns a formatted JSON string containing only those features.
+
+    Args:
+      api_url (str): The URL to fetch.
+      limit (int): Maximum number of features to include in the preview.
+
+    Returns:
+      str: A pretty-printed JSON string of the first 'limit' features.
+    """
+    response = requests.get(api_url, timeout=60)
+    response.raise_for_status()
+    data = response.json()
+    features = data.get("features", [])
+    preview_features = features[:limit]
+
+    # Debug output: print only the first 'limit' features
+    print("DEBUG: First {} features from API response:".format(limit))
+    for feature in preview_features:
+        print(json.dumps(feature, indent=2)[:500])  # Print first 500 characters of each for brevity
+
+    return json.dumps(preview_features, indent=2)
+
+def fetch_geojson_from_api(dataset_name, api_url, output_path, config=None):
+    """
+    Fetches a GeoJSON file from a provided API URL and saves it to output_path.
+    Optionally uses extra parameters from config (e.g. headers, timeout).
+
+    Args:
+      dataset_name (str): Name of the dataset (for logging).
+      api_url (str): The API endpoint URL.
+      output_path (str): Where to save the downloaded file.
+      config (dict): Optional configuration; keys such as "timeout" (default 60).
+
+    Returns:
+      output_path (str): The file path where data is saved.
+    """
+    timeout = config.get("timeout", 60) if config else 60
+    headers = config.get("headers", {}) if config else {}
+
+    logging.info(f"[Fetch] Fetching '{dataset_name}' from API: {api_url}")
+    try:
+        response = requests.get(api_url, timeout=timeout, headers=headers)
+        response.raise_for_status()
+        with open(output_path, 'wb') as f:
+            f.write(response.content)
+        logging.info(f"[Fetch] Saved raw dataset to {output_path}")
+        return output_path
+    except Exception as e:
+        logging.error(f"[Fetch] Error fetching dataset '{dataset_name}': {e}")
+        raise
+
+
+def update_dataset_from_api(dataset_name, api_url, raw_output_path, config=None):
+    """
+    Wrapper to update the dataset from an API.
+    """
+    return fetch_geojson_from_api(dataset_name, api_url, raw_output_path, config)

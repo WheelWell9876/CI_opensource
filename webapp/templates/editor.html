@@ -2,20 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Custom API Crafter - CI Sentinel</title>
-  <!-- Use a specific stylesheet for the editor if desired -->
+  <title>Custom API Crafter - CI Sentinel Editor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/editor.css') }}">
-  <style>
-    /* Additional inline styles if needed */
-    #fields-container label { display: block; margin: 5px 0; }
-    #api-preview { background: #f0f0f0; padding: 10px; border: 1px solid #ccc; margin-top: 10px; }
-    .input-group { margin: 10px 0; }
-  </style>
 </head>
 <body>
   <header>
     <div class="logo">
-      <span class="logo-title">CI Sentinel - API Crafter</span>
+      <span class="logo-title">CI Sentinel - API Editor</span>
     </div>
     <nav>
       <ul class="nav-links-container">
@@ -25,34 +18,87 @@
       </ul>
     </nav>
   </header>
-  <div class="centered-content">
-    <h2>Custom API Crafter</h2>
-    <div class="input-group">
-      <label for="api-url-input">Enter ArcGIS API URL:</label>
-      <input type="text" id="api-url-input" size="100" placeholder="https://services1.arcgis.com/.../query?...">
-      <button id="load-fields">Load Fields</button>
+  <div class="editor-wrapper">
+    <!-- Left Panel: Options -->
+    <div class="editor-options">
+      <h2>Options &amp; Fields</h2>
+
+      <!-- New dropdown: Source Type -->
+      <div class="input-group">
+        <label for="source-type-select">Source Type:</label>
+        <select id="source-type-select">
+          <option value="provided">Provided API</option>
+          <option value="custom">Custom API</option>
+        </select>
+      </div>
+
+      <!-- Provided APIs dropdown (populated alphabetically) -->
+      <div class="input-group" id="provided-api-group">
+        <label for="provided-api-select">Choose an API:</label>
+        <select id="provided-api-select">
+          <!-- Options will be populated dynamically -->
+          <!-- For example: -->
+          <!-- <option value="https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/EPA_Disaster_Debris_Recovery_Data/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson">
+               "EPA Disaster Debris Recovery Data"
+          </option> -->
+        </select>
+      </div>
+
+      <!-- API URL input -->
+      <div class="input-group">
+        <label for="api-url-input">API URL:</label>
+        <input type="text" id="api-url-input" placeholder="https://services1.arcgis.com/.../query?..." />
+        <button id="load-fields">Load Fields</button>
+      </div>
+
+      <!-- Bento box for available fields -->
+      <div id="fields-container" class="bento-box">
+        <!-- Dynamically populated field checkboxes -->
+      </div>
+
+      <!-- Output options -->
+      <div class="input-group">
+        <h3>Output Options</h3>
+        <label>
+          <input type="checkbox" id="toggle-geometry" checked> Return Geometry
+        </label>
+        <label>
+          <input type="checkbox" id="toggle-ids"> Return IDs Only
+        </label>
+        <label>
+          <input type="checkbox" id="toggle-count"> Return Count Only
+        </label>
+      </div>
+
+      <!-- Preview limit input -->
+      <div class="input-group">
+        <label for="preview-limit">Number of Objects to Load:</label>
+        <input type="number" id="preview-limit" value="10" min="1" max="100">
+      </div>
+
+      <button id="update-preview">Update Preview</button>
+      <!-- Additional options can be added here -->
     </div>
-    <div id="fields-container">
-      <!-- Dynamically loaded field checkboxes will appear here -->
+
+    <!-- Right Panel: Live Preview -->
+    <div class="editor-preview">
+      <div class="preview-header">
+        <label for="code-type-select">Preview Type:</label>
+        <select id="code-type-select">
+          <!-- We add a new option "api_response" as default -->
+          <option value="api_response" selected>API Response</option>
+          <option value="api">API Creation</option>
+          <option value="json">JSON Creation</option>
+          <option value="python">Python Function</option>
+        </select>
+      </div>
+      <div class="code-container">
+        <button id="copy-code" title="Copy to Clipboard">Copy</button>
+        <textarea id="code-preview" spellcheck="false"></textarea>
+      </div>
     </div>
-    <div id="output-options" class="input-group">
-      <h3>Output Options</h3>
-      <label>
-        <input type="checkbox" id="toggle-geometry" checked> Return Geometry
-      </label>
-      <label>
-        <input type="checkbox" id="toggle-ids"> Return IDs Only
-      </label>
-      <label>
-        <input type="checkbox" id="toggle-count"> Return Count Only
-      </label>
-    </div>
-    <button id="update-api">Update API Preview</button>
-    <h3>Generated API URL</h3>
-    <div id="api-preview"></div>
   </div>
 
-  <!-- JavaScript -->
   <script src="{{ url_for('static', filename='scripts/editor.js') }}"></script>
 </body>
 </html>

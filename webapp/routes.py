@@ -3,6 +3,7 @@ import numpy as np
 from flask import Blueprint, render_template, request, jsonify
 import geopandas as gpd
 import logging
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -280,3 +281,69 @@ def gdf_to_geojson_dict(gdf):
     else:
         logger.warning("No records produced by GeoDataFrame conversion.")
     return {"data": records}
+
+# ---------------------------------------------------------------------------
+# Editor endpoints: fetch fields and generate preview (including API response)
+# ---------------------------------------------------------------------------
+
+@main_blueprint.route('/editor/fetch_fields', methods=['POST'])
+def fetch_fields():
+    """
+    Accepts a JSON payload with an API URL, calls that URL, and returns the available fields
+    from the first feature's properties. If no features are found or an error occurs, returns an error.
+    """
+    data = request.get_json()
+    api_url = data.get("api_url")
+    if not api_url:
+        return jsonify({"error": "Missing API URL"}), 400
+
+    try:
+        response = requests.get(api_url, timeout=60)
+        response.raise_for_status()
+        json_data = response.json()
+        features = json_data.get("features", [])
+        if not features:
+            return jsonify({"error": "No features found in the API response."}), 400
+
+        first_feature = features[0]
+        properties = first_feature.get("properties") or first_feature.get("attributes")
+        if not properties:
+            return jsonify({"error": "No properties found in the first feature."}), 400
+
+        field_list = list(properties.keys())
+        return jsonify({"fields": field_list})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@main_blueprint.route('/editor/generate_preview', methods=['POST'])
+def generate_preview():
+    """
+    Receives configuration from the editor (including API URL, selected fields, output options, and preview limit).
+    It then fetches the API response and returns:
+      - a formatted preview of the first N features (as "api_response"),
+      - plus stub strings for "api", "json", and "python" previews.
+    """
+    config = request.get_json()
+    api_url = config.get("api_url")
+    try:
+        preview_limit = int(config.get("preview_limit", 10))
+    except ValueError:
+        preview_limit = 10
+
+    # Generate API response preview (only first N objects)
+    try:
+        from .fetch_and_update import get_api_preview  # Ensure proper import
+        api_response_preview = get_api_preview(api_url, limit=preview_limit)
+    except Exception as e:
+        api_response_preview = f"Error fetching API response: {e}"
+
+    # For now, stubs for the other preview options
+    generated_preview = {
+        "api_response": api_response_preview,
+        "api": "// Generated API creation code goes here...",
+        "json": "// Generated JSON creation code goes here...",
+        "python": "// Generated Python function code goes here..."
+    }
+    return jsonify(generated_preview)
+
+
