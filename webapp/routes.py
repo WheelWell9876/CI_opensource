@@ -3,6 +3,8 @@ import numpy as np
 from flask import Blueprint, render_template, request, jsonify
 from arcgis.gis import GIS
 from arcgis.features import FeatureLayer
+# from arcgis._impl.common._urlencode import urlencode_params
+from urllib.parse import urlencode
 import geopandas as gpd
 import logging
 import requests
@@ -303,16 +305,16 @@ def fetch_fields():
     if not api_url:
         return jsonify({"error": "Missing API URL"}), 400
     try:
-        # Remove any query string so we can create a FeatureLayer object.
+        # Remove any query string to create a FeatureLayer.
         base_url = api_url.split('/query')[0]
         layer = FeatureLayer(base_url)
-        # Query using simple parameters (geometry is not needed here)
+        # Query using simple parameters (no geometry needed).
         result = layer.query(where="1=1", out_fields="*", return_geometry=False)
         features = result.features
         if not features:
             return jsonify({"error": "No features found in the API response."}), 400
         first_feature = features[0]
-        properties = first_feature.attributes  # attributes hold the field values
+        properties = first_feature.attributes
         if not properties:
             return jsonify({"error": "No properties found in the first feature."}), 400
         field_list = list(properties.keys())
@@ -333,41 +335,49 @@ def generate_api_response_preview(api_url, preview_limit):
 
 
 def generate_api_creation_preview(api_url, selected_fields, config):
-    # Build query parameters.
+    # Use the FeatureLayer’s base URL.
+    base_url = api_url.split('/query')[0]
+
+    # Build the default parameters.
     params = {
-        "where": "1=1",
+        "where": config.get("where", "1=1"),
         "f": "json"
     }
-    if not selected_fields or selected_fields == "*":
+    # Use selected fields if not empty; if all fields are selected, use "*".
+    if not selected_fields or (isinstance(selected_fields, list) and len(selected_fields) == 0):
+        params["outFields"] = "*"
+    elif selected_fields == "*":
         params["outFields"] = "*"
     else:
         params["outFields"] = ",".join(selected_fields)
-    # If spatial input is envelope, add parameters.
+
+    # Add spatial parameters if needed.
     if config.get("spatial_input", "None").lower() == "envelope":
         params["geometry"] = ""
         params["geometryType"] = "esriGeometryEnvelope"
         params["inSR"] = config.get("inSR", "4326")
         params["spatialRel"] = config.get("spatialRel", "esriSpatialRelIntersects")
-    # Add output options.
+
+    # Add output options ONLY if they differ from defaults.
+    # (Defaults: returnGeometry = True, returnIdsOnly = False, returnCountOnly = False)
     output_options = config.get("output_options", {})
-    if "returnGeometry" in output_options:
+    if "returnGeometry" in output_options and output_options["returnGeometry"] != True:
         params["returnGeometry"] = "true" if output_options["returnGeometry"] else "false"
-    if "returnIdsOnly" in output_options:
+    if "returnIdsOnly" in output_options and output_options["returnIdsOnly"] != False:
         params["returnIdsOnly"] = "true" if output_options["returnIdsOnly"] else "false"
-    if "returnCountOnly" in output_options:
+    if "returnCountOnly" in output_options and output_options["returnCountOnly"] != False:
         params["returnCountOnly"] = "true" if output_options["returnCountOnly"] else "false"
     if "outSR" in output_options:
         params["outSR"] = output_options["outSR"]
-    parsed = urllib.parse.urlparse(api_url)
-    query = urllib.parse.urlencode(params, doseq=True)
-    generated_api_url = urllib.parse.urlunparse((
-        parsed.scheme,
-        parsed.netloc,
-        parsed.path,
-        parsed.params,
-        query,
-        parsed.fragment
-    ))
+
+    # Merge in any advanced query parameters.
+    advanced_params = config.get("advanced_params", {})
+    if isinstance(advanced_params, dict):
+        params.update(advanced_params)
+
+    # Build the query string using Python's standard library.
+    query_string = urllib.parse.urlencode(params, doseq=True)
+    generated_api_url = f"{base_url}/query?{query_string}"
     return generated_api_url
 
 

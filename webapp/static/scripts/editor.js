@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Placeholder for provided APIs; add your API endpoints here.
+  // Placeholder for provided APIs – add your API endpoints here.
   const providedAPIs = {
         "EPA Disaster Debris Recovery Data": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/EPA_Disaster_Debris_Recovery_Data/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "EPA Emergency Response (ER) Risk Management Plan (RMP) Facilities": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/FRS_INTERESTS_RMP/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
         "US Army Corps of Engineers (USACE) Owned and Operated Reservoirs": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_rez/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"
   };
 
-  // Populate the provided APIs dropdown.
+  // Populate provided APIs dropdown.
   function populateProvidedAPIs() {
     const select = document.getElementById('provided-api-select');
     select.innerHTML = '';
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('api-url-input').value = this.value;
   });
 
-  // Collapsible section toggles.
+  // Toggle collapsible sections.
   const collapsibles = document.querySelectorAll('.collapsible-header');
   collapsibles.forEach(header => {
     header.addEventListener('click', function() {
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Load fields from the API and populate the API Fields section.
+  // Load fields from API.
   document.getElementById('load-fields').addEventListener('click', function() {
     const apiUrl = document.getElementById('api-url-input').value;
     if (!apiUrl) {
@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
       headerRow.classList.add('field-row', 'header');
       headerRow.innerHTML = "<span class='field-name'>Name</span><span class='field-type'>Data Type</span><span class='field-select'>Select</span>";
       container.appendChild(headerRow);
-      // Create a row for each field (assume type "String" by default).
+      // Create a row for each field (assuming type "String" by default).
       data.fields.forEach(field => {
         const row = document.createElement('div');
         row.classList.add('field-row');
@@ -358,6 +358,12 @@ document.addEventListener('DOMContentLoaded', function() {
         checkbox.type = "checkbox";
         checkbox.value = field;
         checkbox.checked = true;
+        // (Optional: add an event listener so that unchecking any field unchecks "All Fields")
+        checkbox.addEventListener('change', function() {
+          const allCbs = container.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
+          const allChecked = Array.from(allCbs).every(cb => cb.checked);
+          document.getElementById('all-fields').checked = allChecked;
+        });
         selectSpan.appendChild(checkbox);
         row.appendChild(nameSpan);
         row.appendChild(typeSpan);
@@ -365,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
         container.appendChild(row);
       });
       bindAllFieldsToggle();
-      // Populate JSON Editor and Quant/Qual options now that fields are available.
+      // Populate JSON Editor and Quant/Qual options.
       populateJSONEditor(data.fields);
       populateQuantQualOptions(data.fields);
     })
@@ -375,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Bind "All Fields" checkbox toggle.
+  // Bind "All Fields" toggle.
   function bindAllFieldsToggle() {
     const allFieldsCheckbox = document.getElementById('all-fields');
     if (allFieldsCheckbox) {
@@ -397,30 +403,27 @@ document.addEventListener('DOMContentLoaded', function() {
     envelopeOptions.style.display = (this.value === "Envelope") ? 'block' : 'none';
   });
 
-  // Update preview: gather config and send to the backend.
+  // Update preview: gather config and send to backend.
   function updatePreview() {
     const apiUrl = document.getElementById('api-url-input').value;
     const fieldsContainer = document.getElementById('fields-container');
-    const allFieldsCheckbox = document.getElementById('all-fields');
-    let selectedFields;
-    if (allFieldsCheckbox && allFieldsCheckbox.checked) {
+    let selectedFields = [];
+    const checkboxes = fieldsContainer.querySelectorAll('.field-row:not(.header) input[type="checkbox"]');
+    checkboxes.forEach(cb => {
+      if (cb.checked) {
+        selectedFields.push(cb.value);
+      }
+    });
+    // If all checkboxes are checked, use "*" for outFields.
+    if (checkboxes.length > 0 && selectedFields.length === checkboxes.length) {
       selectedFields = "*";
-    } else {
-      selectedFields = [];
-      const fieldRows = fieldsContainer.querySelectorAll('.field-row:not(.header)');
-      fieldRows.forEach(row => {
-        const cb = row.querySelector('input[type="checkbox"]');
-        if (cb && cb.checked) {
-          selectedFields.push(cb.value);
-        }
-      });
     }
     // Output options.
     const outReturnGeometry = document.getElementById('out-return-geometry').checked;
     const outReturnIds = document.getElementById('out-return-ids').checked;
     const outReturnCount = document.getElementById('out-return-count').checked;
     const previewLimit = document.getElementById('preview-limit').value;
-    // Spatial input options.
+    // Spatial options.
     const spatialInput = document.getElementById('spatial-input-select').value;
     let inSR = "", spatialRel = "";
     if (spatialInput === "Envelope") {
@@ -434,6 +437,7 @@ document.addEventListener('DOMContentLoaded', function() {
       api_url: apiUrl,
       selected_fields: selectedFields,
       preview_limit: previewLimit,
+      where: document.getElementById('where-input').value || "1=1",
       spatial_input: spatialInput,
       output_options: {
         returnGeometry: outReturnGeometry,
@@ -445,6 +449,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (spatialInput === "Envelope") {
       config.inSR = inSR;
       config.spatialRel = spatialRel;
+    }
+    // Read Advanced Query Parameters (if any).
+    let advParamsText = document.getElementById('advanced-params').value;
+    if (advParamsText) {
+      try {
+        config.advanced_params = JSON.parse(advParamsText);
+      } catch(e) {
+        alert("Error parsing advanced query parameters: " + e);
+      }
     }
     // Send config to backend.
     fetch('/editor/generate_preview', {
@@ -462,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Refresh code preview based on selected preview type.
+  // Refresh the code preview.
   function refreshCodePreview() {
     const codeType = document.getElementById('code-type-select').value;
     const codePreview = document.getElementById('code-preview');
@@ -482,7 +495,7 @@ document.addEventListener('DOMContentLoaded', function() {
     alert("Code copied to clipboard!");
   });
 
-  // Helper: Populate JSON Editor with a form for each field.
+  // Populate JSON Editor with a form for each field.
   function populateJSONEditor(fields) {
     const jsonContainer = document.getElementById('json-editor');
     jsonContainer.innerHTML = "";
@@ -503,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Helper: Populate Quant/Qual selector for Python Options.
+  // Populate Quant/Qual selector for Python Options.
   function populateQuantQualOptions(fields) {
     const container = document.getElementById('quant-qual-section');
     container.innerHTML = "";
@@ -521,14 +534,14 @@ document.addEventListener('DOMContentLoaded', function() {
       `;
       container.appendChild(row);
     });
-    // Append a button to generate the Python function.
+    // Append button to generate Python function.
     const pyGenerateBtn = document.createElement('button');
     pyGenerateBtn.textContent = "Generate Python Function";
     pyGenerateBtn.addEventListener('click', generatePythonFunction);
     container.appendChild(pyGenerateBtn);
   }
 
-  // JSON file upload handler: parses and populates the JSON editor if valid.
+  // JSON file upload handler.
   document.getElementById('json-upload').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -550,7 +563,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   function validateJSONStructure(data) {
-    // Simple validation: check for expected keys.
     return data.hasOwnProperty("datasetName") && data.hasOwnProperty("qualitativeFields");
   }
 

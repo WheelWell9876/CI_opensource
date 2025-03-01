@@ -22,7 +22,6 @@
     <!-- Left Panel: Options -->
     <div class="editor-options">
       <h2>Options &amp; Fields</h2>
-
       <!-- Collapsible: API Options -->
       <div class="collapsible">
         <div class="collapsible-header active">API Options</div>
@@ -112,6 +111,18 @@
                   <input type="text" id="outSR-input" value="4326" />
                 </div>
               </div>
+            </div>
+          </div>
+          <!-- Basic Query: Where Clause -->
+          <div class="input-group">
+            <label for="where-input">Where Clause:</label>
+            <input type="text" id="where-input" placeholder="e.g. 1=1" value="1=1" />
+          </div>
+          <!-- Advanced Query Parameters -->
+          <div class="collapsible">
+            <div class="collapsible-header">Advanced Query Parameters</div>
+            <div class="collapsible-content">
+              <textarea id="advanced-params" placeholder='{"order_by_fields": "STATE_NAME ASC"}'></textarea>
             </div>
           </div>
           <div class="input-group">
