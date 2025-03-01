@@ -89,6 +89,47 @@ header {
   overflow-y: auto;
 }
 
+/* Left Panel Collapsibles*/
+
+.collapsible {
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.collapsible-header {
+  background-color: #e0e0e0;
+  padding: 8px 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.collapsible-content {
+  padding: 10px;
+  display: none;
+}
+
+.collapsible-content.active {
+  display: block;
+}
+
+/* Field row styles in API Fields section */
+.field-row {
+  display: flex;
+  padding: 4px 0;
+  border-bottom: 1px dashed #ccc;
+}
+.field-row.header {
+  font-weight: bold;
+  background-color: #ddd;
+  padding: 6px 0;
+}
+.field-name, .field-type, .field-select {
+  flex: 1;
+  padding: 0 5px;
+}
+
+
 /* Right Panel Styles */
 .editor-preview {
   width: 60%;

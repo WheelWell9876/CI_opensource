@@ -311,7 +311,20 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('api-url-input').value = this.value;
     });
 
-    // Function to call the API to load fields and populate the bento box
+    // Toggle collapsible sections
+    const collapsibles = document.querySelectorAll('.collapsible-header');
+    collapsibles.forEach(header => {
+        header.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+            } else {
+                content.classList.add('active');
+            }
+        });
+    });
+
+    // When "Load Fields" is clicked, call the API to load field names and dummy data types.
     document.getElementById('load-fields').addEventListener('click', function() {
         const apiUrl = document.getElementById('api-url-input').value;
         if (!apiUrl) {
@@ -329,19 +342,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert("Error: " + data.error);
                 return;
             }
+            // Populate the fields container with header row first.
             const container = document.getElementById('fields-container');
-            container.innerHTML = "<h3>Available Fields</h3>";
+            container.innerHTML = "";
+            const headerRow = document.createElement('div');
+            headerRow.classList.add('field-row', 'header');
+            headerRow.innerHTML = "<span class='field-name'>Name</span><span class='field-type'>Data Type</span><span class='field-select'>Select</span>";
+            container.appendChild(headerRow);
+
+            // For each field, create a row.
             data.fields.forEach(field => {
-                // Create a bento box element for each field with a checkbox
-                const label = document.createElement('label');
-                label.classList.add('field-item');
+                const row = document.createElement('div');
+                row.classList.add('field-row');
+                const nameSpan = document.createElement('span');
+                nameSpan.classList.add('field-name');
+                nameSpan.textContent = field;
+                // Dummy data type; in a real app, you might determine this from sample data.
+                const typeSpan = document.createElement('span');
+                typeSpan.classList.add('field-type');
+                typeSpan.textContent = "String"; // default value
+                const selectSpan = document.createElement('span');
+                selectSpan.classList.add('field-select');
                 const checkbox = document.createElement('input');
                 checkbox.type = "checkbox";
                 checkbox.value = field;
-                checkbox.checked = true;  // default all fields selected
-                label.appendChild(checkbox);
-                label.appendChild(document.createTextNode(" " + field));
-                container.appendChild(label);
+                checkbox.checked = true;
+                selectSpan.appendChild(checkbox);
+                row.appendChild(nameSpan);
+                row.appendChild(typeSpan);
+                row.appendChild(selectSpan);
+                container.appendChild(row);
             });
         })
         .catch(err => {
@@ -350,10 +380,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Function to update preview code (including API response preview)
+    // Show/hide spatial envelope options based on selection.
+    document.getElementById('spatial-input-select').addEventListener('change', function() {
+        const envelopeOptions = document.getElementById('spatial-envelope-options');
+        if (this.value === "Envelope") {
+            envelopeOptions.style.display = 'block';
+        } else {
+            envelopeOptions.style.display = 'none';
+        }
+    });
+
+    // Function to update preview code (including API response preview and API creation code)
     function updatePreview() {
         // Build configuration from left panel options
         const apiUrl = document.getElementById('api-url-input').value;
+
+        // Get selected fields from the fields-container
         const fieldsContainer = document.getElementById('fields-container');
         const checkboxes = fieldsContainer.querySelectorAll('input[type="checkbox"]');
         let selectedFields = [];
@@ -362,36 +404,81 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectedFields.push(cb.value);
             }
         });
-        const returnGeometry = document.getElementById('toggle-geometry').checked;
-        const returnIdsOnly = document.getElementById('toggle-ids').checked;
-        const returnCountOnly = document.getElementById('toggle-count').checked;
-        const previewLimit = document.getElementById('preview-limit').value;
+
+        // Use the new output options IDs
+        const outReturnGeometryElem = document.getElementById('out-return-geometry');
+        const outReturnIdsElem = document.getElementById('out-return-ids');
+        const outReturnCountElem = document.getElementById('out-return-count');
+        const previewLimitElem = document.getElementById('preview-limit');
+
+        if (!outReturnGeometryElem || !outReturnIdsElem || !outReturnCountElem || !previewLimitElem) {
+            console.error("One or more required output option elements are missing.");
+            return;
+        }
+
+        const returnGeometry = outReturnGeometryElem.checked;
+        const returnIdsOnly = outReturnIdsElem.checked;
+        const returnCountOnly = outReturnCountElem.checked;
+        const previewLimit = previewLimitElem.value;
+
+        // Get spatial input options.
+        const spatialInput = document.getElementById('spatial-input-select').value;
+        let inSR = "";
+        let spatialRel = "";
+        if (spatialInput === "Envelope") {
+            const inSRElem = document.getElementById('inSR-input');
+            const spatialRelElem = document.getElementById('spatial-rel-select');
+            if (!inSRElem || !spatialRelElem) {
+                console.error("Spatial envelope elements missing.");
+                return;
+            }
+            inSR = inSRElem.value;
+            spatialRel = spatialRelElem.value;
+        }
+        // Get output spatial reference
+        const outSRElem = document.getElementById('outSR-input');
+        let outSR = "";
+        if (outSRElem) {
+            outSR = outSRElem.value;
+        } else {
+            console.error("Output Spatial Reference element missing.");
+        }
+
+        // Build the configuration object to send
         const config = {
             api_url: apiUrl,
             selected_fields: selectedFields,
             return_geometry: returnGeometry,
             return_ids_only: returnIdsOnly,
             return_count_only: returnCountOnly,
-            preview_limit: previewLimit
+            preview_limit: previewLimit,
+            spatial_input: spatialInput,
+            output_options: {
+                returnGeometry: returnGeometry,
+                returnIdsOnly: returnIdsOnly,
+                returnCountOnly: returnCountOnly,
+                outSR: outSR
+            }
         };
+        if (spatialInput === "Envelope") {
+            config["inSR"] = inSR;
+            config["spatialRel"] = spatialRel;
+        }
 
-        console.log("Sending preview config to server:", config);
+        console.debug("Sending preview config to server:", config);
 
-        // Call backend endpoint to generate preview code based on config.
         fetch('/editor/generate_preview', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(config)
         })
         .then(response => {
-            console.log("Raw response received:", response);
+            console.debug("Raw response received:", response);
             return response.json();
         })
         .then(data => {
-            console.log("Parsed preview data:", data);
-            // Save the generated code in a global variable
+            console.debug("Parsed preview data:", data);
             window.generatedCode = data;
-            // Update the preview based on current dropdown selection.
             refreshCodePreview();
         })
         .catch(err => {
@@ -400,7 +487,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    // Function to refresh the code preview area based on dropdown selection.
     function refreshCodePreview() {
         const codeType = document.getElementById('code-type-select').value;
         const codePreview = document.getElementById('code-preview');
@@ -411,11 +497,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Bind change events to update preview live.
     document.getElementById('update-preview').addEventListener('click', updatePreview);
     document.getElementById('code-type-select').addEventListener('change', refreshCodePreview);
 
-    // Copy button logic
     document.getElementById('copy-code').addEventListener('click', function() {
         const codePreview = document.getElementById('code-preview');
         codePreview.select();
@@ -423,3 +507,4 @@ document.addEventListener('DOMContentLoaded', function() {
         alert("Code copied to clipboard!");
     });
 });
+

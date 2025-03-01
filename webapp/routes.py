@@ -315,32 +315,87 @@ def fetch_fields():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+def generate_api_response_preview(api_url, preview_limit):
+    try:
+        from .fetch_and_update import get_api_preview
+        return get_api_preview(api_url, limit=preview_limit)
+    except Exception as e:
+        logger.exception("Error generating API response preview:")
+        return f"Error fetching API response: {e}"
+
+def generate_api_creation_preview(api_url, selected_fields, config):
+    import urllib.parse
+    params = {
+        "where": "1=1",
+        "outFields": ",".join(selected_fields) if selected_fields else "*",
+        "f": "json"
+    }
+    if config.get("spatial_input", "None").lower() == "envelope":
+        params["geometry"] = ""
+        params["geometryType"] = "esriGeometryEnvelope"
+        params["inSR"] = config.get("inSR", "4326")
+        params["spatialRel"] = config.get("spatialRel", "esriSpatialRelIntersects")
+    output_options = config.get("output_options", {})
+    if "returnGeometry" in output_options:
+        params["returnGeometry"] = "true" if output_options["returnGeometry"] else "false"
+    if "returnIdsOnly" in output_options:
+        params["returnIdsOnly"] = "true" if output_options["returnIdsOnly"] else "false"
+    if "returnCountOnly" in output_options:
+        params["returnCountOnly"] = "true" if output_options["returnCountOnly"] else "false"
+    if "outSR" in output_options:
+        params["outSR"] = output_options["outSR"]
+
+    parsed = urllib.parse.urlparse(api_url)
+    query = urllib.parse.urlencode(params, doseq=True)
+    generated_api_url = urllib.parse.urlunparse((
+        parsed.scheme,
+        parsed.netloc,
+        parsed.path,
+        parsed.params,
+        query,
+        parsed.fragment
+    ))
+    return generated_api_url
+
+def generate_json_creation_preview(config):
+    # For example, you might simply return the JSON string of the config as a stub
+    import json
+    return json.dumps(config, indent=2)
+
+def generate_python_creation_preview(config):
+    # Build a stub Python function based on the configuration
+    dataset_name = config.get("dataset_name", "my_dataset").replace(" ", "_").lower()
+    preview = f"""def process_{dataset_name}():
+    \"\"\"Process the {dataset_name} dataset based on the specified configuration.\"\"\"
+    # API URL: {config.get("api_url")}
+    # Selected fields: {config.get("selected_fields")}
+    # Spatial input: {config.get("spatial_input")}
+    # Output options: {config.get("output_options")}
+    pass
+"""
+    return preview
+
 @main_blueprint.route('/editor/generate_preview', methods=['POST'])
 def generate_preview():
     config = request.get_json()
     logger.info("Received preview config: %s", config)
     api_url = config.get("api_url")
+    selected_fields = config.get("selected_fields", [])
     try:
         preview_limit = int(config.get("preview_limit", 10))
     except ValueError:
         preview_limit = 10
 
-    try:
-        from .fetch_and_update import get_api_preview
-        api_response_preview = get_api_preview(api_url, limit=preview_limit)
-        logger.info("Generated API response preview successfully.")
-    except Exception as e:
-        logger.exception("Error in get_api_preview:")
-        api_response_preview = f"Error fetching API response: {e}"
-
     generated_preview = {
-        "api_response": api_response_preview,
-        "api": "// Generated API creation code goes here...",
-        "json": "// Generated JSON creation code goes here...",
-        "python": "// Generated Python function code goes here..."
+        "api_response": generate_api_response_preview(api_url, preview_limit),
+        "api": generate_api_creation_preview(api_url, selected_fields, config),
+        "json": generate_json_creation_preview(config),
+        "python": generate_python_creation_preview(config)
     }
     logger.info("Sending generated preview to client.")
     return jsonify(generated_preview)
+
+
 
 
 
