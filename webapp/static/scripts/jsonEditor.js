@@ -161,28 +161,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Update JSON Editor using field analysis results.
     function updateJSONEditorFromAnalysis() {
-      // Always update the default dataset editor tab (with id "dataset-tab-1")
-      const defaultEditor = document.getElementById('dataset-tab-1');
-      if (!defaultEditor) {
-        console.error("Default dataset editor (dataset-tab-1) not found.");
+      console.log("DEBUG: updateJSONEditorFromAnalysis called...");
+
+      // 1) Find the active dataset editor
+      const editorPane = getActiveDatasetEditor();
+      if (!editorPane) {
+        console.error("DEBUG: No active dataset editor found; cannot render fields.");
         return;
       }
-      // These elements are expected to be inside the default tab.
-      const qualContainer = defaultEditor.querySelector('#qualitative-fields-container');
-      const quantContainer = defaultEditor.querySelector('#quantitative-fields-container');
-      const fieldsLevel = defaultEditor.querySelector('#fields-level');
+
+      // 2) Find the containers in the active editor
+      const qualContainer = editorPane.querySelector('.qualitative-fields-container');
+      const quantContainer = editorPane.querySelector('.quantitative-fields-container');
+      const fieldsLevel = editorPane.querySelector('.fields-level');
+
+      console.log("DEBUG: Found containers:", {
+        qualContainer,
+        quantContainer,
+        fieldsLevel
+      });
 
       if (!qualContainer || !quantContainer || !fieldsLevel) {
-        console.error("One or more interactive JSON editor containers not found in default editor.");
+        console.error("DEBUG: One or more containers not found in active editor. Aborting field render.");
         return;
       }
 
-      // Clear the containers.
+      // 3) Clear them
       qualContainer.innerHTML = "";
       quantContainer.innerHTML = "";
 
-      // Render qualitative fields.
+      // 4) Render qualitative fields
       if (window.fieldAnalysis && window.fieldAnalysis.qualitative_fields) {
+        console.log("DEBUG: Rendering qualitative fields from fieldAnalysis...");
         for (const field in window.fieldAnalysis.qualitative_fields) {
           const analysis = window.fieldAnalysis.qualitative_fields[field];
           const div = document.createElement('div');
@@ -190,7 +200,8 @@ document.addEventListener('DOMContentLoaded', function() {
           div.style.border = "1px solid #ccc";
           div.style.marginBottom = "10px";
           div.style.padding = "5px";
-          let html = `<h4>${field} <span class="prediction-box">(Prediction: Qualitative)</span></h4>`;
+
+          let html = `<h4>${field} (Qualitative)</h4>`;
           if (analysis.counts) {
             for (const prop in analysis.counts) {
               html += `
@@ -215,8 +226,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
 
-      // Render quantitative fields.
+      // 5) Render quantitative fields
       if (window.fieldAnalysis && window.fieldAnalysis.quantitative_fields) {
+        console.log("DEBUG: Rendering quantitative fields from fieldAnalysis...");
         for (const field in window.fieldAnalysis.quantitative_fields) {
           const analysis = window.fieldAnalysis.quantitative_fields[field];
           let metricsHtml = `<p>No metrics processed yet.</p>`;
@@ -229,8 +241,8 @@ document.addEventListener('DOMContentLoaded', function() {
           div.style.marginBottom = "10px";
           div.style.padding = "5px";
           div.innerHTML = `
-            <h4>${field} <span class="prediction-box">(Prediction: Quantitative)</span></h4>
-            <div id="${field}_quant_metrics">
+            <h4>${field} (Quantitative)</h4>
+            <div>
               ${metricsHtml}
             </div>
             <div class="edit-group">
@@ -241,36 +253,61 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
 
+      // 6) Optionally update code preview
       if (window.generatedCode) {
         window.generatedCode.processedFields = window.fieldAnalysis;
       }
       refreshCodePreview();
       initializeNestedResizers();
+      console.log("DEBUG: Finished rendering field analysis into active editor tab.");
     }
 
 
+    function getActiveDatasetEditor() {
+      // 1) Find the currently active .tab in the #json-editor-tabs
+      const activeTabButton = document.querySelector('#json-editor-tabs .tab.active');
+      if (!activeTabButton) {
+        console.error("DEBUG: No active tab found in #json-editor-tabs!");
+        return null;
+      }
+      const tabId = activeTabButton.dataset.tab;
+      console.log("DEBUG: getActiveDatasetEditor found active tabId =", tabId);
+
+      // 2) Find the corresponding editor pane
+      const editorPane = document.getElementById(tabId);
+      if (!editorPane) {
+        console.error("DEBUG: No editor pane found with id =", tabId);
+        return null;
+      }
+      return editorPane;
+    }
+
+
+
+
   // Process Fields: send geoJSON for analysis.
-  function processFieldAnalysis() {
-    console.log("processFieldAnalysis: Sending geojson to /editor/process_fields...");
-    const geojson = window.currentGeoJSON;
-    fetch('/editor/process_fields', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(geojson)
-    })
-    .then(response => {
-      console.log("processFieldAnalysis: Received response status", response.status);
-      return response.json();
-    })
-    .then(analysisData => {
-      console.log("processFieldAnalysis: Received analysis data:", analysisData);
-      window.fieldAnalysis = analysisData;
-      updateJSONEditorFromAnalysis();
-    })
-    .catch(err => {
-      console.error("Error in processFieldAnalysis:", err);
-    });
-  }
+    function processFieldAnalysis() {
+      console.log("DEBUG: processFieldAnalysis: Sending geojson to /editor/process_fields...");
+      const geojson = window.currentGeoJSON;
+      fetch('/editor/process_fields', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(geojson)
+      })
+      .then(response => {
+        console.log("DEBUG: Received response from /editor/process_fields with status:", response.status);
+        return response.json();
+      })
+      .then(analysisData => {
+        console.log("DEBUG: Received analysis data from server:", analysisData);
+        window.fieldAnalysis = analysisData;
+        updateJSONEditorFromAnalysis();  // calls the function that updates the active tab
+      })
+      .catch(err => {
+        console.error("DEBUG: Error in processFieldAnalysis:", err);
+      });
+    }
+
 
   // Attach process fields button event.
   document.getElementById('process-fields-btn')?.addEventListener('click', processFieldAnalysis);

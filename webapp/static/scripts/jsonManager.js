@@ -37,11 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function createNewDatasetTab(jsonData = null) {
       tabCounter++;
       const tabId = `dataset-tab-${tabCounter}`;
+
       const tabButton = document.createElement('button');
       tabButton.classList.add('tab');
       tabButton.textContent = jsonData ? jsonData.datasetName || `Dataset ${tabCounter}` : `Dataset ${tabCounter}`;
       tabButton.dataset.tab = tabId;
       tabButton.addEventListener('click', () => switchToTab(tabId));
+
       const closeBtn = document.createElement('span');
       closeBtn.textContent = ' x';
       closeBtn.classList.add('close-tab');
@@ -50,43 +52,35 @@ document.addEventListener('DOMContentLoaded', function() {
         closeTab(tabId);
       });
       tabButton.appendChild(closeBtn);
+
       const addTabBtn = document.getElementById('add-dataset-tab');
       tabBar.insertBefore(tabButton, addTabBtn);
 
+      // Create the editor pane
       const editorPane = document.createElement('div');
       editorPane.classList.add('dataset-editor');
       editorPane.id = tabId;
-      // Only the default tab (dataset-tab-1) gets the fixed IDs.
-      if (tabId === "dataset-tab-1") {
-        editorPane.innerHTML = `
-          <div class="editor-header">
-            <label>Dataset Name: <input type="text" class="dataset-name" placeholder="Enter dataset name" /></label>
-            <label>Dataset Link: <input type="text" class="dataset-link" placeholder="Enter dataset link" /></label>
-          </div>
-          <div class="editor-body">
-            <div id="qualitative-fields-container"></div>
-            <div id="quantitative-fields-container"></div>
-            <div id="fields-level"></div>
-          </div>
-        `;
-      } else {
-        // Other tabs use class names instead
-        editorPane.innerHTML = `
-          <div class="editor-header">
-            <label>Dataset Name: <input type="text" class="dataset-name" placeholder="Enter dataset name" /></label>
-            <label>Dataset Link: <input type="text" class="dataset-link" placeholder="Enter dataset link" /></label>
-          </div>
-          <div class="editor-body">
-            <div class="qualitative-fields-container"></div>
-            <div class="quantitative-fields-container"></div>
-            <div class="fields-level"></div>
-          </div>
-        `;
-      }
       editorPane.style.display = 'none';
+      editorPane.innerHTML = `
+        <div class="editor-header">
+          <label>Dataset Name:
+            <input type="text" class="dataset-name" placeholder="Enter dataset name" />
+          </label>
+          <label>Dataset Link:
+            <input type="text" class="dataset-link" placeholder="Enter dataset link" />
+          </label>
+        </div>
+        <div class="editor-body">
+          <!-- Each tab's editor uses classes for the containers. -->
+          <div class="qualitative-fields-container"></div>
+          <div class="quantitative-fields-container"></div>
+          <div class="fields-level"></div>
+        </div>
+      `;
       editorContainer.appendChild(editorPane);
       switchToTab(tabId);
     }
+
 
 
   function switchToTab(tabId) {

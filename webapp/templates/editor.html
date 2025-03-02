@@ -192,23 +192,27 @@
           <!-- Browser-like Tab System for Dataset Editors -->
           <div id="json-editor-tabs" class="tab-bar">
             <!-- One tab is open by default; additional tabs can be added -->
-            <button class="tab" data-tab="dataset-tab-1">Dataset 1<span class="close-tab"> x</span></button>
+            <button class="tab active" data-tab="dataset-tab-1">Dataset 1<span class="close-tab"> x</span></button>
             <button class="tab add-tab" id="add-dataset-tab">+</button>
           </div>
 
           <!-- Interactive JSON Builder Preview (Dataset Editor) -->
           <div id="json-builder" class="bento-box nested-container">
             <!-- The active dataset editor is rendered here -->
-            <div id="dataset-tab-1" class="dataset-editor">
+            <div id="dataset-tab-1" class="dataset-editor" style="display: block;">
               <div class="editor-header">
-                <label>Dataset Name: <input type="text" class="dataset-name" placeholder="Enter dataset name" /></label>
-                <label>Dataset Link: <input type="text" class="dataset-link" placeholder="Enter dataset link" /></label>
+                <label>Dataset Name:
+                  <input type="text" class="dataset-name" placeholder="Enter dataset name" />
+                </label>
+                <label>Dataset Link:
+                  <input type="text" class="dataset-link" placeholder="Enter dataset link" />
+                </label>
               </div>
               <div class="editor-body">
-                <!-- The interactive JSON editor fields -->
-                <div id="qualitative-fields-container"></div>
-                <div id="quantitative-fields-container"></div>
-                <div id="fields-level"></div>
+                <!-- Use classes for these containers so each tab can have its own. -->
+                <div class="qualitative-fields-container"></div>
+                <div class="quantitative-fields-container"></div>
+                <div class="fields-level"></div>
               </div>
             </div>
           </div>
