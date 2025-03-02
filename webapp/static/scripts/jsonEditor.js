@@ -39,6 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
             propBox.innerHTML = `
               <strong>${prop}</strong> (Count: ${counts[prop]})<br>
               <div class="edit-group">
+                <label>Meaning: <input type="text" name="${field}_meaning"></label><br>
+                <label>Importance: <input type="text" name="${field}_importance"></label><br>
                 <label>Grade: <input type="number" step="0.01" name="${field}_${prop}_grade"></label>
               </div>
             `;
@@ -49,6 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         fieldContainer.innerHTML += `
           <div class="edit-group">
+            <label>Overall Meaning: <input type="text" name="${field}_meaning"></label><br>
+            <label>Overall Importance: <input type="text" name="${field}_importance"></label><br>
             <label>Overall Grade: <input type="number" step="0.01" name="${field}_grade"></label>
           </div>
         `;
@@ -79,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ${metricsHtml}
           </div>
           <div class="edit-group">
+            <label>Overall Importance: <input type="text" name="${field}_importance"></label><br>
             <label>Grade: <input type="number" step="0.01" name="${field}_grade"></label>
           </div>
         `;
@@ -208,6 +213,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="bento-box" style="margin: 5px 0;">
                   <strong>${prop}</strong> (Count: ${analysis.counts[prop]})<br>
                   <div class="edit-group">
+                    <label>Meaning: <input type="text" name="${field}_meaning"></label><br>
+                    <label>Importance: <input type="text" name="${field}_importance"></label><br>
                     <label>Grade: <input type="number" step="0.01" name="${field}_${prop}_grade"></label>
                   </div>
                 </div>
@@ -246,6 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
               ${metricsHtml}
             </div>
             <div class="edit-group">
+              <label>Meaning: <input type="text" name="${field}_meaning"></label><br>
+              <label>Importance: <input type="text" name="${field}_importance"></label><br>
               <label>Grade: <input type="number" step="0.01" name="${field}_grade"></label>
             </div>
           `;
