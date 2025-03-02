@@ -32,7 +32,6 @@ header {
 .editor-wrapper {
   display: flex;
   margin: 20px;
-  /* The resizer will handle the gap */
 }
 
 /* Left Panel */
@@ -46,7 +45,7 @@ header {
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-/* Resizer Styles */
+/* Resizer Styles (for main left/right panels) */
 .resizer {
   width: 5px;
   background: #ccc;
@@ -102,55 +101,20 @@ header {
   display: block;
 }
 
-/* Allow the interactive JSON editor to be vertically resized */
-#interactive-json-editor,
-#json-builder,
-#fields-level .bento-box {
-  resize: vertical;
-  overflow: auto;
-  min-height: 150px;
-  max-height: none;
-}
-
-/* New classes for nested resizable containers in the JSON Builder Preview */
-.nested-container {
-  position: relative;
-  /* Allow vertical resizing via a custom handle */
-  /* We leave max-height unset so the user can expand fully */
-  min-height: 150px;
-  overflow: auto;
-}
-
-.nested-resizer {
-  height: 5px;
-  background: #ccc;
-  cursor: ns-resize;
-  user-select: none;
-  margin: 2px 0;
-}
-
-/* Optional styling for the nested preview sections */
-.builder-section {
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: #f9f9f9;
-}
-
-.field-preview {
-  margin-bottom: 10px;
-  padding: 5px;
+/* Bento box styling */
+.bento-box {
   border: 1px dashed #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
   border-radius: 4px;
-  background: #fff;
+  background: #fafafa;
+  max-height: 300px;
+  overflow-y: auto;
 }
-
-.property-preview {
-  margin-left: 15px;
-  padding: 3px;
-  border-left: 2px solid #ccc;
-  background: #fff;
+#fields-level .bento-box {
+  border: 1px dashed #aaa;
+  padding: 8px;
+  margin: 5px 0;
 }
 
 /* Field Rows */
@@ -169,21 +133,52 @@ header {
   padding: 0 5px;
 }
 
-/* Bento Box */
-.bento-box {
-  border: 1px dashed #ccc;
-  padding: 10px;
+/* Optional styling for the nested preview sections */
+.builder-section {
   margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  background: #fafafa;
-  max-height: 300px;
-  overflow-y: auto;
+  background: #f9f9f9;
+}
+.field-preview {
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  background: #fff;
+}
+.property-preview {
+  margin-left: 15px;
+  padding: 3px;
+  border-left: 2px solid #ccc;
+  background: #fff;
 }
 
-#fields-level .bento-box {
-  border: 1px dashed #aaa;
-  padding: 8px;
-  margin: 5px 0;
+/* --- Nested Container Resizing (the original approach) --- */
+.nested-container {
+  position: relative;
+  resize: vertical;    /* Allow manual vertical resizing */
+  overflow: auto;      /* Scroll if content overflows */
+  min-height: 150px;
+  max-height: none;    /* Or set a limit, e.g. max-height: 600px */
+}
+.nested-resizer {
+  height: 5px;
+  background: #ccc;
+  cursor: ns-resize;
+  user-select: none;
+  margin: 2px 0;
+  /* If you don't need a custom handle, you can hide or remove this. */
+}
+
+/* Make each Qual/Quant field individually resizable too */
+.json-qual-field,
+.json-quant-field {
+  resize: vertical;
+  overflow: auto;
+  min-height: 100px;
+  /* Optionally, max-height: 400px; etc. */
 }
 
 /* Code Preview */

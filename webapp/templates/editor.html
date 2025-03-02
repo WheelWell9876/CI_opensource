@@ -164,7 +164,7 @@
               <div id="dataset-level" class="bento-box nested-container">
                 <h5>Dataset: <span id="dataset-name-display"></span></h5>
                 <div class="nested-resizer"></div>
-                <!-- Here we embed the JSON Maker controls and field sections -->
+                <!-- JSON Maker Controls -->
                 <div id="json-dataset-section">
                   <div class="input-group">
                     <label for="dataset-name">Dataset Name:</label>
@@ -178,13 +178,13 @@
                 <div id="json-qualitative-section">
                   <h4>Qualitative Fields</h4>
                   <div id="qualitative-fields-container">
-                    <!-- Populated by updateJSONEditorQual() -->
+                    <!-- Populated by JS (via jsonEditor.js) -->
                   </div>
                 </div>
                 <div id="json-quantitative-section">
                   <h4>Quantitative Fields</h4>
                   <div id="quantitative-fields-container">
-                    <!-- Populated by updateJSONEditorQuant() -->
+                    <!-- Populated by JS (via jsonEditor.js) -->
                   </div>
                 </div>
                 <div id="json-categories-section">
@@ -246,6 +246,8 @@
     </div>
   </div>
 
+  <!-- Load the non-interactive editor functionality first, then the interactive JSON editor -->
   <script src="{{ url_for('static', filename='scripts/editor.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor.js') }}"></script>
 </body>
 </html>
