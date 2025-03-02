@@ -153,53 +153,46 @@
               </select>
             </div>
           </div>
-          <!-- Interactive JSON Editor Section -->
-          <div id="interactive-json-editor" class="bento-box">
-            <!-- Main JSON Editor -->
-            <div id="json-editor">
-              <p>JSON configuration will appear here after dataset load.</p>
-            </div>
-            <!-- JSON Maker Controls -->
-            <h3>JSON Maker</h3>
-            <div id="json-dataset-section">
-              <h4>Dataset Information</h4>
-              <div class="input-group">
-                <label for="dataset-name">Dataset Name:</label>
-                <input type="text" id="dataset-name" placeholder="Enter dataset name">
-              </div>
-              <div class="input-group">
-                <label for="dataset-link">Dataset Link:</label>
-                <input type="text" id="dataset-link" placeholder="Enter dataset link">
-              </div>
-            </div>
-            <div id="json-qualitative-section">
-              <h4>Qualitative Fields</h4>
-              <div id="qualitative-fields-container">
-                <!-- Populated by updateJSONEditorQual() -->
-              </div>
-            </div>
-            <div id="json-quantitative-section">
-              <h4>Quantitative Fields</h4>
-              <div id="quantitative-fields-container">
-                <!-- Populated by updateJSONEditorQuant() -->
-              </div>
-            </div>
-            <div id="json-categories-section">
-              <h4>Categories</h4>
-              <div id="categories-container">
-                <!-- Allow user to add/edit categories and assign datasets -->
-              </div>
-            </div>
-            <!-- JSON Builder Preview for Nested Structure -->
-            <div id="json-builder" class="bento-box">
-              <h3>JSON Builder Preview</h3>
-              <div id="category-level" class="bento-box">
-                <h4>Category: <span id="category-name-display"></span></h4>
-                <div id="dataset-level" class="bento-box">
-                  <h5>Dataset: <span id="dataset-name-display"></span></h5>
-                  <div id="fields-level" class="bento-box">
-                    <!-- Nested fields will be shown here -->
+
+          <!-- Interactive JSON Builder Preview -->
+          <div id="json-builder" class="bento-box">
+            <h3>JSON Builder Preview</h3>
+            <div id="category-level" class="bento-box">
+              <h4>Category: <span id="category-name-display"></span></h4>
+              <div id="dataset-level" class="bento-box">
+                <h5>Dataset: <span id="dataset-name-display"></span></h5>
+                <!-- Moved inputs now appear inside the builder preview -->
+                <div id="json-dataset-section">
+                  <div class="input-group">
+                    <label for="dataset-name">Dataset Name:</label>
+                    <input type="text" id="dataset-name" placeholder="Enter dataset name">
                   </div>
+                  <div class="input-group">
+                    <label for="dataset-link">Dataset Link:</label>
+                    <input type="text" id="dataset-link" placeholder="Enter dataset link">
+                  </div>
+                </div>
+                <div id="json-qualitative-section">
+                  <h4>Qualitative Fields</h4>
+                  <div id="qualitative-fields-container">
+                    <!-- Populated by updateJSONEditorQual() -->
+                  </div>
+                </div>
+                <div id="json-quantitative-section">
+                  <h4>Quantitative Fields</h4>
+                  <div id="quantitative-fields-container">
+                    <!-- Populated by updateJSONEditorQuant() -->
+                  </div>
+                </div>
+                <div id="json-categories-section">
+                  <h4>Categories</h4>
+                  <div id="categories-container">
+                    <!-- Allow user to add/edit categories and assign datasets -->
+                  </div>
+                </div>
+                <!-- Nested fields preview will be rendered here -->
+                <div id="fields-level" class="bento-box">
+                  <!-- Nested fields will be shown here -->
                 </div>
               </div>
             </div>

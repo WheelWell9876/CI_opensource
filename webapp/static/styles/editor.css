@@ -147,6 +147,12 @@ header {
   overflow-y: auto;
 }
 
+#fields-level .bento-box {
+  border: 1px dashed #aaa;
+  padding: 8px;
+  margin: 5px 0;
+}
+
 /* Code Preview */
 .code-container {
   position: relative;
