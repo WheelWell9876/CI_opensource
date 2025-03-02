@@ -98,11 +98,13 @@ header {
   padding: 0 5px;
 }
 
-/* Bento Box for Fields */
+/* Bento Box for Fields and New Sections */
 .bento-box {
   border: 1px dashed #ccc;
   padding: 10px;
   margin-bottom: 15px;
+  border-radius: 4px;
+  background: #fafafa;
   max-height: 300px;
   overflow-y: auto;
 }

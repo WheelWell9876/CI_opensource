@@ -38,8 +38,7 @@
           <div class="input-group" id="provided-api-group">
             <label for="provided-api-select">Choose an API:</label>
             <select id="provided-api-select">
-              <option value="https://services.example.com/api1?f=geojson">API Option 1</option>
-              <option value="https://services.example.com/api2?f=geojson">API Option 2</option>
+              <!-- Options will be populated by JS -->
             </select>
           </div>
           <!-- API URL Input -->
@@ -52,7 +51,7 @@
           <div class="collapsible">
             <div class="collapsible-header active">API Fields</div>
             <div class="collapsible-content active" id="fields-container">
-              <!-- Fields are dynamically inserted here -->
+              <!-- Fields will be inserted here -->
             </div>
           </div>
           <!-- Spatial Inputs -->
@@ -105,21 +104,22 @@
                   <label for="outSR-input">Output Spatial Reference:</label>
                   <input type="text" id="outSR-input" value="4326" />
                 </div>
+                <!-- Basic Query: Where Clause -->
+                <div class="input-group">
+                  <label for="where-input">Where Clause:</label>
+                  <input type="text" id="where-input" placeholder="e.g. 1=1" value="1=1" />
+                </div>
+                <div class="collapsible">
+                  <div class="collapsible-header">Advanced Query Parameters</div>
+                  <div class="collapsible-content">
+                    <textarea id="advanced-params" placeholder='{"order_by_fields": "STATE_NAME ASC"}'></textarea>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <!-- Basic Query: Where Clause -->
-          <div class="input-group">
-            <label for="where-input">Where Clause:</label>
-            <input type="text" id="where-input" placeholder="e.g. 1=1" value="1=1" />
-          </div>
+
           <!-- Advanced Query Parameters -->
-          <div class="collapsible">
-            <div class="collapsible-header">Advanced Query Parameters</div>
-            <div class="collapsible-content">
-              <textarea id="advanced-params" placeholder='{"order_by_fields": "STATE_NAME ASC"}'></textarea>
-            </div>
-          </div>
           <div class="input-group">
             <label for="preview-limit">Number of Objects to Load:</label>
             <input type="number" id="preview-limit" value="10" min="1" max="100">
@@ -127,57 +127,96 @@
         </div>
       </div>
 
-      <!-- JSON Options Section -->
+      <!-- Collapsible: JSON Options -->
       <div class="collapsible">
         <div class="collapsible-header">JSON Options</div>
         <div class="collapsible-content">
+          <!-- JSON Upload -->
           <div class="input-group">
             <label for="json-upload">Upload JSON Configuration:</label>
             <input type="file" id="json-upload" accept=".json">
           </div>
-          <!-- Main JSON Editor -->
-          <div id="json-editor">
-            <p>JSON configuration will appear here after dataset load.</p>
+
+          <!-- Category and Dataset Controls -->
+          <div id="json-category-dataset-controls" class="bento-box">
+            <h3>Category &amp; Dataset Options</h3>
+            <label for="category-type-select">Choose Option:</label>
+            <select id="category-type-select">
+              <option value="new">Create New Category</option>
+              <option value="existing">Add to Existing Category</option>
+            </select>
+            <div id="new-category-input-container" style="display: none;">
+              <label for="new-category-input">New Category Name:</label>
+              <input type="text" id="new-category-input" placeholder="Enter new category name">
+            </div>
+            <div id="json-dataset-selector" class="bento-box">
+              <h3>Select Dataset</h3>
+              <label for="dataset-select">Dataset:</label>
+              <select id="dataset-select">
+                <option value="">-- Select Dataset --</option>
+                <!-- Dynamically populate with saved datasets -->
+              </select>
+            </div>
           </div>
 
-          <!-- New JSON Maker controls -->
-          <h3>JSON Maker</h3>
-          <div id="json-dataset-section">
-            <h4>Dataset Information</h4>
-            <div class="input-group">
-              <label for="dataset-name">Dataset Name:</label>
-              <input type="text" id="dataset-name" placeholder="Enter dataset name">
+          <!-- Interactive JSON Editor Section -->
+          <div id="interactive-json-editor" class="bento-box">
+            <!-- Main JSON Editor -->
+            <div id="json-editor">
+              <p>JSON configuration will appear here after dataset load.</p>
             </div>
-            <div class="input-group">
-              <label for="dataset-link">Dataset Link:</label>
-              <input type="text" id="dataset-link" placeholder="Enter dataset link">
+
+            <!-- JSON Maker Controls -->
+            <h3>JSON Maker</h3>
+            <div id="json-dataset-section">
+              <h4>Dataset Information</h4>
+              <div class="input-group">
+                <label for="dataset-name">Dataset Name:</label>
+                <input type="text" id="dataset-name" placeholder="Enter dataset name">
+              </div>
+              <div class="input-group">
+                <label for="dataset-link">Dataset Link:</label>
+                <input type="text" id="dataset-link" placeholder="Enter dataset link">
+              </div>
+            </div>
+            <div id="json-qualitative-section">
+              <h4>Qualitative Fields</h4>
+              <div id="qualitative-fields-container">
+                <!-- Populated by updateJSONEditorQual() -->
+              </div>
+            </div>
+            <div id="json-quantitative-section">
+              <h4>Quantitative Fields</h4>
+              <div id="quantitative-fields-container">
+                <!-- Populated by updateJSONEditorQuant() -->
+              </div>
+            </div>
+            <div id="json-categories-section">
+              <h4>Categories</h4>
+              <div id="categories-container">
+                <!-- Allow user to add/edit categories and assign datasets -->
+              </div>
+            </div>
+            <!-- For previewing nested JSON structure -->
+            <div id="json-builder" class="bento-box">
+              <h3>JSON Builder Preview</h3>
+              <div id="category-level" class="bento-box">
+                <h4>Category: <span id="category-name-display"></span></h4>
+                <div id="dataset-level" class="bento-box">
+                  <h5>Dataset: <span id="dataset-name-display"></span></h5>
+                  <div id="fields-level" class="bento-box">
+                    <!-- Nested fields will be shown here -->
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div id="json-qualitative-section">
-            <h4>Qualitative Fields</h4>
-            <div id="qualitative-fields-container">
-              <!-- Will be populated by updateJSONEditorQual() -->
-            </div>
-          </div>
-          <div id="json-quantitative-section">
-            <h4>Quantitative Fields</h4>
-            <div id="quantitative-fields-container">
-              <!-- Will be populated by updateJSONEditorQuant() -->
-            </div>
-          </div>
-          <div id="json-categories-section">
-            <h4>Categories</h4>
-            <div id="categories-container">
-              <!-- Allow user to add/edit categories and assign datasets -->
-            </div>
-          </div>
-          <!-- Button to trigger processing of field properties (counts/metrics) -->
+
+          <!-- Buttons -->
           <button id="process-fields-btn">Process Fields</button>
           <button id="create-json-btn">Create JSON</button>
         </div>
       </div>
-
-
 
       <!-- Collapsible: Python Options -->
       <div class="collapsible">
@@ -187,7 +226,7 @@
             <div class="collapsible-header">Quant/Qual Selector</div>
             <div class="collapsible-content" id="quant-qual-section">
               <p>Select quantitative and qualitative fields here.</p>
-              <!-- The content is updated automatically based on the selected fields -->
+              <!-- Content updated automatically based on selected fields -->
             </div>
           </div>
         </div>
@@ -205,6 +244,7 @@
           <option value="api">API Creation</option>
           <option value="json">JSON Creation</option>
           <option value="python">Python Function</option>
+          <option value="txt">Text Summary</option>
         </select>
       </div>
       <div class="code-container">
