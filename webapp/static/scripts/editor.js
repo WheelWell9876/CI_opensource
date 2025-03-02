@@ -413,7 +413,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="bento-box" style="margin: 5px 0;">
                   <strong>${prop}</strong> (Count: ${analysis.counts[prop]})<br>
                   <div class="edit-group">
-                    <label>Weight: <input type="number" step="0.01" name="${field}_${prop}_weight"></label>
                     <label>Meaning: <input type="text" name="${field}_${prop}_meaning"></label>
                     <label>Importance: <input type="text" name="${field}_${prop}_importance"></label>
                     <label>Grade: <input type="number" step="0.01" name="${field}_${prop}_grade"></label>
@@ -427,7 +426,6 @@ document.addEventListener('DOMContentLoaded', function() {
           // Optionally add overall settings for the field
           html += `
             <div class="edit-group">
-              <label>Overall Weight: <input type="number" step="0.01" name="${field}_weight"></label><br>
               <label>Overall Meaning: <input type="text" name="${field}_meaning"></label><br>
               <label>Overall Importance: <input type="text" name="${field}_importance"></label><br>
               <label>Overall Grade: <input type="number" step="0.01" name="${field}_grade"></label>
@@ -457,7 +455,6 @@ document.addEventListener('DOMContentLoaded', function() {
               ${metricsHtml}
             </div>
             <div class="edit-group">
-              <label>Weight: <input type="number" step="0.01" name="${field}_weight"></label><br>
               <label>Meaning: <input type="text" name="${field}_meaning"></label><br>
               <label>Importance: <input type="text" name="${field}_importance"></label><br>
               <label>Grade: <input type="number" step="0.01" name="${field}_grade"></label>
@@ -521,19 +518,16 @@ document.addEventListener('DOMContentLoaded', function() {
   // ---------------------------------------------------------------------------
   // Create JSON Button – Build dataset JSON from the JSON Editor values.
   // ---------------------------------------------------------------------------
-  document.getElementById('create-json-btn').addEventListener('click', function() {
-    const jsonEditor = document.getElementById('json-editor');
-    const fieldDivs = jsonEditor.querySelectorAll('.json-field');
-    let qualitativeFields = [];
-    let quantitativeFields = [];
-    fieldDivs.forEach(div => {
-      const fieldName = div.querySelector('h4').textContent.split(' (Prediction:')[0].trim();
-      const weight = div.querySelector(`input[name="${fieldName}_weight"]`).value;
-      const meaning = div.querySelector(`input[name="${fieldName}_meaning"]`).value;
-      const importance = div.querySelector(`input[name="${fieldName}_importance"]`).value;
-      const grade = div.querySelector(`input[name="${fieldName}_grade"]`).value;
-      const predictionText = div.querySelector('.prediction-box').textContent;
-      if (predictionText.includes("Qualitative")) {
+    document.getElementById('create-json-btn').addEventListener('click', function() {
+      // Read qualitative fields from the moved section
+      let qualitativeFields = [];
+      const qualDivs = document.querySelectorAll('#json-qualitative-section .json-qual-field');
+      qualDivs.forEach(div => {
+        // Extract the field name (assuming the h4 is formatted like "FieldName (Prediction: Qualitative)")
+        const fieldName = div.querySelector('h4').textContent.split(' (Prediction:')[0].trim();
+        const meaning = div.querySelector(`input[name="${fieldName}_meaning"]`).value;
+        const importance = div.querySelector(`input[name="${fieldName}_importance"]`).value;
+        const grade = div.querySelector(`input[name="${fieldName}_grade"]`).value;
         qualitativeFields.push({
           fieldName: fieldName,
           type: "String",
@@ -541,47 +535,64 @@ document.addEventListener('DOMContentLoaded', function() {
           importance: importance,
           overallFieldImportanceGrade: parseFloat(grade)
         });
-      } else {
+      });
+
+      // Read quantitative fields from the moved section
+      let quantitativeFields = [];
+      const quantDivs = document.querySelectorAll('#json-quantitative-section .json-quant-field');
+      quantDivs.forEach(div => {
+        // Extract field name from the h4 text (e.g., "Volume (Prediction: Quantitative)")
+        const fieldName = div.querySelector('h4').textContent.split(' (Prediction:')[0].trim();
+        const meaning = div.querySelector(`input[name="${fieldName}_meaning"]`).value;
+        const importance = div.querySelector(`input[name="${fieldName}_importance"]`).value;
+        const grade = div.querySelector(`input[name="${fieldName}_grade"]`).value;
         quantitativeFields.push({
           fieldName: fieldName,
           type: "Float",
           meaning: meaning,
-          importance: importance
+          importance: importance,
+          overallFieldImportanceGrade: parseFloat(grade)
         });
-      }
+      });
+
+      let removedFields = []; // (Assume none for now.)
+      let allGrades = {};
+      qualitativeFields.concat(quantitativeFields).forEach(field => {
+        allGrades[field.fieldName] = field.overallFieldImportanceGrade;
+      });
+
+      // Read dataset information from the builder preview section
+      // Note: these inputs are now inside the #json-dataset-section within the builder
+      const datasetName = document.querySelector('#json-dataset-section input[id="dataset-name"]').value;
+      const datasetLink = document.querySelector('#json-dataset-section input[id="dataset-link"]').value;
+
+      const datasetJSON = {
+        datasetName: datasetName,
+        datasetLink: datasetLink,
+        qualitativeFields: qualitativeFields,
+        quantitativeProperties: quantitativeFields,
+        removedFields: removedFields,
+        summaryOfGrades: allGrades
+      };
+
+      console.log("Creating JSON with dataset object:", datasetJSON);
+      fetch('/editor/create_json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datasetJSON)
+      })
+        .then(response => response.json())
+        .then(data => {
+          window.generatedCode = window.generatedCode || {};
+          window.generatedCode.json = data;
+          refreshCodePreview();
+        })
+        .catch(err => {
+          console.error("Error creating JSON:", err);
+          alert("Error creating JSON: " + err);
+        });
     });
-    let removedFields = []; // (Assume none for now.)
-    let allGrades = {};
-    qualitativeFields.concat(quantitativeFields).forEach(field => {
-      allGrades[field.fieldName] = parseFloat(field.overallFieldImportanceGrade || 0);
-    });
-    const datasetName = document.getElementById('dataset-name').value;
-    const datasetLink = document.getElementById('dataset-link').value;
-    const datasetJSON = {
-      datasetName: datasetName,
-      datasetLink: datasetLink,
-      qualitativeFields: qualitativeFields,
-      quantitativeProperties: quantitativeFields,
-      removedFields: removedFields,
-      summaryOfGrades: allGrades
-    };
-    console.log("Creating JSON with dataset object:", datasetJSON);
-    fetch('/editor/create_json', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(datasetJSON)
-    })
-    .then(response => response.json())
-    .then(data => {
-      window.generatedCode = window.generatedCode || {};
-      window.generatedCode.json = data;
-      refreshCodePreview();
-    })
-    .catch(err => {
-      console.error("Error creating JSON:", err);
-      alert("Error creating JSON: " + err);
-    });
-  });
+
 
   // ---------------------------------------------------------------------------
   // Update Quant/Qual Options UI based on selected fields.
@@ -852,16 +863,53 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.style.cursor = 'ew-resize';
   });
 
-  document.addEventListener('mousemove', function(e) {
-    if (!isResizing) return;
-    const containerRect = container.getBoundingClientRect();
-    let newLeftWidth = e.clientX - containerRect.left;
-    const minWidth = 250; // same as CSS min-width for left panel
-    const maxWidth = containerRect.width - 300; // ensure right panel has at least 300px
-    if (newLeftWidth < minWidth) newLeftWidth = minWidth;
-    if (newLeftWidth > maxWidth) newLeftWidth = maxWidth;
-    leftPanel.style.flex = '0 0 ' + newLeftWidth + 'px';
-  });
+    const minRightWidth = 300;
+
+    document.addEventListener('mousemove', function(e) {
+      if (!isResizing) return;
+      const containerRect = container.getBoundingClientRect();
+      let newLeftWidth = e.clientX - containerRect.left;
+      const minWidth = 250; // same as CSS min-width for left panel
+      const maxWidth = containerRect.width - minRightWidth; // ensure right panel has at least minRightWidth
+      if (newLeftWidth < minWidth) newLeftWidth = minWidth;
+      if (newLeftWidth > maxWidth) newLeftWidth = maxWidth;
+      leftPanel.style.flex = '0 0 ' + newLeftWidth + 'px';
+    });
+
+
+  // Nested resizer functionality for JSON Builder Preview
+    function initializeNestedResizers() {
+      const nestedResizers = document.querySelectorAll('.nested-resizer');
+      nestedResizers.forEach(resizer => {
+        let isResizingNested = false;
+        let startY, startHeight;
+        const parentContainer = resizer.parentElement; // The container we want to resize
+        resizer.addEventListener('mousedown', function(e) {
+          isResizingNested = true;
+          startY = e.clientY;
+          startHeight = parentContainer.offsetHeight;
+          document.body.style.cursor = 'ns-resize';
+          e.preventDefault();
+        });
+        document.addEventListener('mousemove', function(e) {
+          if (!isResizingNested) return;
+          let dy = e.clientY - startY;
+          let newHeight = startHeight + dy;
+          if (newHeight < 100) newHeight = 100; // enforce a minimum height
+          parentContainer.style.height = newHeight + 'px';
+        });
+        document.addEventListener('mouseup', function(e) {
+          if (isResizingNested) {
+            isResizingNested = false;
+            document.body.style.cursor = 'default';
+          }
+        });
+      });
+    }
+
+    // Call initializeNestedResizers() once the DOM is loaded and whenever the nested content is updated.
+    initializeNestedResizers();
+
 
   document.addEventListener('mouseup', function(e) {
     if (isResizing) {

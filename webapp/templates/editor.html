@@ -22,7 +22,6 @@
     <!-- Left Panel: Options -->
     <div class="editor-options">
       <h2>Options &amp; Fields</h2>
-
       <!-- Collapsible: API Options -->
       <div class="collapsible">
         <div class="collapsible-header active">API Options</div>
@@ -155,13 +154,17 @@
           </div>
 
           <!-- Interactive JSON Builder Preview -->
-          <div id="json-builder" class="bento-box">
+          <div id="json-builder" class="bento-box nested-container">
             <h3>JSON Builder Preview</h3>
-            <div id="category-level" class="bento-box">
+            <!-- Category Level with its own nested resizer -->
+            <div id="category-level" class="bento-box nested-container">
               <h4>Category: <span id="category-name-display"></span></h4>
-              <div id="dataset-level" class="bento-box">
+              <div class="nested-resizer"></div>
+              <!-- Dataset Level -->
+              <div id="dataset-level" class="bento-box nested-container">
                 <h5>Dataset: <span id="dataset-name-display"></span></h5>
-                <!-- Moved inputs now appear inside the builder preview -->
+                <div class="nested-resizer"></div>
+                <!-- Here we embed the JSON Maker controls and field sections -->
                 <div id="json-dataset-section">
                   <div class="input-group">
                     <label for="dataset-name">Dataset Name:</label>
@@ -190,8 +193,8 @@
                     <!-- Allow user to add/edit categories and assign datasets -->
                   </div>
                 </div>
-                <!-- Nested fields preview will be rendered here -->
-                <div id="fields-level" class="bento-box">
+                <!-- Fields Level (Final nested preview of fields and properties) -->
+                <div id="fields-level" class="bento-box nested-container">
                   <!-- Nested fields will be shown here -->
                 </div>
               </div>

@@ -103,22 +103,55 @@ header {
 }
 
 /* Allow the interactive JSON editor to be vertically resized */
-#interactive-json-editor {
+#interactive-json-editor,
+#json-builder,
+#fields-level .bento-box {
   resize: vertical;
   overflow: auto;
-  min-height: 300px;
-  /* Remove any fixed max-height from the bento-box style */
+  min-height: 150px;
   max-height: none;
 }
 
-/* Optionally, make the JSON Builder Preview also resizable */
-#json-builder {
-  resize: vertical;
+/* New classes for nested resizable containers in the JSON Builder Preview */
+.nested-container {
+  position: relative;
+  /* Allow vertical resizing via a custom handle */
+  /* We leave max-height unset so the user can expand fully */
+  min-height: 150px;
   overflow: auto;
-  min-height: 200px;
-  max-height: none;
 }
 
+.nested-resizer {
+  height: 5px;
+  background: #ccc;
+  cursor: ns-resize;
+  user-select: none;
+  margin: 2px 0;
+}
+
+/* Optional styling for the nested preview sections */
+.builder-section {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #f9f9f9;
+}
+
+.field-preview {
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.property-preview {
+  margin-left: 15px;
+  padding: 3px;
+  border-left: 2px solid #ccc;
+  background: #fff;
+}
 
 /* Field Rows */
 .field-row {
