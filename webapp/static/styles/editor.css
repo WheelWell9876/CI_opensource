@@ -32,19 +32,41 @@ header {
 .editor-wrapper {
   display: flex;
   margin: 20px;
-  gap: 20px;
+  /* The resizer will handle the gap */
 }
+
+/* Left Panel */
 .editor-options {
-  width: 38%;
+  flex: 0 0 38%;
+  min-width: 250px;
+  max-width: 80%;
   background: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
-.editor-options h2 {
-  text-align: center;
-  margin-bottom: 15px;
+
+/* Resizer Styles */
+.resizer {
+  width: 5px;
+  background: #ccc;
+  cursor: ew-resize;
+  user-select: none;
 }
+
+/* Right Panel */
+.editor-preview {
+  flex: 1;
+  min-width: 300px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Input Groups and Collapsible Sections */
 .input-group {
   margin-bottom: 15px;
 }
@@ -61,8 +83,6 @@ header {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-
-/* Collapsible Sections */
 .collapsible {
   margin-bottom: 15px;
   border: 1px solid #ccc;
@@ -82,7 +102,25 @@ header {
   display: block;
 }
 
-/* Field Rows in API Fields */
+/* Allow the interactive JSON editor to be vertically resized */
+#interactive-json-editor {
+  resize: vertical;
+  overflow: auto;
+  min-height: 300px;
+  /* Remove any fixed max-height from the bento-box style */
+  max-height: none;
+}
+
+/* Optionally, make the JSON Builder Preview also resizable */
+#json-builder {
+  resize: vertical;
+  overflow: auto;
+  min-height: 200px;
+  max-height: none;
+}
+
+
+/* Field Rows */
 .field-row {
   display: flex;
   padding: 4px 0;
@@ -98,7 +136,7 @@ header {
   padding: 0 5px;
 }
 
-/* Bento Box for Fields and New Sections */
+/* Bento Box */
 .bento-box {
   border: 1px dashed #ccc;
   padding: 10px;
@@ -109,32 +147,14 @@ header {
   overflow-y: auto;
 }
 
-/* Right Panel: Preview */
-.editor-preview {
-  width: 60%;
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-}
-.preview-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.preview-header label {
-  font-weight: bold;
-}
+/* Code Preview */
 .code-container {
   position: relative;
   flex-grow: 1;
 }
 #code-preview {
   width: 100%;
-  height: 400px;
+  height: 600px;
   padding: 10px;
   font-family: monospace;
   font-size: 1rem;
@@ -157,6 +177,8 @@ header {
   background: #80ed99;
   color: #22577a;
 }
+
+/* Buttons */
 button {
   padding: 10px 20px;
   background-color: #22577a;

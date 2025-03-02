@@ -802,4 +802,35 @@ document.addEventListener('DOMContentLoaded', function() {
   // (For debugging) Log that the integrated JS file has loaded.
   // ---------------------------------------------------------------------------
   console.log("Integrated editor.js loaded successfully.");
+
+    // Slider functionality for resizable panels
+  const resizer = document.querySelector('.resizer');
+  const leftPanel = document.querySelector('.editor-options');
+  const rightPanel = document.querySelector('.editor-preview');
+  const container = document.querySelector('.editor-wrapper');
+
+  let isResizing = false;
+
+  resizer.addEventListener('mousedown', function(e) {
+    isResizing = true;
+    document.body.style.cursor = 'ew-resize';
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isResizing) return;
+    const containerRect = container.getBoundingClientRect();
+    let newLeftWidth = e.clientX - containerRect.left;
+    const minWidth = 250; // same as CSS min-width for left panel
+    const maxWidth = containerRect.width - 300; // ensure right panel has at least 300px
+    if (newLeftWidth < minWidth) newLeftWidth = minWidth;
+    if (newLeftWidth > maxWidth) newLeftWidth = maxWidth;
+    leftPanel.style.flex = '0 0 ' + newLeftWidth + 'px';
+  });
+
+  document.addEventListener('mouseup', function(e) {
+    if (isResizing) {
+      isResizing = false;
+      document.body.style.cursor = 'default';
+    }
+  });
 });
