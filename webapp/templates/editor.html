@@ -122,6 +122,15 @@
         </div>
       </div>
 
+      <!-- New JSON Source Selection -->
+      <div class="input-group">
+        <label for="json-source-select">JSON Source:</label>
+        <select id="json-source-select">
+          <option value="provided">Use Provided JSON</option>
+          <option value="custom" selected>Create Your Own JSON</option>
+        </select>
+      </div>
+
       <!-- Collapsible: JSON Options -->
       <div class="collapsible">
         <div class="collapsible-header">JSON Options</div>
@@ -131,6 +140,7 @@
             <label for="json-upload">Upload JSON Configuration:</label>
             <input type="file" id="json-upload" accept=".json">
           </div>
+
           <!-- Category and Dataset Controls -->
           <div id="json-category-dataset-controls" class="bento-box">
             <h3>Category &amp; Dataset Options</h3>
@@ -148,62 +158,69 @@
               <label for="dataset-select">Dataset:</label>
               <select id="dataset-select">
                 <option value="">-- Select Dataset --</option>
-                <!-- Dynamically populate with saved datasets -->
+                <!-- Dynamically populated with saved datasets -->
               </select>
             </div>
           </div>
 
-          <!-- Interactive JSON Builder Preview -->
+          <!-- Saved JSON Browser Controls -->
+          <div id="json-saved-controls" class="bento-box">
+            <h3>Saved JSONs</h3>
+            <div class="saved-json-section">
+              <label for="saved-dataset-select">Dataset JSONs:</label>
+              <select id="saved-dataset-select">
+                <option value="">-- Select Dataset JSON --</option>
+              </select>
+              <button id="load-dataset-json">Load Dataset</button>
+            </div>
+            <div class="saved-json-section">
+              <label for="saved-category-select">Category JSONs:</label>
+              <select id="saved-category-select">
+                <option value="">-- Select Category JSON --</option>
+              </select>
+              <button id="load-category-json">Load Category</button>
+            </div>
+            <div class="saved-json-section">
+              <label for="saved-mode-select">Mode JSONs:</label>
+              <select id="saved-mode-select">
+                <option value="">-- Select Mode JSON --</option>
+              </select>
+              <button id="load-mode-json">Load Mode</button>
+            </div>
+          </div>
+
+          <!-- Browser-like Tab System for Dataset Editors -->
+          <div id="json-editor-tabs" class="tab-bar">
+            <!-- One tab is open by default; additional tabs can be added -->
+            <button class="tab" data-tab="dataset-tab-1">Dataset 1<span class="close-tab"> x</span></button>
+            <button class="tab add-tab" id="add-dataset-tab">+</button>
+          </div>
+
+          <!-- Interactive JSON Builder Preview (Dataset Editor) -->
           <div id="json-builder" class="bento-box nested-container">
-            <h3>JSON Builder Preview</h3>
-            <!-- Category Level with its own nested resizer -->
-            <div id="category-level" class="bento-box nested-container">
-              <h4>Category: <span id="category-name-display"></span></h4>
-              <div class="nested-resizer"></div>
-              <!-- Dataset Level -->
-              <div id="dataset-level" class="bento-box nested-container">
-                <h5>Dataset: <span id="dataset-name-display"></span></h5>
-                <div class="nested-resizer"></div>
-                <!-- JSON Maker Controls -->
-                <div id="json-dataset-section">
-                  <div class="input-group">
-                    <label for="dataset-name">Dataset Name:</label>
-                    <input type="text" id="dataset-name" placeholder="Enter dataset name">
-                  </div>
-                  <div class="input-group">
-                    <label for="dataset-link">Dataset Link:</label>
-                    <input type="text" id="dataset-link" placeholder="Enter dataset link">
-                  </div>
-                </div>
-                <div id="json-qualitative-section">
-                  <h4>Qualitative Fields</h4>
-                  <div id="qualitative-fields-container">
-                    <!-- Populated by JS (via jsonEditor.js) -->
-                  </div>
-                </div>
-                <div id="json-quantitative-section">
-                  <h4>Quantitative Fields</h4>
-                  <div id="quantitative-fields-container">
-                    <!-- Populated by JS (via jsonEditor.js) -->
-                  </div>
-                </div>
-                <div id="json-categories-section">
-                  <h4>Categories</h4>
-                  <div id="categories-container">
-                    <!-- Allow user to add/edit categories and assign datasets -->
-                  </div>
-                </div>
-                <!-- Fields Level (Final nested preview of fields and properties) -->
-                <div id="fields-level" class="bento-box nested-container">
-                  <!-- Nested fields will be shown here -->
-                </div>
+            <!-- The active dataset editor is rendered here -->
+            <div id="dataset-tab-1" class="dataset-editor">
+              <div class="editor-header">
+                <label>Dataset Name: <input type="text" class="dataset-name" placeholder="Enter dataset name" /></label>
+                <label>Dataset Link: <input type="text" class="dataset-link" placeholder="Enter dataset link" /></label>
+              </div>
+              <div class="editor-body">
+                <!-- The interactive JSON editor fields -->
+                <div id="qualitative-fields-container"></div>
+                <div id="quantitative-fields-container"></div>
+                <div id="fields-level"></div>
               </div>
             </div>
           </div>
 
-          <!-- Buttons -->
-          <button id="process-fields-btn">Process Fields</button>
-          <button id="create-json-btn">Create JSON</button>
+          <!-- Buttons for saving/fusing JSONs -->
+          <div class="button-group">
+            <button id="process-fields-btn">Process Fields</button>
+            <button id="create-json-btn">Create JSON</button>
+            <button id="save-dataset-json-btn">Save Dataset JSON</button>
+            <button id="fuse-category-btn">Fuse Datasets into Category</button>
+            <button id="fuse-mode-btn">Fuse Categories into Mode</button>
+          </div>
         </div>
       </div>
 
@@ -215,7 +232,6 @@
             <div class="collapsible-header">Quant/Qual Selector</div>
             <div class="collapsible-content" id="quant-qual-section">
               <p>Select quantitative and qualitative fields here.</p>
-              <!-- Content updated automatically based on selected fields -->
             </div>
           </div>
         </div>
@@ -246,8 +262,15 @@
     </div>
   </div>
 
-  <!-- Load the non-interactive editor functionality first, then the interactive JSON editor -->
+  <!-- Load scripts in order -->
   <script src="{{ url_for('static', filename='scripts/editor.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/jsonEditor.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonManager.js') }}"></script>
+  <script>
+    // On page load, ensure the default tab is active.
+    document.addEventListener('DOMContentLoaded', function() {
+      // The default tab "dataset-tab-1" is already in the HTML.
+    });
+  </script>
 </body>
 </html>

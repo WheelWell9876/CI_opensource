@@ -269,3 +269,22 @@
         "National Inventory of Dams (NID)": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/NID_v1/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "Reclamation Reservoirs": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Reclamation_Reservoirs/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "US Army Corps of Engineers (USACE) Owned and Operated Reservoirs": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_rez/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"
+
+
+
+
+
+
+
+
+
+
+
+
+
+Okay, I fixed the JSON. Now I need to make it to where I the user can choose between the pre-made JSON files that I have, and being able to make a JSON themselves. Currently, I have 3 full mode JSON files set at /Users/thomasnumnum/PycharmProjects/Ci_open/geo_open_source/webapp/static/data/json/provided/fullMode/economic_fused_weighted.json where I want the provided ones to be at, along with the datasets at all of other levels. Side note, I want the user-created datasets to be in /Users/thomasnumnum/PycharmProjects/Ci_open/geo_open_source/webapp/static/data/json/custom/fullMode, /Users/thomasnumnum/PycharmProjects/Ci_open/geo_open_source/webapp/static/data/json/custom/indCategory, and /Users/thomasnumnum/PycharmProjects/Ci_open/geo_open_source/webapp/static/data/json/custom/indDataset respectively. I do not want them to be stored at thetop of the webapp like the currently are right now.
+
+For the interface of the JSON editor, I want there to be a first dropdown that will ask the user if they want to create their own JSON or use one of the provided ones. If they select one of the provided ones, then it will automatically render the fields in the interactive editor. Also, I need to fix the window tab system for when a dataset is loaded in or it is being populated by the API, it needs to appear on the first window(the default one) and not have the user open a new window to see a new dataset.  Currently,
+
+
+

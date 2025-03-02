@@ -160,79 +160,94 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Update JSON Editor using field analysis results.
-  function updateJSONEditorFromAnalysis() {
-    const qualContainer = document.getElementById('qualitative-fields-container');
-    const quantContainer = document.getElementById('quantitative-fields-container');
-    qualContainer.innerHTML = "";
-    quantContainer.innerHTML = "";
-    if (window.fieldAnalysis && window.fieldAnalysis.qualitative_fields) {
-      for (const field in window.fieldAnalysis.qualitative_fields) {
-        const analysis = window.fieldAnalysis.qualitative_fields[field];
-        const div = document.createElement('div');
-        div.classList.add('json-qual-field');
-        div.style.border = "1px solid #ccc";
-        div.style.marginBottom = "10px";
-        div.style.padding = "5px";
-        let html = `<h4>${field} <span class="prediction-box">(Prediction: Qualitative)</span></h4>`;
-        if (analysis.counts) {
-          for (const prop in analysis.counts) {
-            html += `
-              <div class="bento-box" style="margin: 5px 0;">
-                <strong>${prop}</strong> (Count: ${analysis.counts[prop]})<br>
-                <div class="edit-group">
-                  <label>Meaning: <input type="text" name="${field}_${prop}_meaning"></label>
-                  <label>Importance: <input type="text" name="${field}_${prop}_importance"></label>
-                  <label>Grade: <input type="number" step="0.01" name="${field}_${prop}_grade"></label>
+    function updateJSONEditorFromAnalysis() {
+      // Always update the default dataset editor tab (with id "dataset-tab-1")
+      const defaultEditor = document.getElementById('dataset-tab-1');
+      if (!defaultEditor) {
+        console.error("Default dataset editor (dataset-tab-1) not found.");
+        return;
+      }
+      // These elements are expected to be inside the default tab.
+      const qualContainer = defaultEditor.querySelector('#qualitative-fields-container');
+      const quantContainer = defaultEditor.querySelector('#quantitative-fields-container');
+      const fieldsLevel = defaultEditor.querySelector('#fields-level');
+
+      if (!qualContainer || !quantContainer || !fieldsLevel) {
+        console.error("One or more interactive JSON editor containers not found in default editor.");
+        return;
+      }
+
+      // Clear the containers.
+      qualContainer.innerHTML = "";
+      quantContainer.innerHTML = "";
+
+      // Render qualitative fields.
+      if (window.fieldAnalysis && window.fieldAnalysis.qualitative_fields) {
+        for (const field in window.fieldAnalysis.qualitative_fields) {
+          const analysis = window.fieldAnalysis.qualitative_fields[field];
+          const div = document.createElement('div');
+          div.classList.add('json-qual-field');
+          div.style.border = "1px solid #ccc";
+          div.style.marginBottom = "10px";
+          div.style.padding = "5px";
+          let html = `<h4>${field} <span class="prediction-box">(Prediction: Qualitative)</span></h4>`;
+          if (analysis.counts) {
+            for (const prop in analysis.counts) {
+              html += `
+                <div class="bento-box" style="margin: 5px 0;">
+                  <strong>${prop}</strong> (Count: ${analysis.counts[prop]})<br>
+                  <div class="edit-group">
+                    <label>Grade: <input type="number" step="0.01" name="${field}_${prop}_grade"></label>
+                  </div>
                 </div>
-              </div>
-            `;
+              `;
+            }
+          } else {
+            html += `<em>No Data Available</em>`;
           }
-        } else {
-          html += `<em>No Data Available</em>`;
+          html += `
+            <div class="edit-group">
+              <label>Overall Grade: <input type="number" step="0.01" name="${field}_grade"></label>
+            </div>
+          `;
+          div.innerHTML = html;
+          qualContainer.appendChild(div);
         }
-        html += `
-          <div class="edit-group">
-            <label>Overall Meaning: <input type="text" name="${field}_meaning"></label><br>
-            <label>Overall Importance: <input type="text" name="${field}_importance"></label><br>
-            <label>Overall Grade: <input type="number" step="0.01" name="${field}_grade"></label>
-          </div>
-        `;
-        div.innerHTML = html;
-        qualContainer.appendChild(div);
       }
-    }
-    if (window.fieldAnalysis && window.fieldAnalysis.quantitative_fields) {
-      for (const field in window.fieldAnalysis.quantitative_fields) {
-        const analysis = window.fieldAnalysis.quantitative_fields[field];
-        let metricsHtml = `<p>No metrics processed yet.</p>`;
-        if (analysis.metrics) {
-          metricsHtml = `<pre>${JSON.stringify(analysis.metrics, null, 2)}</pre>`;
+
+      // Render quantitative fields.
+      if (window.fieldAnalysis && window.fieldAnalysis.quantitative_fields) {
+        for (const field in window.fieldAnalysis.quantitative_fields) {
+          const analysis = window.fieldAnalysis.quantitative_fields[field];
+          let metricsHtml = `<p>No metrics processed yet.</p>`;
+          if (analysis.metrics) {
+            metricsHtml = `<pre>${JSON.stringify(analysis.metrics, null, 2)}</pre>`;
+          }
+          const div = document.createElement('div');
+          div.classList.add('json-quant-field');
+          div.style.border = "1px solid #ccc";
+          div.style.marginBottom = "10px";
+          div.style.padding = "5px";
+          div.innerHTML = `
+            <h4>${field} <span class="prediction-box">(Prediction: Quantitative)</span></h4>
+            <div id="${field}_quant_metrics">
+              ${metricsHtml}
+            </div>
+            <div class="edit-group">
+              <label>Grade: <input type="number" step="0.01" name="${field}_grade"></label>
+            </div>
+          `;
+          quantContainer.appendChild(div);
         }
-        const div = document.createElement('div');
-        div.classList.add('json-quant-field');
-        div.style.border = "1px solid #ccc";
-        div.style.marginBottom = "10px";
-        div.style.padding = "5px";
-        div.innerHTML = `
-          <h4>${field} <span class="prediction-box">(Prediction: Quantitative)</span></h4>
-          <div id="${field}_quant_metrics">
-            ${metricsHtml}
-          </div>
-          <div class="edit-group">
-            <label>Meaning: <input type="text" name="${field}_meaning"></label><br>
-            <label>Importance: <input type="text" name="${field}_importance"></label><br>
-            <label>Grade: <input type="number" step="0.01" name="${field}_grade"></label>
-          </div>
-        `;
-        quantContainer.appendChild(div);
       }
+
+      if (window.generatedCode) {
+        window.generatedCode.processedFields = window.fieldAnalysis;
+      }
+      refreshCodePreview();
+      initializeNestedResizers();
     }
-    if (window.generatedCode) {
-      window.generatedCode.processedFields = window.fieldAnalysis;
-    }
-    refreshCodePreview();
-    initializeNestedResizers();
-  }
+
 
   // Process Fields: send geoJSON for analysis.
   function processFieldAnalysis() {

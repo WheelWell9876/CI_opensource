@@ -3,7 +3,7 @@ import numpy as np
 from flask import Blueprint, render_template, request, jsonify
 from arcgis.features import FeatureLayer
 from .pipeline.quant_qual_counter import analyze_fields
-from .pipeline.json_maker import create_dataset_json, create_category_json, create_full_summary, create_json_object
+from .pipeline.json_maker import create_dataset_json, create_json_object, create_category_json, create_full_summary, export_json
 from urllib.parse import urlencode
 import geopandas as gpd
 import logging
@@ -19,6 +19,9 @@ main_blueprint = Blueprint('main', __name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "static", "data", "split_parquet")
+DATASET_DIR = os.path.join(BASE_DIR, 'indDataset')
+CATEGORY_DIR = os.path.join(BASE_DIR, 'indCategory')
+MODE_DIR = os.path.join(BASE_DIR, 'fullMode')
 
 # --------------------
 # Page Routes
@@ -422,21 +425,6 @@ def execute_api():
         return jsonify({"error": str(e)}), 500
 
 
-def generate_json_creation_preview(config):
-    return json.dumps(config, indent=2)
-
-def generate_python_creation_preview(config):
-    dataset_name = config.get("dataset_name", "my_dataset").replace(" ", "_").lower()
-    preview = f"""def process_{dataset_name}():
-    \"\"\"Process the {dataset_name} dataset based on the specified configuration.\"\"\"
-    # API URL: {config.get("api_url")}
-    # Selected fields: {config.get("selected_fields")}
-    # Spatial input: {config.get("spatial_input")}
-    # Output options: {config.get("output_options")}
-    pass
-"""
-    return preview
-
 @main_blueprint.route('/editor/create_json', methods=['POST'])
 def create_json():
     data = request.get_json()
@@ -486,4 +474,151 @@ def generate_preview():
     }
     logger.info("Sending generated preview to client.")
     return jsonify(generated_preview)
+
+
+# ---------------------------------------------------------------------------
+# JSON endpoints
+# ---------------------------------------------------------------------------
+
+# Utility: list JSON files in a folder.
+def list_json_files(json_type):
+    if json_type == 'dataset':
+        folder = DATASET_DIR
+    elif json_type == 'category':
+        folder = CATEGORY_DIR
+    elif json_type == 'mode':
+        folder = MODE_DIR
+    else:
+        return []
+    os.makedirs(folder, exist_ok=True)
+    return [f for f in os.listdir(folder) if f.endswith('.json')]
+
+@main_blueprint.route('/json/list', methods=['GET'])
+def json_list():
+    json_type = request.args.get('type')
+    files = list_json_files(json_type)
+    return jsonify({"files": files})
+
+@main_blueprint.route('/json/load', methods=['GET'])
+def json_load():
+    json_type = request.args.get('type')
+    filename = request.args.get('file')
+    if json_type == 'dataset':
+        folder = DATASET_DIR
+    elif json_type == 'category':
+        folder = CATEGORY_DIR
+    elif json_type == 'mode':
+        folder = MODE_DIR
+    else:
+        return jsonify({"error": "Invalid type"}), 400
+    filepath = os.path.join(folder, filename)
+    if not os.path.exists(filepath):
+        return jsonify({"error": "File not found"}), 404
+    with open(filepath, 'r') as f:
+        data = json.load(f)
+    return jsonify(data)
+
+@main_blueprint.route('/json/save', methods=['POST'])
+def json_save():
+    json_type = request.args.get('type')
+    filename = request.args.get('file')
+    data = request.get_json()
+    if json_type == 'dataset':
+        folder = DATASET_DIR
+    elif json_type == 'category':
+        folder = CATEGORY_DIR
+    elif json_type == 'mode':
+        folder = MODE_DIR
+    else:
+        return jsonify({"error": "Invalid type"}), 400
+    os.makedirs(folder, exist_ok=True)
+    filepath = os.path.join(folder, filename)
+    with open(filepath, 'w') as f:
+        json.dump(data, f, indent=2)
+    return jsonify({"status": "success", "message": "File saved."})
+
+@main_blueprint.route('/editor/create_json', methods=['POST'])
+def create_json_endpoint():
+    """
+    Create a JSON object from posted data.
+    This endpoint creates either a dataset JSON or (if category info is present) a category JSON.
+    """
+    data = request.get_json()
+    try:
+        json_obj = create_json_object(data)
+        return jsonify(json_obj)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@main_blueprint.route('/editor/fuse_category', methods=['POST'])
+def fuse_category_endpoint():
+    """
+    Fuse multiple dataset JSON files into a category JSON.
+    Expects JSON body with:
+      - categoryName: new category name
+      - categoryInfo: dict with details
+      - datasetFiles: list of dataset filenames from DATASET_DIR
+    """
+    data = request.get_json()
+    category_name = data.get('categoryName')
+    category_info = data.get('categoryInfo')
+    dataset_files = data.get('datasetFiles', [])
+    datasets = {}
+    for filename in dataset_files:
+        filepath = os.path.join(DATASET_DIR, filename)
+        if os.path.exists(filepath):
+            with open(filepath, 'r') as f:
+                ds = json.load(f)
+                ds_name = ds.get("datasetName", filename)
+                datasets[ds_name] = ds
+    try:
+        category_json = create_category_json(category_name, category_info, datasets)
+        export_json(category_json, CATEGORY_DIR, f"{category_name}_Mode.json")
+        return jsonify(category_json)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@main_blueprint.route('/editor/fuse_mode', methods=['POST'])
+def fuse_mode_endpoint():
+    """
+    Fuse multiple category JSON files into a full mode JSON.
+    Expects JSON body with:
+      - categoryFiles: list of category filenames from CATEGORY_DIR
+    """
+    data = request.get_json()
+    category_files = data.get('categoryFiles', [])
+    categories = {}
+    for filename in category_files:
+        filepath = os.path.join(CATEGORY_DIR, filename)
+        if os.path.exists(filepath):
+            with open(filepath, 'r') as f:
+                cat = json.load(f)
+                cat_name = cat.get("categoryName", filename)
+                categories[cat_name] = cat
+    try:
+        full_summary = create_full_summary(categories)
+        fused_mode = {
+            "categories": categories,
+            "fullSummary": full_summary
+        }
+        export_json(fused_mode, MODE_DIR, "fused_mode.json")
+        return jsonify(fused_mode)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+def generate_json_creation_preview(config):
+    return json.dumps(config, indent=2)
+
+def generate_python_creation_preview(config):
+    dataset_name = config.get("dataset_name", "my_dataset").replace(" ", "_").lower()
+    preview = f"""def process_{dataset_name}():
+    \"\"\"Process the {dataset_name} dataset based on the specified configuration.\"\"\"
+    # API URL: {config.get("api_url")}
+    # Selected fields: {config.get("selected_fields")}
+    # Spatial input: {config.get("spatial_input")}
+    # Output options: {config.get("output_options")}
+    pass
+"""
+    return preview
+
 

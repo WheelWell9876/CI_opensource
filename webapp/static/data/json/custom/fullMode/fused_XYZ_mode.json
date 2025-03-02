@@ -1,0 +1,805 @@
+{
+  "categories": {
+    "LawEnforcement": {
+      "categoryInfo": {
+        "CategoryMeaning": "This category includes data on policing, crime statistics, and public safety measures.",
+        "CategoryImportance": "A safe and secure environment is necessary for robust economic activity; law enforcement data supports the maintenance of order and investor confidence.",
+        "grade": 0.027,
+        "categoryDatasets": {
+          "Local Law Enforcement Locations": {
+            "DatasetMeaning": "This dataset provides detailed information on the locations and operational areas of local law enforcement agencies across the United States. It includes addresses, service boundaries, and other geographic identifiers.",
+            "DatasetImportance": "For the economic mode, a secure environment is vital for fostering business growth and investor confidence. Reliable local law enforcement helps ensure stability and safety in commercial areas, which is essential for sustained economic output.",
+            "grade": 0.6
+          },
+          "US District Court Jurisdictions": {
+            "DatasetMeaning": "This dataset outlines the geographic boundaries and jurisdictions of U.S. District Courts. It offers key information on the distribution of judicial authority across regions.",
+            "DatasetImportance": "A robust judicial system is critical for maintaining economic order by resolving disputes and enforcing contracts. The data supports the economic environment by ensuring legal stability that underpins commercial activities.",
+            "grade": 0.4
+          },
+          "CategoryGradeSummary": {
+            "Local Law Enforcement Locations": 0.6,
+            "US District Court Jurisdictions": 0.4,
+            "categoryimportanceToOverallMode": 0.027
+          }
+        }
+      },
+      "datasets": {
+        "Local Law Enforcement Locations": {
+          "datasetName": "Local Law Enforcement Locations",
+          "datasetLink": "https://hifld-geoplatform.hub.arcgis.com/datasets/geoplatform::local-law-enforcement-locations/about",
+          "qualitativeFields": [
+            {
+              "fieldName": "TYPE",
+              "type": "String",
+              "meaning": "Identifies the type of local law enforcement agency.",
+              "importance": "For economic purposes, the agency type affects operational scale and resource allocation, which in turn influences local economic stability and productivity.",
+              "qualitativeProperties": [
+                {
+                  "propertyName": "LOCAL POLICE DEPARTMENT",
+                  "importance": "Typically the largest agency with broad operational reach; directly impacts local commerce and public safety.",
+                  "count": 15530,
+                  "grade": 0.5,
+                  "overallPropertyToDatasetGrade": 0.2,
+                  "overallPropertyToCategoryGrade": 0.12,
+                  "overallPropertyToFullGrade": 0.00324
+                },
+                {
+                  "propertyName": "SHERIFF'S OFFICE",
+                  "importance": "Often covers county-wide areas; important for rural economic stability though typically smaller in scale.",
+                  "count": 3839,
+                  "grade": 0.3,
+                  "overallPropertyToDatasetGrade": 0.12,
+                  "overallPropertyToCategoryGrade": 0.072,
+                  "overallPropertyToFullGrade": 0.001944
+                },
+                {
+                  "propertyName": "SPECIAL JURISDICTION",
+                  "importance": "Provides specialized services that can add niche economic value.",
+                  "count": 1953,
+                  "grade": 0.1,
+                  "overallPropertyToDatasetGrade": 0.04,
+                  "overallPropertyToCategoryGrade": 0.024,
+                  "overallPropertyToFullGrade": 0.000648
+                },
+                {
+                  "propertyName": "PRIMARY STATE AGENCY",
+                  "importance": "State agencies help enforce statewide standards, supporting broader economic regulation.",
+                  "count": 1895,
+                  "grade": 0.05,
+                  "overallPropertyToDatasetGrade": 0.02,
+                  "overallPropertyToCategoryGrade": 0.012,
+                  "overallPropertyToFullGrade": 0.000324
+                },
+                {
+                  "propertyName": "CONSTABLE/MARSHAL",
+                  "importance": "Smaller-scale law enforcement with limited direct economic impact.",
+                  "count": 269,
+                  "grade": 0.05,
+                  "overallPropertyToDatasetGrade": 0.02,
+                  "overallPropertyToCategoryGrade": 0.012,
+                  "overallPropertyToFullGrade": 0.000324
+                }
+              ],
+              "overallFieldImportanceGrade": 0.4,
+              "overallFieldToCategoryGrade": 0.24,
+              "overallFieldToFullGrade": 0.00648
+            },
+            {
+              "fieldName": "STATUS",
+              "type": "String",
+              "meaning": "Indicates whether the agency is operational.",
+              "importance": "Operational status is key to economic reliability; active and open agencies are primary contributors to local economic output.",
+              "qualitativeProperties": [
+                {
+                  "propertyName": "OPEN",
+                  "importance": "Fully operational agencies ensure continuous service and stability.",
+                  "count": 23043,
+                  "grade": 0.9,
+                  "overallPropertyToDatasetGrade": 0.27,
+                  "overallPropertyToCategoryGrade": 0.162,
+                  "overallPropertyToFullGrade": 0.004374
+                },
+                {
+                  "propertyName": "NOT AVAILABLE",
+                  "importance": "Uncertain status diminishes confidence in economic contribution.",
+                  "count": 443,
+                  "grade": 0.1,
+                  "overallPropertyToDatasetGrade": 0.03,
+                  "overallPropertyToCategoryGrade": 0.018,
+                  "overallPropertyToFullGrade": 0.000486
+                }
+              ],
+              "overallFieldImportanceGrade": 0.3,
+              "overallFieldToCategoryGrade": 0.18,
+              "overallFieldToFullGrade": 0.00486
+            },
+            {
+              "fieldName": "NAICS_CODE",
+              "type": "String",
+              "meaning": "Industry classification code for the agency.",
+              "importance": "Links the agency to a specific operational and regulatory sector, which is useful for economic analysis.",
+              "qualitativeProperties": [
+                {
+                  "propertyName": "922120",
+                  "importance": "Represents law enforcement agencies that are vital for maintaining economic order.",
+                  "count": 23486,
+                  "grade": 1.0,
+                  "overallPropertyToDatasetGrade": 0.1,
+                  "overallPropertyToCategoryGrade": 0.06,
+                  "overallPropertyToFullGrade": 0.00162
+                }
+              ],
+              "overallFieldImportanceGrade": 0.1,
+              "overallFieldToCategoryGrade": 0.06,
+              "overallFieldToFullGrade": 0.00162
+            }
+          ],
+          "quantitativeProperties": [
+            {
+              "fieldName": "POPULATION",
+              "type": "Integer",
+              "meaning": "Population served by the law enforcement agency.",
+              "importance": "A larger population implies greater economic impact and demand for services.",
+              "importanceDetails": [
+                {
+                  "metrics": "Range: 49926, Mean: 62.908, Median: 14.0, StdDev: 505.685, Minimum: 0, Maximum: 49926",
+                  "grade": 1.0,
+                  "overallPropertyToDatasetGrade": 0.05,
+                  "overallPropertyToCategoryGrade": 0.03,
+                  "overallPropertyToFullGrade": 0.00081
+                }
+              ],
+              "overallFieldToCategoryGrade": 0.03,
+              "overallFieldToFullGrade": 0.00081
+            },
+            {
+              "fieldName": "FTSWORN",
+              "type": "Integer",
+              "meaning": "Number of full-time sworn officers.",
+              "importance": "Reflects agency size and operational investment, which correlates with economic expenditure.",
+              "importanceDetails": [
+                {
+                  "metrics": "Range: 36023, Mean: 42.383, Median: 10.0, StdDev: 360.686, Minimum: 0, Maximum: 36023",
+                  "grade": 1.0,
+                  "overallPropertyToDatasetGrade": 0.04,
+                  "overallPropertyToCategoryGrade": 0.024,
+                  "overallPropertyToFullGrade": 0.000648
+                }
+              ],
+              "overallFieldToCategoryGrade": 0.024,
+              "overallFieldToFullGrade": 0.000648
+            },
+            {
+              "fieldName": "FTCIV",
+              "type": "Integer",
+              "meaning": "Number of full-time civilian employees.",
+              "importance": "Supports administrative and operational capacity, influencing cost and efficiency.",
+              "importanceDetails": [
+                {
+                  "metrics": "Range: 13903, Mean: 20.704, Median: 2.0, StdDev: 161.614, Minimum: 0, Maximum: 13903",
+                  "grade": 1.0,
+                  "overallPropertyToDatasetGrade": 0.04,
+                  "overallPropertyToCategoryGrade": 0.024,
+                  "overallPropertyToFullGrade": 0.000648
+                }
+              ],
+              "overallFieldToCategoryGrade": 0.024,
+              "overallFieldToFullGrade": 0.000648
+            },
+            {
+              "fieldName": "PTSWORN",
+              "type": "Integer",
+              "meaning": "Number of part-time sworn officers.",
+              "importance": "Adds flexibility and cost efficiency to agency operations.",
+              "importanceDetails": [
+                {
+                  "metrics": "Range: 486, Mean: 2.515, Median: 0.0, StdDev: 7.699, Minimum: 0, Maximum: 486",
+                  "grade": 1.0,
+                  "overallPropertyToDatasetGrade": 0.02,
+                  "overallPropertyToCategoryGrade": 0.012,
+                  "overallPropertyToFullGrade": 0.000324
+                }
+              ],
+              "overallFieldToCategoryGrade": 0.012,
+              "overallFieldToFullGrade": 0.000324
+            },
+            {
+              "fieldName": "PTCIV",
+              "type": "Integer",
+              "meaning": "Number of part-time civilian employees.",
+              "importance": "Provides additional support capacity to maintain service levels.",
+              "importanceDetails": [
+                {
+                  "metrics": "Range: 1037, Mean: 3.256, Median: 0.0, StdDev: 17.757, Minimum: 0, Maximum: 1037",
+                  "grade": 1.0,
+                  "overallPropertyToDatasetGrade": 0.02,
+                  "overallPropertyToCategoryGrade": 0.012,
+                  "overallPropertyToFullGrade": 0.000324
+                }
+              ],
+              "overallFieldToCategoryGrade": 0.012,
+              "overallFieldToFullGrade": 0.000324
+            },
+            {
+              "fieldName": "NUMPRE",
+              "type": "Integer",
+              "meaning": "Number of precincts served by the agency.",
+              "importance": "More precincts indicate a wider operational footprint affecting local economies.",
+              "importanceDetails": [
+                {
+                  "metrics": "Range: 82, Mean: 0.443, Median: 0.0, StdDev: 2.489, Minimum: 0, Maximum: 82",
+                  "grade": 1.0,
+                  "overallPropertyToDatasetGrade": 0.01,
+                  "overallPropertyToCategoryGrade": 0.006,
+                  "overallPropertyToFullGrade": 0.000162
+                }
+              ],
+              "overallFieldToCategoryGrade": 0.006,
+              "overallFieldToFullGrade": 0.000162
+            },
+            {
+              "fieldName": "NUMFIXSUB",
+              "type": "Integer",
+              "meaning": "Number of fixed substation resources.",
+              "importance": "Represents infrastructure stability that indirectly supports economic activity.",
+              "importanceDetails": [
+                {
+                  "metrics": "Range: 124, Mean: 0.274, Median: 0.0, StdDev: 2.102, Minimum: 0, Maximum: 124",
+                  "grade": 1.0,
+                  "overallPropertyToDatasetGrade": 0.01,
+                  "overallPropertyToCategoryGrade": 0.006,
+                  "overallPropertyToFullGrade": 0.000162
+                }
+              ],
+              "overallFieldToCategoryGrade": 0.006,
+              "overallFieldToFullGrade": 0.000162
+            },
+            {
+              "fieldName": "NUMMOBILE",
+              "type": "Integer",
+              "meaning": "Number of mobile units available.",
+              "importance": "Enhances operational flexibility, contributing to efficient service delivery.",
+              "importanceDetails": [
+                {
+                  "metrics": "Range: 37, Mean: 0.034, Median: 0.0, StdDev: 0.518, Minimum: 0, Maximum: 37",
+                  "grade": 1.0,
+                  "overallPropertyToDatasetGrade": 0.01,
+                  "overallPropertyToCategoryGrade": 0.006,
+                  "overallPropertyToFullGrade": 0.000162
+                }
+              ],
+              "overallFieldToCategoryGrade": 0.006,
+              "overallFieldToFullGrade": 0.000162
+            }
+          ],
+          "summaryOfGrades": {
+            "TYPE": 0.4,
+            "STATUS": 0.3,
+            "NAICS_CODE": 0.1,
+            "POPULATION": 0.05,
+            "FTSWORN": 0.04,
+            "FTCIV": 0.04,
+            "PTSWORN": 0.02,
+            "PTCIV": 0.02,
+            "NUMPRE": 0.01,
+            "NUMFIXSUB": 0.01,
+            "NUMMOBILE": 0.01,
+            "overallDatasetImportanceGradeToCategory": 0.6,
+            "datasetImportanceToFullMode": 0.0162
+          },
+          "removedFields": [
+            {
+              "fieldName": "ID",
+              "type": "String",
+              "meaning": "Unique identifier.",
+              "importance": "Not used in grading importance."
+            },
+            {
+              "fieldName": "NAME",
+              "type": "String",
+              "meaning": "Name of the law enforcement agency.",
+              "importance": "Not a factor in determining operational importance."
+            },
+            {
+              "fieldName": "ADDRESS",
+              "type": "String",
+              "meaning": "Street address.",
+              "importance": "Does not impact the agency's operational capacity."
+            },
+            {
+              "fieldName": "CITY",
+              "type": "String",
+              "meaning": "City where the agency is located.",
+              "importance": "General geographic information; not directly weighted."
+            },
+            {
+              "fieldName": "STATE",
+              "type": "String",
+              "meaning": "State abbreviation.",
+              "importance": "Location detail; not directly tied to operational metrics."
+            },
+            {
+              "fieldName": "ZIP",
+              "type": "String",
+              "meaning": "Zip code.",
+              "importance": "Not directly relevant for performance or capacity."
+            },
+            {
+              "fieldName": "ZIP4",
+              "type": "String",
+              "meaning": "Extended zip code.",
+              "importance": "Not used in determining importance."
+            },
+            {
+              "fieldName": "TELEPHONE",
+              "type": "String",
+              "meaning": "Contact number.",
+              "importance": "Administrative detail."
+            },
+            {
+              "fieldName": "COUNTY",
+              "type": "String",
+              "meaning": "County name.",
+              "importance": "Geographic classification; not used for grading operational importance."
+            },
+            {
+              "fieldName": "COUNTYFIPS",
+              "type": "String",
+              "meaning": "County FIPS code.",
+              "importance": "Used for data management; not for operational analysis."
+            },
+            {
+              "fieldName": "COUNTRY",
+              "type": "String",
+              "meaning": "Country name.",
+              "importance": "Since all are US-based, it is not weighted."
+            },
+            {
+              "fieldName": "NAICS_DESC",
+              "type": "String",
+              "meaning": "Description of the NAICS code.",
+              "importance": "Not required since NAICS_CODE is used for grading."
+            },
+            {
+              "fieldName": "SOURCE",
+              "type": "String",
+              "meaning": "Data source.",
+              "importance": "Administrative detail."
+            },
+            {
+              "fieldName": "SOURCEDATE",
+              "type": "String",
+              "meaning": "Date the data was sourced.",
+              "importance": "Not used in grading importance."
+            },
+            {
+              "fieldName": "VAL_METHOD",
+              "type": "String",
+              "meaning": "Method used for data validation.",
+              "importance": "Not relevant to operational capacity."
+            },
+            {
+              "fieldName": "VAL_DATE",
+              "type": "String",
+              "meaning": "Validation date.",
+              "importance": "Not a factor in importance."
+            },
+            {
+              "fieldName": "WEBSITE",
+              "type": "String",
+              "meaning": "Agency website.",
+              "importance": "Not used in importance grading."
+            },
+            {
+              "fieldName": "CI_ID",
+              "type": "String",
+              "meaning": "Additional identifier.",
+              "importance": "Not used in calculating importance."
+            },
+            {
+              "fieldName": "CSLLEA08ID",
+              "type": "String",
+              "meaning": "Additional identifier.",
+              "importance": "Not relevant."
+            },
+            {
+              "fieldName": "SUBTYPE1",
+              "type": "String",
+              "meaning": "Subtype classification 1.",
+              "importance": "Not directly used in importance scoring."
+            },
+            {
+              "fieldName": "SUBTYPE2",
+              "type": "String",
+              "meaning": "Subtype classification 2.",
+              "importance": "Not directly used in importance scoring."
+            },
+            {
+              "fieldName": "TRIBAL",
+              "type": "String",
+              "meaning": "Indicator if the agency is tribal.",
+              "importance": "Not weighted in this dataset."
+            }
+          ]
+        },
+        "US District Court Jurisdictions": {
+          "datasetName": "US District Court Jurisdictions",
+          "datasetLink": "https://hifld-geoplatform.hub.arcgis.com/datasets/geoplatform::us-district-court-jurisdictions/about",
+          "qualitativeFields": [
+            {
+              "fieldName": "DISTRICT_N",
+              "type": "String",
+              "meaning": "Represents the assigned district number for the court jurisdiction.",
+              "importance": "This field is critical for analyzing the regional distribution of court jurisdictions, which impacts resource allocation and regional economic activity. The differences among districts provide insight into local economic environments and administrative efficiency.",
+              "qualitativeProperties": [
+                {
+                  "propertyName": "9",
+                  "importance": "District 9, having the highest caseload, is considered highly significant for regional economic output.",
+                  "count": 15,
+                  "grade": 0.2,
+                  "overallPropertyToDatasetGrade": 0.2,
+                  "overallPropertyToCategoryGrade": 0.08,
+                  "overallPropertyToFullGrade": 0.00216
+                },
+                {
+                  "propertyName": "8",
+                  "importance": "District 8 is important for its moderate caseload and associated economic activity.",
+                  "count": 10,
+                  "grade": 0.15,
+                  "overallPropertyToDatasetGrade": 0.15,
+                  "overallPropertyToCategoryGrade": 0.06,
+                  "overallPropertyToFullGrade": 0.00162
+                },
+                {
+                  "propertyName": "6",
+                  "importance": "District 6 contributes moderately to regional economic productivity.",
+                  "count": 9,
+                  "grade": 0.1,
+                  "overallPropertyToDatasetGrade": 0.1,
+                  "overallPropertyToCategoryGrade": 0.04,
+                  "overallPropertyToFullGrade": 0.00108
+                },
+                {
+                  "propertyName": "11",
+                  "importance": "District 11 is of similar moderate importance.",
+                  "count": 9,
+                  "grade": 0.1,
+                  "overallPropertyToDatasetGrade": 0.1,
+                  "overallPropertyToCategoryGrade": 0.04,
+                  "overallPropertyToFullGrade": 0.00108
+                },
+                {
+                  "propertyName": "5",
+                  "importance": "District 5 shows steady economic significance.",
+                  "count": 9,
+                  "grade": 0.1,
+                  "overallPropertyToDatasetGrade": 0.1,
+                  "overallPropertyToCategoryGrade": 0.04,
+                  "overallPropertyToFullGrade": 0.00108
+                },
+                {
+                  "propertyName": "4",
+                  "importance": "District 4 is comparable to District 5 in economic contribution.",
+                  "count": 9,
+                  "grade": 0.1,
+                  "overallPropertyToDatasetGrade": 0.1,
+                  "overallPropertyToCategoryGrade": 0.04,
+                  "overallPropertyToFullGrade": 0.00108
+                },
+                {
+                  "propertyName": "10",
+                  "importance": "District 10, with a slightly lower caseload, is less impactful economically.",
+                  "count": 8,
+                  "grade": 0.05,
+                  "overallPropertyToDatasetGrade": 0.05,
+                  "overallPropertyToCategoryGrade": 0.02,
+                  "overallPropertyToFullGrade": 0.00054
+                },
+                {
+                  "propertyName": "7",
+                  "importance": "District 7 has moderate economic weight.",
+                  "count": 7,
+                  "grade": 0.05,
+                  "overallPropertyToDatasetGrade": 0.05,
+                  "overallPropertyToCategoryGrade": 0.02,
+                  "overallPropertyToFullGrade": 0.00054
+                },
+                {
+                  "propertyName": "3",
+                  "importance": "District 3, with a lower caseload, is less economically significant.",
+                  "count": 6,
+                  "grade": 0.03,
+                  "overallPropertyToDatasetGrade": 0.03,
+                  "overallPropertyToCategoryGrade": 0.012,
+                  "overallPropertyToFullGrade": 0.000324
+                },
+                {
+                  "propertyName": "2",
+                  "importance": "District 2 also has limited economic influence.",
+                  "count": 6,
+                  "grade": 0.03,
+                  "overallPropertyToDatasetGrade": 0.03,
+                  "overallPropertyToCategoryGrade": 0.012,
+                  "overallPropertyToFullGrade": 0.000324
+                },
+                {
+                  "propertyName": "1",
+                  "importance": "District 1 is minimally significant from an economic perspective.",
+                  "count": 5,
+                  "grade": 0.02,
+                  "overallPropertyToDatasetGrade": 0.02,
+                  "overallPropertyToCategoryGrade": 0.008,
+                  "overallPropertyToFullGrade": 0.000216
+                },
+                {
+                  "propertyName": "DC",
+                  "importance": "The District of Columbia, though low in count, carries extra weight due to its central administrative role.",
+                  "count": 1,
+                  "grade": 0.07,
+                  "overallPropertyToDatasetGrade": 0.07,
+                  "overallPropertyToCategoryGrade": 0.028,
+                  "overallPropertyToFullGrade": 0.000756
+                }
+              ],
+              "overallFieldImportanceGrade": 1.0,
+              "overallFieldToCategoryGrade": 0.4,
+              "overallFieldToFullGrade": 0.0108
+            }
+          ],
+          "quantitativeProperties": [],
+          "summaryOfGrades": {
+            "DISTRICT_N": 1.0,
+            "overallDatasetImportanceGradeToCategory": 0.4,
+            "datasetImportanceToFullMode": 0.0108
+          },
+          "removedFields": [
+            {
+              "fieldName": "FID",
+              "type": "Integer",
+              "meaning": "Unique identifier for each record.",
+              "importance": "Used for internal reference only; does not impact analysis."
+            },
+            {
+              "fieldName": "STATE",
+              "type": "String",
+              "meaning": "State in which the court jurisdiction is located.",
+              "importance": "While location is important, this field is redundant given other geographical data."
+            },
+            {
+              "fieldName": "NAME",
+              "type": "String",
+              "meaning": "Name of the court jurisdiction.",
+              "importance": "The name is not used in the weighted analysis."
+            },
+            {
+              "fieldName": "CHIEF_JUDG",
+              "type": "String",
+              "meaning": "Chief judge of the court.",
+              "importance": "Judicial leadership is not factored into the economic weighting."
+            },
+            {
+              "fieldName": "NOMINATING",
+              "type": "String",
+              "meaning": "Nomination information for the judge.",
+              "importance": "Nomination details are not relevant to economic output."
+            },
+            {
+              "fieldName": "ABBR",
+              "type": "String",
+              "meaning": "Abbreviation of the court's name.",
+              "importance": "Abbreviations do not affect the economic evaluation."
+            },
+            {
+              "fieldName": "TERM_AS_CH",
+              "type": "Integer",
+              "meaning": "Term length for the chief judge.",
+              "importance": "Term length does not impact the overall economic weighting."
+            }
+          ]
+        }
+      }
+    },
+    "Food": {
+      "categoryInfo": {
+        "CategoryMeaning": "This category includes data related to agriculture, food production, and distribution systems.",
+        "CategoryImportance": "Food systems are vital for sustaining populations and driving both domestic consumption and export markets, which are essential for economic stability.",
+        "grade": 0.089,
+        "categoryDatasets": {
+          "Public Refrigerated Warehouses": {
+            "DatasetMeaning": "This dataset provides detailed information on public refrigerated warehouses across the United States, including locations, capacities, and operational status. It is a vital resource for understanding the infrastructure that supports the cold chain in the food industry.",
+            "DatasetImportance": "For the economic mode, public refrigerated warehouses are essential for ensuring that perishable food items are stored safely and efficiently, reducing spoilage and supporting robust supply chains. Their operation directly influences the economic output of the food sector by preserving the quality and availability of food products.",
+            "grade": 1.0
+          },
+          "CategoryGradeSummary": {
+            "Public Refrigerated Warehouses": 1.0,
+            "categoryimportanceToOverallMode": 0.089
+          }
+        }
+      },
+      "datasets": {
+        "Public Refrigerated Warehouses": {
+          "datasetName": "Public Refrigerated Warehouses",
+          "datasetLink": "https://hifld-geoplatform.hub.arcgis.com/datasets/geoplatform::public-refrigerated-warehouses/about",
+          "qualitativeFields": [
+            {
+              "fieldName": "Loc_name",
+              "type": "String",
+              "meaning": "Indicates the naming convention for the locations of public refrigerated warehouses.",
+              "importance": "Precise location naming is critical for logistics and supply chain management, which drives economic productivity.",
+              "qualitativeProperties": [
+                {
+                  "propertyName": "US_RoofTop",
+                  "importance": "Provides the most precise identifier, enabling efficient routing and planning.",
+                  "count": 359,
+                  "grade": 0.5,
+                  "overallPropertyToDatasetGrade": 0.15,
+                  "overallPropertyToCategoryGrade": 0.15,
+                  "overallPropertyToFullGrade": 0.01335
+                },
+                {
+                  "propertyName": "US_Streets",
+                  "importance": "Helps pinpoint locations at a street level, useful in urban economic operations.",
+                  "count": 312,
+                  "grade": 0.3,
+                  "overallPropertyToDatasetGrade": 0.09,
+                  "overallPropertyToCategoryGrade": 0.09,
+                  "overallPropertyToFullGrade": 0.00801
+                },
+                {
+                  "propertyName": "US_Zipcode",
+                  "importance": "Gives a broader area identifier for regional planning.",
+                  "count": 30,
+                  "grade": 0.1,
+                  "overallPropertyToDatasetGrade": 0.03,
+                  "overallPropertyToCategoryGrade": 0.03,
+                  "overallPropertyToFullGrade": 0.00267
+                },
+                {
+                  "propertyName": "US_StreetName",
+                  "importance": "Adds secondary detail that can refine logistics planning.",
+                  "count": 20,
+                  "grade": 0.05,
+                  "overallPropertyToDatasetGrade": 0.015,
+                  "overallPropertyToCategoryGrade": 0.015,
+                  "overallPropertyToFullGrade": 0.001335
+                },
+                {
+                  "propertyName": "US_Zip4",
+                  "importance": "Least precise but adds extra postal-level information.",
+                  "count": 5,
+                  "grade": 0.05,
+                  "overallPropertyToDatasetGrade": 0.015,
+                  "overallPropertyToCategoryGrade": 0.015,
+                  "overallPropertyToFullGrade": 0.001335
+                }
+              ],
+              "overallFieldImportanceGrade": 0.3,
+              "overallFieldToCategoryGrade": 0.3,
+              "overallFieldToFullGrade": 0.0267
+            }
+          ],
+          "quantitativeProperties": [
+            {
+              "fieldName": "Volume",
+              "type": "Float",
+              "meaning": "Storage volume capacity of the warehouse (in cubic feet).",
+              "importance": "A larger storage volume directly increases throughput and economic output.",
+              "importanceDetails": [
+                {
+                  "metrics": "Range: 23138000.0, Mean: 4212375.282, Median: 3273328.0, StdDev: 3873979.02, Maximum: 23138000.0, Minimum: 0.0",
+                  "grade": 1.0,
+                  "overallPropertyToDatasetGrade": 0.7,
+                  "overallPropertyToCategoryGrade": 0.7,
+                  "overallPropertyToFullGrade": 0.0623
+                }
+              ],
+              "overallFieldToCategoryGrade": 0.7,
+              "overallFieldToFullGrade": 0.0623
+            }
+          ],
+          "summaryOfGrades": {
+            "Loc_name": 0.3,
+            "Volume": 0.7,
+            "overallDatasetImportanceGradeToCategory": 1.0,
+            "datasetImportanceToFullMode": 0.089
+          },
+          "removedFields": [
+            {
+              "fieldName": "Address2",
+              "type": "String",
+              "meaning": "Secondary address line of the facility.",
+              "importance": "Not critical for infrastructure analysis."
+            },
+            {
+              "fieldName": "Address3",
+              "type": "String",
+              "meaning": "Tertiary address line of the facility.",
+              "importance": "Not critical for infrastructure analysis."
+            },
+            {
+              "fieldName": "Address1",
+              "type": "String",
+              "meaning": "Primary address of the facility.",
+              "importance": "Additional address details do not impact the overall functionality."
+            },
+            {
+              "fieldName": "City_1",
+              "type": "String",
+              "meaning": "City where the facility is located.",
+              "importance": "General location information; not directly tied to performance metrics."
+            },
+            {
+              "fieldName": "State_1",
+              "type": "String",
+              "meaning": "State of the facility.",
+              "importance": "Broad geographic information, less influential for performance scoring."
+            },
+            {
+              "fieldName": "Zip_1",
+              "type": "String",
+              "meaning": "Zip code of the facility.",
+              "importance": "Provides minimal additional detail for analysis."
+            },
+            {
+              "fieldName": "Country",
+              "type": "String",
+              "meaning": "Country where the facility is located.",
+              "importance": "Assumed to be the United States; does not affect relative importance."
+            },
+            {
+              "fieldName": "GlobalID",
+              "type": "String",
+              "meaning": "Unique global identifier for the record.",
+              "importance": "Administrative only; does not impact operational performance."
+            },
+            {
+              "fieldName": "CreationDate",
+              "type": "Date",
+              "meaning": "Record creation date.",
+              "importance": "Historical detail; not critical for ongoing analysis."
+            },
+            {
+              "fieldName": "Creator",
+              "type": "String",
+              "meaning": "The creator of the record.",
+              "importance": "Administrative detail only."
+            },
+            {
+              "fieldName": "Facility",
+              "type": "String",
+              "meaning": "Additional facility descriptor.",
+              "importance": "Not influential in performance measurement."
+            },
+            {
+              "fieldName": "EditDate",
+              "type": "Date",
+              "meaning": "Date the record was last edited.",
+              "importance": "Not relevant for importance grading."
+            },
+            {
+              "fieldName": "Editor",
+              "type": "String",
+              "meaning": "Editor of the record.",
+              "importance": "Administrative detail."
+            }
+          ]
+        }
+      }
+    },
+  "fullSummary": {
+    "TotalCategories": 2,
+    "TotalGrade": 1.0,
+    "Categories": [
+      {
+        "Category": "Food",
+        "Grade": 0.6
+      },
+      {
+        "Category": "LawEnforcement",
+        "Grade": 0.4
+      }
+    ],
+    "Note": "Each category's grade reflects its normalized economic importance. The placeholder datasets are provided for later replacement with actual dataset details."
+  }
+}
+

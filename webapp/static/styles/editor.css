@@ -172,6 +172,48 @@ header {
   /* If you don't need a custom handle, you can hide or remove this. */
 }
 
+/* Tab bar styling for dataset editors */
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 5px;
+}
+.tab-bar .tab {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  background: #eee;
+  cursor: pointer;
+  margin-right: 2px;
+  position: relative;
+}
+.tab-bar .tab.active {
+  background: #fff;
+  font-weight: bold;
+}
+.tab-bar .tab.add-tab {
+  background: #ddd;
+  font-size: 1.2rem;
+  padding: 8px;
+}
+.tab-bar .tab .close-tab {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-weight: bold;
+  color: #900;
+  cursor: pointer;
+}
+.dataset-editor {
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: none;
+}
+.editor-header {
+  margin-bottom: 10px;
+}
+
+
 /* Make each Qual/Quant field individually resizable too */
 .json-qual-field,
 .json-quant-field {
