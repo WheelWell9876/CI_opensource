@@ -14,7 +14,7 @@ logger.setLevel(logging.DEBUG)  # Enable debug logging
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # Assume data lives under static/resources/data
-DATA_DIR = os.path.join(BASE_DIR, "static", "resources", "data")
+DATA_DIR = os.path.join(BASE_DIR, "static", "data")
 
 
 def get_color(dataset_name):

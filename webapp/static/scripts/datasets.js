@@ -7,9 +7,9 @@
 document.addEventListener("DOMContentLoaded", function() {
   console.log("datasets.js: DOMContentLoaded => Starting to fetch JSON...");
 
-  const economicFusedURL = "/static/resources/data/json/economic_fused_weighted.json";
-  const energyFusedURL   = "/static/resources/data/json/energy_fused_weighted.json";
-  const militaryFusedURL = "/static/resources/data/json/military_fused_weighted.json";
+  const economicFusedURL = "/static/data/json/provided/fullMode/economic_fused_weighted.json";
+  const energyFusedURL   = "/static/data/json/provided/fullMode/energy_fused_weighted.json";
+  const militaryFusedURL = "/static/data/json/provided/fullMode/military_fused_weighted.json";
 
   Promise.all([
     fetch(economicFusedURL).then(r => r.json()),
