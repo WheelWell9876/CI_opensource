@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CI Sentinel - Contact</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='resources/styles/index.css') }}">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="custom-loader"></div>
+      <span class="logo-title">Solarpunk CI Sentinel</span>
+    </div>
+    <nav>
+      <!-- Desktop links (Home, Dataset, About, Contact) -->
+      <div class="nav-links-container">
+        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li><a href="{{ url_for('main.about') }}">About</a></li>
+        <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
+        <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+      </div>
+    </nav>
+  </header>
+
+  <div class="centered-content">
+    <h1>Contact Us</h1>
+    <p>Please reach out for any suggestions, improvements, or collaborations regarding CI Sentinel.</p>
+    <p>Email: <a href="mailto:contact@example.com">contact@example.com</a></p>
+    <p>Twitter: @ci_sentinel</p>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 CI Sentinel - Contact Page</p>
+  </footer>
+</body>
+</html>

@@ -4,8 +4,10 @@
 $(window).scroll(function() {
   if ($(document).scrollTop() > 50) {
     $('.nav').addClass('affix');
+    console.log("Navbar affixed due to scroll.");
   } else {
     $('.nav').removeClass('affix');
+    console.log("Navbar un-affixed due to scroll.");
   }
 });
 
@@ -13,6 +15,7 @@ $('.navTrigger').click(function () {
   $(this).toggleClass('active');
   $("#mainListDiv").toggleClass("show_list");
   $("#mainListDiv").fadeIn();
+  console.log("Nav trigger clicked; toggling main list display.");
 });
 
 // Global mode variable (default to regular)
@@ -22,19 +25,21 @@ var currentMode = "regular";
 // 2) Document Ready - Fetch States, Initialize UI, & Setup Advanced Controls
 // -------------------------------------------
 $(document).ready(function() {
+  console.log("Document ready. Initializing UI...");
   loadStates();
   loadDefaultMap();
   // If using advanced controls, update slider value display
   $("#dataFractionSlider").on("input", function() {
     $("#dataFractionValue").text($(this).val());
+    console.log("Data fraction slider changed to:", $(this).val());
   });
 });
 
 // Mode selection handler: toggle between Regular and Weighted modes
 $("#modeSelect").on("change", function() {
   currentMode = $(this).val();
+  console.log("Mode changed to:", currentMode);
   if (currentMode === "weighted") {
-    // Hide regular filters and show weighted filter
     $("#regularFilters").hide();
     $("#weightedFilters").show();
     loadWeightedDatasets();
@@ -48,11 +53,13 @@ $("#modeSelect").on("change", function() {
 // 3) Fetch & Populate States
 // -------------------------------------------
 function loadStates() {
+  console.log("Loading states...");
   $.ajax({
     url: "/list_states",
     method: "GET",
     dataType: "json",
     success: function(response) {
+      console.log("States response:", response);
       if (response.error) {
         console.error("list_states Error:", response.error);
         $("#stateSelect").html('<option value="">Error loading states</option>');
@@ -69,6 +76,7 @@ function loadStates() {
 }
 
 function populateStateDropdown(statesArr) {
+  console.log("Populating state dropdown with:", statesArr);
   const $stateSelect = $("#stateSelect");
   $stateSelect.empty().append('<option value="">-- Select State --</option>');
   // Sort states by name
@@ -84,6 +92,7 @@ function populateStateDropdown(statesArr) {
 // -------------------------------------------
 $("#stateSelect").on("change", function() {
   const selectedState = $(this).val();
+  console.log("State selected:", selectedState);
   // Reset county, category, dataset
   resetDropdown("#countySelect", "-- Select County (optional) --");
   resetDropdown("#categorySelect", "-- Select Category (optional) --");
@@ -103,6 +112,7 @@ $("#stateSelect").on("change", function() {
     dataType: "json",
     data: { state: selectedState },
     success: function(response) {
+      console.log("Counties response:", response);
       const counties = response.counties || [];
       populateCountyDropdown(counties);
     },
@@ -118,6 +128,7 @@ $("#stateSelect").on("change", function() {
     dataType: "json",
     data: { state: selectedState, county: "" },
     success: function(response) {
+      console.log("Categories response for state:", response);
       const cats = response.categories || [];
       populateCategoryDropdown(cats);
     },
@@ -133,6 +144,7 @@ $("#stateSelect").on("change", function() {
     dataType: "json",
     data: { state: selectedState, county: "", category: "" },
     success: function(response) {
+      console.log("Datasets response for state:", response);
       const ds = response.datasets || [];
       populateDatasetDropdown(ds, true);
     },
@@ -143,6 +155,7 @@ $("#stateSelect").on("change", function() {
 });
 
 function populateCountyDropdown(counties) {
+  console.log("Populating county dropdown with:", counties);
   const $countySelect = $("#countySelect");
   $countySelect.empty().append('<option value="">-- Select County (optional) --</option>');
   counties.forEach(county => {
@@ -157,6 +170,7 @@ function populateCountyDropdown(counties) {
 $("#countySelect").on("change", function() {
   const state = $("#stateSelect").val();
   const county = $(this).val();
+  console.log("County selected:", county);
   resetDropdown("#categorySelect", "-- Select Category (optional) --");
   resetDropdown("#datasetSelect", "-- Select Dataset (optional) --");
 
@@ -167,6 +181,7 @@ $("#countySelect").on("change", function() {
       dataType: "json",
       data: { state: state, county: "" },
       success: function(response) {
+        console.log("Categories response with no county:", response);
         populateCategoryDropdown(response.categories || []);
       }
     });
@@ -176,6 +191,7 @@ $("#countySelect").on("change", function() {
       dataType: "json",
       data: { state: state, county: "", category: "" },
       success: function(response) {
+        console.log("Datasets response with no county:", response);
         populateDatasetDropdown(response.datasets || [], true);
       }
     });
@@ -189,6 +205,7 @@ $("#countySelect").on("change", function() {
     dataType: "json",
     data: { state: state, county: county },
     success: function(response) {
+      console.log("County categories response:", response);
       populateCategoryDropdown(response.categories || []);
     },
     error: function(err) {
@@ -203,6 +220,7 @@ $("#countySelect").on("change", function() {
     dataType: "json",
     data: { state: state, county: county, category: "" },
     success: function(response) {
+      console.log("County datasets response:", response);
       populateDatasetDropdown(response.datasets || [], false);
     },
     error: function(err) {
@@ -218,7 +236,7 @@ $("#categorySelect").on("change", function() {
   const state = $("#stateSelect").val();
   const county = $("#countySelect").val();
   const category = $(this).val();
-
+  console.log("Category selected:", category);
   resetDropdown("#datasetSelect", "-- Select Dataset (optional) --");
   if (!state) return;
 
@@ -228,6 +246,7 @@ $("#categorySelect").on("change", function() {
     dataType: "json",
     data: { state: state, county: county, category: category },
     success: function(response) {
+      console.log("Datasets response after category selection:", response);
       populateDatasetDropdown(response.datasets || [], !county);
     },
     error: function(err) {
@@ -237,6 +256,7 @@ $("#categorySelect").on("change", function() {
 });
 
 function populateCategoryDropdown(categories) {
+  console.log("Populating category dropdown with:", categories);
   const $categorySelect = $("#categorySelect");
   $categorySelect.empty().append('<option value="">-- Select Category (optional) --</option>');
   categories.forEach(cat => {
@@ -249,6 +269,7 @@ function populateCategoryDropdown(categories) {
 // 7) Populate Dataset Dropdown
 // -------------------------------------------
 function populateDatasetDropdown(datasets, isStateWide) {
+  console.log("Populating dataset dropdown with:", datasets, "StateWide:", isStateWide);
   const $datasetSelect = $("#datasetSelect");
   $datasetSelect.empty().append('<option value="">-- Select Dataset (optional) --</option>');
   datasets.forEach(ds => {
@@ -261,6 +282,7 @@ function populateDatasetDropdown(datasets, isStateWide) {
 // 8) Reset Dropdown Utility Function
 // -------------------------------------------
 function resetDropdown(selector, placeholder) {
+  console.log("Resetting dropdown:", selector);
   $(selector).empty().append(`<option value="">${placeholder}</option>`).prop("disabled", true);
 }
 
@@ -268,6 +290,7 @@ function resetDropdown(selector, placeholder) {
 // 9) Submit Button => POST to /fetch_data or /fetch_weighted_data
 // -------------------------------------------
 $("#submitBtn").on("click", function() {
+  console.log("Submit button clicked.");
   if (currentMode === "weighted") {
     const weightedDataset = $("#weightedDatasetSelect").val();
     if (!weightedDataset) {
@@ -305,7 +328,7 @@ $("#submitBtn").on("click", function() {
     const county = $("#countySelect").val();
     const category = $("#categorySelect").val();
     const dataset = $("#datasetSelect").val();
-
+    console.log("Regular data payload:", { state, county, category, dataset });
     if (!state) {
       alert("Please select a State first!");
       return;
@@ -323,6 +346,7 @@ $("#submitBtn").on("click", function() {
       contentType: "application/json",
       data: JSON.stringify(payload),
       success: function(response) {
+        console.log("Regular data received:", response);
         if (response.error) {
           alert("Error: " + response.error);
           return;
@@ -345,6 +369,7 @@ $("#submitBtn").on("click", function() {
 // 10) RESET Button => Clear & Load Default
 // -------------------------------------------
 $("#resetBtn").on("click", function() {
+  console.log("Reset button clicked.");
   $("#stateSelect").val("");
   resetDropdown("#countySelect", "-- Select County (optional) --");
   resetDropdown("#categorySelect", "-- Select Category (optional) --");
@@ -357,6 +382,7 @@ $("#resetBtn").on("click", function() {
 // 11) Load a Default Map if no data is loaded
 // -------------------------------------------
 function loadDefaultMap() {
+  console.log("Loading default map...");
   const latArray = [40.7831];   // Manhattan latitude
   const lonArray = [-73.9712];  // Manhattan longitude
   const textArray = ["Default: Manhattan + Bridges"];
@@ -391,9 +417,11 @@ function loadDefaultMap() {
  * point-only rendering.
  */
 function renderMap(data) {
+  console.log("Rendering map with data:", data);
   // If there's no 'Dataset' field, fall back to one trace
   const hasDatasetField = data.some(item => item.Dataset !== undefined && item.Dataset !== null);
   if (!hasDatasetField) {
+    console.log("No Dataset field found, using singleTraceRender.");
     singleTraceRender(data);
     return;
   }
@@ -401,82 +429,60 @@ function renderMap(data) {
   // Otherwise, group by 'Dataset'
   const datasetGroups = groupByDataset(data);
   const colorMap = buildColorMap(Object.keys(datasetGroups));
-
   const traces = [];
-  Object.keys(datasetGroups).forEach(dsName => {
-    const rows = datasetGroups[dsName];
-    const latArray = rows.map(r => r.latitude);
-    const lonArray = rows.map(r => r.longitude);
-    // Use JSON.stringify so all properties are displayed
-    const hoverText = rows.map(r => JSON.stringify(r));
+    Object.keys(datasetGroups).forEach(dsName => {
+      console.log("Building trace for dataset:", dsName);
+      const rows = datasetGroups[dsName];
+      const latArray = rows.map(r => r.latitude);
+      const lonArray = rows.map(r => r.longitude);
+      // Build hover text with newline characters
+      const hoverText = rows.map(r => formatHoverText(r));
 
-    traces.push({
-      type: "scattermapbox",
-      lat: latArray,
-      lon: lonArray,
-      mode: "markers",
-      name: dsName,                 // legend label
-      text: hoverText,              // custom hover text
-      hovertemplate: "%{text}<extra></extra>", // forces only your text to show
-      marker: {
-        size: 8,
-        color: colorMap[dsName] || "#FF0000"
-      },
-      legendgroup: dsName,          // group legend items by dataset
-      showlegend: true              // always show legend for this trace
+      traces.push({
+        type: "scattermapbox",
+        lat: latArray,
+        lon: lonArray,
+        mode: "markers",
+        name: dsName,
+        text: hoverText,
+        hoverinfo: "text",              // use hoverinfo to display our text
+        hovertemplate: "%{text}<extra></extra>", // newline characters should be interpreted
+        marker: {
+          size: 8,
+          color: colorMap[dsName] || "#FF0000"
+        },
+        legendgroup: dsName,
+        showlegend: true
+      });
     });
-  });
 
-  const layout = {
-    mapbox: {
-      style: "open-street-map",
-      center: {
-        lat: data[0].latitude || 39.8283,
-        lon: data[0].longitude || -98.5795
+
+
+    const layout = {
+      mapbox: {
+        style: "open-street-map",
+        center: {
+          lat: data[0].latitude || 39.8283,
+          lon: data[0].longitude || -98.5795
+        },
+        zoom: 7
       },
-      zoom: 7
-    },
-    margin: { r: 0, t: 0, b: 0, l: 0 },
-    legend: { title: { text: "Dataset" } }
-  };
+      margin: { r: 0, t: 0, b: 0, l: 0 },
+      legend: { title: { text: "Dataset" } },
+      hoverlabel: {
+        align: "left",
+        font: { family: "Roboto, sans-serif", size: 12 }
+      }
+    };
 
   Plotly.newPlot("mapContainer", traces, layout);
 }
 
-//function singleTraceRender(data) {
-//  const latArray = data.map(r => r.latitude);
-//  const lonArray = data.map(r => r.longitude);
-//  const hoverText = data.map(r => JSON.stringify(r));
-//
-//  const trace = {
-//    type: "scattermapbox",
-//    lat: latArray,
-//    lon: lonArray,
-//    mode: "markers",
-//    text: hoverText,
-//    hovertemplate: "%{text}<extra></extra>", // forces your custom text to appear
-//    marker: { size: 8, color: "red" },
-//    showlegend: true  // optional: add legend item even for a single trace
-//  };
-//
-//  const layout = {
-//    mapbox: {
-//      style: "open-street-map",
-//      center: {
-//        lat: latArray.length ? latArray[0] : 39.8283,
-//        lon: lonArray.length ? lonArray[0] : -98.5795
-//      },
-//      zoom: latArray.length ? 7 : 4
-//    },
-//    margin: { r: 0, t: 0, b: 0, l: 0 }
-//  };
-//
-//  Plotly.newPlot("mapContainer", [trace], layout);
-//}
-
-
+// -------------------------------------------
 // Fallback basic rendering for point data (existing functionality)
+// -------------------------------------------
 function renderBasicMap(data) {
+  console.log("Rendering basic map with data:", data);
   const hasDatasetField = data.some(item => item.Dataset !== undefined && item.Dataset !== null);
   if (!hasDatasetField) {
     singleTraceRender(data);
@@ -488,15 +494,15 @@ function renderBasicMap(data) {
   const traces = [];
 
   Object.keys(datasetGroups).forEach(dsName => {
+    console.log("Building basic trace for dataset:", dsName);
     const rows = datasetGroups[dsName];
     const latArray = rows.map(r => r.latitude);
     const lonArray = rows.map(r => r.longitude);
     const hoverText = rows.map(r => {
       let txt = "";
       for (const key in r) {
-        // Skip geometry and auto-generated coordinate fields.
         if (key === "geometry" || key === "latitude" || key === "longitude") continue;
-        txt += key + ": " + r[key] + "<br>";
+        txt += key + ": " + r[key] + "\n";
       }
       return txt;
     });
@@ -508,9 +514,9 @@ function renderBasicMap(data) {
       mode: "markers",
       name: dsName,
       text: hoverText,
-      hoverinfo: "text",      // ADD: ensure hover text is used
-      legendgroup: dsName,    // ADD: group legend items by dataset
-      showlegend: true,       // ADD: show legend for each trace
+      hovertemplate: "%{text}<extra></extra>",
+      legendgroup: dsName,
+      showlegend: true,
       marker: {
         size: 8,
         color: colorMap[dsName] || "#FF0000"
@@ -535,18 +541,23 @@ function renderBasicMap(data) {
   Plotly.newPlot("mapContainer", traces, layout);
 }
 
+// -------------------------------------------
+// Helper: Format Hover Text with Vertical New Lines
+// -------------------------------------------
 function formatHoverText(row) {
   let text = "";
   for (let key in row) {
     if (["geometry", "latitude", "longitude"].includes(key)) continue;
-    text += key + ": " + row[key] + "<br>";
+    text += key + ": " + row[key] + "\n";
   }
   return text;
 }
 
-
+// -------------------------------------------
 // Existing helper: single trace render (for basic point data)
+// -------------------------------------------
 function singleTraceRender(data) {
+  console.log("singleTraceRender called with data:", data);
   const latArray = data.map(r => r.latitude);
   const lonArray = data.map(r => r.longitude);
   const hoverText = data.map(r => formatHoverText(r));
@@ -563,6 +574,7 @@ function singleTraceRender(data) {
     mode: "markers",
     text: hoverText,
     hoverinfo: "text",
+    hovertemplate: "%{text}<extra></extra>",
     marker: { size: 8, color: "red" },
     showlegend: true,
     name: traceName
@@ -577,7 +589,11 @@ function singleTraceRender(data) {
       },
       zoom: latArray.length ? 7 : 4
     },
-    margin: { r: 0, t: 0, b: 0, l: 0 }
+    margin: { r: 0, t: 0, b: 0, l: 0 },
+    hoverlabel: {
+      align: "left",
+      font: { family: "Roboto, sans-serif", size: 12 }
+    }
   };
 
   Plotly.newPlot("mapContainer", [trace], layout);
@@ -586,8 +602,11 @@ function singleTraceRender(data) {
 
 
 
+// -------------------------------------------
 // Existing helper: group data by 'Dataset'
+// -------------------------------------------
 function groupByDataset(data) {
+  console.log("Grouping data by Dataset.");
   const groups = {};
   data.forEach(item => {
     const ds = item.Dataset || "NoName";
@@ -597,8 +616,11 @@ function groupByDataset(data) {
   return groups;
 }
 
+// -------------------------------------------
 // Existing helper: build a color map for datasets
+// -------------------------------------------
 function buildColorMap(dsNames) {
+  console.log("Building color map for datasets:", dsNames);
   const palette = [
     "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
     "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
@@ -618,11 +640,13 @@ function buildColorMap(dsNames) {
 // 13) Load Weighted Datasets for Weighted Mode
 // -------------------------------------------
 function loadWeightedDatasets() {
+  console.log("Loading weighted datasets...");
   $.ajax({
     url: "/list_weighted_datasets",
     method: "GET",
     dataType: "json",
     success: function(response) {
+      console.log("Weighted datasets response:", response);
       const datasets = response.datasets;
       const $weightedSelect = $("#weightedDatasetSelect");
       $weightedSelect.empty().append('<option value="">-- Select Weighted Dataset --</option>');
@@ -641,7 +665,6 @@ function loadWeightedDatasets() {
 // ===========================================
 // Advanced Rendering Functions for Full GeoJSON
 // ===========================================
-
 /**
  * Converts a GeoJSON geometry into one or more Plotly Scattermapbox traces.
  * This function mimics your Jupyter notebook approach:
@@ -650,6 +673,7 @@ function loadWeightedDatasets() {
  * - For "Polygon" and "MultiPolygon": renders just the exterior boundary (fill="none").
  */
 function getTracesFromGeoJSON(geometry, name, color, hoverText, showLegend, legendGroup) {
+  console.log("Getting traces from GeoJSON. Geometry type:", geometry.type);
   var traces = [];
   var geomType = geometry.type;
   var lons = [], lats = [];
@@ -722,7 +746,6 @@ function getTracesFromGeoJSON(geometry, name, color, hoverText, showLegend, lege
       });
     });
   } else if (geomType === "Polygon") {
-    // Use the exterior ring of the polygon
     var exterior = geometry.coordinates[0];
     exterior.forEach(function(coord) {
       lons.push(coord[0]);
@@ -733,7 +756,7 @@ function getTracesFromGeoJSON(geometry, name, color, hoverText, showLegend, lege
       lon: lons,
       lat: lats,
       mode: "lines",
-      fill: "none", // Only show boundary
+      fill: "none",
       line: { color: color, width: 2 },
       name: name,
       hoverinfo: "text",
@@ -744,7 +767,6 @@ function getTracesFromGeoJSON(geometry, name, color, hoverText, showLegend, lege
   } else if (geomType === "MultiPolygon") {
     geometry.coordinates.forEach(function(polygon) {
       var polyLons = [], polyLats = [];
-      // Use the exterior ring of each polygon
       var exterior = polygon[0];
       exterior.forEach(function(coord) {
         polyLons.push(coord[0]);
@@ -801,63 +823,44 @@ function extractAllCoords(geometry) {
  *  - Checkboxes (with name "geomType") to filter which geometry types to render.
  *  - A slider (#dataFractionSlider) that sets the fraction of data to sample.
  */
-
-// Helper function that returns one of 16 colors based on the dataset name.
-function getColor(datasetName) {
-  const palette = [
-    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
-    "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
-    "#bcbd22", "#17becf", "#7B68EE", "#F08080",
-    "#48D1CC", "#FFD700", "#ADFF2F", "#EE82EE"
-  ];
-  let hash = 0;
-  for (let i = 0; i < datasetName.length; i++) {
-    hash += datasetName.charCodeAt(i);
-  }
-  return palette[hash % palette.length];
-}
-
-
-
 function renderAdvancedMap(data) {
-  // Get selected geometry types (if any checkboxes are present)
+  console.log("Rendering advanced map with data:", data);
   var selectedGeomTypes = [];
   $("input[name='geomType']:checked").each(function() {
     selectedGeomTypes.push($(this).val());
   });
+  console.log("Selected geometry types:", selectedGeomTypes);
 
-  // Get fraction value from slider (default to 100% if no slider is present)
   var fraction = $("#dataFractionSlider").length ? parseInt($("#dataFractionSlider").val()) / 100 : 1;
+  console.log("Data fraction value:", fraction);
 
-  // Sample the data based on the fraction
   var sampledData = data.filter(function(feature) {
     return Math.random() < fraction;
   });
+  console.log("Sampled data count:", sampledData.length);
 
   var allTraces = [];
   var allCoords = [];
 
-    sampledData.forEach(function(feature, index) {
-      if (!feature.geometry || !feature.geometry.type) return;
-      var geomType = feature.geometry.type;
-      if (selectedGeomTypes.length && selectedGeomTypes.indexOf(geomType) === -1) return;
-      var hoverText = "";
-      for (var key in feature) {
-        if (key !== "geometry") {
-          hoverText += key + ": " + feature[key] + "<br>";
-        }
+  sampledData.forEach(function(feature, index) {
+    if (!feature.geometry || !feature.geometry.type) return;
+    var geomType = feature.geometry.type;
+    if (selectedGeomTypes.length && selectedGeomTypes.indexOf(geomType) === -1) return;
+    var hoverText = "";
+    for (var key in feature) {
+      if (key !== "geometry") {
+        hoverText += key + ": " + feature[key] + "<br>";
       }
-      var color = feature.color || (feature.Dataset ? getColor(feature.Dataset) : "red");
-      var legendGroup = feature.Dataset || "NoName";
-      var showLegend = (index === 0);
-      var traces = getTracesFromGeoJSON(feature.geometry, legendGroup, color, hoverText, showLegend, legendGroup);
-      allTraces = allTraces.concat(traces);
-      var coords = extractAllCoords(feature.geometry);
-      allCoords = allCoords.concat(coords);  // Updated line; no extra operators
-    });
+    }
+    var color = feature.color || (feature.Dataset ? getColor(feature.Dataset) : "red");
+    var legendGroup = feature.Dataset || "NoName";
+    var showLegend = (index === 0);
+    var traces = getTracesFromGeoJSON(feature.geometry, legendGroup, color, hoverText, showLegend, legendGroup);
+    allTraces = allTraces.concat(traces);
+    var coords = extractAllCoords(feature.geometry);
+    allCoords = allCoords.concat(coords);
+  });
 
-
-  // Compute the center of all coordinates
   var sumLon = 0, sumLat = 0;
   allCoords.forEach(function(coord) {
     sumLon += coord[0];

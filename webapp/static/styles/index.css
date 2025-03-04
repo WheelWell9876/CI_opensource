@@ -196,6 +196,10 @@ select, button[type='submit'] {
   background: white;
 }
 
+.hoverlayer .hovertext {
+  white-space: pre-wrap !important;
+}
+
 /* Smaller screen adjustments */
 @media (max-width: 768px) {
   .bento-box { width: 95%; }

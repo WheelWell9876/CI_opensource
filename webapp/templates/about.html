@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CI Sentinel - About</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='resources/styles/index.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+          <div class="custom-loader"></div>
+          <span class="logo-title">Solarpunk CI Sentinel</span>
+        </div>
+        <nav>
+          <!-- Desktop links (Home, Dataset, About, Contact) -->
+          <div class="nav-links-container">
+            <li><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li><a href="{{ url_for('main.about') }}">About</a></li>
+            <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
+            <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+          </div>
+        </nav>
+      </header>
+
+  <div class="centered-content">
+    <h2>Introducing CI Sentinel!<h2></h2>
+    <h4>A comprehensive map of America's critical infrastructure.</h4>
+
+    <h3>Methods</h3>
+    <p>My methods of creating this map came from collecting data from several datasets, and applying distributed weights to each facility, and weighing each of those facilities depending on their own details.</p>
+
+    <h4>Normalization</h4>
+    <p>Each and every dataset was was graded on values</p>
+
+    <h3>Classification of Importance by Industry</h3>
+    <p>One of the most challenging aspects of this projects is trying to classify and rank each of specific facility by importance to national security, and generally trying to rank how "critical" a facility is to the security of the United States. For example, a facility with the NAICS code of 336414 is for "Guided Missile and Space Vehicle Manufacturing;" So facilities with this classification are significantly more important and should be weighed much more than say a facility with the NAICS classification of 111150 which is "Corn Farming." However, as of now, only 3 facility types are being weighed, this will be fixed with time.</p>
+    <p>With the classification of industries past, it was much easier to rank the criticality of non-commercial and governmental facilities. This was done mainly by measuring the raw metrics of each of these facilities and giving more weight to the facilities with higher metrics. </p>
+
+    <h2>Notebooks</h2>
+    <p>Here is a list of my notebooks and the purposes each one served.</p>
+
+    <h3>cleanGeoJSONs.ipynb</h3>
+    <p>This notebook removed unnecessary fields from the GeoJSONs. In each of the datasets, there are fields that did not need to be measured for the importance of critical infrastructure, such as phone numbers and addresses. These fields took up a ton of storage space and memory use, so it was very necessary to remove a lot of the fields.</p>
+
+    <h3>standardizeGeoJSONs.ipynb</h3>
+    <p>This notebook changes any GeoJSON file that is not in EPSG:4326 to this format. GeoJSONs come with many different Coordinate Reference Systems, such as EPSG:3857, EPSG:7789, or EPSG:31983. These formats are not compatible with each other, so they need to be standardized into one single format. For this project, EPSG:4326 is what I chose because it is easy to read.</p>
+
+    <h3>geoJSONtoGPKG.ipynb</h3>
+    <p>This was created to convert all of the GeoJSONs to binary in order to process them faster. They were not able to speed up the process and I could not figure out why, but I would love some contribution on this.</p>
+
+    <h3>weights.ipynb</h3>
+    <p>This is the one where the magic happens. This notebook takes in the cleaned datasets, calculates the weight of each facility (and give a weight to each object) and then deletes the rest of the fields that aren't the "weight" or "geometry." Deletign the rest of the fields proved to be critical for the use of this application, because if not, it would take an absurd amount of time to process these large files and plot everything onto the map.</p>
+
+    <h3>map_creator_best.ipynb</h3>
+    <p>This notebook creates the map at county, state, and national level. With this, all of the weighted datasets are ingested into memory, and the notebook plots each county and state alphabetically. In cell 6, all of the counties in America are processed alphabetically. In cell 7, all of the states are processed. In cell 5, the whole nation is procesed and the legend is created. For each county amd state, it creates a folder in which there are 4 objects stored, The first one is a map of all of the critical infrastructure for each. Next, it creates a text file which includes the datasets used, the ones not used, and ones that ran into any errors. Next, there is a map of the top 20 most important facilities in each county by weight. Lastly, there is a map of the top 5 aggragate points for each county. This process is repeated for the states in cell 7. Note that I used Google Colab Pro with High-RAM in order to speed up the process.</p>
+
+    <h2>Contribution and Improvements</h2>
+    <p>I am making this repository open source because an issue as important as critical infrastructure must be mapped out for the average person to see and measure. Contributions are more than welcome to anyone who would like to contribute. Below is a current list of some items that I was not able to find/measure and would welcome any solution to these issues.</p>
+    <h5>Other HIFLD Datasets:</h5>
+    <p>There are many other datasets from HIFLD that I have not processed, over 400 to be exact. I would love help in expanding for all of these datasets.</p>
+    <h5>All Manufacturing Facilities</h5>
+    <p>The General Manufacturing Facilities dataset has a lot of variability, and all of the NAICS codes need to be graded manually one by one. There are over 65,000 of them. I I would like to make separate datasets out of this large one based on NAICS codes or industries; particularly critical industries such as defense equipment manufacturing (NAICS codes 332994, 33641, 336412, 336413, 336414, 336992, 334511, 336320, and 336360)</p>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 CI Sentinel</p>
+    <p>Created by [Your Name]</p>
+  </footer>
+</body>
+</html>
