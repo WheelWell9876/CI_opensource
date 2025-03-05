@@ -877,5 +877,5 @@ function renderAdvancedMap(data) {
     hovermode: "closest"
   };
 
-  Plotly.newPlot("mapContainer", allTraces, layout);
+  Plotly.newPlot("mapContainer", allTraces, layout,  { scrollZoom: true });
 }

@@ -10,6 +10,7 @@ import logging
 import requests
 import urllib
 import json
+import plotly.express as px
 
 from .fetch_and_update import get_api_preview
 
@@ -292,6 +293,8 @@ def gdf_to_geojson_dict(gdf):
     else:
         logger.warning("No records produced by GeoDataFrame conversion.")
     return {"data": records}
+
+
 
 # ---------------------------------------------------------------------------
 # Editor endpoints: fetch fields and generate preview (including API response)

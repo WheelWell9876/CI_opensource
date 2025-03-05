@@ -1,0 +1,687 @@
+/* Basic resets, fonts */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Roboto', sans-serif;
+  /* Solarpunk gradient background */
+  background-image: linear-gradient(to top, #80ed99, #38a3a5);
+  background-repeat: repeat;
+  background-position: center;
+  background-blend-mode: overlay;
+  min-height: 100vh;
+  position: relative;
+}
+body::after {
+  content: "";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #38a3a5;
+  /* Example overlay pattern (optional) */
+  background-image: url("data:image/svg+xml,%3Csvg ... [your pattern data] ... %3E%3C/svg%3E");
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ------------------------------------
+  CUSTOM NAVBAR (Hamburger + 4 links)
+------------------------------------- */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: transparent;
+  position: relative;
+  z-index: 999; /* above background overlays */
+}
+.logo {
+  display: flex;
+  align-items: center;
+}
+.custom-loader {
+  width: 30px;
+  height: 12.5px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  display: grid;
+  animation: h2 4s infinite linear;
+}
+.custom-loader:before,
+.custom-loader:after {
+  content: "";
+  grid-area: 1/1;
+  border: inherit;
+  border-radius: 50%;
+  animation: inherit;
+  animation-duration: 6s;
+}
+.custom-loader:after {
+  --s: -1;
+}
+@keyframes h2 {
+  100% { transform: rotate(calc(var(--s,1)*1turn)); }
+}
+.logo-title {
+  margin-left: 10px;
+  font-size: 1.6rem;
+  color: #fff;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+}
+.menu-container {
+  position: relative;
+}
+.hamburger-menu {
+  width: 30px;
+  height: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  margin-right: 20px;
+}
+.hamburger-menu span {
+  width: 100%;
+  height: 2px;
+  background-color: #fff;
+}
+
+/* Simple links row for nav items */
+.nav-links-container {
+  display: flex;
+  gap: 20px;
+}
+.nav-links-container a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+.nav-links-container a:hover {
+  text-decoration: underline;
+}
+
+/* ------------------------------------
+  BENTO BOX for the map + filters
+------------------------------------- */
+.bento-box {
+  margin: 30px auto;
+  width: 80%;
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid #ddd;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  backdrop-filter: blur(4px);
+  position: relative;
+  z-index: 999;
+}
+.bento-box h2 {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 15px;
+}
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.filters-row > div {
+  flex: 1;
+  min-width: 180px;
+}
+label {
+  color: #fff;
+  font-size: 1.3rem;
+}
+select, button[type='submit'] {
+  width: 100%;
+  padding: 8px;
+  font-size: 1.3rem;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+.radio-container {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-size: 1.3rem;
+}
+.radio-container input[type='radio'] {
+  margin-right: 5px;
+  transform: scale(1.2);
+}
+.btn-row {
+  margin-top: 10px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.btn-row button {
+  background-color: #22577a;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  padding: 10px 18px;
+  font-size: 1.2rem;
+  border-radius: 6px;
+}
+.btn-row button:hover {
+  background-color: #80ed99;
+  color: #22577a;
+}
+
+#mapContainer {
+  width: 100%;
+  height: 1000px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  margin-top: 20px;
+  background: white;
+  overflow: hidden;
+  position: relative;  /* KEY: ensures absolute children are positioned within this box */
+}
+
+
+.hoverlayer .hovertext text {
+  white-space: pre-wrap !important;
+}
+
+
+
+
+/* Smaller screen adjustments */
+@media (max-width: 768px) {
+  .bento-box { width: 95%; }
+  header { flex-wrap: wrap; }
+  .nav-links-container { display: none; }
+}
+
+/* ------------------------------------
+  SCROLL + SOLARPUNK ELEMENTS
+------------------------------------- */
+.intro, .content, .scroll-section {
+  position: relative;
+  z-index: 999;
+}
+.intro h1, .intro p, .scroll-section h2, .scroll-section p, .content .box .text {
+  color: #fff;
+}
+.scroll-section {
+  padding: 15px 50px;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.scroll-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Placeholders for solarpunk images, boxes, etc. */
+.scene {
+  display: flex;
+  align-items: flex-end;
+  margin-left: 50px;
+  margin-bottom: 50px;
+}
+.windmill {
+  position: relative;
+  width: 200px;
+  height: 150px;
+}
+.tower {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 18px;
+  height: 100px;
+  background: #22577a;
+  transform: translateX(-50%);
+}
+.nacelle {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #38a3a5;
+  transform: translateX(-50%);
+  transform-origin: center;
+  animation: rotate 5s linear infinite;
+}
+.blade {
+  position: absolute;
+  width: 100px;
+  height: 10px;
+  background: #38a3a5;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 50%;
+  border-radius: 5px;
+}
+.blade1 { transform: rotate(0deg); }
+.blade2 { transform: rotate(120deg); }
+.blade3 { transform: rotate(240deg); }
+@keyframes rotate {
+  0% { transform: translateX(-50%) rotate(0deg); }
+  100% { transform: translateX(-50%) rotate(360deg); }
+}
+.environment {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+/* Footer styling */
+footer {
+  background-color: #22577a;
+  color: #fff;
+  padding: 10px 5px;
+  margin-top: 50px;
+  position: relative;
+  z-index: 999;
+}
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.footer-section {
+  flex-basis: 30%;
+  margin-bottom: 20px;
+}
+.footer-section h3 {
+  margin-bottom: 10px;
+}
+.footer-section p,
+.footer-section ul,
+.footer-section a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+.footer-section.links ul {
+  list-style: none;
+  padding: 0;
+}
+.footer-section.links li {
+  margin-bottom: 5px;
+}
+.footer-section.links a:hover {
+  color: #7fffd4;
+}
+.footer-section.contact p i {
+  margin-right: 10px;
+}
+.footer-bottom {
+  background-color: #22577a;
+  padding: 0;
+  text-align: center;
+}
+.footer-bottom p {
+  font-size: 12px;
+  color: #ccc;
+  margin: 0;
+}
+
+/* Some small animations */
+@keyframes p5 {
+  100% { background-size: 120% 100%; }
+}
+
+/* Centered content helper */
+.centered-content {
+  width: 80%;
+  margin: 30px auto;
+  color: #fff;
+}
+
+/* ===============================
+   BENTO BOX STYLES
+=============================== */
+
+/* CATEGORY CONTAINERS & INFO */
+.category-bento {
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  margin: 20px 0;
+  padding: 15px;
+  backdrop-filter: blur(4px);
+}
+.category-bento > .collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: #fff;
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+.category-info {
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  color: #fff;
+}
+/* Container for datasets within a category */
+.datasets-container {
+  padding: 10px;
+  border-top: 1px solid #fff;
+}
+
+/* DATASET BOX */
+.dataset-bento {
+  background-color: #5b9bd5;
+  border: 2px solid #00335c;
+  border-radius: 6px;
+  margin: 15px 0;
+  padding: 10px;
+  color: #ffffff;
+}
+
+/* MODE BOX */
+.mode-bento {
+  background-color: #3871ab;
+  border: 1px solid #001f3f;
+  border-radius: 4px;
+  margin: 10px 0;
+  padding: 8px;
+  color: #ffffff;
+}
+
+/* Divider */
+.underscore-line {
+  border-bottom: 2px dashed #fff;
+  margin: 10px 0;
+}
+
+/* Qualitative and Quantitative sections */
+.qual-bento, .quant-bento {
+  background-color: #333333;
+  border: 1px solid #001533;
+  border-radius: 4px;
+  margin: 8px 0;
+  padding: 8px;
+  color: #ffffff;
+}
+
+/* Removed section container */
+.removed-bento {
+  background-color: #ccc;
+  border: 1px solid #999;
+  border-radius: 4px;
+  margin: 8px 0;
+  padding: 8px;
+  color: #000000;
+}
+
+/* Each property within a section */
+.property-bento {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid #777;
+  border-radius: 3px;
+  margin: 6px 0;
+  padding: 6px;
+  color: #ffffff;
+}
+.removed-field-bento {
+  background-color: #eeeeee;
+  color: #000000;
+  border: 1px solid #aaa;
+}
+
+.dataset-bento, .category-bento {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===============================
+   COLLAPSIBLE STYLES
+=============================== */
+.collapsible-header {
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.arrow-icon {
+  margin-left: 10px;
+  font-size: 1.2rem;
+}
+.collapsible-content {
+  max-height: 999999px;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.collapsible-content.active {
+  max-height: 999999px;
+  overflow: visible;
+  transition: max-height 0.4s ease-in;
+}
+.collapsible-content-hidden {
+  display: none;
+}
+.collapsible-content-shown {
+  display: block;
+}
+
+/* ===============================
+   NEW EXTRA BENTO BOXES
+=============================== */
+.extra-bento {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid #aaa;
+  border-radius: 8px;
+  margin: 10px 0;
+  padding: 10px;
+}
+.category-summary-box {
+  background-color: #3a5a40;
+  color: #fff;
+}
+.category-modeinfo-box {
+  background-color: #2f4f4f;
+  color: #fff;
+}
+.mode-summary-box, .mode-info-box {
+  background-color: rgba(0, 0, 0, 0.15);
+  border: 1px solid #888;
+  border-radius: 4px;
+  margin: 5px 0;
+  padding: 5px;
+}
+.extra-bento h3, .extra-bento h4 {
+  margin: 5px 0;
+}
+
+/* ===============================
+   NEW GRADE BOXES & RELATED STYLES
+=============================== */
+.grade-bento {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #5f5f5f;
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin: 5px 0;
+  font-size: 1.2rem;
+}
+.grade-label {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.grade-value {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.field-grades-container, .prop-grades-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+/* For count containers in qualitative properties */
+.count-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0;
+}
+.count-container .count-value {
+  text-align: right;
+}
+
+/* For quantitative importance details */
+.details-bento {
+  background-color: #444444;
+  border: 1px solid #888;
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin: 10px 0;
+  font-size: 1rem;
+}
+
+/* Summary section title */
+.summary-bento {
+  background-color: #333333;  /* Add this line */
+  border: 1px solid #001533;
+  border-radius: 4px;
+  padding: 8px;
+  color: #ffffff;
+}
+
+/* ===============================
+   NEW PROPERTY BENTO BOX (for qualitative properties)
+=============================== */
+.prop-bento {
+  background-color: #2a2a2a;
+  border: 1px solid #222;
+  border-radius: 6px;
+  margin: 8px 0;
+  padding: 8px;
+  color: #fff;
+}
+.prop-bento p {
+  margin: 4px 0;
+}
+
+/* ===============================
+   MEDIA QUERIES (Mobile)
+--------------------------------- */
+@media (max-width: 768px) {
+  .centered-content, .bento-box {
+    width: 90%;
+  }
+  ul.navbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+
+/* ===============================
+   GRAPHS DROPDOWN STYLES
+=============================== */
+
+/* Container for the graphs dropdown */
+.graphs-dropdown-container {
+  margin: 10px 0;
+}
+
+/* The Show/Hide Graphs button */
+.graphs-dropdown {
+  cursor: pointer;
+  background-color: #444;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 5px 10px;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  width: 150px; /* Adjust as needed */
+  display: block;
+  margin: 0 auto;
+}
+
+/* Container for the graphs content – vertically scrollable */
+.graphs-content {
+  max-height: 300px;  /* Sets a fixed height */
+  overflow-y: auto;   /* Enables vertical scrolling if content exceeds height */
+  margin-top: 10px;
+  border: 1px dashed #ccc;
+  padding: 5px;
+  background-color: #222; /* Dark background for the graphs area */
+}
+
+/* Wrapper for generated graphs */
+.graphs-container {
+  padding: 10px;
+}
+
+/* Loading spinner styling */
+.loading-wheel {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #555;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin: 10px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Graph error message */
+.graph-error {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0;
+}
+
+
+.grade-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0;
+}
+.grade-item .grade-name {
+  font-size: 1.4rem;  /* larger font for dataset name */
+  font-weight: bold;
+}
+.grade-item .grade-value-box {
+  background-color: #444;
+  color: #fff;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 1.4rem;  /* match the dataset name size */
+}
