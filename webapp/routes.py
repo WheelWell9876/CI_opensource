@@ -32,6 +32,10 @@ MODE_DIR = os.path.join(BASE_DIR, 'fullMode')
 def index():
     return render_template('index.html')
 
+@main_blueprint.route('/about', endpoint='about')
+def about_page():
+    return render_template('about_page.html')
+
 @main_blueprint.route('/datasets')
 def datasets():
     return render_template('datasets.html')
@@ -44,7 +48,6 @@ def docs_page():
 def contact():
     return render_template('contact.html')
 
-# New Editor Routes merged into main_blueprint
 @main_blueprint.route('/editor')
 def editor_page():
     return render_template('editor.html')

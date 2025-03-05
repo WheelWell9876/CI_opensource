@@ -622,14 +622,30 @@ footer {
   margin: 0 auto;
 }
 
-/* Container for the graphs content – vertically scrollable */
+/* Container for the graphs content – let it size naturally */
 .graphs-content {
-  max-height: 300px;  /* Sets a fixed height */
-  overflow-y: auto;   /* Enables vertical scrolling if content exceeds height */
-  margin-top: 10px;
+  /* Remove any fixed height so it expands to fit its content */
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: visible !important;
   border: 1px dashed #ccc;
+  margin-top: 10px;
   padding: 5px;
-  background-color: #222; /* Dark background for the graphs area */
+  background-color: #222;
+  transition: none;
+}
+
+/* Optional classes for toggling visibility */
+.graphs-content.expanded {
+  /* When expanded, there are no restrictions */
+  max-height: none !important;
+  overflow-y: visible !important;
+  transition: none;
+}
+
+.graphs-content.collapsed {
+  /* When collapsed, completely hide the content */
+  display: none;
 }
 
 /* Wrapper for generated graphs */
@@ -661,17 +677,18 @@ footer {
   margin: 10px 0;
 }
 
-
 .grade-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 5px 0;
 }
+
 .grade-item .grade-name {
   font-size: 1.4rem;  /* larger font for dataset name */
   font-weight: bold;
 }
+
 .grade-item .grade-value-box {
   background-color: #444;
   color: #fff;
