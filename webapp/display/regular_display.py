@@ -21,61 +21,52 @@ def create_regular_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any] = None)
 
     Args:
         gdf: GeoDataFrame with geometry and optional Dataset column
-        config: Optional configuration dict with keys:
-            - data_fraction: float 0-1 for sampling
-            - geometry_types: list of geometry types to include
-            - show_unavailable: bool
-            - display_method: str for rendering method
+        config: Optional configuration dict
     """
     config = config or {}
 
     if gdf.empty:
         logger.warning("Empty GeoDataFrame provided to create_regular_display")
-        return _create_empty_figure()
+        return create_empty_figure()
 
-    # Apply configuration filters
-    filtered_gdf = _apply_filters(gdf, config)
+    # Apply basic filtering
+    filtered_gdf = apply_basic_filters(gdf, config)
 
     if filtered_gdf.empty:
         logger.warning("No data remaining after applying filters")
-        return _create_empty_figure()
+        return create_empty_figure()
 
-    # Generate traces based on display method
-    display_method = config.get('display_method', 'default')
-
-    if display_method == 'advanced':
-        return _create_advanced_display(filtered_gdf, config)
-    else:
-        return _create_default_display(filtered_gdf, config)
+    # Generate the map
+    return create_basic_display(filtered_gdf, config)
 
 
-# def _apply_filters(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> gpd.GeoDataFrame:
-#     """Apply configuration-based filters to the GeoDataFrame."""
-#     filtered_gdf = gdf.copy()
-#
-#     # Apply data fraction sampling
-#     data_fraction = config.get('data_fraction', 1.0)
-#     if data_fraction < 1.0:
-#         sample_size = int(len(filtered_gdf) * data_fraction)
-#         if sample_size > 0:
-#             filtered_gdf = filtered_gdf.sample(n=sample_size, random_state=42)
-#
-#     # Filter by geometry types
-#     geometry_types = config.get('geometry_types')
-#     if geometry_types:
-#         mask = filtered_gdf.geometry.apply(
-#             lambda geom: ensure_shapely(geom) is not None and
-#                          getattr(ensure_shapely(geom), 'geom_type', '') in geometry_types
-#         )
-#         filtered_gdf = filtered_gdf[mask]
-#
-#     # Filter out invalid geometries
-#     filtered_gdf = filtered_gdf[filtered_gdf.geometry.notna()]
-#
-#     return filtered_gdf
+def apply_basic_filters(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> gpd.GeoDataFrame:
+    """Apply basic filtering to the GeoDataFrame."""
+    filtered_gdf = gdf.copy()
+
+    # Apply data fraction sampling
+    data_fraction = config.get('data_fraction', 1.0)
+    if data_fraction < 1.0:
+        sample_size = int(len(filtered_gdf) * data_fraction)
+        if sample_size > 0:
+            filtered_gdf = filtered_gdf.sample(n=sample_size, random_state=42)
+
+    # Filter by geometry types if specified
+    geometry_types = config.get('geometry_types', [])
+    if geometry_types:
+        mask = filtered_gdf.geometry.apply(
+            lambda geom: ensure_shapely(geom) is not None and
+                         getattr(ensure_shapely(geom), 'geom_type', '') in geometry_types
+        )
+        filtered_gdf = filtered_gdf[mask]
+
+    # Filter out invalid geometries
+    filtered_gdf = filtered_gdf[filtered_gdf.geometry.notna()]
+
+    return filtered_gdf
 
 
-def _create_default_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.Figure:
+def create_basic_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.Figure:
     """Create the standard display with dataset-based coloring."""
     has_ds = "Dataset" in gdf.columns
     seen_datasets: Dict[str, bool] = {}
@@ -92,7 +83,7 @@ def _create_default_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go
         color = color_for_label(label)
 
         # Create hover text
-        hover = _create_hover_text(row)
+        hover = create_hover_text(row)
 
         # Check if this is the first occurrence of this dataset (for legend)
         show_legend = label not in seen_datasets
@@ -117,18 +108,20 @@ def _create_default_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go
                 all_lats.append(lat)
         else:
             # For non-point geometries, use bounds
-            bounds = geom.bounds
-            if len(bounds) >= 4:
-                all_lons.extend([bounds[0], bounds[2]])
-                all_lats.extend([bounds[1], bounds[3]])
+            try:
+                bounds = geom.bounds
+                if len(bounds) >= 4:
+                    all_lons.extend([bounds[0], bounds[2]])
+                    all_lats.extend([bounds[1], bounds[3]])
+            except:
+                # Skip if bounds calculation fails
+                pass
 
     # Calculate map center and create layout
     cx, cy = center_of(all_lons, all_lats)
     layout = openstreetmap_layout(cx, cy, 6, "Datasets" if has_ds else "Data")
 
-    # Add configuration-specific layout updates
-    _update_layout_from_config(layout, config)
-
+    # Create and configure the figure
     fig = go.Figure(data=traces)
     fig.update_layout(**layout)
 
@@ -136,40 +129,7 @@ def _create_default_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go
     return fig
 
 
-def _create_advanced_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.Figure:
-    """Create advanced display with additional interactive features."""
-    # This is where you can add more sophisticated rendering
-    # For now, delegate to default but could be extended
-    fig = _create_default_display(gdf, config)
-
-    # Add advanced features
-    fig.update_layout(
-        updatemenus=[{
-            'buttons': [
-                {
-                    'args': [{'visible': [True] * len(fig.data)}],
-                    'label': 'Show All',
-                    'method': 'restyle'
-                },
-                {
-                    'args': [{'visible': [False] * len(fig.data)}],
-                    'label': 'Hide All',
-                    'method': 'restyle'
-                }
-            ],
-            'direction': 'down',
-            'showactive': True,
-            'x': 0.1,
-            'xanchor': 'left',
-            'y': 1.02,
-            'yanchor': 'top'
-        }]
-    )
-
-    return fig
-
-
-def _create_hover_text(row) -> str:
+def create_hover_text(row) -> str:
     """Create formatted hover text from a row of data."""
     hover_parts = []
 
@@ -193,20 +153,7 @@ def _create_hover_text(row) -> str:
     return "<br>".join(hover_parts)
 
 
-def _update_layout_from_config(layout: Dict[str, Any], config: Dict[str, Any]) -> None:
-    """Update layout based on configuration options."""
-    # Add custom styling based on config
-    if config.get('show_legend', True):
-        layout.setdefault('showlegend', True)
-
-    # Update zoom level based on data density
-    data_fraction = config.get('data_fraction', 1.0)
-    if data_fraction < 0.1:
-        # Zoom out more for sparse data
-        layout['mapbox']['zoom'] = max(3, layout['mapbox'].get('zoom', 6) - 2)
-
-
-def _create_empty_figure() -> go.Figure:
+def create_empty_figure() -> go.Figure:
     """Create an empty figure with appropriate messaging."""
     fig = go.Figure()
     fig.update_layout(**openstreetmap_layout(-98.5795, 39.8283, 3, "No Data"))
@@ -224,26 +171,3 @@ def _create_empty_figure() -> go.Figure:
     )
 
     return fig
-
-
-# Additional utility for handling complex geometries
-def _simplify_geometry_for_display(gdf: gpd.GeoDataFrame, tolerance: float = 0.001) -> gpd.GeoDataFrame:
-    """Simplify geometries for better display performance."""
-    simplified_gdf = gdf.copy()
-
-    # Only simplify complex geometries
-    complex_mask = simplified_gdf.geometry.apply(
-        lambda geom: ensure_shapely(geom) is not None and
-                     getattr(ensure_shapely(geom), 'geom_type', '') in ['Polygon', 'MultiPolygon']
-    )
-
-    if complex_mask.any():
-        simplified_gdf.loc[complex_mask, 'geometry'] = simplified_gdf.loc[complex_mask, 'geometry'].simplify(tolerance)
-
-    return simplified_gdf
-
-
-# Export enhanced function for backward compatibility
-def create_regular_display_enhanced(gdf: gpd.GeoDataFrame, **kwargs) -> go.Figure:
-    """Enhanced version with keyword arguments converted to config."""
-    return create_regular_display(gdf, kwargs)

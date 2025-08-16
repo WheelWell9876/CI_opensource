@@ -1,5 +1,5 @@
 // -------------------------------------------
-// filters.js - Simplified filter management
+// filters.js - Fixed filter management with proper state preservation
 // -------------------------------------------
 
 var FilterManager = (function() {
@@ -89,7 +89,7 @@ var FilterManager = (function() {
   }
 
   // -------------------------------------------
-  // Event Handlers
+  // Event Handlers - FIXED to preserve selections
   // -------------------------------------------
   function handleStateChange() {
     const state = $(this).val();
@@ -117,7 +117,7 @@ var FilterManager = (function() {
     const county = $(this).val();
     console.log("County changed to:", county, "for state:", state);
 
-    // Reset dependent dropdowns
+    // Reset dependent dropdowns but keep current values
     resetDropdown("#categorySelect", "-- Select Category (optional) --");
     resetDropdown("#datasetSelect", "-- Select Dataset (optional) --");
 
@@ -126,13 +126,13 @@ var FilterManager = (function() {
     updateOptions({
       mode: "regular",
       state: state,
-      county: county
+      county: county || ""  // Ensure empty string instead of null
     });
   }
 
   function handleCategoryChange() {
     const state = $("#stateSelect").val();
-    const county = $("#countySelect").val();
+    const county = $("#countySelect").val();  // Get the CURRENT county value
     const category = $(this).val();
     console.log("Category changed to:", category, "for state:", state, "county:", county);
 
@@ -144,42 +144,47 @@ var FilterManager = (function() {
     updateOptions({
       mode: "regular",
       state: state,
-      county: county,
-      category: category
+      county: county || "",     // FIXED: Use current county value
+      category: category || ""  // FIXED: Use current category value
     });
   }
 
   // -------------------------------------------
-  // Dropdown Population
+  // Dropdown Population - FIXED to preserve current selections
   // -------------------------------------------
   function populateDropdowns(options, originalFilters) {
     console.log("Populating dropdowns with options:", options);
 
+    // Store current values before repopulating
+    const currentState = $("#stateSelect").val();
+    const currentCounty = $("#countySelect").val();
+    const currentCategory = $("#categorySelect").val();
+    const currentDataset = $("#datasetSelect").val();
+
     // Only populate dropdowns that have new data
     if (options.states !== undefined && options.states.length >= 0) {
-      populateStateDropdown(options.states);
+      populateStateDropdown(options.states, currentState);
     }
 
     if (options.counties !== undefined) {
-      populateCountyDropdown(options.counties);
+      populateCountyDropdown(options.counties, currentCounty);
     }
 
     if (options.categories !== undefined) {
-      populateCategoryDropdown(options.categories);
+      populateCategoryDropdown(options.categories, currentCategory);
     }
 
     if (options.datasets !== undefined) {
       if (originalFilters.mode === "weighted") {
         populateWeightedDatasetDropdown(options.datasets);
       } else {
-        populateRegularDatasetDropdown(options.datasets);
+        populateRegularDatasetDropdown(options.datasets, currentDataset);
       }
     }
   }
 
-  function populateStateDropdown(states) {
+  function populateStateDropdown(states, currentValue) {
     const $stateSelect = $("#stateSelect");
-    const currentValue = $stateSelect.val();
 
     $stateSelect.empty().append('<option value="">-- Select State --</option>');
 
@@ -195,10 +200,10 @@ var FilterManager = (function() {
       $stateSelect.val(currentValue);
     }
 
-    console.log(`Populated ${states.length} states`);
+    console.log(`Populated ${states.length} states, restored: ${currentValue}`);
   }
 
-  function populateCountyDropdown(counties) {
+  function populateCountyDropdown(counties, currentValue) {
     const $countySelect = $("#countySelect");
     $countySelect.empty().append('<option value="">-- Select County (optional) --</option>');
 
@@ -207,10 +212,16 @@ var FilterManager = (function() {
     });
 
     $countySelect.prop("disabled", false);
-    console.log(`Populated ${counties.length} counties`);
+
+    // Restore selection if still valid
+    if (currentValue && $countySelect.find(`option[value="${currentValue}"]`).length > 0) {
+      $countySelect.val(currentValue);
+    }
+
+    console.log(`Populated ${counties.length} counties, restored: ${currentValue}`);
   }
 
-  function populateCategoryDropdown(categories) {
+  function populateCategoryDropdown(categories, currentValue) {
     const $categorySelect = $("#categorySelect");
     $categorySelect.empty().append('<option value="">-- Select Category (optional) --</option>');
 
@@ -219,10 +230,16 @@ var FilterManager = (function() {
     });
 
     $categorySelect.prop("disabled", false);
-    console.log(`Populated ${categories.length} categories`);
+
+    // Restore selection if still valid
+    if (currentValue && $categorySelect.find(`option[value="${currentValue}"]`).length > 0) {
+      $categorySelect.val(currentValue);
+    }
+
+    console.log(`Populated ${categories.length} categories, restored: ${currentValue}`);
   }
 
-  function populateRegularDatasetDropdown(datasets) {
+  function populateRegularDatasetDropdown(datasets, currentValue) {
     const $datasetSelect = $("#datasetSelect");
     $datasetSelect.empty().append('<option value="">-- Select Dataset (optional) --</option>');
 
@@ -232,7 +249,13 @@ var FilterManager = (function() {
     });
 
     $datasetSelect.prop("disabled", false);
-    console.log(`Populated ${datasets.length} regular datasets`);
+
+    // Restore selection if still valid
+    if (currentValue && $datasetSelect.find(`option[value="${currentValue}"]`).length > 0) {
+      $datasetSelect.val(currentValue);
+    }
+
+    console.log(`Populated ${datasets.length} regular datasets, restored: ${currentValue}`);
   }
 
   function populateWeightedDatasetDropdown(datasets) {

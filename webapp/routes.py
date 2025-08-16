@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from flask import Blueprint, render_template
-import geopandas
+import geopandas as gpd
 from arcgis.features import FeatureLayer
 from geo_open_source.webapp.jsonEditor.pipeline.quant_qual_counter import analyze_fields
 from geo_open_source.webapp.jsonEditor.pipeline.json_maker import create_json_object, create_category_json, create_full_summary, export_json
@@ -218,7 +218,6 @@ def gdf_to_geojson_dict(gdf):
 # New Generate Map
 # ---------------------------------------------------------------------------
 from flask import request, jsonify
-import geopandas as gpd
 
 from geo_open_source.webapp.display.regular_display import create_regular_display        # -> your earlier helper we wrote
 from geo_open_source.webapp.display import display
