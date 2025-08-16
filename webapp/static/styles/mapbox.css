@@ -1,0 +1,333 @@
+/* ===============================
+   MAPBOX SPECIFIC STYLES
+=============================== */
+
+/* Main map container */
+#mapContainer {
+    width: 100%;
+    height: 600px;
+    min-height: 500px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    margin-top: 20px;
+    background: white;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Plotly plot container */
+.js-plotly-plot {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ===============================
+   HOVER TEXT STYLING
+=============================== */
+
+/* Force fixed size hover boxes with scrolling - CRITICAL RULES */
+.js-plotly-plot .plotly .hoverlayer .hovertext {
+    width: 300px !important;
+    height: 250px !important;
+    max-width: 300px !important;
+    max-height: 250px !important;
+    min-width: 300px !important;
+    min-height: 250px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+    padding: 8px !important;
+    border-radius: 6px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+    background: white !important;
+    border: 2px solid #333 !important;
+    position: absolute !important;
+    z-index: 1002 !important;
+    /* Force the box to appear even with large content */
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Ensure the content inside is also constrained */
+.js-plotly-plot .plotly .hoverlayer .hovertext * {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* Remove any CSS that might target the hover-scrollable-content class */
+.js-plotly-plot .plotly .hoverlayer .hovertext .hover-scrollable-content {
+    width: 100% !important;
+    height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Force override any Plotly default sizing */
+.js-plotly-plot .plotly .hoverlayer .hovertext[data-unformatted] {
+    width: 300px !important;
+    height: 250px !important;
+    max-width: 300px !important;
+    max-height: 250px !important;
+}
+
+/* Ensure hover stays visible even with long content */
+.js-plotly-plot .plotly .hoverlayer {
+    pointer-events: none !important;
+    z-index: 1001 !important;
+    position: relative !important;
+}
+
+/* Hover layer positioning */
+.js-plotly-plot .plotly .hoverlayer {
+    pointer-events: none !important;
+    z-index: 1001 !important;
+    /* Constrain to parent container */
+    max-width: 100% !important;
+    max-height: 100% !important;
+    overflow: visible !important;
+}
+
+/* Hover text box styling - Additional overrides */
+.js-plotly-plot .plotly .hoverlayer .hovertext .hovertext-box {
+    width: 300px !important;
+    height: 250px !important;
+    max-width: 300px !important;
+    max-height: 250px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Custom scrollbar styling for hover boxes */
+.js-plotly-plot .plotly .hoverlayer .hovertext::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+.js-plotly-plot .plotly .hoverlayer .hovertext::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+    border-radius: 4px !important;
+}
+
+.js-plotly-plot .plotly .hoverlayer .hovertext::-webkit-scrollbar-thumb {
+    background: #888 !important;
+    border-radius: 4px !important;
+}
+
+.js-plotly-plot .plotly .hoverlayer .hovertext::-webkit-scrollbar-thumb:hover {
+    background: #555 !important;
+}
+
+/* Critical override for Plotly's internal sizing calculations */
+.js-plotly-plot .plotly .hoverlayer .hovertext > div {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+/* Target specific Plotly hover elements that might override sizing */
+.js-plotly-plot .plotly .hoverlayer .hovertext text {
+    font-size: 10px !important;
+}
+
+/* Force proper text wrapping */
+.js-plotly-plot .plotly .hoverlayer .hovertext span {
+    word-break: break-word !important;
+    white-space: normal !important;
+}
+
+/* Hover arrow positioning */
+.js-plotly-plot .plotly .hoverlayer .hovertext .hovertext-arrow {
+    /* Ensure arrows don't cause overflow */
+    position: relative !important;
+}
+
+/* ===============================
+   PLOTLY CONTROLS
+=============================== */
+
+/* Mode bar (zoom, pan controls) */
+.js-plotly-plot .plotly .modebar {
+    z-index: 1000 !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-radius: 4px !important;
+    padding: 2px !important;
+}
+
+/* Mode bar buttons */
+.js-plotly-plot .plotly .modebar .modebar-btn {
+    border-radius: 2px !important;
+}
+
+/* ===============================
+   LEGEND STYLING
+=============================== */
+
+/* Plotly legend */
+.js-plotly-plot .plotly .legend {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    font-size: 11px !important;
+}
+
+/* Legend items */
+.js-plotly-plot .plotly .legend .legendtoggle {
+    cursor: pointer !important;
+}
+
+/* ===============================
+   RESPONSIVE MAPBOX
+=============================== */
+
+/* Ensure mapbox is responsive */
+.mapbox-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* Mobile adjustments for mapbox */
+@media (max-width: 768px) {
+    #mapContainer {
+        height: 400px;
+        min-height: 350px;
+    }
+
+    /* Smaller hover boxes on mobile */
+    .js-plotly-plot .plotly .hoverlayer .hovertext {
+        max-width: 220px !important;
+        max-height: 250px !important;
+        font-size: 9px !important;
+    }
+
+    /* Adjust mode bar for mobile */
+    .js-plotly-plot .plotly .modebar {
+        font-size: 12px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #mapContainer {
+        height: 350px;
+        min-height: 300px;
+    }
+
+    /* Even smaller hover boxes on very small screens */
+    .js-plotly-plot .plotly .hoverlayer .hovertext {
+        max-width: 180px !important;
+        max-height: 200px !important;
+        font-size: 8px !important;
+        padding: 4px 6px !important;
+    }
+}
+
+/* ===============================
+   HOVER INTERACTION IMPROVEMENTS
+=============================== */
+
+/* Improve hover sensitivity */
+.js-plotly-plot .plotly .nsewdrag {
+    cursor: crosshair !important;
+}
+
+/* Ensure markers are hoverable */
+.js-plotly-plot .plotly .scatterlayer .trace .points .point {
+    pointer-events: all !important;
+}
+
+/* ===============================
+   LOADING STATES
+=============================== */
+
+/* Loading overlay for map */
+.map-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: 10px;
+}
+
+.map-loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #22577a;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ===============================
+   ERROR STATES
+=============================== */
+
+/* Map error display */
+.map-error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #ff4444;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.map-error h3 {
+    color: #ff4444;
+    margin-bottom: 10px;
+}
+
+.map-error p {
+    color: #666;
+    margin: 0;
+}
+
+/* ===============================
+   ACCESSIBILITY
+=============================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .js-plotly-plot .plotly .hoverlayer .hovertext {
+        border: 2px solid #000 !important;
+        background: #fff !important;
+        color: #000 !important;
+    }
+
+    #mapContainer {
+        border: 3px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .js-plotly-plot .plotly * {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .map-loading-spinner {
+        animation: none !important;
+        border-top-color: #22577a !important;
+    }
+}

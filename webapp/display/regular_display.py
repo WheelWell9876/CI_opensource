@@ -84,9 +84,9 @@ def create_simple_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.F
         if dataset_name not in dataset_colors:
             dataset_colors[dataset_name] = color_for_label(dataset_name)
 
-        # Create hover text
-        hover_text = create_simple_hover_text(row)
-        logger.debug(f"Created hover text for row {idx}: {hover_text[:100]}...")
+        # Create hover text with fixed sizing approach
+        hover_text = create_scrollable_hover_text(row)
+        logger.debug(f"Created hover text for row {idx}: {len(hover_text)} characters")
 
         # Handle point geometries only for now (to debug)
         if geom.geom_type == "Point":
@@ -106,7 +106,7 @@ def create_simple_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.F
                 ),
                 name=dataset_name,
                 customdata=[hover_text],  # Store hover text in customdata
-                hovertemplate="<span style='font-size:12px'>%{customdata}</span><extra></extra>",  # Larger font
+                hovertemplate="%{customdata}<extra></extra>",  # Clean template without extra styling
                 showlegend=dataset_name not in seen_datasets,
                 legendgroup=dataset_name
             )
@@ -130,7 +130,7 @@ def create_simple_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.F
                     ),
                     name=dataset_name,
                     customdata=[hover_text],
-                    hovertemplate="<span style='font-size:12px'>%{customdata}</span><extra></extra>",  # Larger font
+                    hovertemplate="%{customdata}<extra></extra>",  # Clean template
                     showlegend=dataset_name not in seen_datasets,
                     legendgroup=dataset_name
                 )
@@ -145,7 +145,7 @@ def create_simple_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.F
     else:
         cx, cy = -98.5795, 39.8283
 
-    # Create layout with hover configuration
+    # Create layout with minimal hover configuration to let CSS handle sizing
     layout = {
         "mapbox": {
             "style": "open-street-map",
@@ -155,12 +155,7 @@ def create_simple_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.F
         "margin": {"r": 0, "t": 0, "l": 0, "b": 0},
         "hovermode": "closest",
         "hoverdistance": 20,  # Make hover more sensitive
-        "hoverlabel": {
-            "bgcolor": "white",
-            "bordercolor": "black",
-            "font": {"size": 12, "color": "black"},
-            "align": "left"
-        }
+        # Remove hoverlabel configuration to let CSS handle it completely
     }
 
     if has_ds:
@@ -174,8 +169,8 @@ def create_simple_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.F
     return fig
 
 
-def create_simple_hover_text(row) -> str:
-    """Create comprehensive hover text showing ALL metadata."""
+def create_scrollable_hover_text(row) -> str:
+    """Create hover text that will be constrained by CSS with scrolling."""
     hover_parts = []
 
     # Add a title based on available fields
@@ -187,10 +182,10 @@ def create_simple_hover_text(row) -> str:
             break
 
     if title:
-        hover_parts.append(f"<b>{title}</b>")
-        hover_parts.append("─" * 30)
+        hover_parts.append(f"<b style='color: #2E86AB;'>{title}</b>")
+        hover_parts.append("<hr style='margin: 2px 0; border: 1px solid #ddd;'>")
 
-    # Show ALL fields (except geometry)
+    # Show ALL fields without any truncation - let CSS handle the sizing
     for key, value in row.items():
         if key.lower() == "geometry":
             continue
@@ -199,7 +194,7 @@ def create_simple_hover_text(row) -> str:
         if pd.isna(value):
             continue
 
-        # Format the value nicely
+        # Format the value nicely but don't truncate
         if isinstance(value, (int, float)):
             if isinstance(value, float):
                 # Handle very small or very large numbers
@@ -213,14 +208,21 @@ def create_simple_hover_text(row) -> str:
                 formatted_value = f"{value:,}"  # Add comma separators for large integers
         else:
             formatted_value = str(value)
-            # Truncate very long text fields to keep hover readable
-            if len(formatted_value) > 100:
-                formatted_value = formatted_value[:97] + "..."
+            # Don't truncate here - let the full content show in scrollable box
 
-        hover_parts.append(f"<b>{key}:</b> {formatted_value}")
+        hover_parts.append(f"<b style='color: #555;'>{key}:</b> <span style='color: #000;'>{formatted_value}</span>")
 
+    # Join all parts without any length restrictions
     result = "<br>".join(hover_parts)
-    return result
+
+    # Wrap in a div that CSS can target for fixed sizing and scrolling
+    scrollable_result = f"""
+    <div class='hover-scrollable-content'>
+        {result}
+    </div>
+    """
+
+    return scrollable_result
 
 
 def create_empty_figure() -> go.Figure:

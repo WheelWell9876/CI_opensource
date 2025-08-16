@@ -115,9 +115,11 @@ nav {
 /* ------------------------------------
   BENTO BOX for the map + filters
 ------------------------------------- */
+/* Also update the bento-box to be larger */
 .bento-box {
   margin: 30px auto;
-  width: 80%;
+  width: 90%;            /* Increased from 80% to 90% */
+  max-width: 1400px;     /* Add a max-width for very large screens */
   background: rgba(255, 255, 255, 0.25);
   border: 2px solid #ddd;
   border-radius: 15px;
@@ -127,6 +129,7 @@ nav {
   position: relative;
   z-index: 999;
 }
+
 .bento-box h2 {
   color: #fff;
   text-align: center;
@@ -185,19 +188,6 @@ select, button[type='submit'] {
 .btn-row button:hover {
   background-color: #80ed99;
   color: #22577a;
-}
-
-#mapContainer {
-  width: 1000px;
-  height: 5000px;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  margin-top: 20px;
-  background: white;
-}
-
-.hoverlayer .hovertext {
-  white-space: pre-wrap !important;
 }
 
 /* Smaller screen adjustments */
@@ -562,7 +552,7 @@ footer {
 
 /* Summary section title */
 .summary-bento {
-  background-color: #333333;  /* Add this line */
+  background-color: #333333;
   border: 1px solid #001533;
   border-radius: 4px;
   padding: 8px;
@@ -597,7 +587,6 @@ footer {
   }
 }
 
-
 /* ===============================
    GRAPHS DROPDOWN STYLES
 =============================== */
@@ -617,14 +606,13 @@ footer {
   color: #fff;
   font-weight: bold;
   text-align: center;
-  width: 150px; /* Adjust as needed */
+  width: 150px;
   display: block;
   margin: 0 auto;
 }
 
-/* Container for the graphs content – let it size naturally */
+/* Container for the graphs content — let it size naturally */
 .graphs-content {
-  /* Remove any fixed height so it expands to fit its content */
   height: auto !important;
   max-height: none !important;
   overflow-y: visible !important;
@@ -637,14 +625,12 @@ footer {
 
 /* Optional classes for toggling visibility */
 .graphs-content.expanded {
-  /* When expanded, there are no restrictions */
   max-height: none !important;
   overflow-y: visible !important;
   transition: none;
 }
 
 .graphs-content.collapsed {
-  /* When collapsed, completely hide the content */
   display: none;
 }
 
@@ -685,7 +671,7 @@ footer {
 }
 
 .grade-item .grade-name {
-  font-size: 1.4rem;  /* larger font for dataset name */
+  font-size: 1.4rem;
   font-weight: bold;
 }
 
@@ -694,5 +680,5 @@ footer {
   color: #fff;
   border-radius: 8px;
   padding: 5px 10px;
-  font-size: 1.4rem;  /* match the dataset name size */
+  font-size: 1.4rem;
 }
