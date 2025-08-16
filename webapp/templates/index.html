@@ -41,73 +41,69 @@
     </nav>
   </header>
 
-  <!-- INTRO from your Solarpunk snippet -->
-  <main>
-    <div class="intro">
-      <h1>Solarpunk</h1>
-      <p>Your tool for measuring the world's critical infrastructure.</p>
-    </div>
-  </main>
+  <!-- MAIN CONTENT AREA -->
+  <div class="main-layout">
 
-  <!-- BENTO BOX with Plotly & dropdowns -->
-  <div class="bento-box">
-    <h2>Select Data &amp; View Map</h2>
+    <!-- LEFT SIDEBAR with filters -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>🗺️ Map Controls</h2>
+        <p>Configure your data visualization</p>
+      </div>
 
-    <!-- Mode Selection -->
-    <div class="filters-row">
-      <div>
-        <label for="modeSelect">Mode:</label>
+      <!-- Mode Selection -->
+      <div class="filter-section">
+        <label for="modeSelect">Mode</label>
         <select id="modeSelect">
           <option value="regular" selected>Regular Data</option>
           <option value="weighted">Weighted Data</option>
         </select>
       </div>
-    </div>
 
-    <!-- Regular filters -->
-    <div id="regularFilters">
-      <!-- State -->
-      <div>
-        <label for="stateSelect">State:</label>
-        <select id="stateSelect">
-          <option value="">Loading States...</option>
-        </select>
-      </div>
-      <!-- County -->
-      <div>
-        <label for="countySelect">County:</label>
-        <select id="countySelect" disabled>
-          <option value="">(Optional) Choose County</option>
-        </select>
-      </div>
-      <!-- Category -->
-      <div>
-        <label for="categorySelect">Category:</label>
-        <select id="categorySelect" disabled>
-          <option value="">(Optional) Choose Category</option>
-        </select>
-      </div>
-      <!-- Dataset -->
-      <div>
-        <label for="datasetSelect">Dataset:</label>
-        <select id="datasetSelect" disabled>
-          <option value="">(Optional) Choose Dataset</option>
-        </select>
-      </div>
-    </div>
+      <!-- Regular filters -->
+      <div id="regularFilters" class="filter-group">
+        <div class="filter-section">
+          <label for="stateSelect">State</label>
+          <select id="stateSelect">
+            <option value="">Loading States...</option>
+          </select>
+        </div>
 
-    <!-- Weighted filters -->
-    <div id="weightedFilters" style="display:none;">
-      <label for="weightedDatasetSelect">Weighted Dataset:</label>
-      <select id="weightedDatasetSelect">
-        <option value="">Loading Weighted Datasets...</option>
-      </select>
-    </div>
+        <div class="filter-section">
+          <label for="countySelect">County</label>
+          <select id="countySelect" disabled>
+            <option value="">(Optional) Choose County</option>
+          </select>
+        </div>
 
-    <!-- Display Options -->
-    <div class="filters-row" id="displayOptionsRow">
-      <div>
-        <label for="displayMethodSelect">Display Method:</label>
+        <div class="filter-section">
+          <label for="categorySelect">Category</label>
+          <select id="categorySelect" disabled>
+            <option value="">(Optional) Choose Category</option>
+          </select>
+        </div>
+
+        <div class="filter-section">
+          <label for="datasetSelect">Dataset</label>
+          <select id="datasetSelect" disabled>
+            <option value="">(Optional) Choose Dataset</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Weighted filters -->
+      <div id="weightedFilters" class="filter-group" style="display:none;">
+        <div class="filter-section">
+          <label for="weightedDatasetSelect">Weighted Dataset</label>
+          <select id="weightedDatasetSelect">
+            <option value="">Loading Weighted Datasets...</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Display Options -->
+      <div class="filter-section">
+        <label for="displayMethodSelect">Display Method</label>
         <select id="displayMethodSelect">
           <option value="default" selected>Default (Points)</option>
           <option value="basic_heatmap">Basic Density Heatmap</option>
@@ -123,8 +119,9 @@
           <option value="voronoi">Voronoi Tessellation</option>
         </select>
       </div>
-      <div id="weightTypeRow" style="display: none;">
-        <label for="weightTypeSelect">Weight Type:</label>
+
+      <div id="weightTypeRow" class="filter-section" style="display: none;">
+        <label for="weightTypeSelect">Weight Type</label>
         <select id="weightTypeSelect">
           <option value="original" selected>Original Weight</option>
           <option value="normalizedDatasetWeight">Normalized Dataset Weight</option>
@@ -132,45 +129,63 @@
           <option value="normalizedOverallWeight">Normalized Overall Weight</option>
         </select>
       </div>
-    </div>
 
-    <!-- Advanced Controls -->
-    <div id="advancedControls">
-      <div>
-        <label for="dataFractionSlider">Data Fraction (%):</label>
-        <input type="range" id="dataFractionSlider" min="1" max="100" value="10">
-        <span id="dataFractionValue">10</span>
+      <!-- Advanced Controls -->
+      <div id="advancedControls" class="filter-section">
+        <label for="dataFractionSlider">Data Fraction: <span id="dataFractionValue">10</span>%</label>
+        <input type="range" id="dataFractionSlider" min="1" max="100" value="10" class="slider">
       </div>
-      <div>
-        <label>Geometry Types:</label>
-        <label><input type="checkbox" name="geomType" value="Point" checked>Point</label>
-        <label><input type="checkbox" name="geomType" value="MultiPoint" checked>MultiPoint</label>
-        <label><input type="checkbox" name="geomType" value="LineString" checked>LineString</label>
-        <label><input type="checkbox" name="geomType" value="MultiLineString" checked>MultiLineString</label>
-        <label><input type="checkbox" name="geomType" value="Polygon" checked>Polygon</label>
-        <label><input type="checkbox" name="geomType" value="MultiPolygon" checked>MultiPolygon</label>
+
+      <!-- Geometry Types -->
+      <div class="filter-section">
+        <label>Geometry Types</label>
+        <div class="checkbox-group">
+          <label class="checkbox-label"><input type="checkbox" name="geomType" value="Point" checked>Point</label>
+          <label class="checkbox-label"><input type="checkbox" name="geomType" value="MultiPoint" checked>MultiPoint</label>
+          <label class="checkbox-label"><input type="checkbox" name="geomType" value="LineString" checked>LineString</label>
+          <label class="checkbox-label"><input type="checkbox" name="geomType" value="MultiLineString" checked>MultiLineString</label>
+          <label class="checkbox-label"><input type="checkbox" name="geomType" value="Polygon" checked>Polygon</label>
+          <label class="checkbox-label"><input type="checkbox" name="geomType" value="MultiPolygon" checked>MultiPolygon</label>
+        </div>
+      </div>
+
+      <!-- Show/Hide Unavailable -->
+      <div class="filter-section">
+        <label>Availability</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="showUnavailable" id="showUnavailable" value="show">
+            Show Unavailable
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="showUnavailable" id="hideUnavailable" value="hide" checked>
+            Hide Unavailable
+          </label>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="button-group">
+        <button id="submitBtn" class="btn btn-primary">
+          <span class="material-icons">map</span>
+          Generate Map
+        </button>
+        <button id="submitDisplayBtn" class="btn btn-secondary">
+          <span class="material-icons">tune</span>
+          Custom Display
+        </button>
+        <button id="resetBtn" class="btn btn-reset">
+          <span class="material-icons">refresh</span>
+          Reset
+        </button>
       </div>
     </div>
 
-    <!-- Show/Hide Unavailable -->
-    <div class="radio-container">
-      <input type="radio" name="showUnavailable" id="showUnavailable" value="show">
-      <label for="showUnavailable">Show Unavailable</label>
-    </div>
-    <div class="radio-container">
-      <input type="radio" name="showUnavailable" id="hideUnavailable" value="hide" checked>
-      <label for="hideUnavailable">Hide Unavailable</label>
+    <!-- RIGHT MAIN AREA with map -->
+    <div class="map-area">
+      <div id="mapContainer"></div>
     </div>
 
-    <!-- Buttons -->
-    <div class="btn-row">
-      <button id="submitBtn">Submit</button>
-      <button id="submitDisplayBtn">Custom Display</button>
-      <button id="resetBtn">Reset</button>
-    </div>
-
-    <!-- Map Container -->
-    <div id="mapContainer"></div>
   </div>
 
   <!-- FOOTER -->
