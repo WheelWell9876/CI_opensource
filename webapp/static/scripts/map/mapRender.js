@@ -1,331 +1,200 @@
 // -------------------------------------------
-// 11) Load a Default Map if no data is loaded
+// mapRenderer.js - Handles server-side map generation
 // -------------------------------------------
-function loadDefaultMap() {
-  const latArray = [40.7831];   // Manhattan latitude
-  const lonArray = [-73.9712];  // Manhattan longitude
-  const textArray = ["Default: Manhattan + Bridges"];
-  const data = [{
-    type: "scattermapbox",
-    lat: latArray,
-    lon: lonArray,
-    mode: "markers",
-    text: textArray,
-    marker: {
-      size: 10,
-      color: "blue"
+
+var MapRenderer = (function() {
+  'use strict';
+
+  var currentFigure = null;
+  var isLoading = false;
+
+  // -------------------------------------------
+  // Public API
+  // -------------------------------------------
+  return {
+    generateMap: generateMap,
+    renderFigure: renderFigure,
+    getCurrentFigure: getCurrentFigure,
+    isLoading: function() { return isLoading; }
+  };
+
+  // -------------------------------------------
+  // Main map generation function
+  // -------------------------------------------
+  function generateMap(payload) {
+    if (isLoading) {
+      console.warn("Map generation already in progress");
+      return;
     }
-  }];
-  const layout = {
-    mapbox: {
-      style: "open-street-map",
-      center: { lat: latArray[0], lon: lonArray[0] },
-      zoom: 10
-    },
-    margin: { r:0, t:0, b:0, l:0 }
-  };
-  Plotly.newPlot("mapContainer", data, layout);
-}
 
-// -------------------------------------------
-// 12) Render Data on Map
-// -------------------------------------------
-/**
- * renderMap examines the returned data and determines whether to use
- * advanced rendering (for full GeoJSON geometries) or fallback to the basic
- * point-only rendering.
- */
-function renderMap(data) {
-  // If there's no 'Dataset' field, fall back to one trace
-  const hasDatasetField = data.some(item => item.Dataset !== undefined && item.Dataset !== null);
-  if (!hasDatasetField) {
-    singleTraceRender(data);
-    return;
-  }
+    setLoadingState(true);
 
-  // Otherwise, group by 'Dataset'
-  const datasetGroups = groupByDataset(data);
-  const colorMap = buildColorMap(Object.keys(datasetGroups));
-
-  const traces = [];
-  Object.keys(datasetGroups).forEach(dsName => {
-    const rows = datasetGroups[dsName];
-    const latArray = rows.map(r => r.latitude);
-    const lonArray = rows.map(r => r.longitude);
-    // Use JSON.stringify so all properties are displayed
-    const hoverText = rows.map(r => JSON.stringify(r));
-
-    traces.push({
-      type: "scattermapbox",
-      lat: latArray,
-      lon: lonArray,
-      mode: "markers",
-      name: dsName,                 // legend label
-      text: hoverText,              // custom hover text
-      hovertemplate: "%{text}<extra></extra>", // forces only your text to show
-      marker: {
-        size: 8,
-        color: colorMap[dsName] || "#FF0000"
+    $.ajax({
+      url: "/generate_map",
+      method: "POST",
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify(payload),
+      success: function(response) {
+        handleMapResponse(response, payload);
       },
-      legendgroup: dsName,          // group legend items by dataset
-      showlegend: true              // always show legend for this trace
-    });
-  });
-
-  const layout = {
-    mapbox: {
-      style: "open-street-map",
-      center: {
-        lat: data[0].latitude || 39.8283,
-        lon: data[0].longitude || -98.5795
+      error: function(xhr, status, error) {
+        handleMapError(xhr, status, error, payload);
       },
-      zoom: 7
-    },
-    margin: { r: 0, t: 0, b: 0, l: 0 },
-    legend: { title: { text: "Dataset" } }
-  };
-
-  Plotly.newPlot("mapContainer", traces, layout);
-}
-
-// ===========================================
-// Advanced Rendering Functions for Full GeoJSON
-// ===========================================
-
-/**
- * Converts a GeoJSON geometry into one or more Plotly Scattermapbox traces.
- * This function mimics your Jupyter notebook approach:
- * - For "Point" and "MultiPoint": renders markers.
- * - For "LineString" and "MultiLineString": renders lines.
- * - For "Polygon" and "MultiPolygon": renders just the exterior boundary (fill="none").
- */
-function getTracesFromGeoJSON(geometry, name, color, hoverText, showLegend, legendGroup) {
-  var traces = [];
-  var geomType = geometry.type;
-  var lons = [], lats = [];
-
-  if (geomType === "Point") {
-    traces.push({
-      type: "scattermapbox",
-      lon: [geometry.coordinates[0]],
-      lat: [geometry.coordinates[1]],
-      mode: "markers",
-      marker: { color: color, size: 8 },
-      name: name,
-      hoverinfo: "text",
-      hovertext: hoverText,
-      showlegend: showLegend,
-      legendgroup: legendGroup
-    });
-  } else if (geomType === "MultiPoint") {
-    geometry.coordinates.forEach(function(coord) {
-      lons.push(coord[0]);
-      lats.push(coord[1]);
-    });
-    traces.push({
-      type: "scattermapbox",
-      lon: lons,
-      lat: lats,
-      mode: "markers",
-      marker: { color: color, size: 8 },
-      name: name,
-      hoverinfo: "text",
-      hovertext: hoverText,
-      showlegend: showLegend,
-      legendgroup: legendGroup
-    });
-  } else if (geomType === "LineString") {
-    geometry.coordinates.forEach(function(coord) {
-      lons.push(coord[0]);
-      lats.push(coord[1]);
-    });
-    traces.push({
-      type: "scattermapbox",
-      lon: lons,
-      lat: lats,
-      mode: "lines",
-      line: { color: color, width: 2 },
-      name: name,
-      hoverinfo: "text",
-      hovertext: hoverText,
-      showlegend: showLegend,
-      legendgroup: legendGroup
-    });
-  } else if (geomType === "MultiLineString") {
-    geometry.coordinates.forEach(function(line) {
-      var lineLons = [], lineLats = [];
-      line.forEach(function(coord) {
-        lineLons.push(coord[0]);
-        lineLats.push(coord[1]);
-      });
-      traces.push({
-        type: "scattermapbox",
-        lon: lineLons,
-        lat: lineLats,
-        mode: "lines",
-        line: { color: color, width: 2 },
-        name: name,
-        hoverinfo: "text",
-        hovertext: hoverText,
-        showlegend: showLegend,
-        legendgroup: legendGroup
-      });
-    });
-  } else if (geomType === "Polygon") {
-    // Use the exterior ring of the polygon
-    var exterior = geometry.coordinates[0];
-    exterior.forEach(function(coord) {
-      lons.push(coord[0]);
-      lats.push(coord[1]);
-    });
-    traces.push({
-      type: "scattermapbox",
-      lon: lons,
-      lat: lats,
-      mode: "lines",
-      fill: "none", // Only show boundary
-      line: { color: color, width: 2 },
-      name: name,
-      hoverinfo: "text",
-      hovertext: hoverText,
-      showlegend: showLegend,
-      legendgroup: legendGroup
-    });
-  } else if (geomType === "MultiPolygon") {
-    geometry.coordinates.forEach(function(polygon) {
-      var polyLons = [], polyLats = [];
-      // Use the exterior ring of each polygon
-      var exterior = polygon[0];
-      exterior.forEach(function(coord) {
-        polyLons.push(coord[0]);
-        polyLats.push(coord[1]);
-      });
-      traces.push({
-        type: "scattermapbox",
-        lon: polyLons,
-        lat: polyLats,
-        mode: "lines",
-        fill: "none",
-        line: { color: color, width: 2 },
-        name: name,
-        hoverinfo: "text",
-        hovertext: hoverText,
-        showlegend: showLegend,
-        legendgroup: legendGroup
-      });
-    });
-  }
-  return traces;
-}
-
-/**
- * Extracts all coordinate pairs from a GeoJSON geometry.
- * For polygons, uses the exterior ring.
- */
-function extractAllCoords(geometry) {
-  var coords = [];
-  var geomType = geometry.type;
-  if (geomType === "Point") {
-    coords.push(geometry.coordinates);
-  } else if (geomType === "MultiPoint") {
-    coords = coords.concat(geometry.coordinates);
-  } else if (geomType === "LineString") {
-    coords = coords.concat(geometry.coordinates);
-  } else if (geomType === "MultiLineString") {
-    geometry.coordinates.forEach(function(line) {
-      coords = coords.concat(line);
-    });
-  } else if (geomType === "Polygon") {
-    coords = coords.concat(geometry.coordinates[0]);
-  } else if (geomType === "MultiPolygon") {
-    geometry.coordinates.forEach(function(polygon) {
-      coords = coords.concat(polygon[0]);
-    });
-  }
-  return coords;
-}
-
-/**
- * Advanced rendering: builds Plotly traces from full GeoJSON features.
- * It also reads UI settings:
- *  - Checkboxes (with name "geomType") to filter which geometry types to render.
- *  - A slider (#dataFractionSlider) that sets the fraction of data to sample.
- */
-
-// Helper function that returns one of 16 colors based on the dataset name.
-function getColor(datasetName) {
-  const palette = [
-    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
-    "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
-    "#bcbd22", "#17becf", "#7B68EE", "#F08080",
-    "#48D1CC", "#FFD700", "#ADFF2F", "#EE82EE"
-  ];
-  let hash = 0;
-  for (let i = 0; i < datasetName.length; i++) {
-    hash += datasetName.charCodeAt(i);
-  }
-  return palette[hash % palette.length];
-}
-
-
-
-function renderAdvancedMap(data) {
-  // Get selected geometry types (if any checkboxes are present)
-  var selectedGeomTypes = [];
-  $("input[name='geomType']:checked").each(function() {
-    selectedGeomTypes.push($(this).val());
-  });
-
-  // Get fraction value from slider (default to 100% if no slider is present)
-  var fraction = $("#dataFractionSlider").length ? parseInt($("#dataFractionSlider").val()) / 100 : 1;
-
-  // Sample the data based on the fraction
-  var sampledData = data.filter(function(feature) {
-    return Math.random() < fraction;
-  });
-
-  var allTraces = [];
-  var allCoords = [];
-
-    sampledData.forEach(function(feature, index) {
-      if (!feature.geometry || !feature.geometry.type) return;
-      var geomType = feature.geometry.type;
-      if (selectedGeomTypes.length && selectedGeomTypes.indexOf(geomType) === -1) return;
-      var hoverText = "";
-      for (var key in feature) {
-        if (key !== "geometry") {
-          hoverText += key + ": " + feature[key] + "<br>";
-        }
+      complete: function() {
+        setLoadingState(false);
       }
-      var color = feature.color || (feature.Dataset ? getColor(feature.Dataset) : "red");
-      var legendGroup = feature.Dataset || "NoName";
-      var showLegend = (index === 0);
-      var traces = getTracesFromGeoJSON(feature.geometry, legendGroup, color, hoverText, showLegend, legendGroup);
-      allTraces = allTraces.concat(traces);
-      var coords = extractAllCoords(feature.geometry);
-      allCoords = allCoords.concat(coords);  // Updated line; no extra operators
+    });
+  }
+
+  // -------------------------------------------
+  // Response Handlers
+  // -------------------------------------------
+  function handleMapResponse(response, originalPayload) {
+    if (!response.success) {
+      showError("Server error: " + (response.error || "Unknown error"));
+      return;
+    }
+
+    if (!response.figure) {
+      showError("No map data received from server");
+      return;
+    }
+
+    try {
+      // Parse the figure JSON if it's a string
+      const figure = typeof response.figure === 'string'
+        ? JSON.parse(response.figure)
+        : response.figure;
+
+      renderFigure(figure);
+      AppState.currentFigure = figure;
+
+      console.log("Map successfully generated with payload:", originalPayload);
+
+    } catch (error) {
+      console.error("Error parsing figure data:", error);
+      showError("Error displaying map data");
+    }
+  }
+
+  function handleMapError(xhr, status, error, originalPayload) {
+    console.error("Map generation failed:", {
+      status: status,
+      error: error,
+      responseText: xhr.responseText,
+      payload: originalPayload
     });
 
+    let errorMessage = "Failed to generate map";
 
-  // Compute the center of all coordinates
-  var sumLon = 0, sumLat = 0;
-  allCoords.forEach(function(coord) {
-    sumLon += coord[0];
-    sumLat += coord[1];
-  });
-  var centerLon = allCoords.length ? sumLon / allCoords.length : -98.5795;
-  var centerLat = allCoords.length ? sumLat / allCoords.length : 39.8283;
+    try {
+      const response = JSON.parse(xhr.responseText);
+      if (response.error) {
+        errorMessage = response.error;
+      }
+    } catch (e) {
+      // Use default error message if JSON parsing fails
+    }
 
-  var layout = {
-    mapbox: {
-      style: "open-street-map",
-      center: { lat: centerLat, lon: centerLon },
-      zoom: 6
-    },
-    margin: { r: 0, t: 0, b: 0, l: 0 },
-    legend: { title: { text: "Dataset" } },
-    hovermode: "closest"
-  };
+    showError(errorMessage);
+  }
 
-  Plotly.newPlot("mapContainer", allTraces, layout,  { scrollZoom: true });
-}
+  // -------------------------------------------
+  // Figure Rendering
+  // -------------------------------------------
+  function renderFigure(figure) {
+    try {
+      // Ensure the figure has the required structure
+      if (!figure.data || !figure.layout) {
+        throw new Error("Invalid figure structure");
+      }
+
+      // Configure Plotly options for better interactivity
+      const config = {
+        responsive: true,
+        displayModeBar: true,
+        modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+        scrollZoom: true
+      };
+
+      // Use Plotly.react for better performance with updates
+      Plotly.react("mapContainer", figure.data, figure.layout, config);
+
+      currentFigure = figure;
+
+    } catch (error) {
+      console.error("Error rendering figure:", error);
+      showError("Error displaying map");
+    }
+  }
+
+  // -------------------------------------------
+  // State Management
+  // -------------------------------------------
+  function setLoadingState(loading) {
+    isLoading = loading;
+
+    // Update UI to show loading state
+    const submitBtn = $("#submitBtn");
+    const customBtn = $("#submitDisplayBtn");
+
+    if (loading) {
+      submitBtn.prop("disabled", true).text("Loading...");
+      customBtn.prop("disabled", true).text("Loading...");
+
+      // Optionally show a loading spinner on the map
+      showMapLoading();
+    } else {
+      submitBtn.prop("disabled", false).text("Submit");
+      customBtn.prop("disabled", false).text("Custom Display");
+
+      hideMapLoading();
+    }
+  }
+
+  function getCurrentFigure() {
+    return currentFigure;
+  }
+
+  // -------------------------------------------
+  // UI Helpers
+  // -------------------------------------------
+  function showMapLoading() {
+    // Add a loading overlay to the map container
+    const mapContainer = $("#mapContainer");
+    if (mapContainer.find(".loading-overlay").length === 0) {
+      mapContainer.append(`
+        <div class="loading-overlay" style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(255, 255, 255, 0.8);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+        ">
+          <div>Loading map...</div>
+        </div>
+      `);
+    }
+  }
+
+  function hideMapLoading() {
+    $("#mapContainer .loading-overlay").remove();
+  }
+
+  function showError(message) {
+    console.error("MapRenderer Error:", message);
+    if (typeof showError === 'function') {
+      // Use global error handler if available
+      window.showError(message);
+    } else {
+      alert("Map Error: " + message);
+    }
+  }
+
+})();

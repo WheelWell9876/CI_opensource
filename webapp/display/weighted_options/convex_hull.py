@@ -1,3 +1,7 @@
+import logging as logger
+import numpy as np
+from geo_open_source.webapp.display.display import create_default_display
+
 def create_convex_hull_display(gdf):
     """
     Computes the convex hull over the top 10% highest weight points.

@@ -1,284 +1,176 @@
-import os
+"""
+Shared plotting utilities for the display package.
+- Pure utilities: no Flask, no file I/O, no app routes.
+- Other modules import these; this module imports from no local siblings.
+- Compatible with Plotly.js 2.20.0 (scattermapbox/densitymapbox).
+"""
+from __future__ import annotations
+
+from typing import Iterable, List, Tuple, Dict, Any
 import numpy as np
-from flask import Blueprint, request, jsonify
-import geopandas as gpd
-import logging
-from shapely.geometry.base import BaseGeometry
+import plotly.graph_objects as go
 from shapely.geometry import shape
+from shapely.geometry.base import BaseGeometry
+import plotly.graph_objects as go
 
-from .weighted_options.comparative_overlay import create_comparative_overlay
-from .weighted_options.interactive_filter import create_interactive_filter_display
-from .weighted_options.voronoi_tessellation import create_voronoi_tessellation_display
-from ..routes import determine_file_path
-from scipy.stats import gaussian_kde
-from scipy.spatial import Voronoi
-
-from geo_open_source.webapp.display.weighted_options.animated_display import create_animated_display
-from geo_open_source.webapp.display.weighted_options.basic_heatmap import create_basic_heatmap
-from geo_open_source.webapp.display.weighted_options.bubble_map import create_bubble_map
-from geo_open_source.webapp.display.weighted_options.choropleth_map import create_choropleth_map
-from geo_open_source.webapp.display.weighted_options.convex_hull import create_convex_hull_display
-from geo_open_source.webapp.display.weighted_options.gaussian_kde_heatmap import create_gaussian_kde_heatmap
-from geo_open_source.webapp.display.weighted_options.weighted_heatmap import create_weighted_heatmap
-from geo_open_source.webapp.display.weighted_options.threed_extrusion import create_3d_extrusion_display
-
-display_blueprint = Blueprint('display', __name__)
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)  # Enable debug logging
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Assume data lives under static/resources/data
-DATA_DIR = os.path.join(BASE_DIR, "static", "data")
+def create_default_display(gdf=None):
+    """Return a very basic empty/fallback map figure."""
+    fig = go.Figure()
+    fig.update_layout(
+        mapbox_style="open-street-map",
+        mapbox_center={"lat": 39.8283, "lon": -98.5795},
+        mapbox_zoom=3,
+        margin={"r": 0, "t": 0, "b": 0, "l": 0}
+    )
+    return fig
 
 
-def get_color(dataset_name):
-    palette = [
-        "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
-        "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
-        "#bcbd22", "#17becf", "#7B68EE", "#F08080",
-        "#48D1CC", "#FFD700", "#ADFF2F", "#EE82EE"
-    ]
-    hash_val = sum(ord(c) for c in str(dataset_name))
-    color = palette[hash_val % len(palette)]
-    logger.debug("Assigned color '%s' for dataset '%s'", color, dataset_name)
-    return color
+# -------------------------------------------------
+# Color utilities
+# -------------------------------------------------
+_PALETTE = [
+    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
+    "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
+    "#bcbd22", "#17becf", "#7B68EE", "#F08080",
+    "#48D1CC", "#FFD700", "#ADFF2F", "#EE82EE"
+]
 
+def color_for_label(label: str) -> str:
+    if not label:
+        return _PALETTE[0]
+    h = 0
+    for ch in str(label):
+        h = (h * 31 + ord(ch)) & 0xFFFFFFFF
+    return _PALETTE[h % len(_PALETTE)]
 
-@display_blueprint.route('/fetch_display_data', methods=['POST'])
-def fetch_display_data():
-    data = request.get_json() or {}
-    logger.debug("Received payload for fetch_display_data: %s", data)
-    display_method = data.get("display_method", "default")
-    weight_type = data.get("weight_type", "original")
-    logger.debug("Display method: %s; Weight type: %s", display_method, weight_type)
+# -------------------------------------------------
+# Geometry utilities
+# -------------------------------------------------
 
-    dataset_file = None
-    if "state" in data:
-        state = data.get("state", "")
-        county = data.get("county", "")
-        category = data.get("category", "")
-        dataset = data.get("dataset", "")
-        dataset_file = determine_file_path(state, county, category, dataset)
-        logger.debug("Regular mode. Using file: %s", dataset_file)
-    else:
-        dataset_file = os.path.join(DATA_DIR, data.get("dataset", ""))
-        logger.debug("Weighted mode. Using file: %s", dataset_file)
-
-    if not dataset_file or not os.path.exists(dataset_file):
-        error_msg = f"File not found: {dataset_file}"
-        logger.error(error_msg)
-        return jsonify({"error": error_msg}), 404
-
+def ensure_shapely(geom: Any) -> BaseGeometry | None:
+    """Accept Shapely geometry, GeoJSON-like dict, or None → Shapely or None."""
+    if geom is None:
+        return None
+    if isinstance(geom, BaseGeometry):
+        return geom
     try:
-        gdf = gpd.read_parquet(dataset_file)
-        logger.debug("Loaded GeoDataFrame with %d features", len(gdf))
-    except Exception as e:
-        logger.exception("Error reading parquet file:")
-        return jsonify({"error": str(e)}), 500
-
-    if not gdf.empty:
-        first_geom = gdf.iloc[0].geometry
-        if not isinstance(first_geom, BaseGeometry):
-            logger.debug("Converting geometries using shape()")
-            gdf["geometry"] = gdf.geometry.apply(lambda geom: shape(geom) if geom is not None else None)
-        else:
-            logger.debug("Geometries are already shapely objects")
-
-    # Log geometry types present.
-    geom_types = gdf.geometry.apply(lambda g: g.geom_type if g is not None else "None").unique()
-    logger.debug("Geometry types in dataset: %s", geom_types)
-
-    if display_method == "basic_heatmap":
-        logger.debug("Using basic_heatmap")
-        traces, layout = create_basic_heatmap(gdf)
-    elif display_method == "weighted_heatmap":
-        logger.debug("Using weighted_heatmap")
-        traces, layout = create_weighted_heatmap(gdf, weight_type)
-    elif display_method == "convex_hull":
-        logger.debug("Using convex_hull")
-        traces, layout = create_convex_hull_display(gdf)
-    elif display_method == "gaussian_kde":
-        logger.debug("Using gaussian_kde")
-        traces, layout = create_gaussian_kde_heatmap(gdf, weight_type)
-    elif display_method == "bubble_map":
-        logger.debug("Using bubble_map")
-        traces, layout = create_bubble_map(gdf, weight_type)
-    elif display_method == "choropleth":
-        logger.debug("Using choropleth")
-        traces, layout = create_choropleth_map(gdf)
-    elif display_method == "animated":
-        logger.debug("Using animated display")
-        traces, layout = create_animated_display(gdf)
-    elif display_method == "extrusion":
-        logger.debug("Using 3d_extrusion")
-        traces, layout = create_3d_extrusion_display(gdf, weight_type)
-    elif display_method == "comparative":
-        logger.debug("Using comparative overlay")
-        traces, layout = create_comparative_overlay(gdf)
-    elif display_method == "interactive_filter":
-        logger.debug("Using interactive_filter")
-        traces, layout = create_interactive_filter_display(gdf)
-    elif display_method == "voronoi":
-        logger.debug("Using voronoi tessellation")
-        traces, layout = create_voronoi_tessellation_display(gdf)
-    else:
-        logger.debug("Using default display")
-        traces, layout = create_default_display(gdf)
-
-    logger.debug("Returning %d trace(s) with layout: %s", len(traces), layout)
-    return jsonify({"traces": traces, "layout": layout})
+        return shape(geom)
+    except Exception:
+        return None
 
 
-# --- Helper to convert a shapely geometry to Plotly traces using its GeoJSON interface ---
-def get_traces_from_geojson(geojson, name, color, hover_text, showlegend, legend_group):
-    traces = []
-    geom_type = geojson.get("type", "")
-    logger.debug("Converting geometry type: %s", geom_type)
-    if geom_type == "Point":
-        traces.append({
-            "type": "scattermapbox",
-            "lon": [geojson["coordinates"][0]],
-            "lat": [geojson["coordinates"][1]],
-            "mode": "markers",
-            "marker": {"color": color, "size": 8},
-            "name": name,
-            "hoverinfo": "text",
-            "hovertext": hover_text,
-            "showlegend": showlegend,
-            "legendgroup": legend_group
-        })
-    elif geom_type == "MultiPoint":
-        lons = [pt[0] for pt in geojson["coordinates"]]
-        lats = [pt[1] for pt in geojson["coordinates"]]
-        traces.append({
-            "type": "scattermapbox",
-            "lon": lons,
-            "lat": lats,
-            "mode": "markers",
-            "marker": {"color": color, "size": 8},
-            "name": name,
-            "hoverinfo": "text",
-            "hovertext": hover_text,
-            "showlegend": showlegend,
-            "legendgroup": legend_group
-        })
-    elif geom_type == "LineString":
-        lons = [pt[0] for pt in geojson["coordinates"]]
-        lats = [pt[1] for pt in geojson["coordinates"]]
-        traces.append({
-            "type": "scattermapbox",
-            "lon": lons,
-            "lat": lats,
-            "mode": "lines",
-            "line": {"color": color, "width": 2},
-            "name": name,
-            "hoverinfo": "text",
-            "hovertext": hover_text,
-            "showlegend": showlegend,
-            "legendgroup": legend_group
-        })
-    elif geom_type == "MultiLineString":
-        for line in geojson["coordinates"]:
-            lons = [pt[0] for pt in line]
-            lats = [pt[1] for pt in line]
-            traces.append({
-                "type": "scattermapbox",
-                "lon": lons,
-                "lat": lats,
-                "mode": "lines",
-                "line": {"color": color, "width": 2},
-                "name": name,
-                "hoverinfo": "text",
-                "hovertext": hover_text,
-                "showlegend": showlegend,
-                "legendgroup": legend_group
-            })
-    elif geom_type == "Polygon":
-        exterior = geojson["coordinates"][0]
-        lons = [pt[0] for pt in exterior]
-        lats = [pt[1] for pt in exterior]
-        traces.append({
-            "type": "scattermapbox",
-            "lon": lons,
-            "lat": lats,
-            "mode": "lines",
-            "fill": "none",
-            "line": {"color": color, "width": 2},
-            "name": name,
-            "hoverinfo": "text",
-            "hovertext": hover_text,
-            "showlegend": showlegend,
-            "legendgroup": legend_group
-        })
-    elif geom_type == "MultiPolygon":
-        for polygon in geojson["coordinates"]:
-            exterior = polygon[0]
-            lons = [pt[0] for pt in exterior]
-            lats = [pt[1] for pt in exterior]
-            traces.append({
-                "type": "scattermapbox",
-                "lon": lons,
-                "lat": lats,
-                "mode": "lines",
-                "fill": "none",
-                "line": {"color": color, "width": 2},
-                "name": name,
-                "hoverinfo": "text",
-                "hovertext": hover_text,
-                "showlegend": showlegend,
-                "legendgroup": legend_group
-            })
+def center_of(lons: Iterable[float], lats: Iterable[float]) -> Tuple[float, float]:
+    lons = [x for x in lons if x is not None and np.isfinite(x)]
+    lats = [y for y in lats if y is not None and np.isfinite(y)]
+    if not lons or not lats:
+        return (-98.5795, 39.8283)  # CONUS fallback
+    return (float(np.mean(lons)), float(np.mean(lats)))
+
+
+def flatten_points(geom: BaseGeometry) -> List[Tuple[float, float]]:
+    """Return all (lon, lat) pairs from Point/MultiPoint; empty for other types."""
+    if geom is None or geom.is_empty:
+        return []
+    gt = getattr(geom, "geom_type", "")
+    if gt == "Point":
+        return [(geom.x, geom.y)]
+    if gt == "MultiPoint":
+        return [(p.x, p.y) for p in geom.geoms]
+    return []
+
+
+def traces_from_geometry(
+    geom: BaseGeometry,
+    *,
+    name: str,
+    color: str,
+    hovertext: str = "",
+    showlegend: bool = False,
+    legendgroup: str | None = None,
+) -> List[go.Scattermapbox]:
+    """Plotly traces for a single geometry.
+    - Points/MultiPoints → markers
+    - LineString/MultiLineString → lines
+    - Polygon/MultiPolygon → outline as lines (no fill)
+    """
+    traces: List[go.Scattermapbox] = []
+    if geom is None or geom.is_empty:
+        return traces
+    gt = getattr(geom, "geom_type", "")
+
+    if gt == "Point":
+        traces.append(go.Scattermapbox(
+            lon=[geom.x], lat=[geom.y], mode="markers",
+            marker={"size": 8, "color": color},
+            name=name, hoverinfo="text", hovertext=hovertext,
+            showlegend=showlegend, legendgroup=legendgroup,
+        ))
+        return traces
+
+    if gt == "MultiPoint":
+        xs = [p.x for p in geom.geoms]; ys = [p.y for p in geom.geoms]
+        traces.append(go.Scattermapbox(
+            lon=xs, lat=ys, mode="markers",
+            marker={"size": 8, "color": color},
+            name=name, hoverinfo="text", hovertext=hovertext,
+            showlegend=showlegend, legendgroup=legendgroup,
+        ))
+        return traces
+
+    if gt == "LineString":
+        xs, ys = geom.xy
+        traces.append(go.Scattermapbox(
+            lon=list(xs), lat=list(ys), mode="lines",
+            line={"color": color, "width": 2},
+            name=name, hoverinfo="text", hovertext=hovertext,
+            showlegend=showlegend, legendgroup=legendgroup,
+        ))
+        return traces
+
+    if gt == "MultiLineString":
+        for line in geom.geoms:
+            xs, ys = line.xy
+            traces.append(go.Scattermapbox(
+                lon=list(xs), lat=list(ys), mode="lines",
+                line={"color": color, "width": 2},
+                name=name, hoverinfo="text", hovertext=hovertext,
+                showlegend=showlegend, legendgroup=legendgroup,
+            ))
+        return traces
+
+    if gt == "Polygon":
+        xs, ys = geom.exterior.coords.xy
+        traces.append(go.Scattermapbox(
+            lon=list(xs), lat=list(ys), mode="lines",
+            fill="none", line={"color": color, "width": 2},
+            name=name, hoverinfo="text", hovertext=hovertext,
+            showlegend=showlegend, legendgroup=legendgroup,
+        ))
+        return traces
+
+    if gt == "MultiPolygon":
+        for poly in geom.geoms:
+            xs, ys = poly.exterior.coords.xy
+            traces.append(go.Scattermapbox(
+                lon=list(xs), lat=list(ys), mode="lines",
+                fill="none", line={"color": color, "width": 2},
+                name=name, hoverinfo="text", hovertext=hovertext,
+                showlegend=showlegend, legendgroup=legendgroup,
+            ))
+        return traces
+
     return traces
 
 
-# --- Full display: show all geometry types using their actual geometry ---
-def create_full_display(gdf):
-    traces = []
-    all_coords = []
-    unique_datasets = gdf["Dataset"].unique() if "Dataset" in gdf.columns else []
-    uniform_color = None
-    if len(unique_datasets) <= 1:
-        uniform_color = "red"
-    for idx, row in gdf.iterrows():
-        geom = row.geometry
-        if geom is None:
-            continue
-        geojson = geom.__geo_interface__
-        hover_text = "<br>".join([f"{k}: {v}" for k, v in row.items() if k != "geometry"])
-        if uniform_color:
-            color = uniform_color
-        else:
-            dataset_val = row.get("Dataset", "NoName")
-            color = get_color(dataset_val)
-        new_traces = get_traces_from_geojson(geojson, row.get("Dataset", "NoName"), color, hover_text, idx == 0,
-                                             row.get("Dataset", "NoName"))
-        traces.extend(new_traces)
-        try:
-            if geom.geom_type in ["Polygon", "MultiPolygon"]:
-                coords = list(geom.exterior.coords)
-            else:
-                coords = list(geom.coords)
-        except Exception:
-            coords = []
-        all_coords.extend(coords)
-    if all_coords:
-        center_lon = np.mean([pt[0] for pt in all_coords])
-        center_lat = np.mean([pt[1] for pt in all_coords])
-    else:
-        center_lon, center_lat = -98.5795, 39.8283
-    layout = {
+def openstreetmap_layout(center_lon: float, center_lat: float, zoom: float = 6, legend_title: str | None = None) -> Dict[str, Any]:
+    layout: Dict[str, Any] = {
         "mapbox": {
             "style": "open-street-map",
-            "center": {"lat": center_lat, "lon": center_lon},
-            "zoom": 6
+            "center": {"lon": center_lon, "lat": center_lat},
+            "zoom": zoom,
         },
-        "margin": {"r": 0, "t": 0, "b": 0, "l": 0}
+        "margin": {"r": 0, "t": 0, "l": 0, "b": 0},
     }
-    logger.debug("Full display: center = (%s, %s) with %d traces", center_lat, center_lon, len(traces))
-    return traces, layout
-
-
-# --- The following helper functions use points only ---
-def create_default_display(gdf):
-    return create_full_display(gdf)
-
+    if legend_title:
+        layout["legend"] = {"title": {"text": legend_title}}
+    return layout

@@ -1,3 +1,7 @@
+import logging as logger
+import numpy as np
+from geo_open_source.webapp.display.display import create_default_display
+
 def create_interactive_filter_display(gdf):
     if "Category" in gdf.columns:
         groups = gdf.groupby("Category")

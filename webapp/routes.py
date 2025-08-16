@@ -1,16 +1,22 @@
 import os
 import numpy as np
 from flask import Blueprint, render_template
+import geopandas
 from arcgis.features import FeatureLayer
 from geo_open_source.webapp.jsonEditor.pipeline.quant_qual_counter import analyze_fields
 from geo_open_source.webapp.jsonEditor.pipeline.json_maker import create_json_object, create_category_json, create_full_summary, export_json
+from geo_open_source.webapp.display.weighted_display import build_weighted_figure
+from geo_open_source.webapp.display.regular_display import create_regular_display
 from urllib.parse import urlencode
 import logging
 import requests
 import urllib
 import json
+import plotly
+import plotly.graph_objects as go
+from geo_open_source.webapp.options_catalog import compute_available_options
 
-from .fetch_and_update import get_api_preview
+from geo_open_source.webapp.fetch_and_update import get_api_preview
 
 logger = logging.getLogger(__name__)
 
@@ -83,100 +89,6 @@ def run_pipeline_route():
 # Data Listing and Fetching Routes
 # --------------------
 
-# 1) LIST STATES
-@main_blueprint.route('/list_states', methods=['GET'])
-def list_states():
-    """Return subdirectories in DATA_DIR as 'states'."""
-    try:
-        items = sorted(os.listdir(DATA_DIR))
-        states = []
-        for it in items:
-            path = os.path.join(DATA_DIR, it)
-            if os.path.isdir(path):
-                states.append({"name": it})
-        return jsonify({"states": states})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-# 2) LIST COUNTIES
-@main_blueprint.route('/list_counties', methods=['GET'])
-def list_counties():
-    """Given a state, return county subdirs (exclude 'stateWideFiles')."""
-    state = request.args.get('state')
-    if not state:
-        return jsonify({"counties": []})
-    state_path = os.path.join(DATA_DIR, state)
-    if not os.path.isdir(state_path):
-        return jsonify({"counties": []})
-    subdirs = sorted(os.listdir(state_path))
-    counties = [d for d in subdirs if os.path.isdir(os.path.join(state_path, d)) and d != "stateWideFiles"]
-    return jsonify({"counties": counties})
-
-# 3) LIST CATEGORIES
-@main_blueprint.route('/list_categories', methods=['GET'])
-def list_categories():
-    """
-    If county is given, we look in /state/county/ subdirs (excluding countyWideFiles).
-    Else, we look in /state/stateWideFiles subdirs.
-    """
-    state = request.args.get('state', '')
-    county = request.args.get('county', '')
-    if not state:
-        return jsonify({"categories": []})
-    if county:
-        county_path = os.path.join(DATA_DIR, state, county)
-        if not os.path.isdir(county_path):
-            return jsonify({"categories": []})
-        subdirs = sorted(os.listdir(county_path))
-        categories = [d for d in subdirs if os.path.isdir(os.path.join(county_path, d)) and d != "countyWideFiles"]
-        return jsonify({"categories": categories})
-    else:
-        sw_path = os.path.join(DATA_DIR, state, "stateWideFiles")
-        if not os.path.isdir(sw_path):
-            return jsonify({"categories": []})
-        subdirs = sorted(os.listdir(sw_path))
-        categories = [d for d in subdirs if os.path.isdir(os.path.join(sw_path, d))]
-        return jsonify({"categories": categories})
-
-# 4) LIST DATASETS
-@main_blueprint.route('/list_datasets', methods=['GET'])
-def list_datasets():
-    """
-    Given state, optional county, optional category -> return possible dataset filenames.
-    """
-    state = request.args.get('state', '')
-    county = request.args.get('county', '')
-    category = request.args.get('category', '')
-
-    path = determine_dataset_dir(state, county, category)
-    if not path or not os.path.isdir(path):
-        return jsonify({"datasets": []})
-    items = sorted(os.listdir(path))
-    dsList = []
-    for f in items:
-        if f.endswith(".parquet"):
-            base = f.replace("_county.parquet", "").replace("_state.parquet", "")
-            dsList.append(base)
-    return jsonify({"datasets": dsList})
-
-def determine_dataset_dir(state, county, category):
-    """Return the directory path where .parquet files for that selection exist."""
-    if not state:
-        return None
-    base = os.path.join(DATA_DIR, state)
-    if not os.path.isdir(base):
-        return None
-    if county:
-        if category:
-            return os.path.join(base, county, category)
-        else:
-            return os.path.join(base, county, "countyWideFiles")
-    else:
-        if category:
-            return os.path.join(base, "stateWideFiles", category)
-        else:
-            return os.path.join(base, "stateWideFiles")
-
 # 5) FETCH DATA
 @main_blueprint.route('/fetch_data', methods=['POST'])
 def fetch_data():
@@ -197,11 +109,14 @@ def fetch_data():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 def determine_file_path(state, county, category, dataset):
     """Construct the parquet file path based on user selection."""
     if not state:
         return None
+
     base = os.path.join(DATA_DIR, state)
+
     if county:
         if dataset:
             if category:
@@ -226,53 +141,53 @@ def determine_file_path(state, county, category, dataset):
             else:
                 return os.path.join(sw, "allDatasets_state.parquet")
 
-# 6) LIST WEIGHTED DATASETS
-@main_blueprint.route('/list_weighted_datasets', methods=['GET'])
-def list_weighted_datasets():
-    """
-    Scan the weighted_parquet/custom directory and return available weighted datasets.
-    Returns a list of objects with 'display' and 'value'.
-    """
-    base_weighted = os.path.join(BASE_DIR, "static", "data", "weighted_parquet", "custom")
-    dataset_list = []
-    for mode in ['economic_normalized', 'energy_normalized', 'military_normalized']:
-        mode_path = os.path.join(base_weighted, mode)
-        if not os.path.isdir(mode_path):
-            continue
-        for subcat in os.listdir(mode_path):
-            subcat_path = os.path.join(mode_path, subcat)
-            if not os.path.isdir(subcat_path):
-                continue
-            for filename in os.listdir(subcat_path):
-                if filename.endswith("_normalized.parquet"):
-                    base_name = filename.replace("_normalized.parquet", "").replace("_", " ")
-                    display_name = f"{mode.split('_')[0].capitalize()} - {subcat}: {base_name}"
-                    relative_path = os.path.join("weighted_parquet", "custom", mode, subcat, filename)
-                    dataset_list.append({"display": display_name, "value": relative_path})
-    dataset_list = sorted(dataset_list, key=lambda x: x["display"])
-    return jsonify({"datasets": dataset_list})
+# # 6) LIST WEIGHTED DATASETS
+# @main_blueprint.route('/list_weighted_datasets', methods=['GET'])
+# def list_weighted_datasets():
+#     """
+#     Scan the weighted_parquet/custom directory and return available weighted datasets.
+#     Returns a list of objects with 'display' and 'value'.
+#     """
+#     base_weighted = os.path.join(BASE_DIR, "static", "data", "weighted_parquet", "custom")
+#     dataset_list = []
+#     for mode in ['economic_normalized', 'energy_normalized', 'military_normalized']:
+#         mode_path = os.path.join(base_weighted, mode)
+#         if not os.path.isdir(mode_path):
+#             continue
+#         for subcat in os.listdir(mode_path):
+#             subcat_path = os.path.join(mode_path, subcat)
+#             if not os.path.isdir(subcat_path):
+#                 continue
+#             for filename in os.listdir(subcat_path):
+#                 if filename.endswith("_normalized.parquet"):
+#                     base_name = filename.replace("_normalized.parquet", "").replace("_", " ")
+#                     display_name = f"{mode.split('_')[0].capitalize()} - {subcat}: {base_name}"
+#                     relative_path = os.path.join("weighted_parquet", "custom", mode, subcat, filename)
+#                     dataset_list.append({"display": display_name, "value": relative_path})
+#     dataset_list = sorted(dataset_list, key=lambda x: x["display"])
+#     return jsonify({"datasets": dataset_list})
 
 # 7) FETCH WEIGHTED DATA
-@main_blueprint.route('/fetch_weighted_data', methods=['POST'])
-def fetch_weighted_data():
-    data = request.get_json() or {}
-    logger.debug("Received payload for fetch_weighted_data: %s", data)
-    dataset = data.get('dataset', '')
-    if not dataset:
-        logger.error("No dataset provided in payload.")
-        return jsonify({"error": "No dataset provided"}), 400
-    file_path = os.path.join(BASE_DIR, "static", "data", dataset)
-    logger.debug("Computed file path: %s", file_path)
-    if not os.path.exists(file_path):
-        logger.error("File not found: %s", file_path)
-        return jsonify({"error": f"File not found: {file_path}"}), 404
-    try:
-        gdf = gpd.read_parquet(file_path)
-        logger.debug("Successfully read parquet file: %s", file_path)
-        return jsonify(gdf_to_geojson_dict(gdf))
-    except Exception as e:
-        logger.exception("Exception occurred while reading parquet file:")
-        return jsonify({"error": str(e)}), 500
+# @main_blueprint.route('/fetch_weighted_data', methods=['POST'])
+# def fetch_weighted_data():
+#     data = request.get_json() or {}
+#     logger.debug("Received payload for fetch_weighted_data: %s", data)
+#     dataset = data.get('dataset', '')
+#     if not dataset:
+#         logger.error("No dataset provided in payload.")
+#         return jsonify({"error": "No dataset provided"}), 400
+#     file_path = os.path.join(BASE_DIR, "static", "data", dataset)
+#     logger.debug("Computed file path: %s", file_path)
+#     if not os.path.exists(file_path):
+#         logger.error("File not found: %s", file_path)
+#         return jsonify({"error": f"File not found: {file_path}"}), 404
+#     try:
+#         gdf = gpd.read_parquet(file_path)
+#         logger.debug("Successfully read parquet file: %s", file_path)
+#         return jsonify(gdf_to_geojson_dict(gdf))
+#     except Exception as e:
+#         logger.exception("Exception occurred while reading parquet file:")
+#         return jsonify({"error": str(e)}), 500
 
 def gdf_to_geojson_dict(gdf):
     if "geometry" not in gdf.columns:
@@ -306,105 +221,103 @@ from flask import request, jsonify
 import geopandas as gpd
 
 from geo_open_source.webapp.display.regular_display import create_regular_display        # -> your earlier helper we wrote
-from .display import display
+from geo_open_source.webapp.display import display
 
 
 @main_blueprint.route("/generate_map", methods=["POST"])
 def generate_map():
     """
-    Single entry-point for *both* regular and weighted layers.
-
-    Expected JSON (examples):
-    ─────────────────────────────────────────────────────────────
-    Regular layer
-      {
-        "mode": "regular",
-        "filters": {
-            "state": "Alabama",
-            "county": "Montgomery",
-            "category": "Child Care",
-            "dataset": "Cleaned_Child_Care_Centers"
-        },
-        "display_method": "default"      # only 'default' makes sense here
-      }
-
-    Weighted layer
-      {
-        "mode": "weighted",
-        "filters": { "dataset": "economic_fused_weighted" },
-        "display_method": "heatmap",     # heatmap | convex_hull | default
-        "weight_type":   "original"      # optional, e.g. 'normalized'
-      }
-    ─────────────────────────────────────────────────────────────
+    Unified server-side map generation for both regular and weighted data.
+    Returns complete Plotly figure as JSON that can be rendered client-side.
     """
-    req = request.get_json(force=True) or {}
     try:
-        gdf  = _load_filtered_gdf(req)          # GeoDataFrame after all user filters
-        fig  = _build_map_figure(gdf, req)      # plotly.Figure
-    except (ValueError, FileNotFoundError) as err:
-        return jsonify({"error": str(err)}), 400
+        req = request.get_json(force=True) or {}
+        logger.debug(f"Received generate_map request: {req}")
 
-    # send back plain dict → front-end can do Plotly.react("map", resp)
-    return jsonify(fig.to_dict())
+        mode = req.get("mode", "regular")
+        filters = req.get("filters", {})
+        display_method = req.get("display_method", "default")
+        config = _extract_config_from_request(req)
+
+        # Load and filter data based on mode
+        if mode == "weighted":
+            gdf = _load_weighted_data(filters, req.get("weight_type", "original"))
+            fig = build_weighted_figure(gdf, display_method, req.get("weight_type", "original"))
+        else:
+            gdf = _load_regular_data(filters)
+            fig = create_regular_display(gdf, config)
+
+        # Convert figure to JSON for client-side rendering
+        fig_json = fig.to_json()
+        return jsonify({"success": True, "figure": fig_json})
+
+    except Exception as e:
+        logger.exception("Error in generate_map:")
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
-# ----------------------------------------------------------------------
-# helpers
-# ----------------------------------------------------------------------
-def _load_filtered_gdf(req: dict) -> gpd.GeoDataFrame:
-    """Apply the user's filters and return a GeoDataFrame ready to plot."""
-    mode     = req.get("mode", "regular")
-    filters  = req.get("filters",  {})
+def _load_weighted_data(filters: dict, weight_type: str = "original") -> gpd.GeoDataFrame:
+    """Load weighted dataset from parquet file."""
+    dataset_path = filters.get("dataset")
+    if not dataset_path:
+        raise ValueError("Dataset path is required for weighted mode")
 
-    if mode == "weighted":
-        ds_key      = filters.get("dataset")
-        weight_type = req.get("weight_type", "original")
+    file_path = os.path.join(BASE_DIR, "static", "data", dataset_path)
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Weighted dataset not found: {file_path}")
 
-        if not ds_key:
-            raise ValueError("`filters.dataset` is required for weighted mode")
+    gdf = gpd.read_parquet(file_path)
 
-        # file is something like data/weighted/{ds_key}.parquet (adapt as needed)
-        path = f"data/weighted/{ds_key}.parquet"
-        gdf  = gpd.read_parquet(path)
-        if weight_type != "original" and weight_type in gdf.columns:
-            gdf["weight"] = gdf[weight_type]
-
-    else:   # ---------------------------   regular mode
-        state    = filters.get("state")
-        if not state:
-            raise ValueError("`filters.state` is required for regular mode")
-
-        county   = filters.get("county")   or "STATEWIDE"
-        category = filters.get("category") or "ALL"
-        dataset  = filters.get("dataset")  or "ALL"
-
-        # Example path building logic – adjust to your directory layout
-        #  data/regular/<state>/<county>/<category>/<dataset>.parquet
-        parts = [state, county, category, dataset]
-        path  = "/".join(["data/regular", *(p for p in parts if p != "ALL")]) + ".parquet"
-        gdf   = gpd.read_parquet(path)
-
-    if gdf.empty:
-        raise ValueError("No geometries matched those filters.")
+    # Apply weight type if specified
+    if weight_type != "original" and weight_type in gdf.columns:
+        gdf["weight"] = gdf[weight_type]
 
     return gdf
 
 
-def _build_map_figure(gdf: gpd.GeoDataFrame, req: dict):
-    """Switch-board that routes to the right Plotly builder."""
-    mode           = req.get("mode", "regular")
-    display_method = req.get("display_method", "default")
+def _load_regular_data(filters: dict) -> gpd.GeoDataFrame:
+    """Load regular dataset from parquet file based on filters."""
+    state = filters.get("state")
+    if not state:
+        raise ValueError("State is required for regular mode")
 
-    if mode == "weighted":
-        if display_method == "heatmap":
-            return create_heatmap_display(gdf)
-        if display_method == "convex_hull":
-            return create_convex_hull_display(gdf)
-        # fallback
-        return create_weighted_default(gdf)
+    county = filters.get("county", "")
+    category = filters.get("category", "")
+    dataset = filters.get("dataset", "")
 
-    # regular mode – always a simple point scatter in Mapbox
-    return create_regular_display(gdf)
+    file_path = determine_file_path(state, county, category, dataset)
+    if not file_path or not os.path.exists(file_path):
+        raise FileNotFoundError(f"Dataset not found: {file_path}")
+
+    gdf = gpd.read_parquet(file_path)
+    return gdf
 
 
+def _extract_config_from_request(req: dict) -> dict:
+    """Extract display configuration from request."""
+    config = req.get("config", {})
+
+    # Add any additional configuration processing here
+    return {
+        "data_fraction": config.get("dataFraction", 1.0),
+        "geometry_types": config.get("geometryTypes", []),
+        "show_unavailable": config.get("showUnavailable", False),
+        "display_method": req.get("display_method", "default")
+    }
+
+
+# Add a new route for getting available options dynamically
+@main_blueprint.route("/get_options", methods=["POST"])
+def get_options():
+    """
+    Dynamic options loading based on current filter state.
+    This replaces the individual list_* endpoints for a more unified approach.
+    """
+    try:
+        filters = request.get_json() or {}
+        options = compute_available_options(filters)
+        return jsonify({"success": True, "options": options})
+    except Exception as e:
+        logger.exception("Error computing available options:")
+        return jsonify({"success": False, "error": str(e)}), 500
 

@@ -1,219 +1,277 @@
 // -------------------------------------------
-// 3) Fetch & Populate States
+// filters.js - Simplified filter management
 // -------------------------------------------
-function loadStates() {
-  $.ajax({
-    url: "/list_states",
-    method: "GET",
-    dataType: "json",
-    success: function(response) {
-      if (response.error) {
-        console.error("list_states Error:", response.error);
-        $("#stateSelect").html('<option value="">Error loading states</option>');
-        return;
-      }
-      const states = response.states;
-      populateStateDropdown(states);
-    },
-    error: function(xhr, status, error) {
-      console.error("Error fetching states:", status, error);
-      $("#stateSelect").html('<option value="">Error fetching states</option>');
-    }
-  });
-}
 
-function populateStateDropdown(statesArr) {
-  const $stateSelect = $("#stateSelect");
-  $stateSelect.empty().append('<option value="">-- Select State --</option>');
-  // Sort states by name
-  statesArr.sort((a, b) => a.name.localeCompare(b.name));
-  statesArr.forEach(stObj => {
-    $stateSelect.append(`<option value="${stObj.name}">${stObj.name}</option>`);
-  });
-  $stateSelect.prop("disabled", false);
-}
+var FilterManager = (function() {
+  'use strict';
 
-// -------------------------------------------
-// 4) Handle State Selection -> Fetch Counties, Categories & Datasets
-// -------------------------------------------
-$("#stateSelect").on("change", function() {
-  const selectedState = $(this).val();
-  // Reset county, category, dataset
-  resetDropdown("#countySelect", "-- Select County (optional) --");
-  resetDropdown("#categorySelect", "-- Select Category (optional) --");
-  resetDropdown("#datasetSelect", "-- Select Dataset (optional) --");
+  var isInitialized = false;
 
-  if (!selectedState) {
-    $("#countySelect").prop("disabled", true);
-    $("#categorySelect").prop("disabled", true);
-    $("#datasetSelect").prop("disabled", true);
-    return;
+  // -------------------------------------------
+  // Public API
+  // -------------------------------------------
+  return {
+    init: init,
+    loadInitialOptions: loadInitialOptions,
+    updateOptions: updateOptions,
+    resetDropdown: resetDropdown
+  };
+
+  // -------------------------------------------
+  // Initialization
+  // -------------------------------------------
+  function init() {
+    if (isInitialized) return;
+
+    setupEventHandlers();
+    isInitialized = true;
+    console.log("FilterManager initialized");
   }
 
-  // Fetch counties
-  $.ajax({
-    url: "/list_counties",
-    method: "GET",
-    dataType: "json",
-    data: { state: selectedState },
-    success: function(response) {
-      const counties = response.counties || [];
-      populateCountyDropdown(counties);
-    },
-    error: function(err) {
-      console.error("Error fetching counties:", err);
-    }
-  });
+  function setupEventHandlers() {
+    // Clean up any existing handlers first
+    $("#stateSelect").off("change.filtermanager");
+    $("#countySelect").off("change.filtermanager");
+    $("#categorySelect").off("change.filtermanager");
 
-  // Fetch state-wide categories
-  $.ajax({
-    url: "/list_categories",
-    method: "GET",
-    dataType: "json",
-    data: { state: selectedState, county: "" },
-    success: function(response) {
-      const cats = response.categories || [];
-      populateCategoryDropdown(cats);
-    },
-    error: function(err) {
-      console.error("Error fetching categories:", err);
-    }
-  });
-
-  // Fetch state-wide datasets
-  $.ajax({
-    url: "/list_datasets",
-    method: "GET",
-    dataType: "json",
-    data: { state: selectedState, county: "", category: "" },
-    success: function(response) {
-      const ds = response.datasets || [];
-      populateDatasetDropdown(ds, true);
-    },
-    error: function(err) {
-      console.error("Error fetching state-wide datasets:", err);
-    }
-  });
-});
-
-function populateCountyDropdown(counties) {
-  const $countySelect = $("#countySelect");
-  $countySelect.empty().append('<option value="">-- Select County (optional) --</option>');
-  counties.forEach(county => {
-    $countySelect.append(`<option value="${county}">${county}</option>`);
-  });
-  $countySelect.prop("disabled", false);
-}
-
-// -------------------------------------------
-// 5) Handle County Selection -> Refresh Categories & Datasets for that County
-// -------------------------------------------
-$("#countySelect").on("change", function() {
-  const state = $("#stateSelect").val();
-  const county = $(this).val();
-  resetDropdown("#categorySelect", "-- Select Category (optional) --");
-  resetDropdown("#datasetSelect", "-- Select Dataset (optional) --");
-
-  if (!county) {
-    $.ajax({
-      url: "/list_categories",
-      method: "GET",
-      dataType: "json",
-      data: { state: state, county: "" },
-      success: function(response) {
-        populateCategoryDropdown(response.categories || []);
-      }
-    });
-    $.ajax({
-      url: "/list_datasets",
-      method: "GET",
-      dataType: "json",
-      data: { state: state, county: "", category: "" },
-      success: function(response) {
-        populateDatasetDropdown(response.datasets || [], true);
-      }
-    });
-    return;
+    // Add new handlers with namespace
+    $("#stateSelect").on("change.filtermanager", handleStateChange);
+    $("#countySelect").on("change.filtermanager", handleCountyChange);
+    $("#categorySelect").on("change.filtermanager", handleCategoryChange);
   }
 
-  // Fetch county-level categories
-  $.ajax({
-    url: "/list_categories",
-    method: "GET",
-    dataType: "json",
-    data: { state: state, county: county },
-    success: function(response) {
-      populateCategoryDropdown(response.categories || []);
-    },
-    error: function(err) {
-      console.error("Error listing categories (county):", err);
+  // -------------------------------------------
+  // Load initial options
+  // -------------------------------------------
+  function loadInitialOptions() {
+    if (AppState.currentMode === "weighted") {
+      loadWeightedOptions();
+    } else {
+      loadRegularOptions();
     }
-  });
+  }
 
-  // Fetch county-level datasets
-  $.ajax({
-    url: "/list_datasets",
-    method: "GET",
-    dataType: "json",
-    data: { state: state, county: county, category: "" },
-    success: function(response) {
-      populateDatasetDropdown(response.datasets || [], false);
-    },
-    error: function(err) {
-      console.error("Error listing county-wide datasets:", err);
+  function loadRegularOptions() {
+    updateOptions({ mode: "regular" });
+  }
+
+  function loadWeightedOptions() {
+    updateOptions({ mode: "weighted" });
+  }
+
+  // -------------------------------------------
+  // Main options update function
+  // -------------------------------------------
+  function updateOptions(filters) {
+    console.log("FilterManager.updateOptions called with:", filters);
+
+    $.ajax({
+      url: "/get_options",
+      method: "POST",
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify(filters),
+      success: function(response) {
+        console.log("Options response:", response);
+        if (response.success) {
+          populateDropdowns(response.options, filters);
+        } else {
+          console.error("Error loading options:", response.error);
+          showError("Failed to load options: " + response.error);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("AJAX error loading options:", error);
+        console.error("Response text:", xhr.responseText);
+        showError("Failed to communicate with server");
+      }
+    });
+  }
+
+  // -------------------------------------------
+  // Event Handlers
+  // -------------------------------------------
+  function handleStateChange() {
+    const state = $(this).val();
+    console.log("State changed to:", state);
+
+    // Reset dependent dropdowns immediately
+    resetDropdown("#countySelect", "-- Select County (optional) --");
+    resetDropdown("#categorySelect", "-- Select Category (optional) --");
+    resetDropdown("#datasetSelect", "-- Select Dataset (optional) --");
+
+    if (!state) {
+      $("#countySelect, #categorySelect, #datasetSelect").prop("disabled", true);
+      return;
     }
-  });
+
+    // Load options for the selected state
+    updateOptions({
+      mode: "regular",
+      state: state
+    });
+  }
+
+  function handleCountyChange() {
+    const state = $("#stateSelect").val();
+    const county = $(this).val();
+    console.log("County changed to:", county, "for state:", state);
+
+    // Reset dependent dropdowns
+    resetDropdown("#categorySelect", "-- Select Category (optional) --");
+    resetDropdown("#datasetSelect", "-- Select Dataset (optional) --");
+
+    if (!state) return;
+
+    updateOptions({
+      mode: "regular",
+      state: state,
+      county: county
+    });
+  }
+
+  function handleCategoryChange() {
+    const state = $("#stateSelect").val();
+    const county = $("#countySelect").val();
+    const category = $(this).val();
+    console.log("Category changed to:", category, "for state:", state, "county:", county);
+
+    // Reset dependent dropdowns
+    resetDropdown("#datasetSelect", "-- Select Dataset (optional) --");
+
+    if (!state) return;
+
+    updateOptions({
+      mode: "regular",
+      state: state,
+      county: county,
+      category: category
+    });
+  }
+
+  // -------------------------------------------
+  // Dropdown Population
+  // -------------------------------------------
+  function populateDropdowns(options, originalFilters) {
+    console.log("Populating dropdowns with options:", options);
+
+    // Only populate dropdowns that have new data
+    if (options.states !== undefined && options.states.length >= 0) {
+      populateStateDropdown(options.states);
+    }
+
+    if (options.counties !== undefined) {
+      populateCountyDropdown(options.counties);
+    }
+
+    if (options.categories !== undefined) {
+      populateCategoryDropdown(options.categories);
+    }
+
+    if (options.datasets !== undefined) {
+      if (originalFilters.mode === "weighted") {
+        populateWeightedDatasetDropdown(options.datasets);
+      } else {
+        populateRegularDatasetDropdown(options.datasets);
+      }
+    }
+  }
+
+  function populateStateDropdown(states) {
+    const $stateSelect = $("#stateSelect");
+    const currentValue = $stateSelect.val();
+
+    $stateSelect.empty().append('<option value="">-- Select State --</option>');
+
+    states.forEach(state => {
+      const name = typeof state === 'string' ? state : state.name || state;
+      $stateSelect.append(`<option value="${name}">${name}</option>`);
+    });
+
+    $stateSelect.prop("disabled", false);
+
+    // Restore selection if still valid
+    if (currentValue && $stateSelect.find(`option[value="${currentValue}"]`).length > 0) {
+      $stateSelect.val(currentValue);
+    }
+
+    console.log(`Populated ${states.length} states`);
+  }
+
+  function populateCountyDropdown(counties) {
+    const $countySelect = $("#countySelect");
+    $countySelect.empty().append('<option value="">-- Select County (optional) --</option>');
+
+    counties.forEach(county => {
+      $countySelect.append(`<option value="${county}">${county}</option>`);
+    });
+
+    $countySelect.prop("disabled", false);
+    console.log(`Populated ${counties.length} counties`);
+  }
+
+  function populateCategoryDropdown(categories) {
+    const $categorySelect = $("#categorySelect");
+    $categorySelect.empty().append('<option value="">-- Select Category (optional) --</option>');
+
+    categories.forEach(category => {
+      $categorySelect.append(`<option value="${category}">${category}</option>`);
+    });
+
+    $categorySelect.prop("disabled", false);
+    console.log(`Populated ${categories.length} categories`);
+  }
+
+  function populateRegularDatasetDropdown(datasets) {
+    const $datasetSelect = $("#datasetSelect");
+    $datasetSelect.empty().append('<option value="">-- Select Dataset (optional) --</option>');
+
+    datasets.forEach(dataset => {
+      const name = typeof dataset === 'string' ? dataset : dataset.name || dataset;
+      $datasetSelect.append(`<option value="${name}">${name}</option>`);
+    });
+
+    $datasetSelect.prop("disabled", false);
+    console.log(`Populated ${datasets.length} regular datasets`);
+  }
+
+  function populateWeightedDatasetDropdown(datasets) {
+    const $weightedSelect = $("#weightedDatasetSelect");
+    $weightedSelect.empty().append('<option value="">-- Select Weighted Dataset --</option>');
+
+    datasets.forEach(dataset => {
+      const display = dataset.display || dataset.name || dataset;
+      const value = dataset.value || dataset;
+      $weightedSelect.append(`<option value="${value}">${display}</option>`);
+    });
+
+    $weightedSelect.prop("disabled", false);
+    console.log(`Populated ${datasets.length} weighted datasets`);
+  }
+
+  // -------------------------------------------
+  // Utility Functions
+  // -------------------------------------------
+  function resetDropdown(selector, placeholder) {
+    const $dropdown = $(selector);
+    $dropdown
+      .empty()
+      .append(`<option value="">${placeholder}</option>`)
+      .prop("disabled", true);
+  }
+
+  function showError(message) {
+    console.error("FilterManager Error:", message);
+    if (typeof window.showError === 'function') {
+      window.showError(message);
+    } else {
+      alert("Filter Error: " + message);
+    }
+  }
+
+})();
+
+// Initialize when document is ready
+$(document).ready(function() {
+  FilterManager.init();
 });
-
-// -------------------------------------------
-// 6) Handle Category Selection -> Fetch Datasets
-// -------------------------------------------
-$("#categorySelect").on("change", function() {
-  const state = $("#stateSelect").val();
-  const county = $("#countySelect").val();
-  const category = $(this).val();
-
-  resetDropdown("#datasetSelect", "-- Select Dataset (optional) --");
-  if (!state) return;
-
-  $.ajax({
-    url: "/list_datasets",
-    method: "GET",
-    dataType: "json",
-    data: { state: state, county: county, category: category },
-    success: function(response) {
-      populateDatasetDropdown(response.datasets || [], !county);
-    },
-    error: function(err) {
-      console.error("Error listing datasets after category chosen:", err);
-    }
-  });
-});
-
-function populateCategoryDropdown(categories) {
-  const $categorySelect = $("#categorySelect");
-  $categorySelect.empty().append('<option value="">-- Select Category (optional) --</option>');
-  categories.forEach(cat => {
-    $categorySelect.append(`<option value="${cat}">${cat}</option>`);
-  });
-  $categorySelect.prop("disabled", false);
-}
-
-// -------------------------------------------
-// 7) Populate Dataset Dropdown
-// -------------------------------------------
-function populateDatasetDropdown(datasets, isStateWide) {
-  const $datasetSelect = $("#datasetSelect");
-  $datasetSelect.empty().append('<option value="">-- Select Dataset (optional) --</option>');
-  datasets.forEach(ds => {
-    $datasetSelect.append(`<option value="${ds}">${ds}</option>`);
-  });
-  $datasetSelect.prop("disabled", false);
-}
-
-// -------------------------------------------
-// 8) Reset Dropdown Utility Function
-// -------------------------------------------
-function resetDropdown(selector, placeholder) {
-  $(selector).empty().append(`<option value="">${placeholder}</option>`).prop("disabled", true);
-}

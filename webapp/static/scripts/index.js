@@ -1,5 +1,255 @@
 // -------------------------------------------
-// 1) Navbar Scroll & Trigger Logic
+// index.js - Main application orchestration (FINAL CLEAN VERSION)
+// -------------------------------------------
+
+// Global application state
+var AppState = {
+  currentMode: "regular",
+  currentData: null,
+  currentFigure: null,
+  initialized: false
+};
+
+// -------------------------------------------
+// Application Initialization
+// -------------------------------------------
+$(document).ready(function() {
+  console.log("Document ready, initializing application...");
+  initializeApp();
+  setupEventHandlers();
+  loadDefaultMap();
+});
+
+function initializeApp() {
+  // Initialize data fraction slider
+  $("#dataFractionSlider").on("input", function() {
+    $("#dataFractionValue").text($(this).val());
+  });
+
+  // Set initial mode
+  AppState.currentMode = $("#modeSelect").val() || "regular";
+  updateModeDisplay(AppState.currentMode);
+
+  // Load initial options after a brief delay to ensure everything is ready
+  setTimeout(function() {
+    if (typeof FilterManager !== 'undefined') {
+      FilterManager.loadInitialOptions();
+    } else {
+      console.warn("FilterManager not available, loading states manually");
+      loadStatesManually();
+    }
+  }, 100);
+
+  AppState.initialized = true;
+  console.log("Application initialized with mode:", AppState.currentMode);
+}
+
+function setupEventHandlers() {
+  // Remove any existing handlers first
+  $("#modeSelect").off("change.main");
+  $("#displayMethodSelect").off("change.main");
+
+  // Mode selection handler
+  $("#modeSelect").on("change.main", handleModeChange);
+
+  // Display method change handler
+  $("#displayMethodSelect").on("change.main", handleDisplayMethodChange);
+
+  console.log("Main event handlers setup complete");
+}
+
+// -------------------------------------------
+// Event Handlers
+// -------------------------------------------
+function handleModeChange() {
+  const newMode = $(this).val();
+  console.log("Mode changing from", AppState.currentMode, "to", newMode);
+
+  if (newMode !== AppState.currentMode) {
+    AppState.currentMode = newMode;
+    updateModeDisplay(newMode);
+    resetFilters();
+
+    // Load appropriate options for the new mode
+    setTimeout(function() {
+      if (typeof FilterManager !== 'undefined') {
+        FilterManager.loadInitialOptions();
+      } else if (newMode === "regular") {
+        loadStatesManually();
+      }
+    }, 50);
+  }
+}
+
+function updateModeDisplay(mode) {
+  console.log("Updating display for mode:", mode);
+
+  if (mode === "weighted") {
+    $("#regularFilters").hide();
+    $("#weightedFilters").show();
+    loadWeightedDatasetsManually();
+  } else {
+    $("#weightedFilters").hide();
+    $("#regularFilters").show();
+    loadStatesManually();
+  }
+}
+
+function handleDisplayMethodChange() {
+  const method = $("#displayMethodSelect").val();
+  const showWeightType = ["weighted_heatmap", "bubble_map", "gaussian_kde"].includes(method);
+  $("#weightTypeRow").toggle(showWeightType);
+}
+
+// -------------------------------------------
+// Manual Loading Functions (fallback)
+// -------------------------------------------
+function loadStatesManually() {
+  console.log("Loading states manually...");
+
+  $.ajax({
+    url: "/get_options",
+    method: "POST",
+    dataType: "json",
+    contentType: "application/json",
+    data: JSON.stringify({ mode: "regular" }),
+    success: function(response) {
+      if (response.success && response.options.states) {
+        populateStatesDropdown(response.options.states);
+        console.log("States loaded successfully");
+      } else {
+        console.error("Failed to load states:", response.error);
+      }
+    },
+    error: function(xhr, status, error) {
+      console.error("Error loading states:", error);
+    }
+  });
+}
+
+function loadWeightedDatasetsManually() {
+  console.log("Loading weighted datasets manually...");
+
+  $.ajax({
+    url: "/get_options",
+    method: "POST",
+    dataType: "json",
+    contentType: "application/json",
+    data: JSON.stringify({ mode: "weighted" }),
+    success: function(response) {
+      if (response.success && response.options.datasets) {
+        populateWeightedDatasetsDropdown(response.options.datasets);
+        console.log("Weighted datasets loaded successfully");
+      } else {
+        console.error("Failed to load weighted datasets:", response.error);
+      }
+    },
+    error: function(xhr, status, error) {
+      console.error("Error loading weighted datasets:", error);
+    }
+  });
+}
+
+function populateStatesDropdown(states) {
+  const $stateSelect = $("#stateSelect");
+  $stateSelect.empty().append('<option value="">-- Select State --</option>');
+
+  states.forEach(state => {
+    const name = typeof state === 'string' ? state : state.name || state;
+    $stateSelect.append(`<option value="${name}">${name}</option>`);
+  });
+
+  $stateSelect.prop("disabled", false);
+}
+
+function populateWeightedDatasetsDropdown(datasets) {
+  const $weightedSelect = $("#weightedDatasetSelect");
+  $weightedSelect.empty().append('<option value="">-- Select Weighted Dataset --</option>');
+
+  datasets.forEach(dataset => {
+    const display = dataset.display || dataset.name || dataset;
+    const value = dataset.value || dataset;
+    $weightedSelect.append(`<option value="${value}">${display}</option>`);
+  });
+
+  $weightedSelect.prop("disabled", false);
+}
+
+// -------------------------------------------
+// UI Utilities
+// -------------------------------------------
+function resetFilters() {
+  console.log("Resetting filters for mode:", AppState.currentMode);
+
+  if (AppState.currentMode === "regular") {
+    $("#stateSelect").val("");
+    resetDropdown("#countySelect", "-- Select County (optional) --");
+    resetDropdown("#categorySelect", "-- Select Category (optional) --");
+    resetDropdown("#datasetSelect", "-- Select Dataset (optional) --");
+  } else {
+    $("#weightedDatasetSelect").val("");
+  }
+
+  $("#hideUnavailable").prop("checked", true);
+  $("#dataFractionSlider").val(10);
+  $("#dataFractionValue").text("10");
+  $("#displayMethodSelect").val("default");
+  $("#weightTypeSelect").val("original");
+  $("#weightTypeRow").hide();
+}
+
+function resetDropdown(selector, placeholder) {
+  $(selector)
+    .empty()
+    .append(`<option value="">${placeholder}</option>`)
+    .prop("disabled", true);
+}
+
+function showError(message) {
+  console.error("Application Error:", message);
+  alert("Error: " + message);
+}
+
+function showSuccess(message) {
+  console.log("Success: " + message);
+}
+
+// -------------------------------------------
+// Default Map Loading
+// -------------------------------------------
+function loadDefaultMap() {
+  console.log("Loading default map");
+
+  const defaultFig = {
+    data: [{
+      type: "scattermapbox",
+      lat: [40.7831],
+      lon: [-73.9712],
+      mode: "markers",
+      text: ["Default: Manhattan"],
+      marker: { size: 10, color: "blue" },
+      name: "Default Location"
+    }],
+    layout: {
+      mapbox: {
+        style: "open-street-map",
+        center: { lat: 40.7831, lon: -73.9712 },
+        zoom: 10
+      },
+      margin: { r: 0, t: 0, b: 0, l: 0 }
+    }
+  };
+
+  // Render directly with Plotly
+  Plotly.react("mapContainer", defaultFig.data, defaultFig.layout, {
+    responsive: true,
+    displayModeBar: true,
+    scrollZoom: true
+  });
+}
+
+// -------------------------------------------
+// Navbar Scroll Logic (existing)
 // -------------------------------------------
 $(window).scroll(function() {
   if ($(document).scrollTop() > 50) {
@@ -15,233 +265,11 @@ $('.navTrigger').click(function () {
   $("#mainListDiv").fadeIn();
 });
 
-// Global mode variable (default to regular)
-var currentMode = "regular";
-
 // -------------------------------------------
-// 2) Document Ready - Fetch States, Initialize UI, & Setup Advanced Controls
+// Export functions for global access
 // -------------------------------------------
-$(document).ready(function() {
-  loadStates();
-  loadDefaultMap();
-  // If using advanced controls, update slider value display
-  $("#dataFractionSlider").on("input", function() {
-    $("#dataFractionValue").text($(this).val());
-  });
-});
-
-// Mode selection handler: toggle between Regular and Weighted modes
-$("#modeSelect").on("change", function() {
-  currentMode = $(this).val();
-  if (currentMode === "weighted") {
-    // Hide regular filters and show weighted filter
-    $("#regularFilters").hide();
-    $("#weightedFilters").show();
-    loadWeightedDatasets();
-  } else {
-    $("#weightedFilters").hide();
-    $("#regularFilters").show();
-  }
-});
-
-
-
-
-
-
-
-//function singleTraceRender(data) {
-//  const latArray = data.map(r => r.latitude);
-//  const lonArray = data.map(r => r.longitude);
-//  const hoverText = data.map(r => JSON.stringify(r));
-//
-//  const trace = {
-//    type: "scattermapbox",
-//    lat: latArray,
-//    lon: lonArray,
-//    mode: "markers",
-//    text: hoverText,
-//    hovertemplate: "%{text}<extra></extra>", // forces your custom text to appear
-//    marker: { size: 8, color: "red" },
-//    showlegend: true  // optional: add legend item even for a single trace
-//  };
-//
-//  const layout = {
-//    mapbox: {
-//      style: "open-street-map",
-//      center: {
-//        lat: latArray.length ? latArray[0] : 39.8283,
-//        lon: lonArray.length ? lonArray[0] : -98.5795
-//      },
-//      zoom: latArray.length ? 7 : 4
-//    },
-//    margin: { r: 0, t: 0, b: 0, l: 0 }
-//  };
-//
-//  Plotly.newPlot("mapContainer", [trace], layout);
-//}
-
-
-// Fallback basic rendering for point data (existing functionality)
-function renderBasicMap(data) {
-  const hasDatasetField = data.some(item => item.Dataset !== undefined && item.Dataset !== null);
-  if (!hasDatasetField) {
-    singleTraceRender(data);
-    return;
-  }
-
-  const datasetGroups = groupByDataset(data);
-  const colorMap = buildColorMap(Object.keys(datasetGroups));
-  const traces = [];
-
-  Object.keys(datasetGroups).forEach(dsName => {
-    const rows = datasetGroups[dsName];
-    const latArray = rows.map(r => r.latitude);
-    const lonArray = rows.map(r => r.longitude);
-    const hoverText = rows.map(r => {
-      let txt = "";
-      for (const key in r) {
-        // Skip geometry and auto-generated coordinate fields.
-        if (key === "geometry" || key === "latitude" || key === "longitude") continue;
-        txt += key + ": " + r[key] + "<br>";
-      }
-      return txt;
-    });
-
-    traces.push({
-      type: "scattermapbox",
-      lat: latArray,
-      lon: lonArray,
-      mode: "markers",
-      name: dsName,
-      text: hoverText,
-      hoverinfo: "text",      // ADD: ensure hover text is used
-      legendgroup: dsName,    // ADD: group legend items by dataset
-      showlegend: true,       // ADD: show legend for each trace
-      marker: {
-        size: 8,
-        color: colorMap[dsName] || "#FF0000"
-      }
-    });
-  });
-
-  const layout = {
-    mapbox: {
-      style: "open-street-map",
-      center: {
-        lat: data[0].latitude || 39.8283,
-        lon: data[0].longitude || -98.5795
-      },
-      zoom: 7
-    },
-    margin: { r: 0, t: 0, b: 0, l: 0 },
-    legend: { title: { text: "Dataset" } },
-    hovermode: "closest"
-  };
-
-  Plotly.newPlot("mapContainer", traces, layout);
-}
-
-function formatHoverText(row) {
-  let text = "";
-  for (let key in row) {
-    if (["geometry", "latitude", "longitude"].includes(key)) continue;
-    text += key + ": " + row[key] + "<br>";
-  }
-  return text;
-}
-
-
-// Existing helper: single trace render (for basic point data)
-function singleTraceRender(data) {
-  const latArray = data.map(r => r.latitude);
-  const lonArray = data.map(r => r.longitude);
-  const hoverText = data.map(r => formatHoverText(r));
-
-  // If in weighted mode, use the weighted dataset's text; otherwise, default to a name.
-  const traceName = currentMode === "weighted"
-    ? ($("#weightedDatasetSelect").find("option:selected").text() || "Weighted Data")
-    : "Regular Data";
-
-  const trace = {
-    type: "scattermapbox",
-    lat: latArray,
-    lon: lonArray,
-    mode: "markers",
-    text: hoverText,
-    hoverinfo: "text",
-    marker: { size: 8, color: "red" },
-    showlegend: true,
-    name: traceName
-  };
-
-  const layout = {
-    mapbox: {
-      style: "open-street-map",
-      center: {
-        lat: latArray.length ? latArray[0] : 39.8283,
-        lon: lonArray.length ? lonArray[0] : -98.5795
-      },
-      zoom: latArray.length ? 7 : 4
-    },
-    margin: { r: 0, t: 0, b: 0, l: 0 }
-  };
-
-  Plotly.newPlot("mapContainer", [trace], layout);
-}
-
-
-
-
-// Existing helper: group data by 'Dataset'
-function groupByDataset(data) {
-  const groups = {};
-  data.forEach(item => {
-    const ds = item.Dataset || "NoName";
-    if (!groups[ds]) groups[ds] = [];
-    groups[ds].push(item);
-  });
-  return groups;
-}
-
-// Existing helper: build a color map for datasets
-function buildColorMap(dsNames) {
-  const palette = [
-    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
-    "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
-    "#7B68EE", "#F08080", "#48D1CC", "#FFD700", "#ADFF2F",
-    "#EE82EE", "#DC143C", "#00BFFF", "#B8860B", "#006400"
-  ];
-  const colorMap = {};
-  let idx = 0;
-  dsNames.forEach(ds => {
-    colorMap[ds] = palette[idx % palette.length];
-    idx++;
-  });
-  return colorMap;
-}
-
-// -------------------------------------------
-// 13) Load Weighted Datasets for Weighted Mode
-// -------------------------------------------
-function loadWeightedDatasets() {
-  $.ajax({
-    url: "/list_weighted_datasets",
-    method: "GET",
-    dataType: "json",
-    success: function(response) {
-      const datasets = response.datasets;
-      const $weightedSelect = $("#weightedDatasetSelect");
-      $weightedSelect.empty().append('<option value="">-- Select Weighted Dataset --</option>');
-      datasets.forEach(ds => {
-        $weightedSelect.append(`<option value="${ds.value}">${ds.display}</option>`);
-      });
-      $weightedSelect.prop("disabled", false);
-    },
-    error: function(err) {
-      console.error("Error loading weighted datasets", err);
-      $("#weightedDatasetSelect").html('<option value="">Error loading weighted datasets</option>');
-    }
-  });
-}
-
+window.AppState = AppState;
+window.showError = showError;
+window.showSuccess = showSuccess;
+window.resetDropdown = resetDropdown;
+window.loadDefaultMap = loadDefaultMap;

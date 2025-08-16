@@ -1,3 +1,7 @@
+import logging as logger
+import numpy as np
+from geo_open_source.webapp.display.display import create_default_display
+
 def create_basic_heatmap(gdf):
     gdf_points = gdf[gdf.geometry.geom_type == "Point"]
     lats = [pt.y for pt in gdf_points.geometry]

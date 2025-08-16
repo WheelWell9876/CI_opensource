@@ -1,3 +1,7 @@
+import logging as logger
+import numpy as np
+from geo_open_source.webapp.display.display import create_default_display
+
 def create_comparative_overlay(gdf):
     if "Dataset" in gdf.columns:
         groups = gdf.groupby("Dataset")

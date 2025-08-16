@@ -1,3 +1,7 @@
+import logging as logger
+import numpy as np
+from geo_open_source.webapp.display.display import create_default_display
+
 def create_choropleth_map(gdf):
     if "county" not in gdf.columns:
         logger.debug("Choropleth: no 'county' property; using default display")
