@@ -106,7 +106,7 @@ def create_simple_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.F
                 ),
                 name=dataset_name,
                 customdata=[hover_text],  # Store hover text in customdata
-                hovertemplate="<b>%{customdata}</b><extra></extra>",  # Use customdata for hover
+                hovertemplate="<span style='font-size:12px'>%{customdata}</span><extra></extra>",  # Larger font
                 showlegend=dataset_name not in seen_datasets,
                 legendgroup=dataset_name
             )
@@ -130,7 +130,7 @@ def create_simple_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.F
                     ),
                     name=dataset_name,
                     customdata=[hover_text],
-                    hovertemplate="<b>%{customdata}</b><extra></extra>",
+                    hovertemplate="<span style='font-size:12px'>%{customdata}</span><extra></extra>",  # Larger font
                     showlegend=dataset_name not in seen_datasets,
                     legendgroup=dataset_name
                 )
@@ -155,6 +155,12 @@ def create_simple_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.F
         "margin": {"r": 0, "t": 0, "l": 0, "b": 0},
         "hovermode": "closest",
         "hoverdistance": 20,  # Make hover more sensitive
+        "hoverlabel": {
+            "bgcolor": "white",
+            "bordercolor": "black",
+            "font": {"size": 12, "color": "black"},
+            "align": "left"
+        }
     }
 
     if has_ds:
@@ -169,7 +175,7 @@ def create_simple_display(gdf: gpd.GeoDataFrame, config: Dict[str, Any]) -> go.F
 
 
 def create_simple_hover_text(row) -> str:
-    """Create simple but effective hover text."""
+    """Create comprehensive hover text showing ALL metadata."""
     hover_parts = []
 
     # Add a title based on available fields
@@ -182,34 +188,36 @@ def create_simple_hover_text(row) -> str:
 
     if title:
         hover_parts.append(f"<b>{title}</b>")
-        hover_parts.append("─" * 20)
+        hover_parts.append("─" * 30)
 
-    # Add key information
-    important_fields = ['Dataset', 'State', 'County', 'City', 'Type', 'Status']
-
-    for field in important_fields:
-        if field in row and pd.notna(row[field]):
-            value = row[field]
-            if isinstance(value, (int, float)):
-                if isinstance(value, float):
-                    formatted_value = f"{value:.2f}"
-                else:
-                    formatted_value = f"{value:,}"
-            else:
-                formatted_value = str(value)
-            hover_parts.append(f"{field}: {formatted_value}")
-
-    # Add a few more fields (but not all to keep it readable)
-    other_fields = []
+    # Show ALL fields (except geometry)
     for key, value in row.items():
-        if (key not in important_fields and
-                key.lower() != "geometry" and
-                pd.notna(value) and
-                len(other_fields) < 5):  # Limit to 5 additional fields
-            other_fields.append(f"{key}: {str(value)}")
+        if key.lower() == "geometry":
+            continue
 
-    if other_fields:
-        hover_parts.extend(other_fields)
+        # Skip null/NaN values
+        if pd.isna(value):
+            continue
+
+        # Format the value nicely
+        if isinstance(value, (int, float)):
+            if isinstance(value, float):
+                # Handle very small or very large numbers
+                if abs(value) < 0.001 and value != 0:
+                    formatted_value = f"{value:.2e}"
+                elif abs(value) < 1000:
+                    formatted_value = f"{value:.3f}".rstrip('0').rstrip('.')
+                else:
+                    formatted_value = f"{value:,.2f}"
+            else:
+                formatted_value = f"{value:,}"  # Add comma separators for large integers
+        else:
+            formatted_value = str(value)
+            # Truncate very long text fields to keep hover readable
+            if len(formatted_value) > 100:
+                formatted_value = formatted_value[:97] + "..."
+
+        hover_parts.append(f"<b>{key}:</b> {formatted_value}")
 
     result = "<br>".join(hover_parts)
     return result
