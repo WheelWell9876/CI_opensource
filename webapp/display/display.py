@@ -88,7 +88,7 @@ def traces_from_geometry(
     showlegend: bool = False,
     legendgroup: str | None = None,
 ) -> List[go.Scattermapbox]:
-    """Plotly traces for a single geometry.
+    """Plotly traces for a single geometry with proper hover text handling.
     - Points/MultiPoints → markers
     - LineString/MultiLineString → lines
     - Polygon/MultiPolygon → outline as lines (no fill)
@@ -100,62 +100,108 @@ def traces_from_geometry(
 
     if gt == "Point":
         traces.append(go.Scattermapbox(
-            lon=[geom.x], lat=[geom.y], mode="markers",
+            lon=[geom.x],
+            lat=[geom.y],
+            mode="markers",
             marker={"size": 8, "color": color},
-            name=name, hoverinfo="text", hovertext=hovertext,
-            showlegend=showlegend, legendgroup=legendgroup,
+            name=name,
+            text=[hovertext],  # Use text instead of hovertext
+            hoverinfo="text",  # Show only the custom text
+            hovertemplate="%{text}<extra></extra>",  # Custom template
+            showlegend=showlegend,
+            legendgroup=legendgroup,
         ))
         return traces
 
     if gt == "MultiPoint":
-        xs = [p.x for p in geom.geoms]; ys = [p.y for p in geom.geoms]
+        xs = [p.x for p in geom.geoms]
+        ys = [p.y for p in geom.geoms]
+        # Repeat hover text for each point
+        hover_texts = [hovertext] * len(xs)
         traces.append(go.Scattermapbox(
-            lon=xs, lat=ys, mode="markers",
+            lon=xs,
+            lat=ys,
+            mode="markers",
             marker={"size": 8, "color": color},
-            name=name, hoverinfo="text", hovertext=hovertext,
-            showlegend=showlegend, legendgroup=legendgroup,
+            name=name,
+            text=hover_texts,
+            hoverinfo="text",
+            hovertemplate="%{text}<extra></extra>",
+            showlegend=showlegend,
+            legendgroup=legendgroup,
         ))
         return traces
 
     if gt == "LineString":
         xs, ys = geom.xy
+        # For lines, we can still show hover text at each vertex
+        hover_texts = [hovertext] * len(xs)
         traces.append(go.Scattermapbox(
-            lon=list(xs), lat=list(ys), mode="lines",
+            lon=list(xs),
+            lat=list(ys),
+            mode="lines",
             line={"color": color, "width": 2},
-            name=name, hoverinfo="text", hovertext=hovertext,
-            showlegend=showlegend, legendgroup=legendgroup,
+            name=name,
+            text=hover_texts,
+            hoverinfo="text",
+            hovertemplate="%{text}<extra></extra>",
+            showlegend=showlegend,
+            legendgroup=legendgroup,
         ))
         return traces
 
     if gt == "MultiLineString":
         for line in geom.geoms:
             xs, ys = line.xy
+            hover_texts = [hovertext] * len(xs)
             traces.append(go.Scattermapbox(
-                lon=list(xs), lat=list(ys), mode="lines",
+                lon=list(xs),
+                lat=list(ys),
+                mode="lines",
                 line={"color": color, "width": 2},
-                name=name, hoverinfo="text", hovertext=hovertext,
-                showlegend=showlegend, legendgroup=legendgroup,
+                name=name,
+                text=hover_texts,
+                hoverinfo="text",
+                hovertemplate="%{text}<extra></extra>",
+                showlegend=showlegend,
+                legendgroup=legendgroup,
             ))
         return traces
 
     if gt == "Polygon":
         xs, ys = geom.exterior.coords.xy
+        hover_texts = [hovertext] * len(xs)
         traces.append(go.Scattermapbox(
-            lon=list(xs), lat=list(ys), mode="lines",
-            fill="none", line={"color": color, "width": 2},
-            name=name, hoverinfo="text", hovertext=hovertext,
-            showlegend=showlegend, legendgroup=legendgroup,
+            lon=list(xs),
+            lat=list(ys),
+            mode="lines",
+            fill="none",
+            line={"color": color, "width": 2},
+            name=name,
+            text=hover_texts,
+            hoverinfo="text",
+            hovertemplate="%{text}<extra></extra>",
+            showlegend=showlegend,
+            legendgroup=legendgroup,
         ))
         return traces
 
     if gt == "MultiPolygon":
         for poly in geom.geoms:
             xs, ys = poly.exterior.coords.xy
+            hover_texts = [hovertext] * len(xs)
             traces.append(go.Scattermapbox(
-                lon=list(xs), lat=list(ys), mode="lines",
-                fill="none", line={"color": color, "width": 2},
-                name=name, hoverinfo="text", hovertext=hovertext,
-                showlegend=showlegend, legendgroup=legendgroup,
+                lon=list(xs),
+                lat=list(ys),
+                mode="lines",
+                fill="none",
+                line={"color": color, "width": 2},
+                name=name,
+                text=hover_texts,
+                hoverinfo="text",
+                hovertemplate="%{text}<extra></extra>",
+                showlegend=showlegend,
+                legendgroup=legendgroup,
             ))
         return traces
 
