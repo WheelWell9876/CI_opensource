@@ -10,7 +10,7 @@ from typing import List, Tuple, Dict, Any
 
 from .display import (
     ensure_shapely, color_for_label, center_of, openstreetmap_layout,
-    traces_from_geometry  # Add this import
+    traces_from_geometry, create_default_display  # Add create_default_display import
 )
 
 # Set up logging
@@ -37,13 +37,13 @@ def _points_and_weights(gdf: gpd.GeoDataFrame, weight_col: str) -> Tuple[List[fl
                 w = 1.0
         gt = getattr(geom, "geom_type", "")
         if gt == "Point":
-            lons.append(geom.x);
-            lats.append(geom.y);
+            lons.append(geom.x)
+            lats.append(geom.y)
             ws.append(w)
         elif gt == "MultiPoint":
             for p in geom.geoms:
-                lons.append(p.x);
-                lats.append(p.y);
+                lons.append(p.x)
+                lats.append(p.y)
                 ws.append(w)
     return lons, lats, ws
 
@@ -54,6 +54,18 @@ def create_weighted_default(gdf: gpd.GeoDataFrame, weight_type: str = "original"
 
     if gdf.empty:
         logger.warning("Empty GeoDataFrame provided")
+        return create_empty_weighted_figure()
+
+    # Apply geometry type filtering first
+    if config and 'geometry_types' in config:
+        from .geometry_filters import filter_by_geometry_types  # Fixed import name
+        pre_filter_count = len(gdf)
+        gdf = filter_by_geometry_types(gdf, config=config)
+        if len(gdf) != pre_filter_count:
+            print(f"🎯 DEBUG: Geometry filter applied: {pre_filter_count} → {len(gdf)} rows")
+
+    if gdf.empty:
+        logger.warning("No data after geometry filtering")
         return create_empty_weighted_figure()
 
     # Apply data fraction sampling if specified
@@ -89,7 +101,7 @@ def create_weighted_default(gdf: gpd.GeoDataFrame, weight_type: str = "original"
 
     # Debug: Check what geometry types we have
     geom_types = gdf.geometry.apply(lambda g: ensure_shapely(g).geom_type if ensure_shapely(g) else None).value_counts()
-    print(f"📐 DEBUG: Geometry types in weighted data: {geom_types.to_dict()}")
+    print(f"🔍 DEBUG: Geometry types in weighted data: {geom_types.to_dict()}")
 
     processed_count = 0
     skipped_count = 0
@@ -260,21 +272,41 @@ def create_weighted_default(gdf: gpd.GeoDataFrame, weight_type: str = "original"
             "borderwidth": 1
         }
 
-    # Add sampling info annotation if data was sampled
+    # Add info annotations
+    annotations = []
+
+    # Add sampling info if data was sampled
     if data_fraction < 1.0:
-        layout["annotations"] = [
-            dict(
-                text=f"📊 Showing {len(gdf)} of {original_size} data points ({data_fraction * 100:.1f}%)",
-                showarrow=False,
-                xref="paper", yref="paper",
-                x=0.02, y=0.02,
-                xanchor="left", yanchor="bottom",
-                bgcolor="rgba(255,255,255,0.8)",
-                bordercolor="blue",
-                borderwidth=1,
-                font=dict(size=10, color="blue")
-            )
-        ]
+        annotations.append(dict(
+            text=f"📊 Showing {len(gdf)} of {original_size} data points ({data_fraction * 100:.1f}%)",
+            showarrow=False,
+            xref="paper", yref="paper",
+            x=0.02, y=0.02,
+            xanchor="left", yanchor="bottom",
+            bgcolor="rgba(255,255,255,0.8)",
+            bordercolor="blue",
+            borderwidth=1,
+            font=dict(size=10, color="blue")
+        ))
+
+    # Add geometry filter info if filtering applied
+    if config and 'geometry_types' in config:
+        geom_types_text = ", ".join(config['geometry_types'])
+        annotations.append(dict(
+            text=f"🔍 Showing: {geom_types_text}",
+            showarrow=False,
+            xref="paper", yref="paper",
+            x=0.02, y=0.98,
+            xanchor="left", yanchor="top",
+            bgcolor="rgba(255,255,255,0.8)",
+            bordercolor="green",
+            borderwidth=1,
+            font=dict(size=10, color="green")
+        ))
+
+    # Add annotations to layout if any
+    if annotations:
+        layout["annotations"] = annotations
 
     # Create figure
     fig = go.Figure(data=traces)

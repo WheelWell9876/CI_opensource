@@ -12,12 +12,13 @@ from .display import (
     ensure_shapely, color_for_label, center_of, openstreetmap_layout,
     traces_from_geometry
 )
+from .geometry_filters import filter_by_geometry_types  # Import the geometry filter
 
 logger = logging.getLogger(__name__)
 
 
 def create_regular_display(gdf: gpd.GeoDataFrame, config: dict = None) -> go.Figure:
-    """Create regular display with optional data sampling support."""
+    """Create regular display with optional data sampling and geometry filtering support."""
     logger.info(f"Creating regular display from {len(gdf)} features")
     print(f"🔧 DEBUG: create_regular_display called with {len(gdf)} rows")
 
@@ -26,6 +27,18 @@ def create_regular_display(gdf: gpd.GeoDataFrame, config: dict = None) -> go.Fig
 
     if gdf.empty:
         logger.warning("Empty GeoDataFrame provided to regular display")
+        return create_empty_regular_figure()
+
+    # Apply geometry type filtering first
+    if config and 'geometry_types' in config:
+        from .geometry_filters import filter_by_geometry_types
+        pre_filter_count = len(gdf)
+        gdf = filter_by_geometry_types(gdf, config=config)
+        if len(gdf) != pre_filter_count:
+            print(f"🎯 DEBUG: Geometry filter applied: {pre_filter_count} → {len(gdf)} rows")
+
+    if gdf.empty:
+        logger.warning("No data after geometry filtering")
         return create_empty_regular_figure()
 
     # Apply data fraction sampling if specified
@@ -130,7 +143,7 @@ def create_regular_display(gdf: gpd.GeoDataFrame, config: dict = None) -> go.Fig
                 traces.append(trace)
                 seen_datasets.add(dataset_name)
 
-        # Handle other geometry types (lines, polygons) without sampling consideration
+        # Handle other geometry types (lines, polygons)
         else:
             geom_traces = traces_from_geometry(
                 geom,
@@ -142,6 +155,26 @@ def create_regular_display(gdf: gpd.GeoDataFrame, config: dict = None) -> go.Fig
             )
             traces.extend(geom_traces)
             seen_datasets.add(dataset_name)
+
+            # Add coordinates for centering
+            if geom.geom_type == "LineString":
+                xs, ys = geom.xy
+                all_lons.extend(xs)
+                all_lats.extend(ys)
+            elif geom.geom_type == "MultiLineString":
+                for line in geom.geoms:
+                    xs, ys = line.xy
+                    all_lons.extend(xs)
+                    all_lats.extend(ys)
+            elif geom.geom_type == "Polygon":
+                xs, ys = geom.exterior.coords.xy
+                all_lons.extend(xs)
+                all_lats.extend(ys)
+            elif geom.geom_type == "MultiPolygon":
+                for poly in geom.geoms:
+                    xs, ys = poly.exterior.coords.xy
+                    all_lons.extend(xs)
+                    all_lats.extend(ys)
 
     if not traces:
         logger.warning("No valid traces created for regular display")
@@ -188,21 +221,40 @@ def create_regular_display(gdf: gpd.GeoDataFrame, config: dict = None) -> go.Fig
             "borderwidth": 1
         }
 
-    # Add sampling info annotation if data was sampled
+    # Add info annotations
+    annotations = []
+
+    # Add sampling info if data was sampled
     if data_fraction < 1.0:
-        layout["annotations"] = [
-            dict(
-                text=f"📊 Showing {len(gdf)} of {original_size} data points ({data_fraction * 100:.1f}%)",
-                showarrow=False,
-                xref="paper", yref="paper",
-                x=0.02, y=0.02,
-                xanchor="left", yanchor="bottom",
-                bgcolor="rgba(255,255,255,0.8)",
-                bordercolor="blue",
-                borderwidth=1,
-                font=dict(size=10, color="blue")
-            )
-        ]
+        annotations.append(dict(
+            text=f"📊 Showing {len(gdf)} of {original_size} data points ({data_fraction * 100:.1f}%)",
+            showarrow=False,
+            xref="paper", yref="paper",
+            x=0.02, y=0.02,
+            xanchor="left", yanchor="bottom",
+            bgcolor="rgba(255,255,255,0.8)",
+            bordercolor="blue",
+            borderwidth=1,
+            font=dict(size=10, color="blue")
+        ))
+
+    # Add geometry filter info if filtering applied
+    if config and 'geometry_types' in config:
+        geom_types_text = ", ".join(config['geometry_types'])
+        annotations.append(dict(
+            text=f"🔍 Showing: {geom_types_text}",
+            showarrow=False,
+            xref="paper", yref="paper",
+            x=0.02, y=0.06,
+            xanchor="left", yanchor="bottom",
+            bgcolor="rgba(255,255,255,0.8)",
+            bordercolor="green",
+            borderwidth=1,
+            font=dict(size=10, color="green")
+        ))
+
+    if annotations:
+        layout["annotations"] = annotations
 
     fig = go.Figure(data=traces)
     fig.update_layout(**layout)
@@ -230,7 +282,7 @@ def create_regular_hover_text(row) -> str:
     else:
         hover_parts.append(f"<b style='color: #1E88E5; font-size: 14px;'>Data Point</b>")
 
-    hover_parts.append("<span style='color: #666;'>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>")
+    hover_parts.append("<span style='color: #666;'>────────────────────────────────────────</span>")
 
     # Show priority fields
     priority_fields = ['Dataset', 'Category', 'State', 'County', 'City', 'Type', 'Status']
