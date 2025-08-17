@@ -63,13 +63,11 @@ function debugLog(message, type = 'info') {
 function initializeWidgets() {
   // Remove any existing handlers to avoid conflicts - be more aggressive
   $("#submitBtn").off();
-  $("#submitDisplayBtn").off();
   $("#resetBtn").off();
   $("#dataFractionSlider").off();
 
-  // Add clean handlers with namespace
+  // Add clean handlers with namespace - REMOVED CUSTOM DISPLAY BUTTON
   $("#submitBtn").on("click.widgets", handleSubmit);
-  $("#submitDisplayBtn").on("click.widgets", handleCustomDisplay);
   $("#resetBtn").on("click.widgets", handleReset);
 
   // Add data fraction slider handler
@@ -78,12 +76,11 @@ function initializeWidgets() {
   // Initialize the slider value display
   initializeDataFractionSlider();
 
-  debugLog("Widget handlers initialized", "success");
+  debugLog("Widget handlers initialized (Custom Display button removed)", "success");
 
   // Debug: verify the handlers are attached
   console.log("🔍 Verifying button handlers:");
   console.log("  - Submit button handlers:", $._data($('#submitBtn')[0], 'events'));
-  console.log("  - Custom Display button handlers:", $._data($('#submitDisplayBtn')[0], 'events'));
 }
 
 // -------------------------------------------
@@ -171,7 +168,7 @@ function handleWeightedSubmit() {
     return;
   }
 
-  // Add config to weighted submit as well
+  // Always add config to weighted submit - this includes slider value
   const dataFraction = parseInt($("#dataFractionSlider").val()) / 100;
   const geometryTypes = getSelectedGeometryTypes();
   const showUnavailable = $("input[name='showUnavailable']:checked").val() === "show";
@@ -189,6 +186,7 @@ function handleWeightedSubmit() {
   };
 
   debugLog(`🎚️ Weighted submit with slider: ${$("#dataFractionSlider").val()}% -> fraction: ${dataFraction}`, "info");
+  debugLog(`🎨 Display method: ${displayMethod} (will use custom display if not default)`, "info");
   debugLog(`📤 Sending weighted payload with config: ${JSON.stringify(payload)}`, "info");
   sendMapRequest(payload);
 }
@@ -335,18 +333,15 @@ function sendMapRequest(payload) {
 // -------------------------------------------
 function setLoadingState(isLoading) {
   const $submitBtn = $("#submitBtn");
-  const $customBtn = $("#submitDisplayBtn");
   const $resetBtn = $("#resetBtn");
 
   if (isLoading) {
     $submitBtn.prop("disabled", true).text("Loading...");
-    $customBtn.prop("disabled", true).text("Loading...");
     $resetBtn.prop("disabled", true);
     showMapLoading();
     debugLog("🔄 Loading state enabled", "info");
   } else {
-    $submitBtn.prop("disabled", false).text("Submit");
-    $customBtn.prop("disabled", false).text("Custom Display");
+    $submitBtn.prop("disabled", false).text("Generate Map");
     $resetBtn.prop("disabled", false);
     hideMapLoading();
     debugLog("✅ Loading state disabled", "info");
@@ -396,7 +391,6 @@ window.debugWidgets = {
   handleSubmit,
   handleRegularSubmit,
   handleWeightedSubmit,
-  handleCustomDisplay,
   handleReset,
   sendMapRequest,
   debugLog,

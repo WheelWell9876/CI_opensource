@@ -47,13 +47,35 @@ def _points_and_weights(gdf: gpd.GeoDataFrame, weight_col: str) -> Tuple[List[fl
     return lons, lats, ws
 
 
-def create_weighted_default(gdf: gpd.GeoDataFrame, weight_type: str = "original") -> go.Figure:
+def create_weighted_default(gdf: gpd.GeoDataFrame, weight_type: str = "original", config: dict = None) -> go.Figure:
     """Enhanced weighted display with comprehensive hover text and individual colored traces."""
     logger.info(f"Creating weighted default display with {len(gdf)} features, weight_type: {weight_type}")
 
     if gdf.empty:
         logger.warning("Empty GeoDataFrame provided")
         return create_empty_weighted_figure()
+
+    # Apply data fraction sampling if specified
+    original_size = len(gdf)
+    data_fraction = 1.0
+
+    if config:
+        print(f"🔧 DEBUG: Config received in weighted default: {config}")
+        data_fraction = config.get('data_fraction', config.get('dataFraction', 1.0))
+        print(f"📊 DEBUG: Found data_fraction in weighted config: {data_fraction}")
+    else:
+        print(f"📊 DEBUG: No config provided to weighted default, using all data")
+
+    print(f"📊 DEBUG: Weighted - Original dataset size: {original_size}")
+    print(f"📊 DEBUG: Weighted - Data fraction to use: {data_fraction}")
+
+    if data_fraction < 1.0 and len(gdf) > 10:
+        sample_size = max(10, int(len(gdf) * data_fraction))
+        print(f"📊 DEBUG: Weighted - Calculated sample size: {sample_size}")
+        gdf = gdf.sample(n=sample_size, random_state=42).reset_index(drop=True)
+        print(f"📊 DEBUG: Weighted - After sampling: {len(gdf)} points ({data_fraction * 100:.1f}%)")
+    else:
+        print(f"📊 DEBUG: Weighted - Using all {len(gdf)} data points (no sampling)")
 
     # Determine if we have a Dataset column for coloring
     has_ds = "Dataset" in gdf.columns
@@ -191,6 +213,22 @@ def create_weighted_default(gdf: gpd.GeoDataFrame, weight_type: str = "original"
             "borderwidth": 1
         }
 
+    # Add sampling info annotation if data was sampled
+    if data_fraction < 1.0:
+        layout["annotations"] = [
+            dict(
+                text=f"📊 Showing {len(gdf)} of {original_size} data points ({data_fraction * 100:.1f}%)",
+                showarrow=False,
+                xref="paper", yref="paper",
+                x=0.02, y=0.02,
+                xanchor="left", yanchor="bottom",
+                bgcolor="rgba(255,255,255,0.8)",
+                bordercolor="blue",
+                borderwidth=1,
+                font=dict(size=10, color="blue")
+            )
+        ]
+
     # Create figure
     fig = go.Figure(data=traces)
     fig.update_layout(**layout)
@@ -218,7 +256,7 @@ def create_weighted_hover_text(row, weight_type: str, weight_value: float) -> st
 
     # Add weight information prominently
     hover_parts.append(f"<b style='color: #FF6B35; font-size: 12px;'>Weight ({weight_type}): {weight_value:.3f}</b>")
-    hover_parts.append("<span style='color: #666;'>─────────────────────────</span>")
+    hover_parts.append("<span style='color: #666;'>──────────────────────────</span>")
 
     # Show priority fields first
     priority_fields = ['Dataset', 'Category', 'State', 'County', 'City', 'Type']
@@ -318,7 +356,7 @@ def build_weighted_figure(
         gdf: gpd.GeoDataFrame,
         display_method: str = "default",
         weight_type: str = "original",
-        config: dict = None,
+        config: dict = None  # ADD CONFIG PARAMETER HERE
 ) -> go.Figure:
     """Enhanced router with detailed debugging and error handling."""
 
@@ -333,7 +371,8 @@ def build_weighted_figure(
 
     if dm == "default":
         logger.info("Using default weighted display")
-        return create_weighted_default(gdf, weight_type)
+        print("🔧 DEBUG: Using default weighted display with config")
+        return create_weighted_default(gdf, weight_type, config)  # PASS CONFIG HERE
 
     # Import optional modules lazily to avoid circular deps.
     try:
@@ -347,11 +386,11 @@ def build_weighted_figure(
                 from .weighted_options.basic_heatmap import figure as _heat
                 logger.info("Successfully imported basic_heatmap")
                 print("✅ DEBUG: basic_heatmap imported successfully")
-                # Pass config if the function supports it
+                # Pass config to the custom display method if it accepts it
                 try:
                     result = _heat(gdf, weight_type, config)
                 except TypeError:
-                    # Fallback if function doesn't accept config parameter
+                    # Fallback if the method doesn't accept config yet
                     result = _heat(gdf, weight_type)
                 logger.info("basic_heatmap figure created successfully")
                 print("✅ DEBUG: basic_heatmap figure created successfully")
@@ -374,8 +413,12 @@ def build_weighted_figure(
                 from .weighted_options.bubble_map import figure as _bubble
                 logger.info("Successfully imported bubble_map")
                 print("✅ DEBUG: bubble_map imported successfully")
-                # Pass config to bubble_map
-                result = _bubble(gdf, weight_type, config)
+                # Pass config to the custom display method if it accepts it
+                try:
+                    result = _bubble(gdf, weight_type, config)
+                except TypeError:
+                    # Fallback if the method doesn't accept config yet
+                    result = _bubble(gdf, weight_type)
                 logger.info("bubble_map figure created successfully")
                 print("✅ DEBUG: bubble_map figure created successfully")
                 return result
@@ -397,11 +440,11 @@ def build_weighted_figure(
                 from .weighted_options.animated_display import figure as _anim
                 logger.info("Successfully imported animated_display")
                 print("✅ DEBUG: animated_display imported successfully")
-                # Pass config if the function supports it
+                # Pass config to the custom display method if it accepts it
                 try:
                     result = _anim(gdf, weight_type, config)
                 except TypeError:
-                    # Fallback if function doesn't accept config parameter
+                    # Fallback if the method doesn't accept config yet
                     result = _anim(gdf, weight_type)
                 logger.info("animated_display figure created successfully")
                 print("✅ DEBUG: animated_display figure created successfully")
@@ -424,11 +467,11 @@ def build_weighted_figure(
                 from .weighted_options.convex_hull import figure as _hull
                 logger.info("Successfully imported convex_hull")
                 print("✅ DEBUG: convex_hull imported successfully")
-                # Pass config if the function supports it
+                # Pass config to the custom display method if it accepts it
                 try:
                     result = _hull(gdf, weight_type, config)
                 except TypeError:
-                    # Fallback if function doesn't accept config parameter
+                    # Fallback if the method doesn't accept config yet
                     result = _hull(gdf, weight_type)
                 logger.info("convex_hull figure created successfully")
                 print("✅ DEBUG: convex_hull figure created successfully")
@@ -465,4 +508,4 @@ def build_weighted_figure(
 
     logger.info("Falling back to default weighted display")
     print("🔄 DEBUG: Using fallback default weighted display")
-    return create_weighted_default(gdf, weight_type)
+    return create_weighted_default(gdf, weight_type, config)  # PASS CONFIG HERE TOO

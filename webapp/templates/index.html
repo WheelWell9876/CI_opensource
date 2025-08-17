@@ -173,10 +173,6 @@
           <span class="material-icons">map</span>
           Generate Map
         </button>
-        <button id="submitDisplayBtn" class="btn btn-secondary">
-          <span class="material-icons">tune</span>
-          Custom Display
-        </button>
         <button id="resetBtn" class="btn btn-reset">
           <span class="material-icons">refresh</span>
           Reset
@@ -396,96 +392,5 @@
       });
   });
   </script>
-
-  <!-- Add this script temporarily to your index.html right before closing </body> tag to debug the slider -->
-  <script>
-  $(document).ready(function() {
-      // Force debug the slider
-      setTimeout(function() {
-          console.log("🔍 SLIDER DEBUG:");
-          console.log("  - Slider element exists:", $('#dataFractionSlider').length > 0);
-          console.log("  - Slider value:", $('#dataFractionSlider').val());
-          console.log("  - Slider visible:", $('#dataFractionSlider').is(':visible'));
-          console.log("  - Advanced controls exists:", $('#advancedControls').length > 0);
-          console.log("  - Advanced controls visible:", $('#advancedControls').is(':visible'));
-          console.log("  - Advanced controls display:", $('#advancedControls').css('display'));
-
-          // Force show the advanced controls and slider
-          $('#advancedControls').show();
-          $('#advancedControls').css('display', 'block');
-
-          // Log the slider's parent elements
-          console.log("  - Slider parent chain:");
-          $('#dataFractionSlider').parents().each(function(i, el) {
-              console.log(`    Level ${i}:`, el.tagName, el.id, el.className, $(el).is(':visible'));
-          });
-
-          // Check if there are any CSS rules hiding it
-          const slider = $('#dataFractionSlider')[0];
-          if (slider) {
-              const styles = window.getComputedStyle(slider);
-              console.log("  - Computed styles:");
-              console.log("    display:", styles.display);
-              console.log("    visibility:", styles.visibility);
-              console.log("    opacity:", styles.opacity);
-              console.log("    height:", styles.height);
-          }
-
-          // Try to make it super visible
-          $('#dataFractionSlider').css({
-              'display': 'block !important',
-              'visibility': 'visible !important',
-              'opacity': '1 !important',
-              'background-color': 'red',  // Temporary to make it obvious
-              'height': '20px',
-              'width': '100%'
-          });
-
-          $('#advancedControls').css({
-              'display': 'block !important',
-              'visibility': 'visible !important',
-              'border': '2px solid red',  // Temporary to make it obvious
-              'background-color': 'yellow'
-          });
-
-          console.log("🔍 AFTER FORCING VISIBILITY:");
-          console.log("  - Slider visible:", $('#dataFractionSlider').is(':visible'));
-          console.log("  - Advanced controls visible:", $('#advancedControls').is(':visible'));
-
-      }, 2000);
-  });
-  </script>
-
-  <script>
-  $(document).ready(function() {
-      // Debug which button is being clicked
-      $('#submitBtn').on('click', function() {
-          console.log("🚨 REGULAR SUBMIT BUTTON CLICKED!");
-          console.log("  - This should NOT include config data");
-      });
-
-      $('#submitDisplayBtn').on('click', function() {
-          console.log("🎨 CUSTOM DISPLAY BUTTON CLICKED!");
-          console.log("  - This SHOULD include config data");
-          console.log("  - Slider value:", $('#dataFractionSlider').val());
-
-          // Test if the slider value is being read correctly
-          const dataFraction = parseInt($("#dataFractionSlider").val()) / 100;
-          console.log("  - Calculated fraction:", dataFraction);
-      });
-
-      // Also check if there are multiple handlers
-      const submitEvents = $._data($('#submitDisplayBtn')[0], 'events');
-      console.log("🔍 Events attached to Custom Display button:", submitEvents);
-
-      // Check the button text and state
-      console.log("🔍 Button inspection:");
-      console.log("  - Submit button text:", $('#submitBtn').text());
-      console.log("  - Custom Display button text:", $('#submitDisplayBtn').text());
-      console.log("  - Custom Display button exists:", $('#submitDisplayBtn').length > 0);
-      console.log("  - Custom Display button visible:", $('#submitDisplayBtn').is(':visible'));
-  });
-  </script>
-
 </body>
 </html>
