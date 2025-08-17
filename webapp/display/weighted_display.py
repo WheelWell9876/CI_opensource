@@ -10,6 +10,7 @@ from typing import List, Tuple, Dict, Any
 
 from .display import (
     ensure_shapely, color_for_label, center_of, openstreetmap_layout,
+    traces_from_geometry  # Add this import
 )
 
 # Set up logging
@@ -86,10 +87,21 @@ def create_weighted_default(gdf: gpd.GeoDataFrame, weight_type: str = "original"
     dataset_colors = {}
     seen_datasets = set()
 
+    # Debug: Check what geometry types we have
+    geom_types = gdf.geometry.apply(lambda g: ensure_shapely(g).geom_type if ensure_shapely(g) else None).value_counts()
+    print(f"📐 DEBUG: Geometry types in weighted data: {geom_types.to_dict()}")
+
+    processed_count = 0
+    skipped_count = 0
+
     for idx, row in gdf.iterrows():
         geom = ensure_shapely(row.get("geometry"))
         if geom is None or geom.is_empty:
+            skipped_count += 1
+            print(f"⚠️ DEBUG: Skipped row {idx} - empty or None geometry")
             continue
+
+        processed_count += 1
 
         # Get dataset name and color
         dataset_name = str(row.get("Dataset", "Weighted Data")) if has_ds else "Weighted Data"
@@ -171,6 +183,41 @@ def create_weighted_default(gdf: gpd.GeoDataFrame, weight_type: str = "original"
                 traces.append(trace)
                 seen_datasets.add(dataset_name)
 
+        # Handle LineString, MultiLineString, Polygon, MultiPolygon
+        else:
+            # Use the traces_from_geometry function from display.py to handle all other geometry types
+            geom_traces = traces_from_geometry(
+                geom,
+                name=dataset_name,
+                color=dataset_colors[dataset_name],
+                hovertext=hover_text,
+                showlegend=dataset_name not in seen_datasets,
+                legendgroup=dataset_name,
+                weight_value=weight  # Pass weight for potential size adjustments
+            )
+            traces.extend(geom_traces)
+            seen_datasets.add(dataset_name)
+
+            # Add coordinates to all_lons and all_lats for center calculation
+            if geom.geom_type == "LineString":
+                xs, ys = geom.xy
+                all_lons.extend(xs)
+                all_lats.extend(ys)
+            elif geom.geom_type == "MultiLineString":
+                for line in geom.geoms:
+                    xs, ys = line.xy
+                    all_lons.extend(xs)
+                    all_lats.extend(ys)
+            elif geom.geom_type == "Polygon":
+                xs, ys = geom.exterior.coords.xy
+                all_lons.extend(xs)
+                all_lats.extend(ys)
+            elif geom.geom_type == "MultiPolygon":
+                for poly in geom.geoms:
+                    xs, ys = poly.exterior.coords.xy
+                    all_lons.extend(xs)
+                    all_lats.extend(ys)
+
     # Calculate map center and zoom
     if all_lons and all_lats:
         cx, cy = center_of(all_lons, all_lats)
@@ -233,6 +280,7 @@ def create_weighted_default(gdf: gpd.GeoDataFrame, weight_type: str = "original"
     fig = go.Figure(data=traces)
     fig.update_layout(**layout)
 
+    print(f"✅ DEBUG: Processed {processed_count} geometries, skipped {skipped_count}")
     logger.info(f"Successfully created weighted default display with {len(traces)} traces")
     return fig
 
