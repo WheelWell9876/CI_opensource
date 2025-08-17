@@ -132,19 +132,20 @@ function handleRegularSubmit() {
     return;
   }
 
-  // Add config to regular submit as well
   const dataFraction = parseInt($("#dataFractionSlider").val()) / 100;
   const geometryTypes = getSelectedGeometryTypes();
   const showUnavailable = $("input[name='showUnavailable']:checked").val() === "show";
+  const mapStyle = $("#basemapSelect").val() || "open-street-map";
 
   const payload = {
     mode: "regular",
     filters: { state, county, category, dataset },
     display_method: $("#displayMethodSelect").val() || "default",
     config: {
-      dataFraction: dataFraction,
-      geometryTypes: geometryTypes,
-      showUnavailable: showUnavailable
+      dataFraction,
+      geometryTypes,
+      showUnavailable,
+      mapStyle
     }
   };
 
@@ -152,6 +153,7 @@ function handleRegularSubmit() {
   debugLog(`📤 Sending regular payload with config: ${JSON.stringify(payload)}`, "info");
   sendMapRequest(payload);
 }
+
 
 function handleWeightedSubmit() {
   debugLog("🔄 Handling weighted submit", "info");
@@ -168,10 +170,10 @@ function handleWeightedSubmit() {
     return;
   }
 
-  // Always add config to weighted submit - this includes slider value
   const dataFraction = parseInt($("#dataFractionSlider").val()) / 100;
   const geometryTypes = getSelectedGeometryTypes();
   const showUnavailable = $("input[name='showUnavailable']:checked").val() === "show";
+  const mapStyle = $("#basemapSelect").val() || "open-street-map";
 
   const payload = {
     mode: "weighted",
@@ -179,17 +181,19 @@ function handleWeightedSubmit() {
     display_method: displayMethod,
     weight_type: weightType,
     config: {
-      dataFraction: dataFraction,
-      geometryTypes: geometryTypes,
-      showUnavailable: showUnavailable
+      dataFraction,
+      geometryTypes,
+      showUnavailable,
+      mapStyle
     }
   };
 
   debugLog(`🎚️ Weighted submit with slider: ${$("#dataFractionSlider").val()}% -> fraction: ${dataFraction}`, "info");
-  debugLog(`🎨 Display method: ${displayMethod} (will use custom display if not default)`, "info");
+  debugLog(`🎨 Display method: ${displayMethod}`, "info");
   debugLog(`📤 Sending weighted payload with config: ${JSON.stringify(payload)}`, "info");
   sendMapRequest(payload);
 }
+
 
 // -------------------------------------------
 // Custom Display Handler - Now same as regular handlers
@@ -222,6 +226,7 @@ function handleReset() {
   $("#weightedDatasetSelect").val("");
 
   // Reset other widgets
+  $("#basemapSelect").val("open-street-map"); // ← reset to OSM
   $("#dataFractionSlider").val(10);
   $("#dataFractionValue").text("10");
   $("#hideUnavailable").prop("checked", true);
@@ -232,17 +237,16 @@ function handleReset() {
   // Check all geometry types by default
   $("input[name='geomType']").prop("checked", true);
 
-  // Load default map
-  if (typeof loadDefaultMap === 'function') {
-    loadDefaultMap();
-  }
+  // Load default map in the chosen style
+  loadDefaultMap();
 
-  // Clear application state
+  // Clear app state
   AppState.currentData = null;
   AppState.currentFigure = null;
 
   debugLog("✅ Reset complete", "success");
 }
+
 
 // -------------------------------------------
 // Enhanced Map Request Function
@@ -251,7 +255,12 @@ function sendMapRequest(payload) {
   debugLog(`🌐 Sending map request with payload...`, "info");
   debugLog(`📊 Payload details: ${JSON.stringify(payload, null, 2)}`, "info");
 
-  // Show loading state
+  // Make sure mapStyle is present, even if called from elsewhere
+  if (!payload.config) payload.config = {};
+  if (!payload.config.mapStyle) {
+    payload.config.mapStyle = $("#basemapSelect").val() || "open-street-map";
+  }
+
   setLoadingState(true);
 
   $.ajax({
@@ -260,73 +269,49 @@ function sendMapRequest(payload) {
     dataType: "json",
     contentType: "application/json",
     data: JSON.stringify(payload),
-    beforeSend: function(xhr) {
-      debugLog(`📡 AJAX request starting to /generate_map`, "info");
-      debugLog(`📋 Request headers: ${JSON.stringify(xhr.getAllResponseHeaders())}`, "info");
-    },
     success: function(response) {
-      debugLog(`✅ Map response received`, "success");
-      debugLog(`📊 Response keys: ${Object.keys(response).join(', ')}`, "info");
+      setLoadingState(false);
 
-      if (response.success && response.figure) {
+      if (response && response.success) {
         try {
-          const figure = typeof response.figure === 'string'
+          const figure = (typeof response.figure === "string")
             ? JSON.parse(response.figure)
             : response.figure;
 
-          debugLog(`🎯 Figure parsed successfully, traces: ${figure.data?.length || 0}`, "success");
+          // 🔒 Enforce the chosen basemap client-side regardless of server defaults
+          const chosenStyle = payload.config.mapStyle || "open-street-map";
+          figure.layout = figure.layout || {};
+          figure.layout.mapbox = figure.layout.mapbox || {};
+          figure.layout.mapbox.style = chosenStyle;
 
-          // Render the map
           Plotly.react("mapContainer", figure.data, figure.layout, {
             responsive: true,
             displayModeBar: true,
             scrollZoom: true
           });
 
-          // Update application state
           AppState.currentFigure = figure;
-
           debugLog(`🗺️ Map rendered successfully`, "success");
-
         } catch (error) {
           debugLog(`❌ Error parsing/rendering figure: ${error.message}`, "error");
           console.error("Error parsing/rendering figure:", error);
           alert("Error displaying map data");
         }
       } else {
-        debugLog(`❌ Map generation failed: ${response.error || 'Unknown error'}`, "error");
-        console.error("Map generation failed:", response.error);
-        alert("Error: " + (response.error || "Unknown error"));
+        debugLog(`❌ Map generation failed: ${response?.error || 'Unknown error'}`, "error");
+        console.error("Map generation failed:", response?.error);
+        alert("Error: " + (response?.error || "Unknown error"));
       }
     },
     error: function(xhr, status, error) {
-      debugLog(`❌ AJAX error: ${status} - ${error}`, "error");
-      debugLog(`📄 Response text: ${xhr.responseText.substring(0, 200)}...`, "error");
-
-      console.error("AJAX error:", status, error);
-      console.error("Response text:", xhr.responseText);
-
-      // Try to parse error response
-      let errorMessage = "Failed to generate map. Check console for details.";
-      try {
-        const errorResponse = JSON.parse(xhr.responseText);
-        if (errorResponse.error) {
-          errorMessage = errorResponse.error;
-          debugLog(`🔍 Parsed error message: ${errorMessage}`, "error");
-        }
-      } catch (e) {
-        debugLog(`⚠️ Could not parse error response`, "warn");
-      }
-
-      alert(errorMessage);
-    },
-    complete: function() {
-      // Reset loading state
       setLoadingState(false);
-      debugLog(`🏁 AJAX request completed`, "info");
+      debugLog(`❌ AJAX error: ${status} - ${error}`, "error");
+      console.error("AJAX error:", status, error, xhr?.responseText);
+      alert("Failed to generate map. Check console for details.");
     }
   });
 }
+
 
 // -------------------------------------------
 // Helper Functions

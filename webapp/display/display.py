@@ -230,3 +230,22 @@ def openstreetmap_layout(center_lon: float, center_lat: float, zoom: float = 6, 
     if legend_title:
         layout["legend"] = {"title": {"text": legend_title}}
     return layout
+
+
+def ensure_mapbox_style(fig, style: str = "open-street-map"):
+    """
+    Ensure a Plotly figure has a Mapbox layout with the given basemap style.
+    Safe to call on any figure; updates in-place and returns the figure.
+    """
+    try:
+        if not hasattr(fig, "layout") or fig.layout is None:
+            fig.update_layout(mapbox=dict(style=style))
+        else:
+            mb = dict(fig.layout.mapbox) if getattr(fig.layout, "mapbox", None) else {}
+            mb["style"] = style
+            fig.update_layout(mapbox=mb)
+    except Exception as e:
+        print(f"⚠️ ensure_mapbox_style: {e}")
+    return fig
+
+

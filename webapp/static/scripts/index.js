@@ -40,18 +40,38 @@ function initializeApp() {
 }
 
 function setupEventHandlers() {
-  // Remove any existing handlers first
+  // Remove any existing handlers first (avoid duplicates on hot reloads)
   $("#modeSelect").off("change.main");
   $("#displayMethodSelect").off("change.main");
+  $("#basemapSelect").off("change.main");
 
   // Mode selection handler
   $("#modeSelect").on("change.main", handleModeChange);
 
-  // Display method change handler
+  // Display method change handler (toggles weight type visibility, etc.)
   $("#displayMethodSelect").on("change.main", handleDisplayMethodChange);
+
+  // NEW: Basemap style live switch
+  $("#basemapSelect").on("change.main", updateMapStyle);
 
   console.log("Main event handlers setup complete");
 }
+
+function updateMapStyle() {
+  const style = $("#basemapSelect").val() || "open-street-map";
+  const fig = AppState.currentFigure;
+
+  if (fig && fig.layout) {
+    // Update cached figure + Plotly layout
+    fig.layout.mapbox = fig.layout.mapbox || {};
+    fig.layout.mapbox.style = style;
+    Plotly.relayout("mapContainer", { "mapbox.style": style });
+  } else {
+    // If nothing has been rendered yet, load with the new style
+    loadDefaultMap();
+  }
+}
+
 
 // -------------------------------------------
 // Event Handlers
@@ -234,6 +254,8 @@ function showSuccess(message) {
 function loadDefaultMap() {
   console.log("Loading default map");
 
+  const style = $("#basemapSelect").val() || "open-street-map";
+
   const defaultFig = {
     data: [{
       type: "scattermapbox",
@@ -246,7 +268,7 @@ function loadDefaultMap() {
     }],
     layout: {
       mapbox: {
-        style: "open-street-map",
+        style: style,
         center: { lat: 40.7831, lon: -73.9712 },
         zoom: 10
       },
@@ -254,13 +276,17 @@ function loadDefaultMap() {
     }
   };
 
-  // Render directly with Plotly
+  // Render
   Plotly.react("mapContainer", defaultFig.data, defaultFig.layout, {
     responsive: true,
     displayModeBar: true,
     scrollZoom: true
   });
+
+  // Cache for live style switching
+  AppState.currentFigure = defaultFig;
 }
+
 
 // -------------------------------------------
 // Navbar Scroll Logic (existing)
@@ -287,3 +313,4 @@ window.showError = showError;
 window.showSuccess = showSuccess;
 window.resetDropdown = resetDropdown;
 window.loadDefaultMap = loadDefaultMap;
+window.updateMapStyle = updateMapStyle;

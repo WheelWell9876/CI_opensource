@@ -21,62 +21,67 @@ var MapRenderer = (function() {
   // -------------------------------------------
   // Main map generation function
   // -------------------------------------------
-  function generateMap(payload) {
-    if (isLoading) {
-      console.warn("Map generation already in progress");
-      return;
-    }
-
-    setLoadingState(true);
-
-    $.ajax({
-      url: "/generate_map",
-      method: "POST",
-      dataType: "json",
-      contentType: "application/json",
-      data: JSON.stringify(payload),
-      success: function(response) {
-        handleMapResponse(response, payload);
-      },
-      error: function(xhr, status, error) {
-        handleMapError(xhr, status, error, payload);
-      },
-      complete: function() {
-        setLoadingState(false);
-      }
-    });
+function generateMap(payload) {
+  if (isLoading) {
+    console.warn("Map generation already in progress");
+    return;
   }
+
+  // Ensure mapStyle is attached to config
+  if (!payload.config) payload.config = {};
+  if (!payload.config.mapStyle) {
+    payload.config.mapStyle = $("#basemapSelect").val() || "open-street-map";
+  }
+
+  setLoadingState(true);
+
+  $.ajax({
+    url: "/generate_map",
+    method: "POST",
+    dataType: "json",
+    contentType: "application/json",
+    data: JSON.stringify(payload),
+    success: function(response) {
+      handleMapResponse(response, payload);
+    },
+    error: function(xhr, status, error) {
+      handleMapError(xhr, status, error, payload);
+    },
+    complete: function() {
+      isLoading = false;
+      setLoadingState(false);
+    }
+  });
+}
+
 
   // -------------------------------------------
   // Response Handlers
   // -------------------------------------------
-  function handleMapResponse(response, originalPayload) {
-    if (!response.success) {
-      showError("Server error: " + (response.error || "Unknown error"));
-      return;
-    }
-
-    if (!response.figure) {
-      showError("No map data received from server");
-      return;
-    }
-
-    try {
-      // Parse the figure JSON if it's a string
-      const figure = typeof response.figure === 'string'
-        ? JSON.parse(response.figure)
-        : response.figure;
-
-      renderFigure(figure);
-      AppState.currentFigure = figure;
-
-      console.log("Map successfully generated with payload:", originalPayload);
-
-    } catch (error) {
-      console.error("Error parsing figure data:", error);
-      showError("Error displaying map data");
-    }
+function handleMapResponse(response, originalPayload) {
+  if (!response || !response.success) {
+    showError("Server error: " + (response?.error || "Unknown error"));
+    return;
   }
+
+  if (!response.figure) {
+    showError("No figure returned from server");
+    return;
+  }
+
+  let figure = (typeof response.figure === "string")
+    ? JSON.parse(response.figure)
+    : response.figure;
+
+  // Force the chosen basemap style client-side
+  const chosenStyle = (originalPayload?.config?.mapStyle) || $("#basemapSelect").val() || "open-street-map";
+  figure.layout = figure.layout || {};
+  figure.layout.mapbox = figure.layout.mapbox || {};
+  figure.layout.mapbox.style = chosenStyle;
+
+  renderFigure(figure);
+}
+
 
   function handleMapError(xhr, status, error, originalPayload) {
     console.error("Map generation failed:", {
@@ -103,31 +108,34 @@ var MapRenderer = (function() {
   // -------------------------------------------
   // Figure Rendering
   // -------------------------------------------
-  function renderFigure(figure) {
-    try {
-      // Ensure the figure has the required structure
-      if (!figure.data || !figure.layout) {
-        throw new Error("Invalid figure structure");
-      }
-
-      // Configure Plotly options for better interactivity
-      const config = {
-        responsive: true,
-        displayModeBar: true,
-        modeBarButtonsToRemove: ['lasso2d', 'select2d'],
-        scrollZoom: true
-      };
-
-      // Use Plotly.react for better performance with updates
-      Plotly.react("mapContainer", figure.data, figure.layout, config);
-
-      currentFigure = figure;
-
-    } catch (error) {
-      console.error("Error rendering figure:", error);
-      showError("Error displaying map");
+function renderFigure(figure) {
+  try {
+    if (!figure.data || !figure.layout) {
+      throw new Error("Invalid figure structure");
     }
+
+    // If style somehow missing, default to current dropdown choice
+    const chosenStyle = $("#basemapSelect").val() || "open-street-map";
+    figure.layout.mapbox = figure.layout.mapbox || {};
+    if (!figure.layout.mapbox.style) {
+      figure.layout.mapbox.style = chosenStyle;
+    }
+
+    const config = {
+      responsive: true,
+      displayModeBar: true,
+      scrollZoom: true
+    };
+
+    Plotly.react("mapContainer", figure.data, figure.layout, config);
+    currentFigure = figure;
+    AppState.currentFigure = figure;
+  } catch (e) {
+    showError("Failed to render figure: " + e.message);
+    console.error(e);
   }
+}
+
 
   // -------------------------------------------
   // State Management

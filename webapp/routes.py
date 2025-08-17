@@ -257,16 +257,29 @@ def generate_map():
             gdf = _load_weighted_data(filters, weight_type)
             print(f"📈 DEBUG: Loaded {len(gdf)} rows of weighted data")
 
-            print(
-                f"🎨 DEBUG: Calling build_weighted_figure with method='{display_method}', weight_type='{weight_type}', config={config}")
+            print(f"🎨 DEBUG: Calling build_weighted_figure with method='{display_method}', weight_type='{weight_type}', config={config}")
             fig = build_weighted_figure(gdf, display_method, weight_type, config)
             print(f"✅ DEBUG: build_weighted_figure completed")
-
         else:
             print(f"🔧 DEBUG: Loading regular data...")
             gdf = _load_regular_data(filters)
             print(f"📈 DEBUG: Loaded {len(gdf)} rows of regular data")
             fig = create_regular_display(gdf, config)
+
+        # --- Enforce basemap style on the figure layout ---
+        try:
+            # Prefer normalized key from our extractor; fall back to client pass-through
+            _style = config.get("map_style") or config.get("mapStyle") or "open-street-map"
+            if not hasattr(fig, "layout") or fig.layout is None:
+                fig.update_layout(mapbox=dict(style=_style))
+            else:
+                # Make sure mapbox exists and set style
+                mb = dict(fig.layout.mapbox) if getattr(fig.layout, "mapbox", None) else {}
+                mb["style"] = _style
+                fig.update_layout(mapbox=mb)
+            print(f"🗺️ DEBUG: Applied mapbox.style = '{_style}' on server")
+        except Exception as _e:
+            print(f"⚠️ DEBUG: Could not enforce map style on figure: {_e}")
 
         # Convert figure to JSON for client-side rendering
         print(f"🔄 DEBUG: Converting figure to JSON...")
@@ -287,6 +300,7 @@ def generate_map():
 
         logger.exception("Error in generate_map:")
         return jsonify({"success": False, "error": str(e)}), 500
+
 
 
 def _load_weighted_data(filters: dict, weight_type: str = "original") -> gpd.GeoDataFrame:
@@ -341,14 +355,13 @@ def _load_regular_data(filters: dict) -> gpd.GeoDataFrame:
 
 
 def _extract_config_from_request(req: dict) -> dict:
-    """Extract display configuration from request."""
-    config = req.get("config", {})
+    """Extract display configuration from request, including basemap style."""
+    config = req.get("config", {}) or {}
 
-    # Debug logging
     print(f"🔧 DEBUG: Raw config from request: {config}")
 
-    # Extract data fraction - check both possible names
-    data_fraction = 0.1  # Default to 10%
+    # --- Data fraction (handles either dataFraction or data_fraction) ---
+    data_fraction = 0.1  # default 10%
     if "dataFraction" in config:
         data_fraction = config["dataFraction"]
         print(f"🔧 DEBUG: Found dataFraction: {data_fraction}")
@@ -356,28 +369,37 @@ def _extract_config_from_request(req: dict) -> dict:
         data_fraction = config["data_fraction"]
         print(f"🔧 DEBUG: Found data_fraction: {data_fraction}")
     else:
-        print(f"🔧 DEBUG: No data fraction found in config, using default: {data_fraction}")
+        print(f"🔧 DEBUG: No data fraction found; using default: {data_fraction}")
 
-    # Ensure it's a float between 0 and 1
     if isinstance(data_fraction, (int, float)):
         if data_fraction > 1:
-            data_fraction = data_fraction / 100  # Convert percentage to fraction
-        data_fraction = max(0.01, min(1.0, data_fraction))  # Clamp between 1% and 100%
+            data_fraction = data_fraction / 100.0
+        data_fraction = max(0.01, min(1.0, float(data_fraction)))
     else:
         data_fraction = 0.1
 
     print(f"🔧 DEBUG: Final data_fraction being used: {data_fraction}")
 
-    # Build the final config
+    # --- Geometry types / availability ---
+    geometry_types = config.get("geometryTypes", [])
+    show_unavailable = config.get("showUnavailable", False)
+
+    # --- Basemap style (string, Plotly Mapbox "style") ---
+    map_style = config.get("mapStyle") or "open-street-map"
+    print(f"🗺️ DEBUG: map_style requested: {map_style}")
+
     final_config = {
         "data_fraction": data_fraction,
-        "geometry_types": config.get("geometryTypes", []),
-        "show_unavailable": config.get("showUnavailable", False),
-        "display_method": req.get("display_method", "default")
+        "geometry_types": geometry_types,
+        "show_unavailable": show_unavailable,
+        "display_method": req.get("display_method", "default"),
+        "map_style": map_style,           # normalized key for server-side use
+        "raw_mapStyle": config.get("mapStyle")  # keep original for debugging
     }
 
     print(f"🔧 DEBUG: Final config: {final_config}")
     return final_config
+
 
 
 # Add a new route for getting available options dynamically
