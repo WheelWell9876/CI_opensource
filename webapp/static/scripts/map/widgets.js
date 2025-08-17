@@ -135,13 +135,24 @@ function handleRegularSubmit() {
     return;
   }
 
+  // Add config to regular submit as well
+  const dataFraction = parseInt($("#dataFractionSlider").val()) / 100;
+  const geometryTypes = getSelectedGeometryTypes();
+  const showUnavailable = $("input[name='showUnavailable']:checked").val() === "show";
+
   const payload = {
     mode: "regular",
     filters: { state, county, category, dataset },
-    display_method: $("#displayMethodSelect").val() || "default"
+    display_method: $("#displayMethodSelect").val() || "default",
+    config: {
+      dataFraction: dataFraction,
+      geometryTypes: geometryTypes,
+      showUnavailable: showUnavailable
+    }
   };
 
-  debugLog(`📤 Sending regular payload: ${JSON.stringify(payload)}`, "info");
+  debugLog(`🎚️ Regular submit with slider: ${$("#dataFractionSlider").val()}% -> fraction: ${dataFraction}`, "info");
+  debugLog(`📤 Sending regular payload with config: ${JSON.stringify(payload)}`, "info");
   sendMapRequest(payload);
 }
 
@@ -160,90 +171,43 @@ function handleWeightedSubmit() {
     return;
   }
 
-  const payload = {
-    mode: "weighted",
-    filters: { dataset },
-    display_method: displayMethod,
-    weight_type: weightType
-  };
-
-  debugLog(`📤 Sending weighted payload: ${JSON.stringify(payload)}`, "info");
-  sendMapRequest(payload);
-}
-
-// -------------------------------------------
-// Custom Display Handler - ENHANCED DEBUG
-// -------------------------------------------
-function handleCustomDisplay() {
-  console.log("🚨🎨 CUSTOM DISPLAY HANDLER CALLED - THIS IS THE RIGHT FUNCTION! 🎨🚨");
-  debugLog("🎨 Custom display button clicked", "warn");
-
-  // Build payload similar to regular submit but with custom display options
-  let payload;
-
-  if (AppState.currentMode === "weighted") {
-    const dataset = $("#weightedDatasetSelect").val();
-    const displayMethod = $("#displayMethodSelect").val();
-    const weightType = $("#weightTypeSelect").val();
-
-    debugLog(`🔍 Weighted custom display: dataset=${dataset}, method=${displayMethod}, weight=${weightType}`, "info");
-
-    if (!dataset) {
-      debugLog("❌ No weighted dataset selected for custom display", "error");
-      alert("Please select a Weighted Dataset!");
-      return;
-    }
-
-    payload = {
-      mode: "weighted",
-      filters: { dataset },
-      display_method: displayMethod || "default",
-      weight_type: weightType || "original"
-    };
-
-    debugLog(`🎯 CRITICAL: Custom display method being sent: ${displayMethod}`, "warn");
-
-  } else {
-    const state = $("#stateSelect").val();
-    if (!state) {
-      debugLog("❌ No state selected for custom display", "error");
-      alert("Please select a State first!");
-      return;
-    }
-
-    payload = {
-      mode: "regular",
-      filters: {
-        state: state,
-        county: $("#countySelect").val(),
-        category: $("#categorySelect").val(),
-        dataset: $("#datasetSelect").val()
-      },
-      display_method: $("#displayMethodSelect").val() || "default"
-    };
-  }
-
-  // Add advanced configuration
+  // Add config to weighted submit as well
   const dataFraction = parseInt($("#dataFractionSlider").val()) / 100;
   const geometryTypes = getSelectedGeometryTypes();
   const showUnavailable = $("input[name='showUnavailable']:checked").val() === "show";
 
-  payload.config = {
-    dataFraction: dataFraction,
-    geometryTypes: geometryTypes,
-    showUnavailable: showUnavailable
+  const payload = {
+    mode: "weighted",
+    filters: { dataset },
+    display_method: displayMethod,
+    weight_type: weightType,
+    config: {
+      dataFraction: dataFraction,
+      geometryTypes: geometryTypes,
+      showUnavailable: showUnavailable
+    }
   };
 
-  console.log("🚨 ABOUT TO SEND CONFIG - CHECK THIS:");
-  console.log("  - Slider raw value:", $("#dataFractionSlider").val());
-  console.log("  - Calculated dataFraction:", dataFraction);
-  console.log("  - Full config object:", payload.config);
-
-  debugLog(`🔧 Advanced config: fraction=${dataFraction}, geomTypes=${geometryTypes.length}, showUnavail=${showUnavailable}`, "info");
-  debugLog(`🎚️ SLIDER VALUE: ${$("#dataFractionSlider").val()}% -> fraction: ${dataFraction}`, "warn");
-  debugLog(`📤 FULL CUSTOM PAYLOAD: ${JSON.stringify(payload, null, 2)}`, "warn");
-
+  debugLog(`🎚️ Weighted submit with slider: ${$("#dataFractionSlider").val()}% -> fraction: ${dataFraction}`, "info");
+  debugLog(`📤 Sending weighted payload with config: ${JSON.stringify(payload)}`, "info");
   sendMapRequest(payload);
+}
+
+// -------------------------------------------
+// Custom Display Handler - Now same as regular handlers
+// -------------------------------------------
+function handleCustomDisplay() {
+  debugLog("🎨 Custom display button clicked", "warn");
+
+  // Custom Display now just calls the same handler as regular submit
+  // since both now include config data
+  const mode = AppState.currentMode;
+
+  if (mode === "weighted") {
+    handleWeightedSubmit();
+  } else {
+    handleRegularSubmit();
+  }
 }
 
 // -------------------------------------------
