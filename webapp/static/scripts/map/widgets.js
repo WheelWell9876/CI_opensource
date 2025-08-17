@@ -1,35 +1,118 @@
 // -------------------------------------------
-// widgets.js - Clean submit and reset handlers
+// widgets.js - Enhanced debugging version
 // -------------------------------------------
 
 $(document).ready(function() {
-  console.log("widgets.js loaded and ready");
+  console.log("🚀 Enhanced DEBUG widgets.js loaded and ready");
 
   // Initialize widget handlers
   initializeWidgets();
+
+  // Add debug panel to DOM
+  addDebugPanel();
 });
 
+function addDebugPanel() {
+  // Add a debug panel to the page
+  const debugPanel = `
+    <div id="debugPanel" style="
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 300px;
+      max-height: 400px;
+      background: rgba(0,0,0,0.9);
+      color: #00ff00;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 10px;
+      border-radius: 5px;
+      z-index: 9999;
+      overflow-y: auto;
+      border: 2px solid #00ff00;
+    ">
+      <div style="margin-bottom: 10px; font-weight: bold; color: #ffff00;">
+        🔍 DEBUG PANEL
+        <button onclick="$('#debugPanel').toggle()" style="float: right; background: #333; color: #fff; border: none; cursor: pointer;">Toggle</button>
+      </div>
+      <div id="debugLog"></div>
+    </div>
+  `;
+
+  $('body').append(debugPanel);
+}
+
+function debugLog(message, type = 'info') {
+  const timestamp = new Date().toLocaleTimeString();
+  const colors = {
+    info: '#00ff00',
+    warn: '#ffff00',
+    error: '#ff0000',
+    success: '#00ffff'
+  };
+
+  const logEntry = `<div style="color: ${colors[type]}; margin: 2px 0;">[${timestamp}] ${message}</div>`;
+  $('#debugLog').prepend(logEntry);
+
+  // Keep only last 20 entries
+  $('#debugLog div').slice(20).remove();
+
+  console.log(`🔍 DEBUG: ${message}`);
+}
+
 function initializeWidgets() {
-  // Remove any existing handlers to avoid conflicts
-  $("#submitBtn").off("click.widgets");
-  $("#submitDisplayBtn").off("click.widgets");
-  $("#resetBtn").off("click.widgets");
+  // Remove any existing handlers to avoid conflicts - be more aggressive
+  $("#submitBtn").off();
+  $("#submitDisplayBtn").off();
+  $("#resetBtn").off();
+  $("#dataFractionSlider").off();
 
   // Add clean handlers with namespace
   $("#submitBtn").on("click.widgets", handleSubmit);
   $("#submitDisplayBtn").on("click.widgets", handleCustomDisplay);
   $("#resetBtn").on("click.widgets", handleReset);
 
-  console.log("Widget handlers initialized");
+  // Add data fraction slider handler
+  $("#dataFractionSlider").on("input.widgets", handleDataFractionChange);
+
+  // Initialize the slider value display
+  initializeDataFractionSlider();
+
+  debugLog("Widget handlers initialized", "success");
+
+  // Debug: verify the handlers are attached
+  console.log("🔍 Verifying button handlers:");
+  console.log("  - Submit button handlers:", $._data($('#submitBtn')[0], 'events'));
+  console.log("  - Custom Display button handlers:", $._data($('#submitDisplayBtn')[0], 'events'));
+}
+
+// -------------------------------------------
+// Data Fraction Slider Handler
+// -------------------------------------------
+function handleDataFractionChange() {
+  const value = $("#dataFractionSlider").val();
+  $("#dataFractionValue").text(value);
+
+  debugLog(`🎚️ Data fraction changed to: ${value}%`, "info");
+  console.log(`🎚️ Data fraction changed to: ${value}%`);
+}
+
+function initializeDataFractionSlider() {
+  const initialValue = $("#dataFractionSlider").val();
+  $("#dataFractionValue").text(initialValue);
+
+  debugLog(`🎚️ Data fraction slider initialized at ${initialValue}%`, "info");
+  console.log(`🎚️ Data fraction slider initialized at ${initialValue}%`);
 }
 
 // -------------------------------------------
 // Main Submit Handler
 // -------------------------------------------
 function handleSubmit() {
-  console.log("Submit button clicked, mode:", AppState.currentMode);
+  const mode = AppState.currentMode;
+  debugLog(`📤 Submit button clicked, mode: ${mode}`, "info");
 
-  if (AppState.currentMode === "weighted") {
+  if (mode === "weighted") {
     handleWeightedSubmit();
   } else {
     handleRegularSubmit();
@@ -37,16 +120,17 @@ function handleSubmit() {
 }
 
 function handleRegularSubmit() {
-  console.log("Handling regular submit");
+  debugLog("🔄 Handling regular submit", "info");
 
   const state = $("#stateSelect").val();
   const county = $("#countySelect").val();
   const category = $("#categorySelect").val();
   const dataset = $("#datasetSelect").val();
 
-  console.log("Regular form values:", { state, county, category, dataset });
+  debugLog(`📋 Regular form values: state=${state}, county=${county}, category=${category}, dataset=${dataset}`, "info");
 
   if (!state) {
+    debugLog("❌ No state selected", "error");
     alert("Please select a State first!");
     return;
   }
@@ -57,17 +141,21 @@ function handleRegularSubmit() {
     display_method: $("#displayMethodSelect").val() || "default"
   };
 
-  console.log("Sending regular payload:", payload);
+  debugLog(`📤 Sending regular payload: ${JSON.stringify(payload)}`, "info");
   sendMapRequest(payload);
 }
 
 function handleWeightedSubmit() {
-  console.log("Handling weighted submit");
+  debugLog("🔄 Handling weighted submit", "info");
 
   const dataset = $("#weightedDatasetSelect").val();
-  console.log("Weighted dataset value:", dataset);
+  const displayMethod = $("#displayMethodSelect").val() || "default";
+  const weightType = $("#weightTypeSelect").val() || "original";
+
+  debugLog(`📋 Weighted form values: dataset=${dataset}, displayMethod=${displayMethod}, weightType=${weightType}`, "info");
 
   if (!dataset) {
+    debugLog("❌ No weighted dataset selected", "error");
     alert("Please select a Weighted Dataset!");
     return;
   }
@@ -75,26 +163,33 @@ function handleWeightedSubmit() {
   const payload = {
     mode: "weighted",
     filters: { dataset },
-    display_method: $("#displayMethodSelect").val() || "default",
-    weight_type: $("#weightTypeSelect").val() || "original"
+    display_method: displayMethod,
+    weight_type: weightType
   };
 
-  console.log("Sending weighted payload:", payload);
+  debugLog(`📤 Sending weighted payload: ${JSON.stringify(payload)}`, "info");
   sendMapRequest(payload);
 }
 
 // -------------------------------------------
-// Custom Display Handler
+// Custom Display Handler - ENHANCED DEBUG
 // -------------------------------------------
 function handleCustomDisplay() {
-  console.log("Custom display button clicked");
+  console.log("🚨🎨 CUSTOM DISPLAY HANDLER CALLED - THIS IS THE RIGHT FUNCTION! 🎨🚨");
+  debugLog("🎨 Custom display button clicked", "warn");
 
   // Build payload similar to regular submit but with custom display options
   let payload;
 
   if (AppState.currentMode === "weighted") {
     const dataset = $("#weightedDatasetSelect").val();
+    const displayMethod = $("#displayMethodSelect").val();
+    const weightType = $("#weightTypeSelect").val();
+
+    debugLog(`🔍 Weighted custom display: dataset=${dataset}, method=${displayMethod}, weight=${weightType}`, "info");
+
     if (!dataset) {
+      debugLog("❌ No weighted dataset selected for custom display", "error");
       alert("Please select a Weighted Dataset!");
       return;
     }
@@ -102,12 +197,16 @@ function handleCustomDisplay() {
     payload = {
       mode: "weighted",
       filters: { dataset },
-      display_method: $("#displayMethodSelect").val() || "default",
-      weight_type: $("#weightTypeSelect").val() || "original"
+      display_method: displayMethod || "default",
+      weight_type: weightType || "original"
     };
+
+    debugLog(`🎯 CRITICAL: Custom display method being sent: ${displayMethod}`, "warn");
+
   } else {
     const state = $("#stateSelect").val();
     if (!state) {
+      debugLog("❌ No state selected for custom display", "error");
       alert("Please select a State first!");
       return;
     }
@@ -125,13 +224,25 @@ function handleCustomDisplay() {
   }
 
   // Add advanced configuration
+  const dataFraction = parseInt($("#dataFractionSlider").val()) / 100;
+  const geometryTypes = getSelectedGeometryTypes();
+  const showUnavailable = $("input[name='showUnavailable']:checked").val() === "show";
+
   payload.config = {
-    dataFraction: parseInt($("#dataFractionSlider").val()) / 100,
-    geometryTypes: getSelectedGeometryTypes(),
-    showUnavailable: $("input[name='showUnavailable']:checked").val() === "show"
+    dataFraction: dataFraction,
+    geometryTypes: geometryTypes,
+    showUnavailable: showUnavailable
   };
 
-  console.log("Sending custom display payload:", payload);
+  console.log("🚨 ABOUT TO SEND CONFIG - CHECK THIS:");
+  console.log("  - Slider raw value:", $("#dataFractionSlider").val());
+  console.log("  - Calculated dataFraction:", dataFraction);
+  console.log("  - Full config object:", payload.config);
+
+  debugLog(`🔧 Advanced config: fraction=${dataFraction}, geomTypes=${geometryTypes.length}, showUnavail=${showUnavailable}`, "info");
+  debugLog(`🎚️ SLIDER VALUE: ${$("#dataFractionSlider").val()}% -> fraction: ${dataFraction}`, "warn");
+  debugLog(`📤 FULL CUSTOM PAYLOAD: ${JSON.stringify(payload, null, 2)}`, "warn");
+
   sendMapRequest(payload);
 }
 
@@ -139,7 +250,7 @@ function handleCustomDisplay() {
 // Reset Handler
 // -------------------------------------------
 function handleReset() {
-  console.log("Reset button clicked");
+  debugLog("🔄 Reset button clicked", "info");
 
   // Reset all form elements
   $("#stateSelect").val("");
@@ -167,13 +278,16 @@ function handleReset() {
   // Clear application state
   AppState.currentData = null;
   AppState.currentFigure = null;
+
+  debugLog("✅ Reset complete", "success");
 }
 
 // -------------------------------------------
-// Map Request Function
+// Enhanced Map Request Function
 // -------------------------------------------
 function sendMapRequest(payload) {
-  console.log("Sending map request with payload:", payload);
+  debugLog(`🌐 Sending map request with payload...`, "info");
+  debugLog(`📊 Payload details: ${JSON.stringify(payload, null, 2)}`, "info");
 
   // Show loading state
   setLoadingState(true);
@@ -184,8 +298,13 @@ function sendMapRequest(payload) {
     dataType: "json",
     contentType: "application/json",
     data: JSON.stringify(payload),
+    beforeSend: function(xhr) {
+      debugLog(`📡 AJAX request starting to /generate_map`, "info");
+      debugLog(`📋 Request headers: ${JSON.stringify(xhr.getAllResponseHeaders())}`, "info");
+    },
     success: function(response) {
-      console.log("Map response received:", response);
+      debugLog(`✅ Map response received`, "success");
+      debugLog(`📊 Response keys: ${Object.keys(response).join(', ')}`, "info");
 
       if (response.success && response.figure) {
         try {
@@ -193,7 +312,7 @@ function sendMapRequest(payload) {
             ? JSON.parse(response.figure)
             : response.figure;
 
-          console.log("Rendering figure with", figure.data?.length || 0, "traces");
+          debugLog(`🎯 Figure parsed successfully, traces: ${figure.data?.length || 0}`, "success");
 
           // Render the map
           Plotly.react("mapContainer", figure.data, figure.layout, {
@@ -205,16 +324,23 @@ function sendMapRequest(payload) {
           // Update application state
           AppState.currentFigure = figure;
 
+          debugLog(`🗺️ Map rendered successfully`, "success");
+
         } catch (error) {
+          debugLog(`❌ Error parsing/rendering figure: ${error.message}`, "error");
           console.error("Error parsing/rendering figure:", error);
           alert("Error displaying map data");
         }
       } else {
+        debugLog(`❌ Map generation failed: ${response.error || 'Unknown error'}`, "error");
         console.error("Map generation failed:", response.error);
         alert("Error: " + (response.error || "Unknown error"));
       }
     },
     error: function(xhr, status, error) {
+      debugLog(`❌ AJAX error: ${status} - ${error}`, "error");
+      debugLog(`📄 Response text: ${xhr.responseText.substring(0, 200)}...`, "error");
+
       console.error("AJAX error:", status, error);
       console.error("Response text:", xhr.responseText);
 
@@ -224,9 +350,10 @@ function sendMapRequest(payload) {
         const errorResponse = JSON.parse(xhr.responseText);
         if (errorResponse.error) {
           errorMessage = errorResponse.error;
+          debugLog(`🔍 Parsed error message: ${errorMessage}`, "error");
         }
       } catch (e) {
-        // Use default message
+        debugLog(`⚠️ Could not parse error response`, "warn");
       }
 
       alert(errorMessage);
@@ -234,6 +361,7 @@ function sendMapRequest(payload) {
     complete: function() {
       // Reset loading state
       setLoadingState(false);
+      debugLog(`🏁 AJAX request completed`, "info");
     }
   });
 }
@@ -250,16 +378,14 @@ function setLoadingState(isLoading) {
     $submitBtn.prop("disabled", true).text("Loading...");
     $customBtn.prop("disabled", true).text("Loading...");
     $resetBtn.prop("disabled", true);
-
-    // Show loading overlay on map
     showMapLoading();
+    debugLog("🔄 Loading state enabled", "info");
   } else {
     $submitBtn.prop("disabled", false).text("Submit");
     $customBtn.prop("disabled", false).text("Custom Display");
     $resetBtn.prop("disabled", false);
-
-    // Hide loading overlay
     hideMapLoading();
+    debugLog("✅ Loading state disabled", "info");
   }
 }
 
@@ -295,6 +421,7 @@ function getSelectedGeometryTypes() {
   $("input[name='geomType']:checked").each(function() {
     selected.push($(this).val());
   });
+  debugLog(`🔍 Selected geometry types: ${selected.join(', ')}`, "info");
   return selected;
 }
 
@@ -307,5 +434,8 @@ window.debugWidgets = {
   handleWeightedSubmit,
   handleCustomDisplay,
   handleReset,
-  sendMapRequest
+  sendMapRequest,
+  debugLog,
+  handleDataFractionChange,
+  initializeDataFractionSlider
 };

@@ -1,9 +1,3 @@
-"""
-Shared plotting utilities for the display package.
-- Pure utilities: no Flask, no file I/O, no app routes.
-- Other modules import these; this module imports from no local siblings.
-- Compatible with Plotly.js 2.20.0 (scattermapbox/densitymapbox).
-"""
 from __future__ import annotations
 
 from typing import Iterable, List, Tuple, Dict, Any
@@ -23,6 +17,7 @@ def create_default_display(gdf=None):
         margin={"r": 0, "t": 0, "b": 0, "l": 0}
     )
     return fig
+
 
 
 # -------------------------------------------------
@@ -87,9 +82,11 @@ def traces_from_geometry(
     hovertext: str = "",
     showlegend: bool = False,
     legendgroup: str | None = None,
+    marker_size: float = 8,
+    weight_value: float = None,
 ) -> List[go.Scattermapbox]:
-    """Plotly traces for a single geometry with proper hover text handling.
-    - Points/MultiPoints → markers
+    """Plotly traces for a single geometry with comprehensive hover text handling.
+    - Points/MultiPoints → markers (with optional weight-based sizing)
     - LineString/MultiLineString → lines
     - Polygon/MultiPolygon → outline as lines (no fill)
     """
@@ -98,16 +95,30 @@ def traces_from_geometry(
         return traces
     gt = getattr(geom, "geom_type", "")
 
+    # Configure marker based on whether this is weighted data
+    marker_config = {"size": marker_size, "color": color, "opacity": 0.8}
+    if weight_value is not None:
+        # For weighted data, size based on weight but keep it reasonable
+        # Note: scattermapbox markers don't support 'line' property like regular scatter plots
+        marker_config["size"] = max(6, min(30, weight_value * 15.0)) if np.isfinite(weight_value) else marker_size
+
+    # Configure hover label with dataset color
+    hover_config = dict(
+        bgcolor=color,
+        bordercolor="white",
+        font=dict(color="white", size=10)
+    )
+
     if gt == "Point":
         traces.append(go.Scattermapbox(
             lon=[geom.x],
             lat=[geom.y],
             mode="markers",
-            marker={"size": 8, "color": color},
+            marker=marker_config,
             name=name,
-            text=[hovertext],  # Use text instead of hovertext
-            hoverinfo="text",  # Show only the custom text
-            hovertemplate="%{text}<extra></extra>",  # Custom template
+            customdata=[hovertext],
+            hovertemplate="%{customdata}<extra></extra>",
+            hoverlabel=hover_config,
             showlegend=showlegend,
             legendgroup=legendgroup,
         ))
@@ -122,11 +133,11 @@ def traces_from_geometry(
             lon=xs,
             lat=ys,
             mode="markers",
-            marker={"size": 8, "color": color},
+            marker=marker_config,
             name=name,
-            text=hover_texts,
-            hoverinfo="text",
-            hovertemplate="%{text}<extra></extra>",
+            customdata=hover_texts,
+            hovertemplate="%{customdata}<extra></extra>",
+            hoverlabel=hover_config,
             showlegend=showlegend,
             legendgroup=legendgroup,
         ))
@@ -142,9 +153,9 @@ def traces_from_geometry(
             mode="lines",
             line={"color": color, "width": 2},
             name=name,
-            text=hover_texts,
-            hoverinfo="text",
-            hovertemplate="%{text}<extra></extra>",
+            customdata=hover_texts,
+            hovertemplate="%{customdata}<extra></extra>",
+            hoverlabel=hover_config,
             showlegend=showlegend,
             legendgroup=legendgroup,
         ))
@@ -160,9 +171,9 @@ def traces_from_geometry(
                 mode="lines",
                 line={"color": color, "width": 2},
                 name=name,
-                text=hover_texts,
-                hoverinfo="text",
-                hovertemplate="%{text}<extra></extra>",
+                customdata=hover_texts,
+                hovertemplate="%{customdata}<extra></extra>",
+                hoverlabel=hover_config,
                 showlegend=showlegend,
                 legendgroup=legendgroup,
             ))
@@ -178,9 +189,9 @@ def traces_from_geometry(
             fill="none",
             line={"color": color, "width": 2},
             name=name,
-            text=hover_texts,
-            hoverinfo="text",
-            hovertemplate="%{text}<extra></extra>",
+            customdata=hover_texts,
+            hovertemplate="%{customdata}<extra></extra>",
+            hoverlabel=hover_config,
             showlegend=showlegend,
             legendgroup=legendgroup,
         ))
@@ -197,16 +208,15 @@ def traces_from_geometry(
                 fill="none",
                 line={"color": color, "width": 2},
                 name=name,
-                text=hover_texts,
-                hoverinfo="text",
-                hovertemplate="%{text}<extra></extra>",
+                customdata=hover_texts,
+                hovertemplate="%{customdata}<extra></extra>",
+                hoverlabel=hover_config,
                 showlegend=showlegend,
                 legendgroup=legendgroup,
             ))
         return traces
 
     return traces
-
 
 def openstreetmap_layout(center_lon: float, center_lat: float, zoom: float = 6, legend_title: str | None = None) -> Dict[str, Any]:
     layout: Dict[str, Any] = {

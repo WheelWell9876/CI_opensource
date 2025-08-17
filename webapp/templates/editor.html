@@ -268,9 +268,9 @@
   </div>
 
   <!-- Load scripts in order -->
-  <script src="{{ url_for('static', filename='scripts/editor.js') }}"></script>
-  <script src="{{ url_for('static', filename='scripts/jsonEditor.js') }}"></script>
-  <script src="{{ url_for('static', filename='scripts/jsonManager.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/editor.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/jsonEditor.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/jsonManager.js') }}"></script>
   <script>
     // On page load, ensure the default tab is active.
     document.addEventListener('DOMContentLoaded', function() {

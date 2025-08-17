@@ -21,11 +21,6 @@ $(document).ready(function() {
 });
 
 function initializeApp() {
-  // Initialize data fraction slider
-  $("#dataFractionSlider").on("input", function() {
-    $("#dataFractionValue").text($(this).val());
-  });
-
   // Set initial mode
   AppState.currentMode = $("#modeSelect").val() || "regular";
   updateModeDisplay(AppState.currentMode);
@@ -97,8 +92,24 @@ function updateModeDisplay(mode) {
 
 function handleDisplayMethodChange() {
   const method = $("#displayMethodSelect").val();
-  const showWeightType = ["weighted_heatmap", "bubble_map", "gaussian_kde"].includes(method);
+  const mode = $("#modeSelect").val();
+
+  // Show weight type for weighted mode and certain display methods
+  const showWeightType = mode === "weighted" && [
+    "weighted_heatmap",
+    "bubble_map",
+    "gaussian_kde",
+    "basic_heatmap",
+    "convex_hull",
+    "default"
+  ].includes(method);
+
   $("#weightTypeRow").toggle(showWeightType);
+
+  // Always show advanced controls (including data fraction slider)
+  $("#advancedControls").show();
+
+  console.log(`Weight type visibility: ${showWeightType} (mode: ${mode}, method: ${method})`);
 }
 
 // -------------------------------------------
@@ -196,6 +207,9 @@ function resetFilters() {
   $("#displayMethodSelect").val("default");
   $("#weightTypeSelect").val("original");
   $("#weightTypeRow").hide();
+
+  // Always show advanced controls (including data fraction slider)
+  $("#advancedControls").show();
 }
 
 function resetDropdown(selector, placeholder) {

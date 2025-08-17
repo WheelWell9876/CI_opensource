@@ -468,24 +468,6 @@ footer {
   background: rgba(34, 87, 122, 0.5);
 }
 
-/* ------------------------------------
-  ANIMATIONS
-------------------------------------- */
-.filter-section {
-  animation: slideInLeft 0.3s ease-out;
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
 .btn {
   position: relative;
   overflow: hidden;

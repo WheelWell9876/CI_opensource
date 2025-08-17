@@ -20,20 +20,24 @@ var DisplayCustom = (function() {
   function init() {
     setupEventHandlers();
     updateWeightTypeVisibility();
+
+    // Always show the data fraction slider
+    $("#advancedControls").show();
   }
-  
+
   function setupEventHandlers() {
     $("#displayMethodSelect").on("change", handleDisplayMethodChange);
     $("#submitDisplayBtn").on("click", handleCustomDisplaySubmit);
+    $("#modeSelect").on("change", updateWeightTypeVisibility); // Also update on mode change
   }
-  
+
   // -------------------------------------------
   // Event Handlers
   // -------------------------------------------
   function handleDisplayMethodChange() {
     updateWeightTypeVisibility();
   }
-  
+
   function handleCustomDisplaySubmit() {
     // This now delegates to the main application logic
     if (typeof handleCustomDisplay === 'function') {
@@ -42,33 +46,31 @@ var DisplayCustom = (function() {
       console.error("handleCustomDisplay function not found");
     }
   }
-  
+
   // -------------------------------------------
   // UI Updates
   // -------------------------------------------
   function updateWeightTypeVisibility() {
     const method = $("#displayMethodSelect").val();
-    const showWeightType = [
-      "weighted_heatmap", 
-      "bubble_map", 
+    const mode = $("#modeSelect").val();
+
+    // Show weight type for weighted mode and certain display methods
+    const showWeightType = mode === "weighted" && [
+      "weighted_heatmap",
+      "bubble_map",
       "gaussian_kde",
-      "basic_heatmap"
+      "basic_heatmap",
+      "convex_hull",
+      "default"
     ].includes(method);
-    
+
     $("#weightTypeRow").toggle(showWeightType);
-    
-    // Also show/hide advanced controls based on display method
-    updateAdvancedControlsVisibility(method);
-  }
-  
-  function updateAdvancedControlsVisibility(method) {
-    const showAdvanced = [
-      "animated",
-      "interactive_filter",
-      "comparative"
-    ].includes(method);
-    
-    $("#advancedControls").toggle(showAdvanced);
+
+    // ALWAYS show advanced controls (including data fraction slider)
+    $("#advancedControls").show();
+
+    console.log(`Weight type visibility: ${showWeightType} (mode: ${mode}, method: ${method})`);
+    console.log(`Advanced controls (data fraction slider) should always be visible`);
   }
   
   // -------------------------------------------

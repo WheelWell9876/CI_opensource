@@ -231,26 +231,60 @@ def generate_map():
     """
     try:
         req = request.get_json(force=True) or {}
-        logger.debug(f"Received generate_map request: {req}")
+
+        # Enhanced debugging
+        print(f"🚀 DEBUG: generate_map called")
+        print(f"📊 DEBUG: Request data: {json.dumps(req, indent=2)}")
 
         mode = req.get("mode", "regular")
         filters = req.get("filters", {})
         display_method = req.get("display_method", "default")
+        weight_type = req.get("weight_type", "original")
         config = _extract_config_from_request(req)
+
+        print(f"🔍 DEBUG: Extracted parameters:")
+        print(f"  - Mode: {mode}")
+        print(f"  - Display Method: {display_method}")
+        print(f"  - Weight Type: {weight_type}")
+        print(f"  - Filters: {filters}")
+        print(f"  - Config: {config}")
+
+        logger.debug(f"Received generate_map request: mode={mode}, display_method={display_method}")
 
         # Load and filter data based on mode
         if mode == "weighted":
-            gdf = _load_weighted_data(filters, req.get("weight_type", "original"))
-            fig = build_weighted_figure(gdf, display_method, req.get("weight_type", "original"))
+            print(f"🔧 DEBUG: Loading weighted data...")
+            gdf = _load_weighted_data(filters, weight_type)
+            print(f"📈 DEBUG: Loaded {len(gdf)} rows of weighted data")
+
+            print(
+                f"🎨 DEBUG: Calling build_weighted_figure with method='{display_method}', weight_type='{weight_type}', config={config}")
+            fig = build_weighted_figure(gdf, display_method, weight_type, config)
+            print(f"✅ DEBUG: build_weighted_figure completed")
+
         else:
+            print(f"🔧 DEBUG: Loading regular data...")
             gdf = _load_regular_data(filters)
+            print(f"📈 DEBUG: Loaded {len(gdf)} rows of regular data")
             fig = create_regular_display(gdf, config)
 
         # Convert figure to JSON for client-side rendering
+        print(f"🔄 DEBUG: Converting figure to JSON...")
         fig_json = fig.to_json()
+        print(f"✅ DEBUG: Figure JSON conversion successful")
+
+        # Check figure structure
+        if hasattr(fig, 'data'):
+            print(f"📊 DEBUG: Figure has {len(fig.data)} traces")
+
         return jsonify({"success": True, "figure": fig_json})
 
     except Exception as e:
+        print(f"❌ DEBUG: Error in generate_map: {str(e)}")
+        print(f"❌ DEBUG: Traceback:")
+        import traceback
+        traceback.print_exc()
+
         logger.exception("Error in generate_map:")
         return jsonify({"success": False, "error": str(e)}), 500
 
@@ -262,13 +296,21 @@ def _load_weighted_data(filters: dict, weight_type: str = "original") -> gpd.Geo
         raise ValueError("Dataset path is required for weighted mode")
 
     file_path = os.path.join(BASE_DIR, "static", "data", dataset_path)
+    print(f"🔍 DEBUG: Looking for weighted file at: {file_path}")
+
     if not os.path.exists(file_path):
+        print(f"❌ DEBUG: File not found: {file_path}")
         raise FileNotFoundError(f"Weighted dataset not found: {file_path}")
 
+    print(f"📂 DEBUG: Loading parquet file: {file_path}")
     gdf = gpd.read_parquet(file_path)
+
+    print(f"📊 DEBUG: Loaded GeoDataFrame with shape {gdf.shape}")
+    print(f"📊 DEBUG: Columns: {list(gdf.columns)}")
 
     # Apply weight type if specified
     if weight_type != "original" and weight_type in gdf.columns:
+        print(f"⚖️ DEBUG: Setting weight column to {weight_type}")
         gdf["weight"] = gdf[weight_type]
 
     return gdf
@@ -285,10 +327,16 @@ def _load_regular_data(filters: dict) -> gpd.GeoDataFrame:
     dataset = filters.get("dataset", "")
 
     file_path = determine_file_path(state, county, category, dataset)
+    print(f"🔍 DEBUG: Looking for regular file at: {file_path}")
+
     if not file_path or not os.path.exists(file_path):
+        print(f"❌ DEBUG: File not found: {file_path}")
         raise FileNotFoundError(f"Dataset not found: {file_path}")
 
+    print(f"📂 DEBUG: Loading parquet file: {file_path}")
     gdf = gpd.read_parquet(file_path)
+    print(f"📊 DEBUG: Loaded GeoDataFrame with shape {gdf.shape}")
+
     return gdf
 
 
@@ -296,13 +344,40 @@ def _extract_config_from_request(req: dict) -> dict:
     """Extract display configuration from request."""
     config = req.get("config", {})
 
-    # Add any additional configuration processing here
-    return {
-        "data_fraction": config.get("dataFraction", 1.0),
+    # Debug logging
+    print(f"🔧 DEBUG: Raw config from request: {config}")
+
+    # Extract data fraction - check both possible names
+    data_fraction = 0.1  # Default to 10%
+    if "dataFraction" in config:
+        data_fraction = config["dataFraction"]
+        print(f"🔧 DEBUG: Found dataFraction: {data_fraction}")
+    elif "data_fraction" in config:
+        data_fraction = config["data_fraction"]
+        print(f"🔧 DEBUG: Found data_fraction: {data_fraction}")
+    else:
+        print(f"🔧 DEBUG: No data fraction found in config, using default: {data_fraction}")
+
+    # Ensure it's a float between 0 and 1
+    if isinstance(data_fraction, (int, float)):
+        if data_fraction > 1:
+            data_fraction = data_fraction / 100  # Convert percentage to fraction
+        data_fraction = max(0.01, min(1.0, data_fraction))  # Clamp between 1% and 100%
+    else:
+        data_fraction = 0.1
+
+    print(f"🔧 DEBUG: Final data_fraction being used: {data_fraction}")
+
+    # Build the final config
+    final_config = {
+        "data_fraction": data_fraction,
         "geometry_types": config.get("geometryTypes", []),
         "show_unavailable": config.get("showUnavailable", False),
         "display_method": req.get("display_method", "default")
     }
+
+    print(f"🔧 DEBUG: Final config: {final_config}")
+    return final_config
 
 
 # Add a new route for getting available options dynamically

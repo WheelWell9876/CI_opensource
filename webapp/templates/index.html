@@ -130,10 +130,13 @@
         </select>
       </div>
 
-      <!-- Advanced Controls -->
+      <!-- Advanced Controls with Data Fraction Slider -->
       <div id="advancedControls" class="filter-section">
         <label for="dataFractionSlider">Data Fraction: <span id="dataFractionValue">10</span>%</label>
         <input type="range" id="dataFractionSlider" min="1" max="100" value="10" class="slider">
+        <small style="color: #666; font-size: 11px; display: block; margin-top: 5px;">
+          ℹ️ Controls how much data to display (useful for large datasets)
+        </small>
       </div>
 
       <!-- Geometry Types -->
@@ -208,6 +211,7 @@
   <script src="{{ url_for('static', filename='scripts/map/mapRender.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/map/regularMapRender.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/map/widgets.js') }}"></script>
+
   <script>
     // Debug and initialization check
     $(document).ready(function() {
@@ -223,7 +227,7 @@
       const requiredElements = [
         '#modeSelect', '#stateSelect', '#countySelect',
         '#categorySelect', '#datasetSelect', '#weightedDatasetSelect',
-        '#submitBtn', '#resetBtn', '#mapContainer'
+        '#submitBtn', '#resetBtn', '#mapContainer', '#dataFractionSlider'
       ];
 
       requiredElements.forEach(selector => {
@@ -238,6 +242,7 @@
       console.log("=== END STARTUP DEBUG ===");
     });
   </script>
+
   <script>
     // Add this script to your HTML to ensure hover boxes work correctly
     $(document).ready(function() {
@@ -314,5 +319,173 @@
         };
     }
   </script>
+
+  <!-- Add this script right before your closing </body> tag in index.html -->
+  <script>
+  $(document).ready(function() {
+      // Simple debug logging for custom display
+      $('#submitDisplayBtn').on('click', function() {
+          const mode = $('#modeSelect').val();
+          const displayMethod = $('#displayMethodSelect').val();
+          const weightType = $('#weightTypeSelect').val();
+          const dataset = $('#weightedDatasetSelect').val();
+
+          console.log("🎨 CUSTOM DISPLAY CLICKED:");
+          console.log("  Mode:", mode);
+          console.log("  Display Method:", displayMethod);
+          console.log("  Weight Type:", weightType);
+          console.log("  Dataset:", dataset);
+
+          // Show what payload will be sent
+          if (mode === "weighted") {
+              const payload = {
+                  mode: "weighted",
+                  filters: { dataset: dataset },
+                  display_method: displayMethod,
+                  weight_type: weightType,
+                  config: {
+                      dataFraction: parseInt($('#dataFractionSlider').val()) / 100,
+                      geometryTypes: Array.from($("input[name='geomType']:checked")).map(cb => cb.value),
+                      showUnavailable: $("input[name='showUnavailable']:checked").val() === "show"
+                  }
+              };
+              console.log("📦 Payload that will be sent:", JSON.stringify(payload, null, 2));
+          }
+      });
+
+      // Monitor AJAX requests to /generate_map
+      $(document).ajaxSend(function(event, xhr, settings) {
+          if (settings.url === "/generate_map") {
+              console.log("🚀 AJAX REQUEST TO /generate_map:");
+              try {
+                  const payload = JSON.parse(settings.data);
+                  console.log("  📊 Display Method:", payload.display_method);
+                  console.log("  🎯 Mode:", payload.mode);
+                  if (payload.weight_type) {
+                      console.log("  ⚖️ Weight Type:", payload.weight_type);
+                  }
+                  if (payload.config && payload.config.dataFraction) {
+                      console.log("  🎚️ Data Fraction:", payload.config.dataFraction);
+                  }
+              } catch (e) {
+                  console.log("  ❌ Could not parse payload");
+              }
+          }
+      });
+
+      $(document).ajaxSuccess(function(event, xhr, settings) {
+          if (settings.url === "/generate_map") {
+              console.log("✅ AJAX SUCCESS:", xhr.status);
+              try {
+                  const response = JSON.parse(xhr.responseText);
+                  if (response.figure) {
+                      const figure = typeof response.figure === 'string' ? JSON.parse(response.figure) : response.figure;
+                      console.log("📈 Figure has", figure.data?.length || 0, "traces");
+                  }
+              } catch (e) {
+                  console.log("❌ Could not parse response");
+              }
+          }
+      });
+
+      $(document).ajaxError(function(event, xhr, settings, error) {
+          if (settings.url === "/generate_map") {
+              console.log("❌ AJAX ERROR:", xhr.status, "-", error);
+              console.log("📄 Response:", xhr.responseText);
+          }
+      });
+  });
+  </script>
+
+  <!-- Add this script temporarily to your index.html right before closing </body> tag to debug the slider -->
+  <script>
+  $(document).ready(function() {
+      // Force debug the slider
+      setTimeout(function() {
+          console.log("🔍 SLIDER DEBUG:");
+          console.log("  - Slider element exists:", $('#dataFractionSlider').length > 0);
+          console.log("  - Slider value:", $('#dataFractionSlider').val());
+          console.log("  - Slider visible:", $('#dataFractionSlider').is(':visible'));
+          console.log("  - Advanced controls exists:", $('#advancedControls').length > 0);
+          console.log("  - Advanced controls visible:", $('#advancedControls').is(':visible'));
+          console.log("  - Advanced controls display:", $('#advancedControls').css('display'));
+
+          // Force show the advanced controls and slider
+          $('#advancedControls').show();
+          $('#advancedControls').css('display', 'block');
+
+          // Log the slider's parent elements
+          console.log("  - Slider parent chain:");
+          $('#dataFractionSlider').parents().each(function(i, el) {
+              console.log(`    Level ${i}:`, el.tagName, el.id, el.className, $(el).is(':visible'));
+          });
+
+          // Check if there are any CSS rules hiding it
+          const slider = $('#dataFractionSlider')[0];
+          if (slider) {
+              const styles = window.getComputedStyle(slider);
+              console.log("  - Computed styles:");
+              console.log("    display:", styles.display);
+              console.log("    visibility:", styles.visibility);
+              console.log("    opacity:", styles.opacity);
+              console.log("    height:", styles.height);
+          }
+
+          // Try to make it super visible
+          $('#dataFractionSlider').css({
+              'display': 'block !important',
+              'visibility': 'visible !important',
+              'opacity': '1 !important',
+              'background-color': 'red',  // Temporary to make it obvious
+              'height': '20px',
+              'width': '100%'
+          });
+
+          $('#advancedControls').css({
+              'display': 'block !important',
+              'visibility': 'visible !important',
+              'border': '2px solid red',  // Temporary to make it obvious
+              'background-color': 'yellow'
+          });
+
+          console.log("🔍 AFTER FORCING VISIBILITY:");
+          console.log("  - Slider visible:", $('#dataFractionSlider').is(':visible'));
+          console.log("  - Advanced controls visible:", $('#advancedControls').is(':visible'));
+
+      }, 2000);
+  });
+  </script>
+
+  <script>
+  $(document).ready(function() {
+      // Debug which button is being clicked
+      $('#submitBtn').on('click', function() {
+          console.log("🚨 REGULAR SUBMIT BUTTON CLICKED!");
+          console.log("  - This should NOT include config data");
+      });
+
+      $('#submitDisplayBtn').on('click', function() {
+          console.log("🎨 CUSTOM DISPLAY BUTTON CLICKED!");
+          console.log("  - This SHOULD include config data");
+          console.log("  - Slider value:", $('#dataFractionSlider').val());
+
+          // Test if the slider value is being read correctly
+          const dataFraction = parseInt($("#dataFractionSlider").val()) / 100;
+          console.log("  - Calculated fraction:", dataFraction);
+      });
+
+      // Also check if there are multiple handlers
+      const submitEvents = $._data($('#submitDisplayBtn')[0], 'events');
+      console.log("🔍 Events attached to Custom Display button:", submitEvents);
+
+      // Check the button text and state
+      console.log("🔍 Button inspection:");
+      console.log("  - Submit button text:", $('#submitBtn').text());
+      console.log("  - Custom Display button text:", $('#submitDisplayBtn').text());
+      console.log("  - Custom Display button exists:", $('#submitDisplayBtn').length > 0);
+      console.log("  - Custom Display button visible:", $('#submitDisplayBtn').is(':visible'));
+  });
+  </script>
+
 </body>
 </html>

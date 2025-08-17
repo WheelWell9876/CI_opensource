@@ -1,20 +1,27 @@
 # geo_open_source/webapp/display/__init__.py
 
-# Regular display
+# Import core display functions
+from .display import (
+    create_default_display,
+    color_for_label,
+    ensure_shapely,
+    center_of,
+    flatten_points,
+    traces_from_geometry,
+    openstreetmap_layout
+)
+
+# Import main display functions
 from .regular_display import create_regular_display
+from .weighted_display import (
+    build_weighted_figure,
+    create_weighted_default,
+    create_weighted_hover_text,
+    create_empty_weighted_figure
+)
 
-# Weighted display (default + options)
-from .weighted_display import build_weighted_figure
-from .weighted_options.basic_heatmap import create_basic_heatmap
-
-# Other visualization options
-from .weighted_options.animated_display import create_animated_display
-from .weighted_options.bubble_map import create_bubble_map
-from .weighted_options.choropleth_map import create_choropleth_map
-from .weighted_options.comparative_overlay import create_comparative_overlay
-from .weighted_options.convex_hull import create_convex_hull_display
-from .weighted_options.gaussian_kde_heatmap import create_gaussian_kde_heatmap
-from .weighted_options.interactive_filter import create_interactive_filter_display
-from .weighted_options.threed_extrusion import create_3d_extrusion_display
-from .weighted_options.voronoi_tessellation import create_voronoi_tessellation_display
-from .weighted_options.weighted_heatmap import create_weighted_heatmap
+# Note: weighted_options modules are imported lazily in build_weighted_figure
+# to avoid circular imports and handle missing modules gracefully.
+# Individual modules can still be imported directly if needed:
+# from .weighted_options.bubble_map import figure as create_bubble_map
+# from .weighted_options.convex_hull import figure as create_convex_hull
