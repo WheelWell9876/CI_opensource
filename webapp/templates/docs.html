@@ -8,15 +8,18 @@
 <body>
   <header>
     <div class="logo">
-      <span class="logo-title">CI Sentinel Docs</span>
+      <div class="custom-loader"></div>
+      <span class="logo-title">CI Sentinel</span>
     </div>
     <nav>
-      <ul class="nav-links-container">
+      <div class="nav-links-container">
         <li><a href="{{ url_for('main.index') }}">Home</a></li>
         <li><a href="{{ url_for('main.about') }}">About</a></li>
-        <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
         <li><a href="{{ url_for('main.editor_page') }}">Editor</a></li>
-      </ul>
+        <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
+        <li><a href="{{ url_for('main.docs_page') }}">Docs</a></li>
+        <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+      </div>
     </nav>
   </header>
   <div class="docs-container">

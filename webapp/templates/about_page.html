@@ -7,24 +7,26 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
 </head>
 <body>
-    <header>
-        <div class="logo">
-          <div class="custom-loader"></div>
-          <span class="logo-title">Solarpunk CI Sentinel</span>
-        </div>
-        <nav>
-          <!-- Desktop links (Home, Dataset, About, Contact) -->
-          <div class="nav-links-container">
-            <li><a href="{{ url_for('main.index') }}">Home</a></li>
-            <li><a href="{{ url_for('main.about') }}">About</a></li>
-            <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
-            <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
-          </div>
-        </nav>
-      </header>
+  <header>
+    <div class="logo">
+      <div class="custom-loader"></div>
+      <span class="logo-title">CI Sentinel</span>
+      <a href="{{ url_for('main.index') }}"></a>
+    </div>
+    <nav>
+      <div class="nav-links-container">
+        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li><a href="{{ url_for('main.about') }}">About</a></li>
+        <li><a href="{{ url_for('main.editor_page') }}">Editor</a></li>
+        <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
+        <li><a href="{{ url_for('main.docs_page') }}">Docs</a></li>
+        <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+      </div>
+    </nav>
+  </header>
 
   <div class="centered-content">
-    <h2>Introducing CI Sentinel!<h2></h2>
+    <h2>Introducing CI Sentinel!</h2>
     <h4>A comprehensive map of America's critical infrastructure.</h4>
 
     <h3>Methods</h3>
@@ -67,5 +69,6 @@
     <p>&copy; 2024 CI Sentinel</p>
     <p>Created by [Your Name]</p>
   </footer>
+  <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
 </body>
 </html>

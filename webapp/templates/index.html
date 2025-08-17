@@ -101,6 +101,20 @@
         </div>
       </div>
 
+      <!-- Basemap Style -->
+      <div class="filter-section">
+        <label for="basemapSelect">Map Style</label>
+        <select id="basemapSelect">
+          <option value="open-street-map" selected>OpenStreetMap</option>
+          <option value="carto-positron">Carto Positron</option>
+          <option value="carto-darkmatter">Carto Dark Matter</option>
+          <option value="stamen-terrain">Stamen Terrain</option>
+          <option value="stamen-toner">Stamen Toner</option>
+          <option value="stamen-watercolor">Stamen Watercolor</option>
+          <option value="white-bg">White Background</option>
+        </select>
+      </div>
+
       <!-- Display Options -->
       <div class="filter-section">
         <label for="displayMethodSelect">Display Method</label>
@@ -202,195 +216,11 @@
 
   <!-- JavaScript -->
   <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/debug.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/map/displayCustom.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/map/filters.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/map/mapRender.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/map/regularMapRender.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/map/widgets.js') }}"></script>
-
-  <script>
-    // Debug and initialization check
-    $(document).ready(function() {
-      console.log("=== APPLICATION STARTUP DEBUG ===");
-      console.log("Available objects:", {
-        AppState: typeof AppState,
-        FilterManager: typeof FilterManager,
-        jQuery: typeof $,
-        Plotly: typeof Plotly
-      });
-
-      // Check if all required elements exist
-      const requiredElements = [
-        '#modeSelect', '#stateSelect', '#countySelect',
-        '#categorySelect', '#datasetSelect', '#weightedDatasetSelect',
-        '#submitBtn', '#resetBtn', '#mapContainer', '#dataFractionSlider'
-      ];
-
-      requiredElements.forEach(selector => {
-        const element = $(selector);
-        if element.length === 0) {
-          console.error("Missing required element:", selector);
-        } else {
-          console.log("Found element:", selector);
-        }
-      });
-
-      console.log("=== END STARTUP DEBUG ===");
-    });
-  </script>
-
-  <script>
-    // Add this script to your HTML to ensure hover boxes work correctly
-    $(document).ready(function() {
-        // Function to fix hover box sizing after plot is rendered
-        function fixHoverBoxes() {
-            // Wait a bit for the plot to fully render
-            setTimeout(function() {
-                // Target all hover text elements and ensure they have fixed sizing
-                $('.js-plotly-plot .plotly .hoverlayer .hovertext').css({
-                    'width': '300px',
-                    'height': '250px',
-                    'max-width': '300px',
-                    'max-height': '250px',
-                    'min-width': '300px',
-                    'min-height': '250px',
-                    'overflow-y': 'auto',
-                    'overflow-x': 'hidden',
-                    'white-space': 'normal',
-                    'word-wrap': 'break-word',
-                    'display': 'block',
-                    'visibility': 'visible'
-                });
-            }, 100);
-        }
-
-        // Fix hover boxes whenever the plot is updated
-        $(document).on('plotly_hover plotly_relayout plotly_redraw', '#mapContainer', function() {
-            fixHoverBoxes();
-        });
-
-        // Also fix on initial load
-        $(document).on('plotly_afterplot', '#mapContainer', function() {
-            fixHoverBoxes();
-        });
-
-        // Fallback: periodically check and fix hover boxes
-        setInterval(function() {
-            $('.js-plotly-plot .plotly .hoverlayer .hovertext').each(function() {
-                const $hoverBox = $(this);
-                if ($hoverBox.is(':visible') && ($hoverBox.width() !== 300 || $hoverBox.height() !== 250)) {
-                    $hoverBox.css({
-                        'width': '300px',
-                        'height': '250px',
-                        'max-width': '300px',
-                        'max-height': '250px',
-                        'overflow-y': 'auto',
-                        'overflow-x': 'hidden'
-                    });
-                }
-            });
-        }, 500);
-    });
-
-    // Alternative approach: Override Plotly's hover behavior
-    if (typeof Plotly !== 'undefined') {
-        // Store original hover function
-        const originalHover = Plotly.Fx.hover;
-
-        // Override with our custom sizing
-        Plotly.Fx.hover = function(gd, hoverData, hoverMode) {
-            const result = originalHover.apply(this, arguments);
-
-            // Apply our fixed sizing after hover is created
-            setTimeout(function() {
-                $('.js-plotly-plot .plotly .hoverlayer .hovertext').css({
-                    'width': '300px !important',
-                    'height': '250px !important',
-                    'overflow-y': 'auto !important',
-                    'overflow-x': 'hidden !important'
-                });
-            }, 10);
-
-            return result;
-        };
-    }
-  </script>
-
-  <!-- Add this script right before your closing </body> tag in index.html -->
-  <script>
-  $(document).ready(function() {
-      // Simple debug logging for custom display
-      $('#submitDisplayBtn').on('click', function() {
-          const mode = $('#modeSelect').val();
-          const displayMethod = $('#displayMethodSelect').val();
-          const weightType = $('#weightTypeSelect').val();
-          const dataset = $('#weightedDatasetSelect').val();
-
-          console.log("🎨 CUSTOM DISPLAY CLICKED:");
-          console.log("  Mode:", mode);
-          console.log("  Display Method:", displayMethod);
-          console.log("  Weight Type:", weightType);
-          console.log("  Dataset:", dataset);
-
-          // Show what payload will be sent
-          if (mode === "weighted") {
-              const payload = {
-                  mode: "weighted",
-                  filters: { dataset: dataset },
-                  display_method: displayMethod,
-                  weight_type: weightType,
-                  config: {
-                      dataFraction: parseInt($('#dataFractionSlider').val()) / 100,
-                      geometryTypes: Array.from($("input[name='geomType']:checked")).map(cb => cb.value),
-                      showUnavailable: $("input[name='showUnavailable']:checked").val() === "show"
-                  }
-              };
-              console.log("📦 Payload that will be sent:", JSON.stringify(payload, null, 2));
-          }
-      });
-
-      // Monitor AJAX requests to /generate_map
-      $(document).ajaxSend(function(event, xhr, settings) {
-          if (settings.url === "/generate_map") {
-              console.log("🚀 AJAX REQUEST TO /generate_map:");
-              try {
-                  const payload = JSON.parse(settings.data);
-                  console.log("  📊 Display Method:", payload.display_method);
-                  console.log("  🎯 Mode:", payload.mode);
-                  if (payload.weight_type) {
-                      console.log("  ⚖️ Weight Type:", payload.weight_type);
-                  }
-                  if (payload.config && payload.config.dataFraction) {
-                      console.log("  🎚️ Data Fraction:", payload.config.dataFraction);
-                  }
-              } catch (e) {
-                  console.log("  ❌ Could not parse payload");
-              }
-          }
-      });
-
-      $(document).ajaxSuccess(function(event, xhr, settings) {
-          if (settings.url === "/generate_map") {
-              console.log("✅ AJAX SUCCESS:", xhr.status);
-              try {
-                  const response = JSON.parse(xhr.responseText);
-                  if (response.figure) {
-                      const figure = typeof response.figure === 'string' ? JSON.parse(response.figure) : response.figure;
-                      console.log("📈 Figure has", figure.data?.length || 0, "traces");
-                  }
-              } catch (e) {
-                  console.log("❌ Could not parse response");
-              }
-          }
-      });
-
-      $(document).ajaxError(function(event, xhr, settings, error) {
-          if (settings.url === "/generate_map") {
-              console.log("❌ AJAX ERROR:", xhr.status, "-", error);
-              console.log("📄 Response:", xhr.responseText);
-          }
-      });
-  });
-  </script>
 </body>
 </html>

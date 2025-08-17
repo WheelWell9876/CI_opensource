@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>CI Sentinel - Contact</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='resources/styles/index.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
 </head>
 <body>
   <header>
     <div class="logo">
       <div class="custom-loader"></div>
-      <span class="logo-title">Solarpunk CI Sentinel</span>
+      <span class="logo-title">CI Sentinel</span>
+      <a href="{{ url_for('main.index') }}"></a>
     </div>
     <nav>
-      <!-- Desktop links (Home, Dataset, About, Contact) -->
       <div class="nav-links-container">
         <li><a href="{{ url_for('main.index') }}">Home</a></li>
         <li><a href="{{ url_for('main.about') }}">About</a></li>
+        <li><a href="{{ url_for('main.editor_page') }}">Editor</a></li>
         <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
+        <li><a href="{{ url_for('main.docs_page') }}">Docs</a></li>
         <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
       </div>
     </nav>
@@ -32,5 +34,6 @@
   <footer>
     <p>&copy; 2024 CI Sentinel - Contact Page</p>
   </footer>
+  <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
 </body>
 </html>
