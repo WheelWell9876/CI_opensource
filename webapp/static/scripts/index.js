@@ -100,36 +100,72 @@ function updateModeDisplay(mode) {
   console.log("Updating display for mode:", mode);
 
   if (mode === "weighted") {
+    // Show weighted-specific elements
     $("#regularFilters").hide();
     $("#weightedFilters").show();
+
+    // Show weighted-specific controls
+    $("#displayMethodSelect").closest('.filter-section').show();
+    $("#weightTypeRow").show(); // Will be controlled by display method
+    $("#heatmapPointsRow").show(); // Will be controlled by display method
+
     loadWeightedDatasetsManually();
+
+    // Update display method visibility after loading
+    setTimeout(handleDisplayMethodChange, 100);
+
   } else {
+    // Show regular-specific elements
     $("#weightedFilters").hide();
     $("#regularFilters").show();
+
+    // Hide weighted-specific controls
+    $("#displayMethodSelect").closest('.filter-section').hide();
+    $("#weightTypeRow").hide();
+    $("#heatmapPointsRow").hide();
+
     loadStatesManually();
   }
+
+  console.log(`Mode display updated: ${mode}`);
 }
 
 function handleDisplayMethodChange() {
   const method = $("#displayMethodSelect").val();
   const mode = $("#modeSelect").val();
 
-  // Show weight type for weighted mode and certain display methods
-  const showWeightType = mode === "weighted" && [
-    "weighted_heatmap",
-    "bubble_map",
-    "gaussian_kde",
-    "basic_heatmap",
-    "convex_hull",
-    "default"
-  ].includes(method);
+  // Only show weight-specific controls in weighted mode
+  if (mode === "weighted") {
+    // Show weight type for weighted mode and certain display methods
+    const showWeightType = [
+      "weighted_heatmap",
+      "bubble_map",
+      "gaussian_kde",
+      "basic_heatmap",
+      "convex_hull",
+      "default"
+    ].includes(method);
 
-  $("#weightTypeRow").toggle(showWeightType);
+    $("#weightTypeRow").toggle(showWeightType);
+
+    // Show heatmap points toggle only for heatmap display methods
+    const showHeatmapToggle = [
+      "basic_heatmap",
+      "weighted_heatmap"
+    ].includes(method);
+
+    $("#heatmapPointsRow").toggle(showHeatmapToggle);
+
+    console.log(`Weight type visibility: ${showWeightType} (method: ${method})`);
+    console.log(`Heatmap points toggle visibility: ${showHeatmapToggle} (method: ${method})`);
+  } else {
+    // In regular mode, hide all weighted-specific controls
+    $("#weightTypeRow").hide();
+    $("#heatmapPointsRow").hide();
+  }
 
   // Always show advanced controls (including data fraction slider)
   $("#advancedControls").show();
-
-  console.log(`Weight type visibility: ${showWeightType} (mode: ${mode}, method: ${method})`);
 }
 
 // -------------------------------------------

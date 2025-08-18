@@ -1,5 +1,5 @@
 // -------------------------------------------
-// displayCustom.js - Custom display method handling with heatmap toggle
+// displayCustom.js - Updated for mode-specific widget visibility
 // -------------------------------------------
 
 var DisplayCustom = (function() {
@@ -11,7 +11,8 @@ var DisplayCustom = (function() {
   return {
     init: init,
     handleDisplayMethodChange: handleDisplayMethodChange,
-    handleCustomDisplaySubmit: handleCustomDisplaySubmit
+    handleCustomDisplaySubmit: handleCustomDisplaySubmit,
+    updateHeatmapPointsVisibility: updateHeatmapPointsVisibility
   };
 
   // -------------------------------------------
@@ -29,7 +30,10 @@ var DisplayCustom = (function() {
   function setupEventHandlers() {
     $("#displayMethodSelect").on("change", handleDisplayMethodChange);
     $("#submitDisplayBtn").on("click", handleCustomDisplaySubmit);
-    $("#modeSelect").on("change", updateWeightTypeVisibility); // Also update on mode change
+    $("#modeSelect").on("change", function() {
+      updateWeightTypeVisibility();
+      updateHeatmapPointsVisibility();
+    });
   }
 
   // -------------------------------------------
@@ -56,7 +60,7 @@ var DisplayCustom = (function() {
     const method = $("#displayMethodSelect").val();
     const mode = $("#modeSelect").val();
 
-    // Show weight type for weighted mode and certain display methods
+    // Only show weight type in weighted mode for certain display methods
     const showWeightType = mode === "weighted" && [
       "weighted_heatmap",
       "bubble_map",
@@ -68,11 +72,7 @@ var DisplayCustom = (function() {
 
     $("#weightTypeRow").toggle(showWeightType);
 
-    // ALWAYS show advanced controls (including data fraction slider)
-    $("#advancedControls").show();
-
     console.log(`Weight type visibility: ${showWeightType} (mode: ${mode}, method: ${method})`);
-    console.log(`Advanced controls (data fraction slider) should always be visible`);
   }
 
   function updateHeatmapPointsVisibility() {
@@ -102,9 +102,10 @@ var DisplayCustom = (function() {
       showUnavailable: $("input[name='showUnavailable']:checked").val() === "show"
     };
 
-    // Add heatmap points toggle if visible
+    // Add heatmap points toggle if visible and in weighted mode
+    const mode = $("#modeSelect").val();
     const method = $("#displayMethodSelect").val();
-    if (["basic_heatmap", "weighted_heatmap"].includes(method)) {
+    if (mode === "weighted" && ["basic_heatmap", "weighted_heatmap"].includes(method)) {
       config.showHeatmapPoints = $("input[name='showHeatmapPoints']:checked").val() === "show";
       console.log(`🔥 Heatmap points setting: ${config.showHeatmapPoints}`);
     }
@@ -126,7 +127,8 @@ var DisplayCustom = (function() {
   window.DisplayCustom = {
     getDisplayConfig: getDisplayConfig,
     getSelectedGeometryTypes: getSelectedGeometryTypes,
-    updateHeatmapPointsVisibility: updateHeatmapPointsVisibility
+    updateHeatmapPointsVisibility: updateHeatmapPointsVisibility,
+    updateWeightTypeVisibility: updateWeightTypeVisibility
   };
   
 })();

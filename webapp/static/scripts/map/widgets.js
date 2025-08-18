@@ -244,16 +244,25 @@ function handleReset() {
   $("#dataFractionSlider").val(10);
   $("#dataFractionValue").text("10");
   $("#hideUnavailable").prop("checked", true);
+
+  // Reset weighted-specific controls
   $("#displayMethodSelect").val("default");
   $("#weightTypeSelect").val("original");
-  $("#weightTypeRow").hide();
-
-  // Reset heatmap points toggle
   $("#hideHeatmapPoints").prop("checked", true);
+
+  // Hide weighted-specific controls (will be shown/hidden based on mode)
+  $("#weightTypeRow").hide();
   $("#heatmapPointsRow").hide();
 
   // Check all geometry types by default
   $("input[name='geomType']").prop("checked", true);
+
+  // Reset mode to regular
+  $("#modeSelect").val("regular");
+  AppState.currentMode = "regular";
+
+  // Update mode display to hide weighted controls
+  updateModeDisplay("regular");
 
   // Load default map in the chosen style
   loadDefaultMap();
@@ -262,7 +271,7 @@ function handleReset() {
   AppState.currentData = null;
   AppState.currentFigure = null;
 
-  debugLog("✅ Reset complete", "success");
+  debugLog("✅ Reset complete - back to regular mode", "success");
 }
 
 

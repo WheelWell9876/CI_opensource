@@ -138,9 +138,24 @@ nav {
   font-size: 0.9rem;
 }
 
-/* Filter Sections */
+/* Filter Sections with Smooth Transitions */
 .filter-section {
   margin-bottom: 20px;
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+  max-height: 500px; /* Allow for content expansion */
+  overflow: hidden;
+}
+
+/* Hidden state for filter sections */
+.filter-section.hidden,
+.filter-section[style*="display: none"] {
+  opacity: 0;
+  max-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transform: translateY(-10px);
 }
 
 .filter-group {
@@ -149,6 +164,7 @@ nav {
   padding: 15px;
   margin-bottom: 20px;
   background: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease-in-out;
 }
 
 .filter-section label {
@@ -159,6 +175,7 @@ nav {
   margin-bottom: 5px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  transition: color 0.3s ease;
 }
 
 .filter-section select {
@@ -169,19 +186,67 @@ nav {
   border-radius: 6px;
   background: white;
   color: #333;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .filter-section select:focus {
   outline: none;
   border-color: #22577a;
   box-shadow: 0 0 0 2px rgba(34, 87, 122, 0.1);
+  transform: translateY(-1px);
 }
 
 .filter-section select:disabled {
   background: #f5f5f5;
   color: #999;
   cursor: not-allowed;
+}
+
+/* Mode-specific styling for weighted controls */
+#weightTypeRow,
+#heatmapPointsRow {
+  border-left: 3px solid #007bff;
+  padding-left: 15px;
+  margin-left: 5px;
+  background: rgba(0, 123, 255, 0.03);
+  border-radius: 0 8px 8px 0;
+  position: relative;
+}
+
+#weightTypeRow::before,
+#heatmapPointsRow::before {
+  content: "⚖️";
+  position: absolute;
+  left: -15px;
+  top: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+#heatmapPointsRow::before {
+  content: "🔥";
+}
+
+/* Display Method dropdown styling for weighted mode */
+.filter-section:has(#displayMethodSelect) {
+  background: rgba(0, 123, 255, 0.05);
+  border: 1px solid rgba(0, 123, 255, 0.2);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+/* Visual indicator for weighted-specific controls */
+#displayMethodSelect:enabled,
+#weightTypeSelect:enabled {
+  border-left: 3px solid #007bff;
+  padding-left: 15px;
+}
+
+input[name="showHeatmapPoints"]:enabled {
+  accent-color: #007bff;
+  transform: scale(1.1);
 }
 
 /* Slider Styling */
@@ -192,6 +257,11 @@ nav {
   background: #ddd;
   outline: none;
   -webkit-appearance: none;
+  transition: all 0.3s ease;
+}
+
+.slider:hover {
+  background: #bbb;
 }
 
 .slider::-webkit-slider-thumb {
@@ -202,6 +272,13 @@ nav {
   border-radius: 50%;
   background: #22577a;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  background: #1a4660;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(34, 87, 122, 0.3);
 }
 
 .slider::-moz-range-thumb {
@@ -211,6 +288,7 @@ nav {
   background: #22577a;
   cursor: pointer;
   border: none;
+  transition: all 0.3s ease;
 }
 
 /* Checkbox and Radio Groups */
@@ -232,12 +310,25 @@ nav {
   letter-spacing: normal !important;
   margin-bottom: 0 !important;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.checkbox-label:hover,
+.radio-label:hover {
+  color: #22577a !important;
+  transform: translateX(3px);
 }
 
 .checkbox-label input,
 .radio-label input {
   margin-right: 8px;
   transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
+.checkbox-label input:checked,
+.radio-label input:checked {
+  transform: scale(1.2);
 }
 
 /* Button Group */
@@ -264,6 +355,8 @@ nav {
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-primary {
@@ -273,8 +366,8 @@ nav {
 
 .btn-primary:hover {
   background: #1a4660;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(34, 87, 122, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34, 87, 122, 0.4);
 }
 
 .btn-secondary {
@@ -284,8 +377,8 @@ nav {
 
 .btn-secondary:hover {
   background: #6de085;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(128, 237, 153, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(128, 237, 153, 0.4);
 }
 
 .btn-reset {
@@ -295,8 +388,8 @@ nav {
 
 .btn-reset:hover {
   background: #da190b;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
 }
 
 .btn:disabled {
@@ -308,6 +401,30 @@ nav {
 
 .btn .material-icons {
   font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.btn:hover .material-icons {
+  transform: scale(1.1);
+}
+
+/* Ripple effect for buttons */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::before {
+  width: 300px;
+  height: 300px;
 }
 
 /* RIGHT MAP AREA */
@@ -315,6 +432,58 @@ nav {
   flex: 1;
   position: relative;
   background: rgba(255, 255, 255, 0.1);
+}
+
+/* Mode transition indicators */
+.mode-transition {
+  position: relative;
+  overflow: hidden;
+}
+
+.mode-transition::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 123, 255, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.mode-transition.switching::after {
+  left: 100%;
+}
+
+/* Smooth fade for filter groups */
+.filter-group.fade-in {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.filter-group.fade-out {
+  animation: fadeOutDown 0.3s ease-in;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
 }
 
 /* ------------------------------------
@@ -421,6 +590,15 @@ footer {
     flex: 1;
     min-width: 120px;
   }
+
+  /* Reduce animation intensity on mobile */
+  .filter-section {
+    transition: all 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+  }
 }
 
 @media (max-width: 480px) {
@@ -445,6 +623,54 @@ footer {
   .btn .material-icons {
     font-size: 16px;
   }
+
+  /* Disable some animations on very small screens */
+  .filter-section {
+    transition: opacity 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: none;
+  }
+}
+
+/* ------------------------------------
+  ACCESSIBILITY & REDUCED MOTION
+------------------------------------- */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .filter-section,
+  .btn,
+  .slider,
+  .checkbox-label,
+  .radio-label,
+  .filter-group {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .btn:hover {
+    transform: none !important;
+  }
+
+  .mode-transition::after {
+    transition: none !important;
+  }
+}
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+  #weightTypeRow,
+  #heatmapPointsRow {
+    border-left-color: #000;
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .filter-section:has(#displayMethodSelect) {
+    border-color: #000;
+    background: rgba(255, 255, 255, 0.9);
+  }
 }
 
 /* ------------------------------------
@@ -462,33 +688,9 @@ footer {
 .sidebar::-webkit-scrollbar-thumb {
   background: rgba(34, 87, 122, 0.3);
   border-radius: 4px;
+  transition: background 0.3s ease;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(34, 87, 122, 0.5);
 }
-
-.btn {
-  position: relative;
-  overflow: hidden;
-}
-
-.btn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
-
-.btn:active::before {
-  width: 300px;
-  height: 300px;
-}
-
-/* Remove old bento box styles since we're not using them anymore */
