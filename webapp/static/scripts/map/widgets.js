@@ -116,6 +116,36 @@ function handleSubmit() {
   }
 }
 
+function getConfigWithHeatmapSettings() {
+  const dataFraction = parseInt($("#dataFractionSlider").val()) / 100;
+  const geometryTypes = getSelectedGeometryTypes();
+  const showUnavailable = $("input[name='showUnavailable']:checked").val() === "show";
+  const mapStyle = $("#basemapSelect").val() || "open-street-map";
+
+  const config = {
+    dataFraction,
+    data_fraction: dataFraction, // Support both naming conventions
+    geometryTypes,
+    geometry_types: geometryTypes, // Support both naming conventions
+    showUnavailable,
+    mapStyle,
+    map_style: mapStyle // Support both naming conventions
+  };
+
+  // Add heatmap points toggle if heatmap method is selected
+  const displayMethod = $("#displayMethodSelect").val();
+  if (["basic_heatmap", "weighted_heatmap"].includes(displayMethod)) {
+    const showHeatmapPoints = $("input[name='showHeatmapPoints']:checked").val() === "show";
+    config.showHeatmapPoints = showHeatmapPoints;
+    config.show_heatmap_points = showHeatmapPoints; // Support both naming conventions
+
+    debugLog(`🔥 Heatmap display method detected: ${displayMethod}`, "info");
+    debugLog(`🔥 Show heatmap points: ${showHeatmapPoints}`, "info");
+  }
+
+  return config;
+}
+
 function handleRegularSubmit() {
   debugLog("🔄 Handling regular submit", "info");
 
@@ -132,25 +162,17 @@ function handleRegularSubmit() {
     return;
   }
 
-  const dataFraction = parseInt($("#dataFractionSlider").val()) / 100;
-  const geometryTypes = getSelectedGeometryTypes();
-  const showUnavailable = $("input[name='showUnavailable']:checked").val() === "show";
-  const mapStyle = $("#basemapSelect").val() || "open-street-map";
+  const config = getConfigWithHeatmapSettings();
 
   const payload = {
     mode: "regular",
     filters: { state, county, category, dataset },
     display_method: $("#displayMethodSelect").val() || "default",
-    config: {
-      dataFraction,
-      geometryTypes,
-      showUnavailable,
-      mapStyle
-    }
+    config: config
   };
 
-  debugLog(`🎚️ Regular submit with slider: ${$("#dataFractionSlider").val()}% -> fraction: ${dataFraction}`, "info");
-  debugLog(`📤 Sending regular payload with config: ${JSON.stringify(payload)}`, "info");
+  debugLog(`🎚️ Regular submit with config: ${JSON.stringify(config)}`, "info");
+  debugLog(`📤 Sending regular payload: ${JSON.stringify(payload)}`, "info");
   sendMapRequest(payload);
 }
 
@@ -170,27 +192,19 @@ function handleWeightedSubmit() {
     return;
   }
 
-  const dataFraction = parseInt($("#dataFractionSlider").val()) / 100;
-  const geometryTypes = getSelectedGeometryTypes();
-  const showUnavailable = $("input[name='showUnavailable']:checked").val() === "show";
-  const mapStyle = $("#basemapSelect").val() || "open-street-map";
+  const config = getConfigWithHeatmapSettings();
 
   const payload = {
     mode: "weighted",
     filters: { dataset },
     display_method: displayMethod,
     weight_type: weightType,
-    config: {
-      dataFraction,
-      geometryTypes,
-      showUnavailable,
-      mapStyle
-    }
+    config: config
   };
 
-  debugLog(`🎚️ Weighted submit with slider: ${$("#dataFractionSlider").val()}% -> fraction: ${dataFraction}`, "info");
+  debugLog(`🎚️ Weighted submit with config: ${JSON.stringify(config)}`, "info");
   debugLog(`🎨 Display method: ${displayMethod}`, "info");
-  debugLog(`📤 Sending weighted payload with config: ${JSON.stringify(payload)}`, "info");
+  debugLog(`📤 Sending weighted payload: ${JSON.stringify(payload)}`, "info");
   sendMapRequest(payload);
 }
 
@@ -226,13 +240,17 @@ function handleReset() {
   $("#weightedDatasetSelect").val("");
 
   // Reset other widgets
-  $("#basemapSelect").val("open-street-map"); // ← reset to OSM
+  $("#basemapSelect").val("open-street-map");
   $("#dataFractionSlider").val(10);
   $("#dataFractionValue").text("10");
   $("#hideUnavailable").prop("checked", true);
   $("#displayMethodSelect").val("default");
   $("#weightTypeSelect").val("original");
   $("#weightTypeRow").hide();
+
+  // Reset heatmap points toggle
+  $("#hideHeatmapPoints").prop("checked", true);
+  $("#heatmapPointsRow").hide();
 
   // Check all geometry types by default
   $("input[name='geomType']").prop("checked", true);

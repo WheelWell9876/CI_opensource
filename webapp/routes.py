@@ -355,7 +355,7 @@ def _load_regular_data(filters: dict) -> gpd.GeoDataFrame:
 
 
 def _extract_config_from_request(req: dict) -> dict:
-    """Extract display configuration from request, including basemap style."""
+    """Extract display configuration from request, including basemap style and heatmap settings."""
     config = req.get("config", {}) or {}
 
     print(f"🔧 DEBUG: Raw config from request: {config}")
@@ -384,6 +384,10 @@ def _extract_config_from_request(req: dict) -> dict:
     geometry_types = config.get("geometryTypes", [])
     show_unavailable = config.get("showUnavailable", False)
 
+    # --- Heatmap points toggle ---
+    show_heatmap_points = config.get("showHeatmapPoints", config.get("show_heatmap_points", False))
+    print(f"🔥 DEBUG: Heatmap points setting from config: {show_heatmap_points}")
+
     # --- Basemap style (string, Plotly Mapbox "style") ---
     map_style = config.get("mapStyle") or "open-street-map"
     print(f"🗺️ DEBUG: map_style requested: {map_style}")
@@ -392,6 +396,7 @@ def _extract_config_from_request(req: dict) -> dict:
         "data_fraction": data_fraction,
         "geometry_types": geometry_types,
         "show_unavailable": show_unavailable,
+        "show_heatmap_points": show_heatmap_points,  # ADD THIS LINE
         "display_method": req.get("display_method", "default"),
         "map_style": map_style,           # normalized key for server-side use
         "raw_mapStyle": config.get("mapStyle")  # keep original for debugging

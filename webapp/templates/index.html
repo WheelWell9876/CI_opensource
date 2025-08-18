@@ -144,6 +144,24 @@
         </select>
       </div>
 
+      <!-- Heatmap Points Toggle - only visible for heatmap display methods -->
+      <div id="heatmapPointsRow" class="filter-section" style="display: none;">
+        <label>Show Data Points on Heatmap</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="showHeatmapPoints" id="showHeatmapPoints" value="show">
+            Show Points
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="showHeatmapPoints" id="hideHeatmapPoints" value="hide" checked>
+            Hide Points
+          </label>
+        </div>
+        <small style="color: #666; font-size: 11px; display: block; margin-top: 5px;">
+          🔥 Toggle individual data points overlay on heat blobs
+        </small>
+      </div>
+
       <!-- Advanced Controls with Data Fraction Slider -->
       <div id="advancedControls" class="filter-section">
         <label for="dataFractionSlider">Data Fraction: <span id="dataFractionValue">10</span>%</label>
