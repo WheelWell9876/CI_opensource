@@ -2,283 +2,814 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Custom API Crafter - CI Sentinel Editor</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/editor.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoJSON Editor - CI Sentinel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/editor_modern.css') }}">
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <div class="custom-loader"></div>
-      <span class="logo-title">CI Sentinel</span>
-    </div>
-    <nav>
-      <div class="nav-links-container">
-        <li><a href="{{ url_for('main.index') }}">Home</a></li>
-        <li><a href="{{ url_for('main.about') }}">About</a></li>
-        <li><a href="{{ url_for('main.editor_page') }}">Editor</a></li>
-        <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
-        <li><a href="{{ url_for('main.docs_page') }}">Docs</a></li>
-        <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <span>🛡️</span>
+        <span>CI Sentinel</span>
       </div>
-    </nav>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/editor">Editor</a></li>
+          <li><a href="/datasets">Datasets</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
-  <div class="editor-wrapper">
-    <!-- Left Panel: Options -->
-    <div class="editor-options">
-      <h2>Options &amp; Fields</h2>
-      <!-- Collapsible: API Options -->
-      <div class="collapsible">
-        <div class="collapsible-header active">API Options</div>
-        <div class="collapsible-content active">
-          <!-- Source Selection -->
-          <div class="input-group">
-            <label for="source-type-select">Source Type:</label>
-            <select id="source-type-select">
-              <option value="provided">Provided API</option>
-              <option value="custom">Custom API</option>
-            </select>
-          </div>
-          <div class="input-group" id="provided-api-group">
-            <label for="provided-api-select">Choose an API:</label>
-            <select id="provided-api-select">
-              <!-- Options will be populated by JS -->
-            </select>
-          </div>
-          <!-- API URL Input -->
-          <div class="input-group">
-            <label for="api-url-input">API URL:</label>
-            <input type="text" id="api-url-input" placeholder="https://services.example.com/..." />
-            <button id="load-fields">Load Fields</button>
-          </div>
-          <!-- API Fields Section -->
-          <div class="collapsible">
-            <div class="collapsible-header active">API Fields</div>
-            <div class="collapsible-content active" id="fields-container">
-              <!-- Fields will be inserted here -->
-            </div>
-          </div>
-          <!-- Spatial Inputs -->
-          <div class="collapsible">
-            <div class="collapsible-header">Spatial Inputs</div>
-            <div class="collapsible-content">
-              <div class="input-group">
-                <label for="spatial-input-select">Spatial Input:</label>
-                <select id="spatial-input-select">
-                  <option value="None">None</option>
-                  <option value="Envelope">Envelope</option>
-                </select>
-              </div>
-              <div id="spatial-envelope-options" style="display: none;">
-                <div class="input-group">
-                  <label for="inSR-input">Input Spatial Reference:</label>
-                  <input type="text" id="inSR-input" value="4326" />
-                </div>
-                <div class="input-group">
-                  <label for="spatial-rel-select">Spatial Relationship:</label>
-                  <select id="spatial-rel-select">
-                    <option value="esriSpatialRelIntersects">Intersects</option>
-                    <option value="esriSpatialRelContains">Contains</option>
-                    <option value="esriSpatialRelCrosses">Crosses</option>
-                    <option value="esriSpatialRelEnvelopeIntersects">EnvelopeIntersects</option>
-                    <option value="esriSpatialRelIndexIntersects">IndexIntersects</option>
-                    <option value="esriSpatialRelOverlaps">Overlaps</option>
-                    <option value="esriSpatialRelTouches">Touches</option>
-                    <option value="esriSpatialRelWithin">Within</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Output Options -->
-          <div class="collapsible">
-            <div class="collapsible-header">Output Options</div>
-            <div class="collapsible-content">
-              <div class="bento-box">
-                <label>
-                  <input type="checkbox" id="out-return-geometry" checked> Return Geometry
-                </label>
-                <label>
-                  <input type="checkbox" id="out-return-ids"> Return IDs Only
-                </label>
-                <label>
-                  <input type="checkbox" id="out-return-count"> Return Count Only
-                </label>
-                <div class="input-group">
-                  <label for="outSR-input">Output Spatial Reference:</label>
-                  <input type="text" id="outSR-input" value="4326" />
-                </div>
-                <div class="input-group">
-                  <label for="where-input">Where Clause:</label>
-                  <input type="text" id="where-input" placeholder="e.g. 1=1" value="1=1" />
-                </div>
-                <div class="input-group">
-                  <div class="header">Advanced Query Parameters</div>
-                  <textarea id="advanced-params" placeholder='{"order_by_fields": "STATE_NAME ASC"}'></textarea>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Number of Objects to Load -->
-          <div class="input-group">
-            <label for="preview-limit">Number of Objects to Load:</label>
-            <input type="number" id="preview-limit" value="10" min="1" max="100">
-          </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Workflow Steps -->
+    <div class="workflow-header">
+      <div class="steps">
+        <div class="step active" data-step="1">
+          <div class="step-number">1</div>
+          <div class="step-title">Load Data</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-number">2</div>
+          <div class="step-title">Select Fields</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-number">3</div>
+          <div class="step-title">Apply Weights</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="4">
+          <div class="step-number">4</div>
+          <div class="step-title">Export</div>
         </div>
       </div>
-
-      <!-- New JSON Source Selection -->
-      <div class="input-group">
-        <label for="json-source-select">JSON Source:</label>
-        <select id="json-source-select">
-          <option value="provided">Use Provided JSON</option>
-          <option value="custom" selected>Create Your Own JSON</option>
-        </select>
-      </div>
-
-      <!-- Collapsible: JSON Options -->
-      <div class="collapsible">
-        <div class="collapsible-header">JSON Options</div>
-        <div class="collapsible-content">
-          <!-- JSON Upload -->
-          <div class="input-group">
-            <label for="json-upload">Upload JSON Configuration:</label>
-            <input type="file" id="json-upload" accept=".json">
-          </div>
-
-          <!-- Category and Dataset Controls -->
-          <div id="json-category-dataset-controls" class="bento-box">
-            <h3>Category &amp; Dataset Options</h3>
-            <label for="category-type-select">Choose Option:</label>
-            <select id="category-type-select">
-              <option value="new">Create New Category</option>
-              <option value="existing">Add to Existing Category</option>
-            </select>
-            <div id="new-category-input-container" style="display: none;">
-              <label for="new-category-input">New Category Name:</label>
-              <input type="text" id="new-category-input" placeholder="Enter new category name">
-            </div>
-            <div id="json-dataset-selector" class="bento-box">
-              <h3>Select Dataset</h3>
-              <label for="dataset-select">Dataset:</label>
-              <select id="dataset-select">
-                <option value="">-- Select Dataset --</option>
-                <!-- Dynamically populated with saved datasets -->
-              </select>
-            </div>
-          </div>
-
-          <!-- Saved JSON Browser Controls -->
-          <div id="json-saved-controls" class="bento-box">
-            <h3>Saved JSONs</h3>
-            <div class="saved-json-section">
-              <label for="saved-dataset-select">Dataset JSONs:</label>
-              <select id="saved-dataset-select">
-                <option value="">-- Select Dataset JSON --</option>
-              </select>
-              <button id="load-dataset-json">Load Dataset</button>
-            </div>
-            <div class="saved-json-section">
-              <label for="saved-category-select">Category JSONs:</label>
-              <select id="saved-category-select">
-                <option value="">-- Select Category JSON --</option>
-              </select>
-              <button id="load-category-json">Load Category</button>
-            </div>
-            <div class="saved-json-section">
-              <label for="saved-mode-select">Mode JSONs:</label>
-              <select id="saved-mode-select">
-                <option value="">-- Select Mode JSON --</option>
-              </select>
-              <button id="load-mode-json">Load Mode</button>
-            </div>
-          </div>
-
-          <!-- Browser-like Tab System for Dataset Editors -->
-          <div id="json-editor-tabs" class="tab-bar">
-            <!-- One tab is open by default; additional tabs can be added -->
-            <button class="tab active" data-tab="dataset-tab-1">Dataset 1<span class="close-tab"> x</span></button>
-            <button class="tab add-tab" id="add-dataset-tab">+</button>
-          </div>
-
-          <!-- Interactive JSON Builder Preview (Dataset Editor) -->
-          <div id="json-builder" class="bento-box nested-container">
-            <!-- The active dataset editor is rendered here -->
-            <div id="dataset-tab-1" class="dataset-editor" style="display: block;">
-              <div class="editor-header">
-                <label>Dataset Name:
-                  <input type="text" class="dataset-name" placeholder="Enter dataset name" />
-                </label>
-                <label>Dataset Link:
-                  <input type="text" class="dataset-link" placeholder="Enter dataset link" />
-                </label>
-              </div>
-              <div class="editor-body">
-                <!-- Use classes for these containers so each tab can have its own. -->
-                <div class="qualitative-fields-container"></div>
-                <div class="quantitative-fields-container"></div>
-                <div class="fields-level"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Buttons for saving/fusing JSONs -->
-          <div class="button-group">
-            <button id="process-fields-btn">Process Fields</button>
-            <button id="create-json-btn">Create JSON</button>
-            <button id="save-dataset-json-btn">Save Dataset JSON</button>
-            <button id="fuse-category-btn">Fuse Datasets into Category</button>
-            <button id="fuse-mode-btn">Fuse Categories into Mode</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Python Options -->
-      <div class="collapsible">
-        <div class="collapsible-header">Python Options</div>
-        <div class="collapsible-content">
-          <div class="collapsible">
-            <div class="collapsible-header">Quant/Qual Selector</div>
-            <div class="collapsible-content" id="quant-qual-section">
-              <p>Select quantitative and qualitative fields here.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <button id="update-preview">Update Preview</button>
     </div>
 
-    <!-- Resizer Element -->
-    <div class="resizer"></div>
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Left Panel - Input/Configuration -->
+      <div class="panel">
+        <!-- Step 1: Load Data -->
+        <div class="step-content active" data-step="1">
+          <div class="panel-title">
+            <div class="panel-icon">📁</div>
+            Load Your GeoJSON Data
+          </div>
 
-    <!-- Right Panel: Live Preview -->
-    <div class="editor-preview">
-      <div class="preview-header">
-        <label for="code-type-select">Preview Type:</label>
-        <select id="code-type-select">
-          <option value="api_response" selected>API Response</option>
-          <option value="api">API Creation</option>
-          <option value="json">JSON Creation</option>
-          <option value="python">Python Function</option>
-          <option value="txt">Text Summary</option>
-        </select>
+          <!-- Upload Area -->
+          <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📤</div>
+            <h3>Drop your GeoJSON file here</h3>
+            <p style="color: #999; margin: 1rem 0;">or click to browse</p>
+            <input type="file" id="fileInput" accept=".json,.geojson" style="display: none;">
+          </div>
+
+          <div style="margin: 2rem 0; text-align: center; color: #999;">
+            — OR —
+          </div>
+
+          <!-- API Selection -->
+          <div class="input-group">
+            <label class="input-label">Select a Provided API</label>
+            <select id="apiSelect">
+              <option value="">Choose an API...</option>
+              <option value="epa-disaster">EPA Disaster Debris Recovery</option>
+              <option value="agri-minerals">Agricultural Minerals Operations</option>
+              <option value="construction-minerals">Construction Minerals Operations</option>
+              <option value="usace-reservoirs">USACE Reservoirs</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">Or Enter Custom API URL</label>
+            <input type="url" id="customApiUrl" placeholder="https://services.example.com/...">
+          </div>
+
+          <button class="btn btn-primary" style="width: 100%;" onclick="loadData()">
+            Load Data
+          </button>
+        </div>
+
+        <!-- Step 2: Select Fields -->
+        <div class="step-content" data-step="2">
+          <div class="panel-title">
+            <div class="panel-icon">✅</div>
+            Select Fields to Include
+          </div>
+
+          <div class="quick-actions">
+            <div class="quick-action" onclick="selectAll()">
+              <strong>Select All</strong>
+            </div>
+            <div class="quick-action" onclick="selectNone()">
+              <strong>Select None</strong>
+            </div>
+            <div class="quick-action" onclick="selectQuantitative()">
+              <strong>Quantitative Only</strong>
+            </div>
+          </div>
+
+          <div class="field-list" id="fieldList">
+            <!-- Fields will be populated here -->
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+            <button class="btn btn-primary" onclick="goToStep(3)">Continue</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Apply Weights -->
+        <div class="step-content" data-step="3">
+          <div class="panel-title">
+            <div class="panel-icon">⚖️</div>
+            Apply Weights to Fields
+          </div>
+
+          <div class="status-message status-info">
+            <span>ℹ️</span>
+            <span>Adjust the weights below to prioritize certain fields. Weights will be normalized automatically.</span>
+          </div>
+
+          <div id="weightControls">
+            <!-- Weight controls will be populated here -->
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+            <button class="btn btn-primary" onclick="goToStep(4)">Continue</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Export -->
+        <div class="step-content" data-step="4">
+          <div class="panel-title">
+            <div class="panel-icon">💾</div>
+            Export Configuration
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">Dataset Name</label>
+            <input type="text" id="datasetName" placeholder="Enter a name for your dataset">
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">Description</label>
+            <textarea id="datasetDescription" rows="3" placeholder="Describe your dataset..."></textarea>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+            <button class="btn btn-primary" onclick="exportConfig()">
+              Export Configuration
+            </button>
+          </div>
+
+          <div style="margin-top: 2rem;">
+            <h4 style="margin-bottom: 1rem;">Quick Export Options:</h4>
+            <div class="quick-actions">
+              <div class="quick-action" onclick="downloadJSON()">
+                <strong>📄 Download JSON</strong>
+              </div>
+              <div class="quick-action" onclick="copyPython()">
+                <strong>🐍 Copy Python Code</strong>
+              </div>
+              <div class="quick-action" onclick="saveToServer()">
+                <strong>☁️ Save to Server</strong>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="code-container">
-        <button id="copy-code" title="Copy to Clipboard">Copy</button>
-        <textarea id="code-preview" spellcheck="false"></textarea>
+
+      <!-- Right Panel - Preview -->
+      <div class="panel">
+        <div class="panel-title">
+          <div class="panel-icon">👁️</div>
+          Live Preview
+        </div>
+
+        <div class="preview-tabs">
+          <button class="preview-tab active" onclick="switchPreview('data')">Data Sample</button>
+          <button class="preview-tab" onclick="switchPreview('schema')">Schema</button>
+          <button class="preview-tab" onclick="switchPreview('python')">Python Code</button>
+          <button class="preview-tab" onclick="switchPreview('stats')">Statistics</button>
+        </div>
+
+        <div class="preview-content" id="previewContent">
+          <div id="previewData" class="preview-pane">
+            <p style="color: #999;">Load data to see preview...</p>
+          </div>
+          <div id="previewSchema" class="preview-pane" style="display: none;">
+            <p style="color: #999;">Schema will appear here...</p>
+          </div>
+          <div id="previewPython" class="preview-pane" style="display: none;">
+            <pre><code>Python code will be generated here...</code></pre>
+          </div>
+          <div id="previewStats" class="preview-pane" style="display: none;">
+            <p style="color: #999;">Statistics will appear here...</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Load scripts in order -->
-  <script src="{{ url_for('static', filename='scripts/jsonEditor/editor.js') }}"></script>
-  <script src="{{ url_for('static', filename='scripts/jsonEditor/jsonEditor.js') }}"></script>
-  <script src="{{ url_for('static', filename='scripts/jsonEditor/jsonManager.js') }}"></script>
   <script>
-    // On page load, ensure the default tab is active.
+    // Global state
+    let currentStep = 1;
+    let loadedData = null;
+    let selectedFields = new Set();
+    let fieldWeights = {};
+    let fieldTypes = {};
+
+    // Initialize
     document.addEventListener('DOMContentLoaded', function() {
-      // The default tab "dataset-tab-1" is already in the HTML.
+      setupUploadArea();
+      setupEventListeners();
     });
+
+    // Setup upload area
+    function setupUploadArea() {
+      const uploadArea = document.getElementById('uploadArea');
+      const fileInput = document.getElementById('fileInput');
+
+      uploadArea.addEventListener('click', () => fileInput.click());
+
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+      });
+
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+      });
+
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleFileUpload(files[0]);
+        }
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          handleFileUpload(e.target.files[0]);
+        }
+      });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      document.querySelectorAll('.step').forEach(step => {
+        step.addEventListener('click', () => {
+          const stepNum = parseInt(step.dataset.step);
+          if (stepNum <= currentStep || stepNum === currentStep + 1) {
+            goToStep(stepNum);
+          }
+        });
+      });
+    }
+
+    // Handle file upload
+    function handleFileUpload(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          processGeoJSON(data);
+        } catch (error) {
+          showMessage('Invalid JSON file', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Load data from API or file
+    function loadData() {
+      const apiSelect = document.getElementById('apiSelect').value;
+      const customUrl = document.getElementById('customApiUrl').value;
+
+      if (apiSelect || customUrl) {
+        // Simulate API loading
+        showMessage('Loading data from API...', 'info');
+
+        // In real implementation, make fetch request here
+        setTimeout(() => {
+          // Simulate successful load
+          const mockData = generateMockGeoJSON();
+          processGeoJSON(mockData);
+        }, 1000);
+      } else {
+        showMessage('Please select an API or upload a file', 'error');
+      }
+    }
+
+    // Process GeoJSON data
+    function processGeoJSON(data) {
+      loadedData = data;
+
+      // Extract fields from first feature
+      if (data.features && data.features.length > 0) {
+        const properties = data.features[0].properties || {};
+        const fields = Object.keys(properties);
+
+        // Determine field types
+        fields.forEach(field => {
+          const value = properties[field];
+          fieldTypes[field] = typeof value === 'number' ? 'quantitative' : 'qualitative';
+          fieldWeights[field] = 1.0;
+        });
+
+        populateFieldList(fields);
+        updatePreview();
+        showMessage('Data loaded successfully!', 'success');
+        goToStep(2);
+      }
+    }
+
+    // Populate field list
+    function populateFieldList(fields) {
+      const fieldList = document.getElementById('fieldList');
+      fieldList.innerHTML = '';
+
+      fields.forEach(field => {
+        const fieldItem = document.createElement('div');
+        fieldItem.className = 'field-item';
+
+        const isQuant = fieldTypes[field] === 'quantitative';
+
+        fieldItem.innerHTML = `
+          <input type="checkbox" class="field-checkbox" id="field_${field}" checked>
+          <div class="field-info">
+            <span class="field-name">${field}</span>
+            <span class="field-type ${isQuant ? 'quant' : 'qual'}">
+              ${isQuant ? 'Quantitative' : 'Qualitative'}
+            </span>
+          </div>
+        `;
+
+        fieldList.appendChild(fieldItem);
+        selectedFields.add(field);
+      });
+    }
+
+    // Navigate between steps
+    function goToStep(step) {
+      currentStep = step;
+
+      // Update step indicators
+      document.querySelectorAll('.step').forEach(s => {
+        const stepNum = parseInt(s.dataset.step);
+        s.classList.remove('active', 'completed');
+        if (stepNum === step) {
+          s.classList.add('active');
+        } else if (stepNum < step) {
+          s.classList.add('completed');
+        }
+      });
+
+      // Update content
+      document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.remove('active');
+        if (parseInt(content.dataset.step) === step) {
+          content.classList.add('active');
+        }
+      });
+
+      // Special handling for step 3
+      if (step === 3) {
+        populateWeightControls();
+      }
+    }
+
+    // Populate weight controls
+    function populateWeightControls() {
+      const container = document.getElementById('weightControls');
+      container.innerHTML = '';
+
+      selectedFields.forEach(field => {
+        const control = document.createElement('div');
+        control.className = 'weight-control';
+
+        control.innerHTML = `
+          <div>
+            <strong>${field}</strong>
+            <input type="range" class="weight-slider"
+                   id="weight_${field}"
+                   min="0" max="100" value="${fieldWeights[field] * 100}"
+                   oninput="updateWeight('${field}', this.value)">
+          </div>
+          <div class="weight-value" id="weightVal_${field}">
+            ${(fieldWeights[field] * 100).toFixed(0)}%
+          </div>
+        `;
+
+        container.appendChild(control);
+      });
+    }
+
+    // Update weight
+    function updateWeight(field, value) {
+      fieldWeights[field] = value / 100;
+      document.getElementById(`weightVal_${field}`).textContent = `${value}%`;
+      updatePreview();
+    }
+
+    // Field selection helpers
+    function selectAll() {
+      document.querySelectorAll('.field-checkbox').forEach(cb => {
+        cb.checked = true;
+        const field = cb.id.replace('field_', '');
+        selectedFields.add(field);
+      });
+    }
+
+    function selectNone() {
+      document.querySelectorAll('.field-checkbox').forEach(cb => {
+        cb.checked = false;
+      });
+      selectedFields.clear();
+    }
+
+    function selectQuantitative() {
+      document.querySelectorAll('.field-checkbox').forEach(cb => {
+        const field = cb.id.replace('field_', '');
+        cb.checked = fieldTypes[field] === 'quantitative';
+        if (cb.checked) {
+          selectedFields.add(field);
+        } else {
+          selectedFields.delete(field);
+        }
+      });
+    }
+
+    // Preview functions
+    function switchPreview(type) {
+      document.querySelectorAll('.preview-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      document.querySelectorAll('.preview-pane').forEach(pane => {
+        pane.style.display = 'none';
+      });
+
+      switch(type) {
+        case 'data':
+          document.getElementById('previewData').style.display = 'block';
+          break;
+        case 'schema':
+          document.getElementById('previewSchema').style.display = 'block';
+          break;
+        case 'python':
+          document.getElementById('previewPython').style.display = 'block';
+          break;
+        case 'stats':
+          document.getElementById('previewStats').style.display = 'block';
+          break;
+      }
+    }
+
+    function updatePreview() {
+      if (!loadedData) return;
+
+      // Update data preview
+      const dataPreview = document.getElementById('previewData');
+      const sampleFeature = loadedData.features[0];
+      dataPreview.innerHTML = `
+        <h4>Sample Feature (1 of ${loadedData.features.length})</h4>
+        <pre>${JSON.stringify(sampleFeature, null, 2)}</pre>
+      `;
+
+      // Update schema preview
+      const schemaPreview = document.getElementById('previewSchema');
+      const schema = {
+        type: 'FeatureCollection',
+        totalFeatures: loadedData.features.length,
+        selectedFields: Array.from(selectedFields),
+        fieldTypes: fieldTypes,
+        weights: fieldWeights
+      };
+      schemaPreview.innerHTML = `
+        <h4>Dataset Schema</h4>
+        <pre>${JSON.stringify(schema, null, 2)}</pre>
+      `;
+
+      // Update Python code preview
+      updatePythonPreview();
+
+      // Update statistics preview
+      updateStatsPreview();
+    }
+
+    function updatePythonPreview() {
+      const pythonPreview = document.getElementById('previewPython');
+      const selectedFieldsList = Array.from(selectedFields);
+
+      const pythonCode = `import geopandas as gpd
+import pandas as pd
+import numpy as np
+from typing import Dict, List, Any
+
+class GeoJSONProcessor:
+    """Process GeoJSON data with field selection and weighting."""
+
+    def __init__(self, filepath: str):
+        """Initialize with GeoJSON file path."""
+        self.gdf = gpd.read_file(filepath)
+        self.selected_fields = ${JSON.stringify(selectedFieldsList)}
+        self.field_weights = ${JSON.stringify(fieldWeights, null, 8)}
+        self.field_types = ${JSON.stringify(fieldTypes, null, 8)}
+
+    def filter_fields(self) -> gpd.GeoDataFrame:
+        """Filter GeoDataFrame to include only selected fields."""
+        fields_to_keep = ['geometry'] + [f for f in self.selected_fields
+                                         if f in self.gdf.columns]
+        return self.gdf[fields_to_keep]
+
+    def apply_weights(self) -> gpd.GeoDataFrame:
+        """Apply weights to quantitative fields."""
+        gdf_filtered = self.filter_fields()
+
+        # Calculate weighted score
+        weighted_score = pd.Series(0, index=gdf_filtered.index)
+
+        for field, weight in self.field_weights.items():
+            if field in gdf_filtered.columns and self.field_types.get(field) == 'quantitative':
+                # Normalize the field values
+                field_values = pd.to_numeric(gdf_filtered[field], errors='coerce')
+                if field_values.notna().any():
+                    min_val = field_values.min()
+                    max_val = field_values.max()
+                    if max_val > min_val:
+                        normalized = (field_values - min_val) / (max_val - min_val)
+                        weighted_score += normalized * weight
+
+        gdf_filtered['weighted_score'] = weighted_score
+        return gdf_filtered
+
+    def get_summary_statistics(self) -> Dict[str, Any]:
+        """Generate summary statistics for the dataset."""
+        gdf_weighted = self.apply_weights()
+        stats = {
+            'total_features': len(gdf_weighted),
+            'selected_fields': len(self.selected_fields),
+            'quantitative_fields': sum(1 for t in self.field_types.values()
+                                      if t == 'quantitative'),
+            'qualitative_fields': sum(1 for t in self.field_types.values()
+                                     if t == 'qualitative'),
+            'weighted_score_stats': {
+                'mean': float(gdf_weighted['weighted_score'].mean()),
+                'std': float(gdf_weighted['weighted_score'].std()),
+                'min': float(gdf_weighted['weighted_score'].min()),
+                'max': float(gdf_weighted['weighted_score'].max())
+            }
+        }
+        return stats
+
+    def export_processed_data(self, output_path: str):
+        """Export the processed GeoDataFrame."""
+        gdf_processed = self.apply_weights()
+        gdf_processed.to_file(output_path, driver='GeoJSON')
+        print(f"Processed data exported to: {output_path}")
+
+# Usage example
+if __name__ == "__main__":
+    processor = GeoJSONProcessor("input_data.geojson")
+
+    # Get statistics
+    stats = processor.get_summary_statistics()
+    print("Dataset Statistics:", stats)
+
+    # Export processed data
+    processor.export_processed_data("output_weighted.geojson")
+`;
+
+      pythonPreview.innerHTML = `<pre><code>${pythonCode}</code></pre>`;
+    }
+
+    function updateStatsPreview() {
+      if (!loadedData || !loadedData.features.length) return;
+
+      const statsPreview = document.getElementById('previewStats');
+      const stats = calculateStatistics();
+
+      statsPreview.innerHTML = `
+        <h4>Dataset Statistics</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <strong>Total Features:</strong> ${stats.totalFeatures}
+          </div>
+          <div>
+            <strong>Selected Fields:</strong> ${stats.selectedFields}
+          </div>
+          <div>
+            <strong>Quantitative Fields:</strong> ${stats.quantFields}
+          </div>
+          <div>
+            <strong>Qualitative Fields:</strong> ${stats.qualFields}
+          </div>
+        </div>
+
+        <h4 style="margin-top: 1.5rem;">Field Statistics</h4>
+        <div style="max-height: 300px; overflow-y: auto;">
+          ${stats.fieldStats.map(stat => `
+            <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;">
+              <strong>${stat.field}</strong> (${stat.type})
+              ${stat.type === 'quantitative' ? `
+                <div style="font-size: 0.85rem; margin-top: 0.25rem;">
+                  Min: ${stat.min}, Max: ${stat.max}, Mean: ${stat.mean.toFixed(2)}
+                </div>
+              ` : `
+                <div style="font-size: 0.85rem; margin-top: 0.25rem;">
+                  Unique values: ${stat.uniqueValues}
+                </div>
+              `}
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function calculateStatistics() {
+      const selectedFieldsArray = Array.from(selectedFields);
+      const quantFields = selectedFieldsArray.filter(f => fieldTypes[f] === 'quantitative').length;
+      const qualFields = selectedFieldsArray.filter(f => fieldTypes[f] === 'qualitative').length;
+
+      const fieldStats = selectedFieldsArray.map(field => {
+        const values = loadedData.features.map(f => f.properties[field]);
+        const type = fieldTypes[field];
+
+        if (type === 'quantitative') {
+          const numValues = values.filter(v => typeof v === 'number');
+          return {
+            field,
+            type,
+            min: Math.min(...numValues),
+            max: Math.max(...numValues),
+            mean: numValues.reduce((a, b) => a + b, 0) / numValues.length
+          };
+        } else {
+          return {
+            field,
+            type,
+            uniqueValues: new Set(values).size
+          };
+        }
+      });
+
+      return {
+        totalFeatures: loadedData.features.length,
+        selectedFields: selectedFieldsArray.length,
+        quantFields,
+        qualFields,
+        fieldStats
+      };
+    }
+
+    // Export functions
+    function exportConfig() {
+      const config = {
+        datasetName: document.getElementById('datasetName').value || 'Untitled Dataset',
+        description: document.getElementById('datasetDescription').value || '',
+        timestamp: new Date().toISOString(),
+        selectedFields: Array.from(selectedFields),
+        fieldTypes: fieldTypes,
+        fieldWeights: fieldWeights,
+        statistics: calculateStatistics()
+      };
+
+      showMessage('Configuration exported successfully!', 'success');
+      console.log('Exported configuration:', config);
+
+      // In real implementation, send to server or download
+      return config;
+    }
+
+    function downloadJSON() {
+      const config = exportConfig();
+      const blob = new Blob([JSON.stringify(config, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${config.datasetName.replace(/\s+/g, '_')}_config.json`;
+      a.click();
+    }
+
+    function copyPython() {
+      const pythonCode = document.querySelector('#previewPython pre').textContent;
+      navigator.clipboard.writeText(pythonCode).then(() => {
+        showMessage('Python code copied to clipboard!', 'success');
+      });
+    }
+
+    function saveToServer() {
+      const config = exportConfig();
+
+      // In real implementation, make POST request to server
+      showMessage('Saving to server...', 'info');
+
+      setTimeout(() => {
+        showMessage('Configuration saved to server!', 'success');
+      }, 1000);
+    }
+
+    // Show status message
+    function showMessage(message, type) {
+      // Remove existing messages
+      const existingMessage = document.querySelector('.status-message:not(.status-info)');
+      if (existingMessage) {
+        existingMessage.remove();
+      }
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `status-message status-${type}`;
+      messageDiv.style.position = 'fixed';
+      messageDiv.style.top = '100px';
+      messageDiv.style.right = '20px';
+      messageDiv.style.zIndex = '1000';
+      messageDiv.style.maxWidth = '400px';
+
+      const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+      messageDiv.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+
+      document.body.appendChild(messageDiv);
+
+      setTimeout(() => {
+        messageDiv.remove();
+      }, 3000);
+    }
+
+    // Generate mock GeoJSON for testing
+    function generateMockGeoJSON() {
+      return {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [-122.4194, 37.7749]
+            },
+            properties: {
+              id: 1,
+              name: "Sample Location 1",
+              category: "Type A",
+              value: 42.5,
+              population: 8500,
+              area: 125.3,
+              status: "Active",
+              created: "2024-01-15"
+            }
+          },
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [-122.4294, 37.7849]
+            },
+            properties: {
+              id: 2,
+              name: "Sample Location 2",
+              category: "Type B",
+              value: 38.2,
+              population: 12000,
+              area: 98.7,
+              status: "Pending",
+              created: "2024-01-16"
+            }
+          },
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [-122.4094, 37.7649]
+            },
+            properties: {
+              id: 3,
+              name: "Sample Location 3",
+              category: "Type A",
+              value: 51.8,
+              population: 6200,
+              area: 156.9,
+              status: "Active",
+              created: "2024-01-17"
+            }
+          }
+        ]
+      };
+    }
   </script>
 </body>
 </html>
