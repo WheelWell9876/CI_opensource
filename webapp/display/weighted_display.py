@@ -513,6 +513,7 @@ def build_weighted_figure(
                 print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
                 raise
 
+
         elif dm == "animated":
             logger.info("Importing animated_display module")
             print("🔧 DEBUG: Importing animated_display module...")
@@ -567,9 +568,120 @@ def build_weighted_figure(
                 print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
                 raise
 
+        elif dm == "gaussian_kde":
+            logger.info("Importing gaussian_kde module")
+            print("🔧 DEBUG: Importing gaussian_kde module...")
+            try:
+                from .weighted_options.gaussian_kde_heatmap import figure as _kde
+                logger.info("Successfully imported gaussian_kde")
+                print("✅ DEBUG: gaussian_kde imported successfully")
+                # Pass config to the custom display method if it accepts it
+                try:
+                    result = _kde(gdf, weight_type, config)
+                except TypeError:
+                    # Fallback if the method doesn't accept config yet
+                    result = _kde(gdf, weight_type)
+                logger.info("gaussian_kde figure created successfully")
+                print("✅ DEBUG: gaussian_kde figure created successfully")
+                return result
+            except ImportError as e:
+                logger.error(f"ImportError for gaussian_kde: {e}")
+                print(f"❌ DEBUG: ImportError for gaussian_kde: {e}")
+                print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
+                raise
+            except Exception as e:
+                logger.error(f"Error executing gaussian_kde: {e}")
+                print(f"❌ DEBUG: Error executing gaussian_kde: {e}")
+                print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
+                raise
+
+
+        elif dm in ("state_choropleth", "choropleth_map", "state_map", "choropleth"):
+            logger.info("Importing choropleth_map module")
+            print("🔧 DEBUG: Importing choropleth_map module...")
+            try:
+                from .weighted_options.choropleth_map import figure as _choropleth
+                logger.info("Successfully imported choropleth_map")
+                print("✅ DEBUG: choropleth_map imported successfully")
+                # Pass config to the custom display method if it accepts it
+                try:
+                    result = _choropleth(gdf, weight_type, config)
+                except TypeError:
+                    # Fallback if the method doesn't accept config yet
+                    result = _choropleth(gdf, weight_type)
+                logger.info("choropleth_map figure created successfully")
+                print("✅ DEBUG: choropleth_map figure created successfully")
+                return result
+
+            except ImportError as e:
+                logger.error(f"ImportError for choropleth_map: {e}")
+                print(f"❌ DEBUG: ImportError for choropleth_map: {e}")
+                print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
+                raise
+            except Exception as e:
+                logger.error(f"Error executing choropleth_map: {e}")
+                print(f"❌ DEBUG: Error executing choropleth_map: {e}")
+                print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
+                raise
+
+        elif dm in ("threed_extrusion", "3d_extrusion", "extrusion", "3d"):
+            logger.info("Importing threed_extrusion module")
+            print("🔧 DEBUG: Importing threed_extrusion module...")
+            try:
+                from .weighted_options.threed_extrusion import figure as _extrusion
+                logger.info("Successfully imported threed_extrusion")
+                print("✅ DEBUG: threed_extrusion imported successfully")
+                # Pass config to the custom display method if it accepts it
+                try:
+                    result = _extrusion(gdf, weight_type, config)
+                except TypeError:
+                    # Fallback if the method doesn't accept config yet
+                    result = _extrusion(gdf, weight_type)
+                logger.info("threed_extrusion figure created successfully")
+                print("✅ DEBUG: threed_extrusion figure created successfully")
+                return result
+            except ImportError as e:
+                logger.error(f"ImportError for threed_extrusion: {e}")
+                print(f"❌ DEBUG: ImportError for threed_extrusion: {e}")
+                print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
+                raise
+            except Exception as e:
+                logger.error(f"Error executing threed_extrusion: {e}")
+                print(f"❌ DEBUG: Error executing threed_extrusion: {e}")
+                print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
+                raise
+
+        elif dm in ("voronoi_tessellation", "voronoi", "tessellation"):
+            logger.info("Importing voronoi_tessellation module")
+            print("🔧 DEBUG: Importing voronoi_tessellation module...")
+            try:
+                from .weighted_options.voronoi_tessellation import figure as _voronoi
+                logger.info("Successfully imported voronoi_tessellation")
+                print("✅ DEBUG: voronoi_tessellation imported successfully")
+                # Pass config to the custom display method if it accepts it
+                try:
+                    result = _voronoi(gdf, weight_type, config)
+                except TypeError:
+                    # Fallback if the method doesn't accept config yet
+                    result = _voronoi(gdf, weight_type)
+                logger.info("voronoi_tessellation figure created successfully")
+                print("✅ DEBUG: voronoi_tessellation figure created successfully")
+                return result
+            except ImportError as e:
+                logger.error(f"ImportError for voronoi_tessellation: {e}")
+                print(f"❌ DEBUG: ImportError for voronoi_tessellation: {e}")
+                print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
+                raise
+            except Exception as e:
+                logger.error(f"Error executing voronoi_tessellation: {e}")
+                print(f"❌ DEBUG: Error executing voronoi_tessellation: {e}")
+                print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
+                raise
+
         else:
             logger.warning(f"Unknown display method: {dm}")
             print(f"⚠️ DEBUG: Unknown display method '{dm}', falling back to default")
+
 
     except Exception as e:
         # Log the full error for debugging

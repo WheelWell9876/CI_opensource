@@ -14,14 +14,40 @@ from ..display import ensure_shapely, center_of, color_for_label
 logger = logging.getLogger(__name__)
 
 
-def figure(gdf: gpd.GeoDataFrame, weight_type: str = "original") -> go.Figure:
-    """Create a convex hull visualization over high-weight points."""
+def figure(gdf: gpd.GeoDataFrame, weight_type: str = "original", config: dict = None) -> go.Figure:
+    """Create a convex hull visualization over high-weight points with improved algorithm."""
     logger.info(f"Creating convex hull display from {len(gdf)} features with weight_type: {weight_type}")
     print(f"🔧 DEBUG: convex_hull.figure() called with {len(gdf)} rows, weight_type='{weight_type}'")
+    print(f"🔧 DEBUG: Config received: {config}")
 
     if gdf.empty:
         logger.warning("Empty GeoDataFrame provided to convex_hull")
         return create_empty_figure()
+
+    # Apply geometry type filtering first
+    if config and 'geometry_types' in config:
+        from ..geometry_filters import filter_by_geometry_types
+        pre_filter_count = len(gdf)
+        gdf = filter_by_geometry_types(gdf, config=config)
+        if len(gdf) != pre_filter_count:
+            print(f"🔍 DEBUG: Convex hull geometry filter: {pre_filter_count} → {len(gdf)} rows")
+
+    if gdf.empty:
+        logger.warning("No data after geometry filtering for convex hull")
+        return create_empty_figure()
+
+    # Apply data fraction sampling
+    original_size = len(gdf)
+    data_fraction = 1.0
+
+    if config:
+        data_fraction = config.get('data_fraction', config.get('dataFraction', 1.0))
+        print(f"📊 DEBUG: Convex hull data fraction: {data_fraction}")
+
+    if data_fraction < 1.0 and len(gdf) > 10:
+        sample_size = max(10, int(len(gdf) * data_fraction))
+        gdf = gdf.sample(n=sample_size, random_state=42).reset_index(drop=True)
+        print(f"📊 DEBUG: Convex hull sampled to {len(gdf)} points ({data_fraction * 100:.1f}%)")
 
     # Extract points and weights
     points_data = []
@@ -37,6 +63,8 @@ def figure(gdf: gpd.GeoDataFrame, weight_type: str = "original") -> go.Figure:
         if weight_type and weight_type in gdf.columns:
             try:
                 weight = float(row[weight_type])
+                if not np.isfinite(weight):
+                    weight = 1.0
             except Exception:
                 weight = 1.0
 
@@ -56,54 +84,80 @@ def figure(gdf: gpd.GeoDataFrame, weight_type: str = "original") -> go.Figure:
     if len(points_data) < 3:
         logger.warning("Not enough points for convex hull (need at least 3)")
         print("⚠️ DEBUG: Not enough points for convex hull, falling back to default display")
-        # Fall back to showing all points as markers
-        return create_fallback_display(gdf, weight_type)
+        return create_fallback_display(gdf, weight_type, config)
 
     print(f"✅ DEBUG: Extracted {len(points_data)} points for convex hull")
 
-    # Sort points by weight (descending)
-    points_data.sort(key=lambda x: x['weight'], reverse=True)
+    # Calculate weight thresholds for multiple hulls
+    weights = [p['weight'] for p in points_data]
+    weight_percentiles = np.percentile(weights, [50, 75, 90, 95])  # 50th, 75th, 90th, 95th percentiles
 
-    # Take top 25% of points by weight for convex hull
-    hull_count = max(3, len(points_data) // 4)
-    high_weight_points = points_data[:hull_count]
+    print(
+        f"📊 DEBUG: Weight percentiles - 50th: {weight_percentiles[0]:.3f}, 75th: {weight_percentiles[1]:.3f}, 90th: {weight_percentiles[2]:.3f}, 95th: {weight_percentiles[3]:.3f}")
 
-    print(f"🔧 DEBUG: Using top {hull_count} points for convex hull")
+    # Create multiple convex hulls for different weight thresholds
+    hull_configs = [
+        {'threshold': weight_percentiles[3], 'color': 'rgba(255, 0, 0, 0.3)', 'name': 'Top 5% Weight Zone',
+         'line_color': 'red'},
+        {'threshold': weight_percentiles[2], 'color': 'rgba(255, 165, 0, 0.2)', 'name': 'Top 10% Weight Zone',
+         'line_color': 'orange'},
+        {'threshold': weight_percentiles[1], 'color': 'rgba(255, 255, 0, 0.15)', 'name': 'Top 25% Weight Zone',
+         'line_color': 'gold'},
+        {'threshold': weight_percentiles[0], 'color': 'rgba(0, 255, 0, 0.1)', 'name': 'Above Median Weight Zone',
+         'line_color': 'green'}
+    ]
 
-    # Create convex hull
-    try:
-        coords = np.array([[p['lon'], p['lat']] for p in high_weight_points])
-        hull = ConvexHull(coords)
-        hull_points = coords[hull.vertices]
-
-        # Close the hull by adding the first point at the end
-        hull_lons = list(hull_points[:, 0]) + [hull_points[0, 0]]
-        hull_lats = list(hull_points[:, 1]) + [hull_points[0, 1]]
-
-        print(f"✅ DEBUG: Convex hull created with {len(hull.vertices)} vertices")
-
-    except Exception as e:
-        logger.error(f"Error creating convex hull: {e}")
-        print(f"❌ DEBUG: Error creating convex hull: {e}")
-        return create_fallback_display(gdf, weight_type)
-
-    # Create traces
     traces = []
+    hull_point_sets = []
 
-    # 1. Add the convex hull as a filled polygon
-    traces.append(go.Scattermapbox(
-        lon=hull_lons,
-        lat=hull_lats,
-        mode="lines",
-        fill="toself",
-        fillcolor="rgba(255, 0, 0, 0.2)",
-        line=dict(color="red", width=3),
-        name=f"High Weight Zone (Top {hull_count} points)",
-        hovertemplate=f"<b>High Weight Convex Hull</b><br>Contains top {hull_count} weighted points<extra></extra>",
-        showlegend=True
-    ))
+    # Create convex hulls for each threshold (from highest to lowest)
+    for config_item in hull_configs:
+        threshold = config_item['threshold']
+        hull_points = [p for p in points_data if p['weight'] >= threshold]
 
-    # 2. Add all points as markers with size based on weight
+        if len(hull_points) < 3:
+            print(f"⚠️ DEBUG: Not enough points above threshold {threshold:.3f}, skipping hull")
+            continue
+
+        try:
+            coords = np.array([[p['lon'], p['lat']] for p in hull_points])
+
+            # Remove duplicate points to avoid ConvexHull errors
+            unique_coords = np.unique(coords, axis=0)
+            if len(unique_coords) < 3:
+                print(f"⚠️ DEBUG: Not enough unique points for threshold {threshold:.3f}, skipping")
+                continue
+
+            hull = ConvexHull(unique_coords)
+            hull_vertices = unique_coords[hull.vertices]
+
+            # Close the hull by adding the first point at the end
+            hull_lons = list(hull_vertices[:, 0]) + [hull_vertices[0, 0]]
+            hull_lats = list(hull_vertices[:, 1]) + [hull_vertices[0, 1]]
+
+            # Add the convex hull as a filled polygon
+            traces.append(go.Scattermapbox(
+                lon=hull_lons,
+                lat=hull_lats,
+                mode="lines",
+                fill="toself",
+                fillcolor=config_item['color'],
+                line=dict(color=config_item['line_color'], width=2),
+                name=config_item['name'],
+                hovertemplate=f"<b>{config_item['name']}</b><br>Min Weight: {threshold:.3f}<br>Points: {len(hull_points)}<extra></extra>",
+                showlegend=True
+            ))
+
+            hull_point_sets.append({'points': hull_points, 'threshold': threshold, 'color': config_item['line_color']})
+
+            print(f"✅ DEBUG: Created convex hull for threshold {threshold:.3f} with {len(hull.vertices)} vertices")
+
+        except Exception as e:
+            logger.error(f"Error creating convex hull for threshold {threshold:.3f}: {e}")
+            print(f"❌ DEBUG: Error creating convex hull for threshold {threshold:.3f}: {e}")
+            continue
+
+    # Add all points as markers with size and color based on weight
     point_lons = [p['lon'] for p in points_data]
     point_lats = [p['lat'] for p in points_data]
     point_weights = [p['weight'] for p in points_data]
@@ -130,6 +184,15 @@ def figure(gdf: gpd.GeoDataFrame, weight_type: str = "original") -> go.Figure:
         if 'Dataset' in row and pd.notna(row['Dataset']):
             hover_text += f"Dataset: {row['Dataset']}<br>"
 
+        # Determine which hull zones this point belongs to
+        zones = []
+        for hull_config in hull_configs:
+            if weight >= hull_config['threshold']:
+                zones.append(hull_config['name'])
+
+        if zones:
+            hover_text += f"Zones: {', '.join(zones)}<br>"
+
         hover_text += f"Location: ({p['lon']:.4f}, {p['lat']:.4f})"
         hover_texts.append(hover_text)
 
@@ -142,7 +205,10 @@ def figure(gdf: gpd.GeoDataFrame, weight_type: str = "original") -> go.Figure:
             color=point_weights,
             colorscale="Viridis",
             opacity=0.8,
-            colorbar=dict(title=f"Weight ({weight_type})")
+            colorbar=dict(
+                title=dict(text=f"Weight ({weight_type})"),
+                x=1.02
+            )
         ),
         name="All Data Points",
         text=hover_texts,
@@ -150,26 +216,28 @@ def figure(gdf: gpd.GeoDataFrame, weight_type: str = "original") -> go.Figure:
         showlegend=True
     ))
 
-    # 3. Highlight the hull points specifically
-    hull_point_lons = [high_weight_points[i]['lon'] for i in range(len(high_weight_points))]
-    hull_point_lats = [high_weight_points[i]['lat'] for i in range(len(high_weight_points))]
-    hull_point_weights = [high_weight_points[i]['weight'] for i in range(len(high_weight_points))]
+    # Add special markers for the highest weight points in each hull
+    for i, hull_set in enumerate(hull_point_sets):
+        if i == 0:  # Only highlight the top-tier hull points
+            hull_points = hull_set['points']
+            top_points = sorted(hull_points, key=lambda x: x['weight'], reverse=True)[:5]  # Top 5 points
 
-    traces.append(go.Scattermapbox(
-        lon=hull_point_lons,
-        lat=hull_point_lats,
-        mode="markers",
-        marker=dict(
-            size=15,
-            color="red",
-            symbol="star",
-            opacity=1.0
-        ),
-        name="Hull Points (Highest Weight)",
-        text=[f"<b>Hull Point</b><br>Weight: {w:.3f}" for w in hull_point_weights],
-        hovertemplate="%{text}<extra></extra>",
-        showlegend=True
-    ))
+            if top_points:
+                traces.append(go.Scattermapbox(
+                    lon=[p['lon'] for p in top_points],
+                    lat=[p['lat'] for p in top_points],
+                    mode="markers",
+                    marker=dict(
+                        size=20,
+                        color=hull_set['color'],
+                        symbol="star",
+                        opacity=1.0
+                    ),
+                    name="Highest Weight Points",
+                    text=[f"<b>Top Weight Point</b><br>Weight: {p['weight']:.3f}" for p in top_points],
+                    hovertemplate="%{text}<extra></extra>",
+                    showlegend=True
+                ))
 
     # Calculate map center and zoom
     if all_lons and all_lats:
@@ -193,34 +261,70 @@ def figure(gdf: gpd.GeoDataFrame, weight_type: str = "original") -> go.Figure:
     # Create layout
     layout = {
         "mapbox": {
-            "style": "open-street-map",
+            "style": config.get("map_style", "open-street-map") if config else "open-street-map",
             "center": {"lat": cy, "lon": cx},
             "zoom": zoom,
         },
-        "margin": {"r": 0, "t": 0, "l": 0, "b": 0},
-        "title": f"Convex Hull Visualization - Top {hull_count} Points by {weight_type}",
+        "margin": {"r": 60, "t": 30, "l": 0, "b": 0},
+        "title": {
+            "text": f"Multi-Level Convex Hull - Weight Zones ({weight_type})",
+            "x": 0.5,
+            "font": {"size": 16}
+        },
         "legend": {
-            "x": 1,
-            "y": 1,
+            "x": 0.02,
+            "y": 0.98,
             "bgcolor": "rgba(255,255,255,0.8)",
             "bordercolor": "black",
             "borderwidth": 1
         }
     }
 
+    # Add info annotations
+    annotations = []
+
+    if data_fraction < 1.0:
+        annotations.append(dict(
+            text=f"📊 Showing {len(gdf)} of {original_size} points ({data_fraction * 100:.1f}%)",
+            showarrow=False,
+            xref="paper", yref="paper",
+            x=0.98, y=0.02,
+            xanchor="right", yanchor="bottom",
+            bgcolor="rgba(255,255,255,0.8)",
+            bordercolor="blue",
+            borderwidth=1,
+            font=dict(size=10, color="blue")
+        ))
+
+    # Add hull statistics
+    annotations.append(dict(
+        text=f"🎯 {len(traces) - 1} Weight Zones Created<br>📊 {len(points_data)} Total Points",
+        showarrow=False,
+        xref="paper", yref="paper",
+        x=0.98, y=0.98,
+        xanchor="right", yanchor="top",
+        bgcolor="rgba(255,255,255,0.8)",
+        bordercolor="purple",
+        borderwidth=1,
+        font=dict(size=10, color="purple")
+    ))
+
+    if annotations:
+        layout["annotations"] = annotations
+
     fig = go.Figure(data=traces)
     fig.update_layout(**layout)
 
     logger.info(f"Successfully created convex hull display with {len(traces)} traces")
-    print(f"✅ DEBUG: Convex hull figure created successfully with {len(traces)} traces")
+    print(f"✅ DEBUG: Multi-level convex hull figure created successfully with {len(traces)} traces")
 
     return fig
 
 
-def create_fallback_display(gdf: gpd.GeoDataFrame, weight_type: str) -> go.Figure:
+def create_fallback_display(gdf: gpd.GeoDataFrame, weight_type: str, config: dict = None) -> go.Figure:
     """Fallback display when convex hull can't be created."""
     from ..weighted_display import create_weighted_default
-    return create_weighted_default(gdf, weight_type)
+    return create_weighted_default(gdf, weight_type, config)
 
 
 def create_empty_figure() -> go.Figure:
