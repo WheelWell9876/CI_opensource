@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CI Sentinel - Datasets</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/datasets.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/datasets.css') }}">
 </head>
 <body>
   <header>
@@ -25,31 +26,71 @@
   </header>
 
   <div class="centered-content">
-    <h1>Datasets Information</h1>
+    <h1>📊 Datasets Information</h1>
     <p>
       Below is an extremely detailed breakdown of datasets, their attributes,
-      and reasons for importance.
+      and reasons for importance. Each dataset has been carefully analyzed and weighted
+      across three critical infrastructure modes.
     </p>
     <p>
+      <strong>🔍 How to Navigate:</strong>
       Expand any category to see its datasets, then expand each dataset to see the three modes
-      (<strong>Military</strong>, <strong>Economic</strong>, <strong>Energy</strong>).
+      (<strong style="color: #22577a;">Military</strong>,
+      <strong style="color: #38a3a5;">Economic</strong>,
+      <strong style="color: #80ed99;">Energy</strong>).
+      Use the "Show Graphs" buttons to visualize the data analysis.
     </p>
   </div>
 
   <!-- Container for dynamic categories & datasets -->
   <div class="centered-content" id="datasetsContainer">
+    <!-- Loading indicator while JavaScript builds the interface -->
+    <div id="loadingIndicator" style="text-align: center; padding: 40px;">
+      <div class="loading-wheel"></div>
+      <p style="color: #22577a; margin-top: 15px; font-weight: 600;">Loading datasets information...</p>
+    </div>
     <!-- JavaScript will insert category bento boxes here -->
   </div>
 
   <footer>
-    <p>&copy; 2024 CI Sentinel</p>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>CI Sentinel</h3>
+        <p>Comprehensive mapping of America's critical infrastructure with detailed dataset analysis and weighting systems.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Data Sources</h3>
+        <p>Information sourced from HIFLD, government databases, and public infrastructure records.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Analysis Methods</h3>
+        <p>Multi-modal weighting system across Military, Economic, and Energy importance factors.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 CI Sentinel - Critical Infrastructure Analysis Platform</p>
+    </div>
   </footer>
 
   <!-- Load Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Load graphs and datasets scripts -->
+  <!-- Load scripts in proper order -->
   <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/graphs.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/docs/datasets.js') }}"></script>
+
+  <!-- Add loading completion handler -->
+  <script>
+    // Hide loading indicator once datasets are loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait for datasets to be built, then hide loading
+      setTimeout(function() {
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        if (loadingIndicator && document.querySelectorAll('.category-bento').length > 0) {
+          loadingIndicator.style.display = 'none';
+        }
+      }, 2000);
+    });
+  </script>
 </body>
 </html>

@@ -1,0 +1,363 @@
+/* ------------------------------------
+  ABOUT PAGE SPECIFIC STYLES
+------------------------------------- */
+
+/* Main content container for about page */
+.centered-content {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 999;
+}
+
+/* Section containers with unified styling */
+.about-section {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(34, 87, 122, 0.2);
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(34, 87, 122, 0.15);
+  border-color: rgba(34, 87, 122, 0.3);
+}
+
+/* Section headers */
+.about-section h2 {
+  color: #22577a;
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.about-section h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #22577a, #80ed99);
+  border-radius: 2px;
+}
+
+.about-section h3 {
+  color: #22577a;
+  font-size: 1.6rem;
+  margin: 25px 0 15px 0;
+  position: relative;
+  padding-left: 20px;
+}
+
+.about-section h3::before {
+  content: '▶';
+  position: absolute;
+  left: 0;
+  color: #80ed99;
+  font-size: 1.2rem;
+  top: 2px;
+}
+
+.about-section h4 {
+  color: #38a3a5;
+  font-size: 1.3rem;
+  margin: 20px 0 12px 0;
+  font-weight: 600;
+}
+
+.about-section h5 {
+  color: #22577a;
+  font-size: 1.1rem;
+  margin: 15px 0 10px 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Paragraph styling */
+.about-section p {
+  color: #333;
+  line-height: 1.7;
+  margin-bottom: 16px;
+  font-size: 1rem;
+  text-align: justify;
+}
+
+/* Hero section styling */
+.hero-section {
+  text-align: center;
+  background: linear-gradient(135deg, rgba(34, 87, 122, 0.1), rgba(128, 237, 153, 0.1));
+  border: 2px solid rgba(34, 87, 122, 0.3);
+  position: relative;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #22577a, #80ed99, #38a3a5, #22577a);
+  border-radius: 12px;
+  z-index: -1;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+.hero-section h2 {
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  background: linear-gradient(45deg, #22577a, #38a3a5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-section h4 {
+  font-size: 1.4rem;
+  color: #666;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+/* Methods section with special styling */
+.methods-section {
+  border-left: 5px solid #22577a;
+  background: linear-gradient(135deg, rgba(34, 87, 122, 0.05), rgba(255, 255, 255, 0.98));
+}
+
+/* Classification section with accent */
+.classification-section {
+  border-left: 5px solid #38a3a5;
+  background: linear-gradient(135deg, rgba(56, 163, 165, 0.05), rgba(255, 255, 255, 0.98));
+}
+
+/* Notebooks section with code-like styling */
+.notebooks-section {
+  border-left: 5px solid #80ed99;
+  background: linear-gradient(135deg, rgba(128, 237, 153, 0.05), rgba(255, 255, 255, 0.98));
+  position: relative;
+}
+
+.notebooks-section::after {
+  content: '</>';
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-family: 'Courier New', monospace;
+  font-size: 2rem;
+  color: rgba(128, 237, 153, 0.3);
+  font-weight: bold;
+}
+
+/* Notebook entries */
+.notebook-entry {
+  background: rgba(248, 249, 250, 0.8);
+  border: 1px solid rgba(34, 87, 122, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.notebook-entry:hover {
+  background: rgba(128, 237, 153, 0.1);
+  border-color: rgba(128, 237, 153, 0.3);
+  transform: translateX(5px);
+}
+
+.notebook-entry h3 {
+  font-family: 'Courier New', monospace;
+  background: rgba(34, 87, 122, 0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+/* Contribution section with call-to-action styling */
+.contribution-section {
+  border: 2px solid #80ed99;
+  background: linear-gradient(135deg, rgba(128, 237, 153, 0.1), rgba(255, 255, 255, 0.95));
+  position: relative;
+}
+
+.contribution-section::before {
+  content: '🤝';
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 2.5rem;
+  opacity: 0.6;
+}
+
+/* Improvement items styling */
+.improvement-item {
+  background: rgba(255, 255, 255, 0.7);
+  border-left: 4px solid #80ed99;
+  padding: 15px 20px;
+  margin: 15px 0;
+  border-radius: 0 8px 8px 0;
+  transition: all 0.3s ease;
+}
+
+.improvement-item:hover {
+  background: rgba(128, 237, 153, 0.1);
+  transform: translateX(10px);
+  box-shadow: 0 2px 10px rgba(128, 237, 153, 0.2);
+}
+
+.improvement-item h5 {
+  margin-top: 0;
+  color: #22577a;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.improvement-item h5::before {
+  content: '🔧';
+  font-size: 1.2rem;
+}
+
+/* Responsive adjustments for about page */
+@media (max-width: 768px) {
+  .centered-content {
+    margin: 20px auto;
+    padding: 0 15px;
+  }
+
+  .about-section {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .about-section h2 {
+    font-size: 1.8rem;
+  }
+
+  .hero-section h2 {
+    font-size: 2.2rem;
+  }
+
+  .about-section h3 {
+    font-size: 1.4rem;
+  }
+
+  .about-section h4 {
+    font-size: 1.2rem;
+  }
+
+  .notebook-entry {
+    padding: 15px;
+  }
+
+  .improvement-item {
+    padding: 12px 15px;
+  }
+
+  /* Hide decorative elements on mobile */
+  .notebooks-section::after,
+  .contribution-section::before {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-section {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .about-section h2 {
+    font-size: 1.6rem;
+  }
+
+  .hero-section h2 {
+    font-size: 1.8rem;
+  }
+
+  .about-section p {
+    font-size: 0.9rem;
+    text-align: left;
+  }
+
+  .notebook-entry h3 {
+    font-size: 1rem;
+  }
+}
+
+/* Print styles for about page */
+@media print {
+  .about-section {
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: none;
+    page-break-inside: avoid;
+    margin-bottom: 20px;
+  }
+
+  .hero-section::before {
+    display: none;
+  }
+
+  .about-section:hover {
+    transform: none;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .about-section,
+  .notebook-entry,
+  .improvement-item {
+    transition: none !important;
+  }
+
+  .about-section:hover,
+  .notebook-entry:hover,
+  .improvement-item:hover {
+    transform: none !important;
+  }
+
+  .hero-section::before {
+    animation: none !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .about-section {
+    background: white;
+    border: 2px solid black;
+  }
+
+  .about-section h2,
+  .about-section h3,
+  .about-section h4,
+  .about-section h5 {
+    color: black;
+  }
+
+  .notebook-entry {
+    background: #f0f0f0;
+    border: 1px solid black;
+  }
+}
