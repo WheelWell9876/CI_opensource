@@ -694,3 +694,82 @@ footer {
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(34, 87, 122, 0.5);
 }
+
+
+/* ------------------------------------
+  CLICKABLE LOGO STYLES
+------------------------------------- */
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.logo-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.logo-link:hover .logo-title {
+  color: #80ed99;
+}
+
+.logo-link:hover .custom-loader {
+  animation-duration: 2s; /* Speed up animation on hover */
+}
+
+/* Ensure the logo title stays white by default */
+.logo-title {
+  margin-left: 10px;
+  font-size: 1.6rem;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+/* Contact page specific styles */
+.contact-method {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid #22577a;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 0 8px 8px 0;
+  transition: all 0.3s ease;
+}
+
+.contact-method:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.contact-method h3 {
+  color: #22577a;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}
+
+.contact-link {
+  color: #38a3a5;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.contact-link:hover {
+  color: #80ed99;
+  transform: translateX(3px);
+  text-decoration: underline;
+}
+
+.contact-description {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  font-style: italic;
+}

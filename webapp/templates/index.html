@@ -26,8 +26,10 @@
   <!-- HEADER with custom nav -->
   <header>
     <div class="logo">
-      <div class="custom-loader"></div>
-      <span class="logo-title">CI Sentinel</span>
+      <a href="{{ url_for('main.index') }}" class="logo-link">
+        <div class="custom-loader"></div>
+        <span class="logo-title">CI Sentinel</span>
+      </a>
     </div>
     <nav>
       <div class="nav-links-container">

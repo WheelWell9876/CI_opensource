@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CI Sentinel - Contact</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
 </head>
 <body>
   <header>
     <div class="logo">
-      <div class="custom-loader"></div>
-      <span class="logo-title">CI Sentinel</span>
-      <a href="{{ url_for('main.index') }}"></a>
+      <a href="{{ url_for('main.index') }}" class="logo-link">
+        <div class="custom-loader"></div>
+        <span class="logo-title">CI Sentinel</span>
+      </a>
     </div>
     <nav>
       <div class="nav-links-container">
@@ -25,14 +27,82 @@
   </header>
 
   <div class="centered-content">
-    <h1>Contact Us</h1>
-    <p>Please reach out for any suggestions, improvements, or collaborations regarding CI Sentinel.</p>
-    <p>Email: <a href="mailto:contact@example.com">contact@example.com</a></p>
-    <p>Twitter: @ci_sentinel</p>
+    <section class="about-section hero-section">
+      <h1>Contact Us</h1>
+      <p>Please reach out for any suggestions, improvements, or collaborations regarding CI Sentinel.</p>
+    </section>
+
+    <section class="about-section">
+      <h2>📧 Get in Touch</h2>
+
+      <div class="contact-method">
+        <h3>Email</h3>
+        <p><a href="mailto:contact@example.com" class="contact-link">contact@example.com</a></p>
+        <p class="contact-description">For general inquiries, collaboration requests, and technical support.</p>
+      </div>
+
+      <div class="contact-method">
+        <h3>Social Media</h3>
+        <p><a href="https://twitter.com/ci_sentinel" target="_blank" class="contact-link">@ci_sentinel</a></p>
+        <p class="contact-description">Follow us for updates, news, and critical infrastructure insights.</p>
+      </div>
+
+      <div class="contact-method">
+        <h3>GitHub</h3>
+        <p><a href="https://github.com/your-repo/ci-sentinel" target="_blank" class="contact-link">CI Sentinel Repository</a></p>
+        <p class="contact-description">Contribute to the project, report issues, or suggest improvements.</p>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h2>🤝 How to Contribute</h2>
+      <p>CI Sentinel is an open-source project dedicated to mapping America's critical infrastructure. We welcome contributions in several areas:</p>
+
+      <div class="improvement-item">
+        <h4>Dataset Expansion</h4>
+        <p>Help us process the 400+ remaining HIFLD datasets or contribute new data sources.</p>
+      </div>
+
+      <div class="improvement-item">
+        <h4>Algorithm Improvements</h4>
+        <p>Enhance our weighting algorithms, normalization methods, or visualization techniques.</p>
+      </div>
+
+      <div class="improvement-item">
+        <h4>Documentation</h4>
+        <p>Improve our documentation, create tutorials, or help with translations.</p>
+      </div>
+
+      <div class="improvement-item">
+        <h4>Bug Reports & Features</h4>
+        <p>Report bugs, suggest new features, or help with testing and quality assurance.</p>
+      </div>
+    </section>
   </div>
 
   <footer>
-    <p>&copy; 2024 CI Sentinel - Contact Page</p>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>CI Sentinel</h3>
+        <p>Comprehensive mapping of America's critical infrastructure.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="{{ url_for('main.about') }}">About</a></li>
+          <li><a href="{{ url_for('main.datasets') }}">Datasets</a></li>
+          <li><a href="{{ url_for('main.docs_page') }}">Documentation</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Connect</h3>
+        <p><a href="mailto:contact@example.com">contact@example.com</a></p>
+        <p><a href="https://twitter.com/ci_sentinel" target="_blank">@ci_sentinel</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 CI Sentinel - Contact Page</p>
+    </div>
   </footer>
   <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
 </body>
