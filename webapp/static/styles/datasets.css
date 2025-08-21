@@ -26,7 +26,7 @@
 
 .centered-content > p {
   color: #333;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(146, 250, 242, 0.95);
   padding: 15px 20px;
   border-radius: 8px;
   text-align: center;
@@ -41,7 +41,7 @@
 
 /* CATEGORY CONTAINERS */
 .category-bento {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(146, 250, 242, 0.95);
   border: 2px solid rgba(34, 87, 122, 0.3);
   border-radius: 12px;
   margin: 25px 0;

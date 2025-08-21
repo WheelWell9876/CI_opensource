@@ -12,35 +12,35 @@ $(document).ready(function() {
   addDebugPanel();
 });
 
-function addDebugPanel() {
-  // Add a debug panel to the page
-  const debugPanel = `
-    <div id="debugPanel" style="
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      width: 300px;
-      max-height: 400px;
-      background: rgba(0,0,0,0.9);
-      color: #00ff00;
-      font-family: monospace;
-      font-size: 12px;
-      padding: 10px;
-      border-radius: 5px;
-      z-index: 9999;
-      overflow-y: auto;
-      border: 2px solid #00ff00;
-    ">
-      <div style="margin-bottom: 10px; font-weight: bold; color: #ffff00;">
-        🔍 DEBUG PANEL
-        <button onclick="$('#debugPanel').toggle()" style="float: right; background: #333; color: #fff; border: none; cursor: pointer;">Toggle</button>
-      </div>
-      <div id="debugLog"></div>
-    </div>
-  `;
-
-  $('body').append(debugPanel);
-}
+//function addDebugPanel() {
+//  // Add a debug panel to the page
+//  const debugPanel = `
+//    <div id="debugPanel" style="
+//      position: fixed;
+//      top: 10px;
+//      right: 10px;
+//      width: 300px;
+//      max-height: 400px;
+//      background: rgba(0,0,0,0.9);
+//      color: #00ff00;
+//      font-family: monospace;
+//      font-size: 12px;
+//      padding: 10px;
+//      border-radius: 5px;
+//      z-index: 9999;
+//      overflow-y: auto;
+//      border: 2px solid #00ff00;
+//    ">
+//      <div style="margin-bottom: 10px; font-weight: bold; color: #ffff00;">
+//        🔍 DEBUG PANEL
+//        <button onclick="$('#debugPanel').toggle()" style="float: right; background: #333; color: #fff; border: none; cursor: pointer;">Toggle</button>
+//      </div>
+//      <div id="debugLog"></div>
+//    </div>
+//  `;
+//
+//  $('body').append(debugPanel);
+//}
 
 function debugLog(message, type = 'info') {
   const timestamp = new Date().toLocaleTimeString();

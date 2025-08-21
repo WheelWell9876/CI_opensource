@@ -6,8 +6,8 @@ from flask import Blueprint, render_template, request, jsonify
 import geopandas as gpd
 import pandas as pd
 import numpy as np
-from arcgis.features import FeatureLayer
 import requests
+from urllib.parse import urlparse, parse_qs, urlencode
 
 logger = logging.getLogger(__name__)
 
@@ -22,27 +22,32 @@ EXPORTS_DIR = os.path.join(BASE_DIR, "exports")
 # Ensure directories exist
 os.makedirs(EXPORTS_DIR, exist_ok=True)
 
-# Pre-configured APIs
+# Pre-configured APIs with complete URLs
 PRESET_APIS = {
     "epa-disaster": {
         "name": "EPA Disaster Debris Recovery Data",
-        "url": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/EPA_Disaster_Debris_Recovery_Data/FeatureServer/0",
+        "url": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/EPA_Disaster_Debris_Recovery_Data/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "description": "EPA disaster recovery and debris management data"
     },
     "agri-minerals": {
         "name": "Agricultural Minerals Operations",
-        "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Agricultural_Minerals_Operations/FeatureServer/0",
+        "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Agricultural_Minerals_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "description": "Agricultural mineral operations across the US"
     },
     "construction-minerals": {
         "name": "Construction Minerals Operations",
-        "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Construction_Minerals_Operations/FeatureServer/0",
+        "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Construction_Minerals_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "description": "Construction mineral operations data"
     },
     "usace-reservoirs": {
         "name": "USACE Reservoirs",
-        "url": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/usace_rez/FeatureServer/0",
+        "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Reclamation_Reservoirs/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
         "description": "US Army Corps of Engineers reservoir data"
+    },
+    "dams": {
+        "name": "National Dams Inventory",
+        "url": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/NID_v1/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+        "description": "National dams inventory across the United States"
     }
 }
 
@@ -62,23 +67,34 @@ class GeoJSONProcessor:
     def _analyze_fields(self):
         """Analyze fields from the first feature to determine types and statistics."""
         if not self.features:
+            logger.warning("No features found in GeoJSON data")
             return
 
         # Get fields from first feature
         first_feature = self.features[0]
         properties = first_feature.get('properties', {}) or first_feature.get('attributes', {})
 
+        if not properties:
+            logger.warning("No properties found in first feature")
+            return
+
+        logger.info(f"Found {len(properties)} fields in first feature")
+
         for field_name, value in properties.items():
             self.fields[field_name] = []
 
-            # Determine field type
-            if isinstance(value, (int, float)):
+            # Determine field type with better type checking
+            if value is None:
+                self.field_types[field_name] = 'unknown'
+            elif isinstance(value, bool):
+                self.field_types[field_name] = 'boolean'
+            elif isinstance(value, (int, float)) and not isinstance(value, bool):
                 self.field_types[field_name] = 'quantitative'
             else:
                 self.field_types[field_name] = 'qualitative'
 
         # Collect all values for each field
-        for feature in self.features:
+        for feature in self.features[:1000]:  # Limit to first 1000 features for performance
             props = feature.get('properties', {}) or feature.get('attributes', {})
             for field_name in self.fields:
                 if field_name in props:
@@ -90,8 +106,25 @@ class GeoJSONProcessor:
     def _calculate_statistics(self):
         """Calculate statistics for each field."""
         for field_name, values in self.fields.items():
+            # Skip if no values
+            if not values:
+                self.field_stats[field_name] = {
+                    'type': self.field_types[field_name],
+                    'count': 0,
+                    'has_data': False
+                }
+                continue
+
             if self.field_types[field_name] == 'quantitative':
-                numeric_values = [v for v in values if isinstance(v, (int, float))]
+                # Filter out None values and convert to float
+                numeric_values = []
+                for v in values:
+                    if v is not None:
+                        try:
+                            numeric_values.append(float(v))
+                        except (ValueError, TypeError):
+                            pass
+
                 if numeric_values:
                     self.field_stats[field_name] = {
                         'type': 'quantitative',
@@ -100,18 +133,35 @@ class GeoJSONProcessor:
                         'max': max(numeric_values),
                         'mean': sum(numeric_values) / len(numeric_values),
                         'std': np.std(numeric_values) if len(numeric_values) > 1 else 0,
-                        'median': np.median(numeric_values)
+                        'median': np.median(numeric_values),
+                        'has_data': True
+                    }
+                else:
+                    self.field_stats[field_name] = {
+                        'type': 'quantitative',
+                        'count': 0,
+                        'has_data': False
                     }
             else:
-                unique_values = list(set(values))
-                value_counts = {val: values.count(val) for val in unique_values}
-                self.field_stats[field_name] = {
-                    'type': 'qualitative',
-                    'count': len(values),
-                    'unique_values': len(unique_values),
-                    'value_counts': value_counts,
-                    'top_values': sorted(value_counts.items(), key=lambda x: x[1], reverse=True)[:10]
-                }
+                # Handle qualitative fields
+                non_null_values = [v for v in values if v is not None]
+                if non_null_values:
+                    unique_values = list(set(non_null_values))
+                    value_counts = {str(val): non_null_values.count(val) for val in unique_values}
+                    self.field_stats[field_name] = {
+                        'type': 'qualitative',
+                        'count': len(non_null_values),
+                        'unique_values': len(unique_values),
+                        'value_counts': value_counts,
+                        'top_values': sorted(value_counts.items(), key=lambda x: x[1], reverse=True)[:10],
+                        'has_data': True
+                    }
+                else:
+                    self.field_stats[field_name] = {
+                        'type': 'qualitative',
+                        'count': 0,
+                        'has_data': False
+                    }
 
     def get_field_info(self) -> Dict[str, Any]:
         """Get comprehensive field information."""
@@ -133,15 +183,19 @@ class GeoJSONProcessor:
             for field_name, weight in weights.items():
                 if field_name in props and self.field_types.get(field_name) == 'quantitative':
                     value = props[field_name]
-                    if isinstance(value, (int, float)):
-                        # Normalize value based on field statistics
-                        stats = self.field_stats.get(field_name, {})
-                        min_val = stats.get('min', 0)
-                        max_val = stats.get('max', 1)
+                    if value is not None:
+                        try:
+                            value = float(value)
+                            # Normalize value based on field statistics
+                            stats = self.field_stats.get(field_name, {})
+                            min_val = stats.get('min', 0)
+                            max_val = stats.get('max', 1)
 
-                        if max_val > min_val:
-                            normalized = (value - min_val) / (max_val - min_val)
-                            score += normalized * weight
+                            if max_val > min_val:
+                                normalized = (value - min_val) / (max_val - min_val)
+                                score += normalized * weight
+                        except (ValueError, TypeError):
+                            pass
 
             weighted_scores.append(score)
 
@@ -171,14 +225,14 @@ class GeoJSONProcessor:
         """Generate Python code based on configuration."""
         selected_fields = config.get('selected_fields', [])
         weights = config.get('weights', {})
-        dataset_name = config.get('dataset_name', 'dataset')
+        dataset_name = config.get('dataset_name', 'dataset').replace(' ', '_')
 
         code = f'''import geopandas as gpd
 import pandas as pd
 import numpy as np
 from typing import Dict, List, Any
 
-class {dataset_name.replace(" ", "")}Processor:
+class {dataset_name}Processor:
     """Auto-generated processor for {dataset_name}."""
 
     def __init__(self, filepath: str):
@@ -218,7 +272,7 @@ class {dataset_name.replace(" ", "")}Processor:
         return output_path
 
 # Usage
-processor = {dataset_name.replace(" ", "")}Processor("input.geojson")
+processor = {dataset_name}Processor("input.geojson")
 result = processor.process()
 processor.export("output.geojson")
 '''
@@ -229,7 +283,7 @@ processor.export("output.geojson")
 @json_editor_blueprint.route('/editor')
 def editor_page():
     """Render the new editor page."""
-    return render_template('editor_redesigned.html')
+    return render_template('editor.html')
 
 
 @json_editor_blueprint.route('/api/load_preset', methods=['POST'])
@@ -239,41 +293,87 @@ def load_preset_api():
         data = request.get_json()
         api_key = data.get('api_key')
 
+        logger.info(f"Loading preset API: {api_key}")
+
         if api_key not in PRESET_APIS:
             return jsonify({'error': 'Invalid API key'}), 400
 
         api_info = PRESET_APIS[api_key]
         api_url = api_info['url']
 
-        # Build query URL
-        query_url = f"{api_url}/query"
-        params = {
-            'where': '1=1',
-            'outFields': '*',
-            'f': 'geojson',
-            'resultRecordCount': data.get('limit', 100)
-        }
+        # Parse the existing URL to modify parameters if needed
+        parsed_url = urlparse(api_url)
+        base_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}"
 
-        # Make request
-        response = requests.get(query_url, params=params)
+        # Parse existing query parameters
+        existing_params = parse_qs(parsed_url.query)
+
+        # Convert lists to single values
+        params = {k: v[0] if isinstance(v, list) and len(v) == 1 else v
+                  for k, v in existing_params.items()}
+
+        # Override with user preferences if provided
+        if 'limit' in data:
+            params['resultRecordCount'] = str(data['limit'])
+
+        # Ensure we're getting GeoJSON format
+        params['f'] = 'geojson'
+
+        # Build the complete URL
+        if '?' in api_url:
+            # URL already has query parameters, just use it directly
+            final_url = api_url
+            if 'limit' in data:
+                # Add record count limit if specified
+                final_url = final_url.replace('f=geojson', f'f=geojson&resultRecordCount={data["limit"]}')
+        else:
+            # Build URL with parameters
+            query_string = urlencode(params)
+            final_url = f"{base_url}?{query_string}"
+
+        logger.info(f"Fetching data from: {final_url}")
+
+        # Make request with timeout
+        response = requests.get(final_url, timeout=30)
         response.raise_for_status()
 
         geojson_data = response.json()
+
+        # Validate that we got valid GeoJSON
+        if 'features' not in geojson_data:
+            logger.error(f"Invalid GeoJSON response from {api_key}: missing 'features' key")
+            return jsonify({'error': 'Invalid data format received from API'}), 500
+
+        logger.info(f"Successfully loaded {len(geojson_data.get('features', []))} features from {api_key}")
 
         # Process with GeoJSONProcessor
         processor = GeoJSONProcessor(geojson_data)
         field_info = processor.get_field_info()
 
+        # Limit features for response to avoid sending too much data
+        limited_features = geojson_data['features'][:100] if len(geojson_data['features']) > 100 else geojson_data[
+            'features']
+
         return jsonify({
             'success': True,
-            'data': geojson_data,
+            'data': {
+                'type': geojson_data.get('type', 'FeatureCollection'),
+                'features': limited_features,
+                'total_features': len(geojson_data['features'])
+            },
             'field_info': field_info,
             'api_info': api_info
         })
 
+    except requests.exceptions.Timeout:
+        logger.error(f"Timeout loading preset API: {api_key}")
+        return jsonify({'error': 'Request timed out. The API may be slow or unavailable.'}), 504
+    except requests.exceptions.RequestException as e:
+        logger.exception(f"Request error loading preset API: {api_key}")
+        return jsonify({'error': f'Error fetching data: {str(e)}'}), 500
     except Exception as e:
-        logger.exception("Error loading preset API")
-        return jsonify({'error': str(e)}), 500
+        logger.exception(f"Unexpected error loading preset API: {api_key}")
+        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
 
 
 @json_editor_blueprint.route('/api/load_custom', methods=['POST'])
@@ -286,207 +386,176 @@ def load_custom_api():
         if not api_url:
             return jsonify({'error': 'URL is required'}), 400
 
-        # Parse URL to get base
-        if '/query' not in api_url:
-            api_url = api_url.rstrip('/') + '/query'
+        logger.info(f"Loading custom API: {api_url}")
 
-        # Build query parameters
-        params = {
-            'where': data.get('where', '1=1'),
-            'outFields': data.get('fields', '*'),
-            'f': 'geojson',
-            'resultRecordCount': data.get('limit', 100)
-        }
+        # Check if it's already a complete query URL
+        if 'f=geojson' in api_url or 'f=json' in api_url:
+            # Use the URL as-is, just ensure it's requesting GeoJSON
+            final_url = api_url.replace('f=json', 'f=geojson')
+        else:
+            # Build query URL
+            if '/query' not in api_url:
+                api_url = api_url.rstrip('/') + '/query'
 
-        # Add spatial parameters if provided
-        if data.get('geometry'):
-            params['geometry'] = json.dumps(data['geometry'])
-            params['geometryType'] = data.get('geometryType', 'esriGeometryEnvelope')
-            params['spatialRel'] = data.get('spatialRel', 'esriSpatialRelIntersects')
+            # Build query parameters
+            params = {
+                'where': data.get('where', '1=1'),
+                'outFields': data.get('fields', '*'),
+                'f': 'geojson',
+                'resultRecordCount': data.get('limit', 100)
+            }
 
-        # Make request
-        response = requests.get(api_url, params=params)
+            # Add spatial parameters if provided
+            if data.get('geometry'):
+                params['geometry'] = json.dumps(data['geometry'])
+                params['geometryType'] = data.get('geometryType', 'esriGeometryEnvelope')
+                params['spatialRel'] = data.get('spatialRel', 'esriSpatialRelIntersects')
+
+            query_string = urlencode(params)
+            final_url = f"{api_url}?{query_string}"
+
+        logger.info(f"Fetching data from: {final_url}")
+
+        # Make request with timeout
+        response = requests.get(final_url, timeout=30)
         response.raise_for_status()
 
         geojson_data = response.json()
+
+        # Validate GeoJSON
+        if 'features' not in geojson_data:
+            logger.error("Invalid GeoJSON response: missing 'features' key")
+            return jsonify({'error': 'Invalid data format received from API'}), 500
+
+        logger.info(f"Successfully loaded {len(geojson_data.get('features', []))} features")
 
         # Process with GeoJSONProcessor
         processor = GeoJSONProcessor(geojson_data)
         field_info = processor.get_field_info()
 
+        # Limit features for response
+        limited_features = geojson_data['features'][:100] if len(geojson_data['features']) > 100 else geojson_data[
+            'features']
+
         return jsonify({
             'success': True,
-            'data': geojson_data,
+            'data': {
+                'type': geojson_data.get('type', 'FeatureCollection'),
+                'features': limited_features,
+                'total_features': len(geojson_data['features'])
+            },
             'field_info': field_info
         })
 
+    except requests.exceptions.Timeout:
+        logger.error("Timeout loading custom API")
+        return jsonify({'error': 'Request timed out. The API may be slow or unavailable.'}), 504
+    except requests.exceptions.RequestException as e:
+        logger.exception("Request error loading custom API")
+        return jsonify({'error': f'Error fetching data: {str(e)}'}), 500
     except Exception as e:
-        logger.exception("Error loading custom API")
-        return jsonify({'error': str(e)}), 500
+        logger.exception("Unexpected error loading custom API")
+        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
 
 
 @json_editor_blueprint.route('/api/upload_file', methods=['POST'])
 def upload_file():
     """Handle file upload."""
+    print(f"🌐 [ROUTE] /api/upload_file accessed via POST")
+    logger.info("Received file upload request")
+
     try:
         if 'file' not in request.files:
+            print(f"❌ [REQUEST] No file in request")
             return jsonify({'error': 'No file provided'}), 400
 
         file = request.files['file']
 
         if file.filename == '':
+            print(f"❌ [REQUEST] No file selected")
             return jsonify({'error': 'No file selected'}), 400
+
+        print(f"📁 [FILE] Processing uploaded file: {file.filename}")
+        logger.info(f"Processing uploaded file: {file.filename}")
 
         # Read file content
         content = file.read()
-        geojson_data = json.loads(content)
+        print(f"📁 [FILE] File size: {len(content)} bytes")
+
+        # Try to parse as JSON
+        try:
+            geojson_data = json.loads(content)
+            print(f"✅ [FILE] Successfully parsed JSON")
+        except json.JSONDecodeError as e:
+            print(f"❌ [FILE] Invalid JSON: {e}")
+            logger.error(f"Invalid JSON in uploaded file: {e}")
+            return jsonify({'error': f'Invalid JSON format: {str(e)}'}), 400
+
+        # Validate GeoJSON structure
+        if 'features' not in geojson_data:
+            print(f"❌ [VALIDATION] Invalid GeoJSON: missing 'features' property")
+            return jsonify({'error': 'Invalid GeoJSON: missing "features" property'}), 400
+
+        feature_count = len(geojson_data.get('features', []))
+        print(f"✅ [SUCCESS] Successfully parsed {feature_count} features from uploaded file")
+        logger.info(f"Successfully parsed {feature_count} features from uploaded file")
 
         # Process with GeoJSONProcessor
         processor = GeoJSONProcessor(geojson_data)
         field_info = processor.get_field_info()
 
+        # Limit features for response
+        limited_features = geojson_data['features'][:100] if len(geojson_data['features']) > 100 else geojson_data[
+            'features']
+
         return jsonify({
             'success': True,
-            'data': geojson_data,
+            'data': {
+                'type': geojson_data.get('type', 'FeatureCollection'),
+                'features': limited_features,
+                'total_features': feature_count
+            },
             'field_info': field_info,
             'filename': file.filename
         })
 
-    except json.JSONDecodeError:
-        return jsonify({'error': 'Invalid JSON file'}), 400
     except Exception as e:
-        logger.exception("Error uploading file")
-        return jsonify({'error': str(e)}), 500
-
-
-@json_editor_blueprint.route('/api/process', methods=['POST'])
-def process_data():
-    """Process data with selected fields and weights."""
-    try:
-        data = request.get_json()
-        geojson_data = data.get('geojson')
-        config = data.get('config')
-
-        if not geojson_data or not config:
-            return jsonify({'error': 'Missing data or configuration'}), 400
-
-        processor = GeoJSONProcessor(geojson_data)
-
-        # Apply field selection
-        selected_fields = config.get('selected_fields', [])
-        filtered_data = processor.filter_fields(selected_fields)
-
-        # Apply weights
-        weights = config.get('weights', {})
-        weighted_scores = processor.apply_weights(weights)
-
-        # Add weighted scores to features
-        for i, feature in enumerate(filtered_data['features']):
-            if i < len(weighted_scores):
-                feature['properties']['weighted_score'] = weighted_scores[i]
-
-        # Generate Python code
-        python_code = processor.generate_python_code(config)
-
-        # Calculate summary statistics
-        stats = {
-            'total_features': len(filtered_data['features']),
-            'selected_fields': len(selected_fields),
-            'weights_applied': len(weights),
-            'score_stats': {
-                'min': min(weighted_scores) if weighted_scores else 0,
-                'max': max(weighted_scores) if weighted_scores else 0,
-                'mean': sum(weighted_scores) / len(weighted_scores) if weighted_scores else 0
-            }
-        }
-
-        return jsonify({
-            'success': True,
-            'processed_data': filtered_data,
-            'python_code': python_code,
-            'statistics': stats
-        })
-
-    except Exception as e:
-        logger.exception("Error processing data")
-        return jsonify({'error': str(e)}), 500
-
-
-@json_editor_blueprint.route('/api/export', methods=['POST'])
-def export_configuration():
-    """Export configuration to file."""
-    try:
-        data = request.get_json()
-        config = data.get('config')
-        export_type = data.get('type', 'json')
-
-        if not config:
-            return jsonify({'error': 'No configuration provided'}), 400
-
-        dataset_name = config.get('dataset_name', 'dataset')
-        timestamp = pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')
-
-        if export_type == 'json':
-            # Save as JSON
-            filename = f"{dataset_name}_{timestamp}.json"
-            filepath = os.path.join(EXPORTS_DIR, filename)
-
-            with open(filepath, 'w') as f:
-                json.dump(config, f, indent=2)
-
-            return jsonify({
-                'success': True,
-                'filename': filename,
-                'path': filepath
-            })
-
-        elif export_type == 'python':
-            # Generate and save Python code
-            geojson_data = data.get('geojson')
-            processor = GeoJSONProcessor(geojson_data)
-            python_code = processor.generate_python_code(config)
-
-            filename = f"{dataset_name}_{timestamp}.py"
-            filepath = os.path.join(EXPORTS_DIR, filename)
-
-            with open(filepath, 'w') as f:
-                f.write(python_code)
-
-            return jsonify({
-                'success': True,
-                'filename': filename,
-                'path': filepath,
-                'code': python_code
-            })
-
-        else:
-            return jsonify({'error': 'Invalid export type'}), 400
-
-    except Exception as e:
-        logger.exception("Error exporting configuration")
-        return jsonify({'error': str(e)}), 500
+        print(f"💥 [ERROR] Unexpected error in file upload: {e}")
+        import traceback
+        print(f"💥 [ERROR] Traceback: {traceback.format_exc()}")
+        logger.exception("Error processing uploaded file")
+        return jsonify({'error': f'Error processing file: {str(e)}'}), 500
 
 
 @json_editor_blueprint.route('/api/save', methods=['POST'])
 def save_to_server():
     """Save configuration to server database."""
+    print(f"🌐 [ROUTE] /api/save accessed via POST")
+    logger.info("Received request to save configuration")
+
     try:
         data = request.get_json()
+        print(f"📨 [REQUEST] Save data: {data}")
+
         config = data.get('config')
 
         if not config:
+            print(f"❌ [REQUEST] No configuration provided")
             return jsonify({'error': 'No configuration provided'}), 400
 
         # Generate unique ID
         config_id = pd.Timestamp.now().strftime('%Y%m%d%H%M%S')
-        dataset_name = config.get('dataset_name', 'dataset')
+        dataset_name = config.get('datasetName', 'dataset').replace(' ', '_')
+        print(f"💾 [SAVE] Generated config ID: {config_id}, dataset name: {dataset_name}")
 
         # Save to JSON file (as database substitute)
         saved_configs_dir = os.path.join(DATA_DIR, 'saved_configs')
         os.makedirs(saved_configs_dir, exist_ok=True)
+        print(f"💾 [SAVE] Save directory: {saved_configs_dir}")
 
         filename = f"{config_id}_{dataset_name}.json"
         filepath = os.path.join(saved_configs_dir, filename)
+        print(f"💾 [SAVE] Full file path: {filepath}")
 
         # Add metadata
         config['_metadata'] = {
@@ -498,6 +567,9 @@ def save_to_server():
         with open(filepath, 'w') as f:
             json.dump(config, f, indent=2)
 
+        print(f"✅ [SUCCESS] Saved configuration {config_id} to server")
+        logger.info(f"Saved configuration {config_id} to server")
+
         return jsonify({
             'success': True,
             'config_id': config_id,
@@ -505,187 +577,67 @@ def save_to_server():
         })
 
     except Exception as e:
+        print(f"💥 [ERROR] Error saving to server: {e}")
+        import traceback
+        print(f"💥 [ERROR] Traceback: {traceback.format_exc()}")
         logger.exception("Error saving to server")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': f'Error saving: {str(e)}'}), 500
 
 
-@json_editor_blueprint.route('/api/list_saved', methods=['GET'])
-def list_saved_configs():
-    """List all saved configurations."""
-    try:
-        saved_configs_dir = os.path.join(DATA_DIR, 'saved_configs')
-        os.makedirs(saved_configs_dir, exist_ok=True)
-
-        configs = []
-        for filename in os.listdir(saved_configs_dir):
-            if filename.endswith('.json'):
-                filepath = os.path.join(saved_configs_dir, filename)
-                with open(filepath, 'r') as f:
-                    config = json.load(f)
-                    configs.append({
-                        'filename': filename,
-                        'dataset_name': config.get('dataset_name', 'Unknown'),
-                        'created_at': config.get('_metadata', {}).get('created_at', 'Unknown'),
-                        'id': config.get('_metadata', {}).get('id', filename.split('_')[0])
-                    })
-
-        # Sort by creation date
-        configs.sort(key=lambda x: x['created_at'], reverse=True)
-
-        return jsonify({
-            'success': True,
-            'configs': configs
+# Debug route to show registered routes
+@json_editor_blueprint.route('/debug/routes')
+def debug_routes():
+    """Debug endpoint to show all registered routes."""
+    print(f"🌐 [ROUTE] /debug/routes accessed")
+    from flask import current_app
+    routes = []
+    for rule in current_app.url_map.iter_rules():
+        routes.append({
+            'endpoint': rule.endpoint,
+            'methods': list(rule.methods),
+            'rule': str(rule)
         })
-
-    except Exception as e:
-        logger.exception("Error listing saved configs")
-        return jsonify({'error': str(e)}), 500
-
-
-@json_editor_blueprint.route('/api/load_saved/<config_id>', methods=['GET'])
-def load_saved_config(config_id):
-    """Load a saved configuration."""
-    try:
-        saved_configs_dir = os.path.join(DATA_DIR, 'saved_configs')
-
-        # Find the config file
-        config_file = None
-        for filename in os.listdir(saved_configs_dir):
-            if filename.startswith(config_id):
-                config_file = filename
-                break
-
-        if not config_file:
-            return jsonify({'error': 'Configuration not found'}), 404
-
-        filepath = os.path.join(saved_configs_dir, config_file)
-        with open(filepath, 'r') as f:
-            config = json.load(f)
-
-        return jsonify({
-            'success': True,
-            'config': config
-        })
-
-    except Exception as e:
-        logger.exception("Error loading saved config")
-        return jsonify({'error': str(e)}), 500
-
-
-# Utility functions
-def validate_geojson(data: Dict[str, Any]) -> bool:
-    """Validate if data is proper GeoJSON."""
-    if not isinstance(data, dict):
-        return False
-
-    if data.get('type') not in ['Feature', 'FeatureCollection']:
-        return False
-
-    if data['type'] == 'FeatureCollection':
-        if 'features' not in data:
-            return False
-        if not isinstance(data['features'], list):
-            return False
-
-    return True
-
-
-def extract_fields_from_feature(feature: Dict[str, Any]) -> Dict[str, Any]:
-    """Extract field names and types from a feature."""
-    fields = {}
-
-    # Try both properties and attributes
-    props = feature.get('properties', {}) or feature.get('attributes', {})
-
-    for field_name, value in props.items():
-        if isinstance(value, (int, float)):
-            fields[field_name] = 'quantitative'
-        elif isinstance(value, bool):
-            fields[field_name] = 'boolean'
-        elif isinstance(value, str):
-            fields[field_name] = 'qualitative'
-        else:
-            fields[field_name] = 'unknown'
-
-    return fields
-
-
-def normalize_weights(weights: Dict[str, float]) -> Dict[str, float]:
-    """Normalize weights to sum to 1."""
-    total = sum(weights.values())
-    if total == 0:
-        return weights
-
-    return {k: v / total for k, v in weights.items()}
-
-
-# Integration with existing pipeline
-def integrate_with_pipeline(config: Dict[str, Any], geojson_path: str) -> str:
-    """Integrate processed configuration with existing pipeline."""
-    from geo_open_source.webapp.jsonEditor.pipeline.pipeline_runner import run_pipeline
-    from geo_open_source.webapp.jsonEditor.pipeline.data_cleaner import clean_dataset_dynamic
-    from geo_open_source.webapp.jsonEditor.pipeline.weighting import dynamic_weighting
-
-    try:
-        # Prepare pipeline options
-        selected_fields = config.get('selected_fields', [])
-        weights = config.get('weights', {})
-
-        pipeline_options = {
-            'clean_config': {
-                'fields_to_keep': selected_fields + ['geometry']
-            },
-            'weighting_config': {
-                'weighting_fields': {}
-            }
-        }
-
-        # Convert weights to pipeline format
-        for field, weight in weights.items():
-            pipeline_options['weighting_config']['weighting_fields'][field] = {
-                'weights': {'default': weight},
-                'importance': 1.0
-            }
-
-        # Run pipeline
-        dataset_name = config.get('dataset_name', 'processed_dataset')
-        output_path = run_pipeline(dataset_name, geojson_path, pipeline_options)
-
-        return output_path
-
-    except Exception as e:
-        logger.exception("Error integrating with pipeline")
-        raise
-
-
-# Error handlers
-@json_editor_blueprint.errorhandler(400)
-def bad_request(error):
-    """Handle bad request errors."""
-    return jsonify({'error': 'Bad request', 'message': str(error)}), 400
-
-
-@json_editor_blueprint.errorhandler(404)
-def not_found(error):
-    """Handle not found errors."""
-    return jsonify({'error': 'Not found', 'message': str(error)}), 404
-
-
-@json_editor_blueprint.errorhandler(500)
-def internal_error(error):
-    """Handle internal server errors."""
-    return jsonify({'error': 'Internal server error', 'message': str(error)}), 500
+    print(f"🔍 [DEBUG] Found {len(routes)} total routes")
+    return jsonify({'routes': routes})
 
 
 # Register blueprint with app
 def register_json_editor(app):
     """Register the JSON editor blueprint with the Flask app."""
-    app.register_blueprint(json_editor_blueprint, url_prefix='/json-editor')
-    logger.info("JSON Editor blueprint registered")
+    print(f"📘 [REGISTER] Starting blueprint registration")
+    logger.info("Registering JSON Editor blueprint")
 
+    print(f"📘 [REGISTER] App: {app}")
+    print(f"📘 [REGISTER] Blueprint: {json_editor_blueprint}")
+    print(f"📘 [REGISTER] Blueprint name: {json_editor_blueprint.name}")
+
+    try:
+        app.register_blueprint(json_editor_blueprint, url_prefix='/json-editor')
+        print(f"✅ [REGISTER] JSON Editor blueprint registered successfully with prefix '/json-editor'")
+        logger.info("JSON Editor blueprint registered successfully")
+
+        # Log the registered routes
+        json_editor_routes = [rule for rule in app.url_map.iter_rules() if rule.endpoint.startswith('json_editor')]
+        print(f"✅ [REGISTER] Registered {len(json_editor_routes)} JSON editor routes:")
+        logger.info(f"Registered {len(json_editor_routes)} JSON editor routes:")
+        for route in json_editor_routes:
+            print(f"  ✅ {route.endpoint}: {route.rule} {list(route.methods)}")
+            logger.info(f"  {route.endpoint}: {route.rule} {list(route.methods)}")
+
+    except Exception as e:
+        print(f"❌ [REGISTER] Failed to register blueprint: {e}")
+        import traceback
+        print(f"❌ [REGISTER] Traceback: {traceback.format_exc()}")
+        logger.error(f"Failed to register blueprint: {e}")
+        raise
+
+
+print(f"🏁 [INIT] runJsonEditor.py initialization complete")
 
 if __name__ == "__main__":
-    # Test the processor
+    # Test the processor with a simple example
+    print("🧪 [TEST] Testing GeoJSON Processor...")
+
     test_data = {
         "type": "FeatureCollection",
         "features": [
@@ -693,13 +645,13 @@ if __name__ == "__main__":
                 "type": "Feature",
                 "properties": {
                     "id": 1,
-                    "name": "Test",
+                    "name": "Test Location",
                     "value": 100,
                     "category": "A"
                 },
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [0, 0]
+                    "coordinates": [-122.4, 37.8]
                 }
             }
         ]
@@ -707,4 +659,4 @@ if __name__ == "__main__":
 
     processor = GeoJSONProcessor(test_data)
     info = processor.get_field_info()
-    print("Field Info:", json.dumps(info, indent=2))
+    print("🧪 [TEST] Field Info:", json.dumps(info, indent=2))
