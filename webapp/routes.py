@@ -16,8 +16,6 @@ import plotly
 import plotly.graph_objects as go
 from geo_open_source.webapp.options_catalog import compute_available_options
 
-from geo_open_source.webapp.fetch_and_update import get_api_preview
-
 logger = logging.getLogger(__name__)
 
 main_blueprint = Blueprint('main', __name__)

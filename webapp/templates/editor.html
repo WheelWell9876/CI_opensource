@@ -62,41 +62,103 @@
         <!-- Step 1: Load Data -->
         <div class="step-content active" data-step="1">
           <div class="panel-title">
-            <div class="panel-icon">📁</div>
+            <div class="panel-icon">📊</div>
             Load Your GeoJSON Data
           </div>
 
-          <!-- Upload Area -->
-          <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">📤</div>
-            <h3>Drop your GeoJSON file here</h3>
-            <p style="color: #999; margin: 1rem 0;">or click to browse</p>
-            <input type="file" id="fileInput" accept=".json,.geojson" style="display: none;">
-          </div>
-
-          <div style="margin: 2rem 0; text-align: center; color: #999;">
-            — OR —
-          </div>
-
-          <!-- API Selection -->
+          <!-- Data Source Selection -->
           <div class="input-group">
-            <label class="input-label">Select a Provided API</label>
-            <select id="apiSelect">
-              <option value="">Choose an API...</option>
-              <option value="epa-disaster">EPA Disaster Debris Recovery</option>
-              <option value="agri-minerals">Agricultural Minerals Operations</option>
-              <option value="construction-minerals">Construction Minerals Operations</option>
-              <option value="usace-reservoirs">USACE Reservoirs</option>
-              <option value="dams">National Dam Inventory</option>
+            <label class="input-label">Choose Data Source</label>
+            <select id="dataSourceSelect">
+              <option value="">Select data source...</option>
+              <option value="file">📤 Upload File</option>
+              <option value="builtin">🏢 Built-in APIs</option>
+              <option value="user">👤 My Custom APIs</option>
+              <option value="custom">🔗 Enter Custom URL</option>
+              <option value="create">➕ Create New API</option>
             </select>
           </div>
 
-          <div class="input-group">
-            <label class="input-label">Or Enter Custom API URL</label>
-            <input type="url" id="customApiUrl" placeholder="https://services.example.com/...">
+          <!-- File Upload Container -->
+          <div id="fileUploadContainer" style="display: none;">
+            <div class="upload-area" id="uploadArea">
+              <div class="upload-icon">📤</div>
+              <h3>Drop your GeoJSON file here</h3>
+              <p style="color: #999; margin: 1rem 0;">or click to browse</p>
+              <input type="file" id="fileInput" accept=".json,.geojson" style="display: none;">
+            </div>
           </div>
 
-          <button class="btn btn-primary" style="width: 100%;" onclick="loadData()">
+          <!-- Built-in APIs Container -->
+          <div id="builtInApiContainer" style="display: none;">
+            <div class="input-group">
+              <label class="input-label">Select Built-in API</label>
+              <select id="builtInApiSelect">
+                <option value="">Loading APIs...</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- User APIs Container -->
+          <div id="userApiContainer" style="display: none;">
+            <div class="input-group">
+              <label class="input-label">Select Custom API</label>
+              <select id="userApiSelect">
+                <option value="">Loading APIs...</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Custom URL Container -->
+          <div id="customUrlContainer" style="display: none;">
+            <div class="input-group">
+              <label class="input-label">Custom API URL</label>
+              <input type="url" id="customApiUrl" placeholder="https://services.example.com/...">
+              <small style="color: #666; margin-top: 0.25rem; display: block;">
+                Enter a direct API URL or ArcGIS Feature Service URL
+              </small>
+            </div>
+          </div>
+
+          <!-- Create New API Container -->
+          <div id="createApiContainer" style="display: none;">
+            <div class="panel-title" style="margin: 1rem 0 0.5rem 0; font-size: 1rem;">
+              <div class="panel-icon">➕</div>
+              Create New API
+            </div>
+
+            <form id="createApiForm">
+              <div class="input-group">
+                <label class="input-label">API Name*</label>
+                <input type="text" name="apiName" placeholder="My Custom API" required>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">API URL*</label>
+                <input type="url" name="apiUrl" placeholder="https://example.com/api/data" required>
+                <small style="color: #666; margin-top: 0.25rem; display: block;">
+                  Must return valid GeoJSON with a "features" property
+                </small>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">Description</label>
+                <textarea name="apiDescription" rows="2" placeholder="Brief description of the API..."></textarea>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">Category</label>
+                <input type="text" name="apiCategory" placeholder="Custom" value="Custom">
+              </div>
+
+              <div class="btn-group">
+                <button type="button" class="btn btn-secondary" onclick="cancelApiCreation()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create API</button>
+              </div>
+            </form>
+          </div>
+
+          <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="loadData()">
             Load Data
           </button>
         </div>
@@ -139,7 +201,16 @@
 
           <div class="status-message status-info">
             <span>ℹ️</span>
-            <span>Adjust the weights below to prioritize certain fields. Weights will be normalized automatically.</span>
+            <span>Configure field weights and importance. Use the lock icon (🔒) to prevent a field from changing when others are adjusted. Total weight should equal 100%.</span>
+          </div>
+
+          <div class="quick-actions" style="margin-bottom: 1.5rem;">
+            <div class="quick-action" onclick="resetWeightsEqual()">
+              <strong>⚖️ Equal Weights</strong>
+            </div>
+            <div class="quick-action" onclick="lockedFields.clear(); populateWeightControls()">
+              <strong>🔓 Unlock All</strong>
+            </div>
           </div>
 
           <div id="weightControls">
@@ -166,7 +237,7 @@
 
           <div class="input-group">
             <label class="input-label">Description</label>
-            <textarea id="datasetDescription" rows="3" placeholder="Describe your dataset..."></textarea>
+            <textarea id="datasetDescription" rows="3" placeholder="Describe your dataset and its purpose..."></textarea>
           </div>
 
           <div class="btn-group">
@@ -177,7 +248,7 @@
           </div>
 
           <div style="margin-top: 2rem;">
-            <h4 style="margin-bottom: 1rem;">Quick Export Options:</h4>
+            <h4 style="margin-bottom: 1rem;">Export Options:</h4>
             <div class="quick-actions">
               <div class="quick-action" onclick="downloadJSON()">
                 <strong>📄 Download JSON</strong>
@@ -224,10 +295,27 @@
       </div>
     </div>
   </div>
+
   <footer>
     <p>&copy; 2025 CI Sentinel</p>
     <p>Created by Thomas Numnum</p>
   </footer>
-  <script src="{{ url_for('static', filename='scripts/jsonEditor/editor_modern.js') }}"></script>
+
+  <!-- Load JavaScript modules in order -->
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/file_upload.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/builtin_apis.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/user_apis.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/api_creator.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/data_source_controller.js') }}"></script>
+
+  <script>
+    // Initialize the data source controller after all modules are loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof initDataSourceController === 'function') {
+        initDataSourceController();
+      }
+    });
+  </script>
 </body>
 </html>

@@ -1,10 +1,10 @@
+// core-editor.js - Main editor functionality and coordination
 // Global state
 let currentStep = 1;
 let loadedData = null;
 let selectedFields = new Set();
 let fieldWeights = {};
 let fieldTypes = {};
-let availableApis = { built_in: [], user_created: [] };
 let lockedFields = new Set();
 
 // Debug flag
@@ -18,253 +18,19 @@ function debugLog(message, data = null) {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
-  debugLog('DOM Content Loaded');
-  setupUploadArea();
+  debugLog('Core Editor - DOM Content Loaded');
   setupEventListeners();
-  loadAvailableApis();
+
+  // Initialize all modules
+  if (typeof initFileUpload === 'function') initFileUpload();
+  if (typeof initBuiltInApis === 'function') initBuiltInApis();
+  if (typeof initUserApis === 'function') initUserApis();
+  if (typeof initApiCreator === 'function') initApiCreator();
 });
 
-// Load available APIs from server
-function loadAvailableApis() {
-  debugLog('Loading available APIs');
-
-  fetch('/json-editor/api/apis', {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
-  })
-  .then(response => {
-    debugLog('API response status:', response.status);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    debugLog('APIs loaded', data);
-    if (data.success) {
-      availableApis = data.apis;
-      populateApiSelectors();
-    } else {
-      console.error('Failed to load APIs:', data.error);
-      showMessage('Failed to load available APIs', 'error');
-    }
-  })
-  .catch(error => {
-    console.error('Error loading APIs:', error);
-    showMessage('Error loading available APIs: ' + error.message, 'error');
-    // Set up basic UI even if APIs fail to load
-    populateApiSelectors();
-  });
-}
-
-// Populate API selector dropdowns with proper UI
-function populateApiSelectors() {
-  debugLog('Populating API selectors');
-
-  // Set up the API type selector
-  const apiTypeSelect = document.getElementById('apiTypeSelect');
-  if (apiTypeSelect) {
-    apiTypeSelect.innerHTML = `
-      <option value="">Choose data source...</option>
-      <option value="built_in">Built-in APIs (${availableApis.built_in?.length || 0} available)</option>
-      <option value="user_created">My Custom APIs (${availableApis.user_created?.length || 0} available)</option>
-      <option value="custom_url">Enter Custom URL</option>
-      <option value="create_new">Create New API</option>
-    `;
-  }
-
-  debugLog('API selectors populated');
-}
-
-// Handle API type selection change
-function onApiTypeChange() {
-  const apiTypeSelect = document.getElementById('apiTypeSelect');
-  const apiListContainer = document.getElementById('apiListContainer');
-  const customUrlContainer = document.getElementById('customUrlContainer');
-  const createApiContainer = document.getElementById('createApiContainer');
-
-  if (!apiTypeSelect) return;
-
-  const selectedType = apiTypeSelect.value;
-  debugLog('API type changed to:', selectedType);
-
-  // Hide all containers
-  if (apiListContainer) apiListContainer.style.display = 'none';
-  if (customUrlContainer) customUrlContainer.style.display = 'none';
-  if (createApiContainer) createApiContainer.style.display = 'none';
-
-  switch (selectedType) {
-    case 'built_in':
-    case 'user_created':
-      if (apiListContainer) {
-        apiListContainer.style.display = 'block';
-        populateSpecificApiList(selectedType);
-      }
-      break;
-    case 'custom_url':
-      if (customUrlContainer) customUrlContainer.style.display = 'block';
-      break;
-    case 'create_new':
-      if (createApiContainer) createApiContainer.style.display = 'block';
-      break;
-  }
-}
-
-// Populate specific API list based on type
-function populateSpecificApiList(apiType) {
-  const apiSelect = document.getElementById('specificApiSelect');
-  if (!apiSelect) return;
-
-  const apis = availableApis[apiType] || [];
-  debugLog(`Populating ${apiType} APIs:`, apis);
-
-  apiSelect.innerHTML = '<option value="">Choose an API...</option>';
-
-  if (apis.length === 0) {
-    apiSelect.innerHTML = '<option value="">No APIs available</option>';
-    return;
-  }
-
-  // Group APIs by category
-  const apisByCategory = {};
-  apis.forEach(api => {
-    const category = api.category || 'Other';
-    if (!apisByCategory[category]) {
-      apisByCategory[category] = [];
-    }
-    apisByCategory[category].push(api);
-  });
-
-  // Add options grouped by category
-  Object.keys(apisByCategory).sort().forEach(category => {
-    const optgroup = document.createElement('optgroup');
-    optgroup.label = category;
-
-    apisByCategory[category].forEach(api => {
-      const option = document.createElement('option');
-      option.value = api.id;
-      option.textContent = api.name;
-      option.title = api.description;
-      optgroup.appendChild(option);
-    });
-
-    apiSelect.appendChild(optgroup);
-  });
-}
-
-// Create new API
-function createNewApi() {
-  const form = document.getElementById('createApiForm');
-  if (!form) return;
-
-  const formData = new FormData(form);
-  const apiData = {
-    name: formData.get('apiName'),
-    url: formData.get('apiUrl'),
-    description: formData.get('apiDescription') || '',
-    category: formData.get('apiCategory') || 'Custom'
-  };
-
-  debugLog('Creating new API:', apiData);
-
-  // Validate required fields
-  if (!apiData.name || !apiData.url) {
-    showMessage('Name and URL are required', 'error');
-    return;
-  }
-
-  showMessage('Creating and testing API...', 'info');
-
-  fetch('/json-editor/api/apis', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(apiData)
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    debugLog('API creation response', data);
-    if (data.success) {
-      showMessage('API created successfully!', 'success');
-      form.reset();
-      loadAvailableApis(); // Refresh the API list
-
-      // Switch to user_created APIs and select the new one
-      const apiTypeSelect = document.getElementById('apiTypeSelect');
-      if (apiTypeSelect) {
-        apiTypeSelect.value = 'user_created';
-        onApiTypeChange();
-
-        // Select the newly created API
-        setTimeout(() => {
-          const specificApiSelect = document.getElementById('specificApiSelect');
-          if (specificApiSelect) {
-            specificApiSelect.value = data.api_id;
-          }
-        }, 100);
-      }
-    } else {
-      showMessage(data.error || 'Failed to create API', 'error');
-    }
-  })
-  .catch(error => {
-    console.error('Error creating API:', error);
-    showMessage('Error creating API: ' + error.message, 'error');
-  });
-}
-
-// Setup upload area
-function setupUploadArea() {
-  debugLog('Setting up upload area');
-  const uploadArea = document.getElementById('uploadArea');
-  const fileInput = document.getElementById('fileInput');
-
-  if (!uploadArea || !fileInput) {
-    console.error('Upload area or file input not found');
-    return;
-  }
-
-  uploadArea.addEventListener('click', () => {
-    debugLog('Upload area clicked');
-    fileInput.click();
-  });
-
-  uploadArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadArea.classList.add('dragover');
-    debugLog('File dragged over upload area');
-  });
-
-  uploadArea.addEventListener('dragleave', () => {
-    uploadArea.classList.remove('dragover');
-    debugLog('File drag left upload area');
-  });
-
-  uploadArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-    const files = e.dataTransfer.files;
-    debugLog('Files dropped', files.length);
-    if (files.length > 0) {
-      handleFileUpload(files[0]);
-    }
-  });
-
-  fileInput.addEventListener('change', (e) => {
-    debugLog('File input changed', e.target.files.length);
-    if (e.target.files.length > 0) {
-      handleFileUpload(e.target.files[0]);
-    }
-  });
-}
-
-// Setup event listeners
+// Setup event listeners for steps
 function setupEventListeners() {
-  debugLog('Setting up event listeners');
+  debugLog('Setting up core event listeners');
   document.querySelectorAll('.step').forEach(step => {
     step.addEventListener('click', () => {
       const stepNum = parseInt(step.dataset.step);
@@ -276,158 +42,39 @@ function setupEventListeners() {
   });
 }
 
-// Handle file upload
-function handleFileUpload(file) {
-  debugLog('Handling file upload', file.name);
+// Navigate between steps
+function goToStep(step) {
+  debugLog('Going to step', step);
+  currentStep = step;
 
-  const formData = new FormData();
-  formData.append('file', file);
-
-  showMessage('Uploading and processing file...', 'info');
-
-  fetch('/json-editor/api/upload_file', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => {
-    debugLog('File upload response received', response.status);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  // Update step indicators
+  document.querySelectorAll('.step').forEach(s => {
+    const stepNum = parseInt(s.dataset.step);
+    s.classList.remove('active', 'completed');
+    if (stepNum === step) {
+      s.classList.add('active');
+    } else if (stepNum < step) {
+      s.classList.add('completed');
     }
-    return response.json();
-  })
-  .then(data => {
-    debugLog('File upload data received', data);
-    if (data.success) {
-      loadedData = data.data;
-      processGeoJSON(data.data, data.field_info);
-      showMessage(`File uploaded successfully! Loaded ${data.data.total_features || data.data.features.length} features.`, 'success');
-    } else {
-      console.error('File upload returned error:', data.error);
-      showMessage(data.error || 'Failed to process file', 'error');
-    }
-  })
-  .catch(error => {
-    console.error('Error uploading file:', error);
-    showMessage('Error uploading file: ' + error.message, 'error');
   });
-}
 
-// Load data based on current selection
-function loadData() {
-  const apiTypeSelect = document.getElementById('apiTypeSelect');
-  if (!apiTypeSelect) {
-    console.error('API type select not found');
-    return;
-  }
-
-  const selectedType = apiTypeSelect.value;
-  debugLog('Loading data with type:', selectedType);
-
-  switch (selectedType) {
-    case 'built_in':
-    case 'user_created':
-      loadFromSelectedApi();
-      break;
-    case 'custom_url':
-      loadFromCustomUrl();
-      break;
-    default:
-      showMessage('Please select a data source', 'error');
-  }
-}
-
-// Load from selected API
-function loadFromSelectedApi() {
-  const specificApiSelect = document.getElementById('specificApiSelect');
-  if (!specificApiSelect || !specificApiSelect.value) {
-    showMessage('Please select an API', 'error');
-    return;
-  }
-
-  const apiId = specificApiSelect.value;
-  debugLog('Loading from API:', apiId);
-
-  showMessage('Loading data from API...', 'info');
-
-  fetch('/json-editor/api/load_from_api', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      api_id: apiId,
-      limit: 1000
-    })
-  })
-  .then(response => {
-    debugLog('API response received', response.status);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  // Update content
+  document.querySelectorAll('.step-content').forEach(content => {
+    content.classList.remove('active');
+    if (parseInt(content.dataset.step) === step) {
+      content.classList.add('active');
     }
-    return response.json();
-  })
-  .then(data => {
-    debugLog('API data received', data);
-    if (data.success) {
-      loadedData = data.data;
-      processGeoJSON(data.data, data.field_info);
-      showMessage(`Loaded ${data.data.total_features || data.data.features.length} features successfully!`, 'success');
-    } else {
-      console.error('API returned error:', data.error);
-      showMessage(data.error || 'Failed to load data', 'error');
-    }
-  })
-  .catch(error => {
-    console.error('Error loading API:', error);
-    showMessage('Error loading data: ' + error.message, 'error');
   });
-}
 
-// Load from custom URL
-function loadFromCustomUrl() {
-  const customUrlInput = document.getElementById('customApiUrl');
-  if (!customUrlInput || !customUrlInput.value.trim()) {
-    showMessage('Please enter a custom URL', 'error');
-    return;
+  // Special handling for step 3
+  if (step === 3) {
+    populateWeightControls();
   }
 
-  const customUrl = customUrlInput.value.trim();
-  debugLog('Loading from custom URL:', customUrl);
-
-  showMessage('Loading data from custom URL...', 'info');
-
-  fetch('/json-editor/api/load_from_api', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      url: customUrl,
-      limit: 1000
-    })
-  })
-  .then(response => {
-    debugLog('Custom URL response received', response.status);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    debugLog('Custom URL data received', data);
-    if (data.success) {
-      loadedData = data.data;
-      processGeoJSON(data.data, data.field_info);
-      showMessage(`Loaded ${data.data.total_features || data.data.features.length} features successfully!`, 'success');
-    } else {
-      console.error('Custom URL returned error:', data.error);
-      showMessage(data.error || 'Failed to load data', 'error');
-    }
-  })
-  .catch(error => {
-    console.error('Error loading custom URL:', error);
-    showMessage('Error loading data: ' + error.message, 'error');
-  });
+  debugLog('Step transition completed to', step);
 }
 
-// Process GeoJSON data
+// Process GeoJSON data (called by any data loading module)
 function processGeoJSON(data, fieldInfo = null) {
   debugLog('Processing GeoJSON data', { data, fieldInfo });
 
@@ -538,39 +185,42 @@ function toggleField(field, isSelected) {
   updatePreview();
 }
 
-// Navigate between steps
-function goToStep(step) {
-  debugLog('Going to step', step);
-  currentStep = step;
-
-  // Update step indicators
-  document.querySelectorAll('.step').forEach(s => {
-    const stepNum = parseInt(s.dataset.step);
-    s.classList.remove('active', 'completed');
-    if (stepNum === step) {
-      s.classList.add('active');
-    } else if (stepNum < step) {
-      s.classList.add('completed');
-    }
+// Field selection helpers
+function selectAll() {
+  debugLog('Selecting all fields');
+  document.querySelectorAll('.field-checkbox').forEach(cb => {
+    cb.checked = true;
+    const field = cb.id.replace('field_', '');
+    selectedFields.add(field);
   });
-
-  // Update content
-  document.querySelectorAll('.step-content').forEach(content => {
-    content.classList.remove('active');
-    if (parseInt(content.dataset.step) === step) {
-      content.classList.add('active');
-    }
-  });
-
-  // Special handling for step 3
-  if (step === 3) {
-    populateWeightControls();
-  }
-
-  debugLog('Step transition completed to', step);
+  updatePreview();
 }
 
-// Populate weight controls
+function selectNone() {
+  debugLog('Deselecting all fields');
+  document.querySelectorAll('.field-checkbox').forEach(cb => {
+    cb.checked = false;
+  });
+  selectedFields.clear();
+  updatePreview();
+}
+
+function selectQuantitative() {
+  debugLog('Selecting quantitative fields only');
+  document.querySelectorAll('.field-checkbox').forEach(cb => {
+    const field = cb.id.replace('field_', '');
+    const isQuantitative = fieldTypes[field] === 'quantitative';
+    cb.checked = isQuantitative;
+    if (isQuantitative) {
+      selectedFields.add(field);
+    } else {
+      selectedFields.delete(field);
+    }
+  });
+  updatePreview();
+}
+
+// Weight management
 function populateWeightControls() {
   debugLog('Populating weight controls for fields:', Array.from(selectedFields));
 
@@ -631,7 +281,6 @@ function populateWeightControls() {
   debugLog('Weight controls populated for', selectedFields.size, 'fields');
 }
 
-// Toggle field lock
 function toggleFieldLock(field) {
   debugLog('Toggling lock for field', field);
 
@@ -644,7 +293,6 @@ function toggleFieldLock(field) {
   populateWeightControls();
 }
 
-// Update weight
 function updateWeight(field, value) {
   debugLog('Updating weight for field', { field, value });
 
@@ -658,7 +306,6 @@ function updateWeight(field, value) {
   updatePreview();
 }
 
-// Update total weight display
 function updateTotalWeightDisplay() {
   const totalWeightElement = document.getElementById('totalWeight');
   if (!totalWeightElement) return;
@@ -677,42 +324,6 @@ function updateTotalWeightDisplay() {
   }
 }
 
-// Field selection helpers
-function selectAll() {
-  debugLog('Selecting all fields');
-  document.querySelectorAll('.field-checkbox').forEach(cb => {
-    cb.checked = true;
-    const field = cb.id.replace('field_', '');
-    selectedFields.add(field);
-  });
-  updatePreview();
-}
-
-function selectNone() {
-  debugLog('Deselecting all fields');
-  document.querySelectorAll('.field-checkbox').forEach(cb => {
-    cb.checked = false;
-  });
-  selectedFields.clear();
-  updatePreview();
-}
-
-function selectQuantitative() {
-  debugLog('Selecting quantitative fields only');
-  document.querySelectorAll('.field-checkbox').forEach(cb => {
-    const field = cb.id.replace('field_', '');
-    const isQuantitative = fieldTypes[field] === 'quantitative';
-    cb.checked = isQuantitative;
-    if (isQuantitative) {
-      selectedFields.add(field);
-    } else {
-      selectedFields.delete(field);
-    }
-  });
-  updatePreview();
-}
-
-// New utility function to reset weights to equal distribution
 function resetWeightsEqual() {
   debugLog('Resetting weights to equal distribution');
 
@@ -1051,7 +662,7 @@ function saveToServer() {
   });
 }
 
-// Show status message
+// Utility functions
 function showMessage(message, type) {
   debugLog('Showing message:', { message, type });
 
