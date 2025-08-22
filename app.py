@@ -4,7 +4,7 @@ from geo_open_source.webapp.routes import main_blueprint
 
 # Import the JSON editor blueprint and registration function
 try:
-    from geo_open_source.webapp.runJsonEditor import register_json_editor
+    from geo_open_source.webapp.jsonEditor.runJsonEditor import register_json_editor
 
     print("✅ [IMPORT] Successfully imported runJsonEditor")
 except ImportError as e:
@@ -57,7 +57,7 @@ def create_app():
             json_editor_count += 1
             print(f"  🎯 JSON Editor: {rule.endpoint}: {rule.rule} {list(rule.methods - {'HEAD', 'OPTIONS'})}")
         else:
-            print(f"  📍 Main: {rule.endpoint}: {rule.rule} {list(rule.methods - {'HEAD', 'OPTIONS'})}")
+            print(f"  📄 Main: {rule.endpoint}: {rule.rule} {list(rule.methods - {'HEAD', 'OPTIONS'})}")
 
     print(f"📊 [APP] Total routes registered: {route_count}")
     print(f"📊 [APP] JSON Editor routes: {json_editor_count}")
@@ -72,8 +72,8 @@ def create_app():
 app = create_app()
 
 if __name__ == '__main__':
-    print("🌐 [SERVER] Starting Flask development server")
-    print("📍 [SERVER] Available endpoints:")
+    print("🌍 [SERVER] Starting Flask development server")
+    print("🔗 [SERVER] Available endpoints:")
     print("  - Main page: http://127.0.0.1:5000/")
     print("  - Editor: http://127.0.0.1:5000/editor")
     print("  - JSON Editor: http://127.0.0.1:5000/json-editor/editor")

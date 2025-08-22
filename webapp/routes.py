@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, jsonify  # Added request to imports
 import geopandas as gpd
 from arcgis.features import FeatureLayer
 from geo_open_source.webapp.jsonEditor.pipeline.quant_qual_counter import analyze_fields
@@ -139,54 +139,6 @@ def determine_file_path(state, county, category, dataset):
             else:
                 return os.path.join(sw, "allDatasets_state.parquet")
 
-# # 6) LIST WEIGHTED DATASETS
-# @main_blueprint.route('/list_weighted_datasets', methods=['GET'])
-# def list_weighted_datasets():
-#     """
-#     Scan the weighted_parquet/custom directory and return available weighted datasets.
-#     Returns a list of objects with 'display' and 'value'.
-#     """
-#     base_weighted = os.path.join(BASE_DIR, "static", "data", "weighted_parquet", "custom")
-#     dataset_list = []
-#     for mode in ['economic_normalized', 'energy_normalized', 'military_normalized']:
-#         mode_path = os.path.join(base_weighted, mode)
-#         if not os.path.isdir(mode_path):
-#             continue
-#         for subcat in os.listdir(mode_path):
-#             subcat_path = os.path.join(mode_path, subcat)
-#             if not os.path.isdir(subcat_path):
-#                 continue
-#             for filename in os.listdir(subcat_path):
-#                 if filename.endswith("_normalized.parquet"):
-#                     base_name = filename.replace("_normalized.parquet", "").replace("_", " ")
-#                     display_name = f"{mode.split('_')[0].capitalize()} - {subcat}: {base_name}"
-#                     relative_path = os.path.join("weighted_parquet", "custom", mode, subcat, filename)
-#                     dataset_list.append({"display": display_name, "value": relative_path})
-#     dataset_list = sorted(dataset_list, key=lambda x: x["display"])
-#     return jsonify({"datasets": dataset_list})
-
-# 7) FETCH WEIGHTED DATA
-# @main_blueprint.route('/fetch_weighted_data', methods=['POST'])
-# def fetch_weighted_data():
-#     data = request.get_json() or {}
-#     logger.debug("Received payload for fetch_weighted_data: %s", data)
-#     dataset = data.get('dataset', '')
-#     if not dataset:
-#         logger.error("No dataset provided in payload.")
-#         return jsonify({"error": "No dataset provided"}), 400
-#     file_path = os.path.join(BASE_DIR, "static", "data", dataset)
-#     logger.debug("Computed file path: %s", file_path)
-#     if not os.path.exists(file_path):
-#         logger.error("File not found: %s", file_path)
-#         return jsonify({"error": f"File not found: {file_path}"}), 404
-#     try:
-#         gdf = gpd.read_parquet(file_path)
-#         logger.debug("Successfully read parquet file: %s", file_path)
-#         return jsonify(gdf_to_geojson_dict(gdf))
-#     except Exception as e:
-#         logger.exception("Exception occurred while reading parquet file:")
-#         return jsonify({"error": str(e)}), 500
-
 def gdf_to_geojson_dict(gdf):
     if "geometry" not in gdf.columns:
         logger.error("No geometry column found in GeoDataFrame")
@@ -209,14 +161,9 @@ def gdf_to_geojson_dict(gdf):
     return {"data": records}
 
 
-
-
-
 # ---------------------------------------------------------------------------
 # New Generate Map
 # ---------------------------------------------------------------------------
-from flask import request, jsonify
-
 from geo_open_source.webapp.display.regular_display import create_regular_display        # -> your earlier helper we wrote
 from geo_open_source.webapp.display import display
 
@@ -280,7 +227,7 @@ def generate_map():
             print(f"⚠️ DEBUG: Could not enforce map style on figure: {_e}")
 
         # Convert figure to JSON for client-side rendering
-        print(f"🔄 DEBUG: Converting figure to JSON...")
+        print(f"📄 DEBUG: Converting figure to JSON...")
         fig_json = fig.to_json()
         print(f"✅ DEBUG: Figure JSON conversion successful")
 
@@ -419,4 +366,3 @@ def get_options():
     except Exception as e:
         logger.exception("Error computing available options:")
         return jsonify({"success": False, "error": str(e)}), 500
-

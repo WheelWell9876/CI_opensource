@@ -17,10 +17,11 @@ logger = logging.getLogger(__name__)
 json_editor_blueprint = Blueprint('json_editor', __name__)
 
 # Constants - Fixed path structure
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Get the webapp directory (go up two levels from runJsonEditor.py)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "static", "data")
 EXPORTS_DIR = os.path.join(BASE_DIR, "exports")
-API_REGISTRY_FILE = os.path.join(BASE_DIR, "static", "data", "api_registry.json")
+API_REGISTRY_FILE = os.path.join(DATA_DIR, "api_registry.json")
 
 # Ensure directories exist
 os.makedirs(EXPORTS_DIR, exist_ok=True)
@@ -42,7 +43,7 @@ class APIRegistry:
     def _ensure_registry_exists(self):
         """Create default registry if it doesn't exist."""
         if not os.path.exists(self.registry_file):
-            print(f"📁 [REGISTRY] Creating new registry file at: {self.registry_file}")
+            print(f"🏗️ [REGISTRY] Creating new registry file at: {self.registry_file}")
             default_registry = {
                 "apis": {
                     "epa-disaster": {
@@ -333,7 +334,7 @@ class GeoJSONProcessor:
 @json_editor_blueprint.route('/editor')
 def editor_page():
     """Render the new editor page."""
-    print("🌐 [ROUTE] /editor accessed")
+    print("🌍 [ROUTE] /editor accessed")
     return render_template('editor.html')
 
 
@@ -342,7 +343,7 @@ def editor_page():
 def list_apis():
     """Get all available APIs organized by type."""
     try:
-        print("🌐 [ROUTE] /api/apis accessed via GET")
+        print("🌍 [ROUTE] /api/apis accessed via GET")
 
         all_apis = api_registry.get_all_apis()
         print(f"📊 [APIS] Found {len(all_apis)} total APIs")
@@ -389,9 +390,9 @@ def list_apis():
 def create_api():
     """Create a new custom API."""
     try:
-        print("🌐 [ROUTE] /api/apis accessed via POST")
+        print("🌍 [ROUTE] /api/apis accessed via POST")
         data = request.get_json()
-        print(f"📨 [CREATE] API data: {data}")
+        print(f"🔨 [CREATE] API data: {data}")
 
         # Validate required fields
         required_fields = ['name', 'url']
@@ -444,9 +445,9 @@ def create_api():
 def load_from_api():
     """Load data from an API (either registered or custom URL)."""
     try:
-        print("🌐 [ROUTE] /api/load_from_api accessed via POST")
+        print("🌍 [ROUTE] /api/load_from_api accessed via POST")
         data = request.get_json()
-        print(f"📨 [LOAD] Request data: {data}")
+        print(f"🔨 [LOAD] Request data: {data}")
 
         api_id = data.get('api_id')
         custom_url = data.get('url')
@@ -505,7 +506,7 @@ def load_from_api():
             final_url = f"{base_url}?{query_string}"
 
         logger.info(f"Fetching data from: {final_url}")
-        print(f"🌐 [FETCH] Final URL: {final_url}")
+        print(f"🌍 [FETCH] Final URL: {final_url}")
 
         # Make request with timeout
         response = requests.get(final_url, timeout=30)
@@ -555,7 +556,7 @@ def load_from_api():
 @json_editor_blueprint.route('/api/upload_file', methods=['POST'])
 def upload_file():
     """Handle file upload."""
-    print("🌐 [ROUTE] /api/upload_file accessed via POST")
+    print("🌍 [ROUTE] /api/upload_file accessed via POST")
     logger.info("Received file upload request")
 
     try:
@@ -617,7 +618,7 @@ def upload_file():
 @json_editor_blueprint.route('/api/save', methods=['POST'])
 def save_to_server():
     """Save configuration to server database."""
-    print("🌐 [ROUTE] /api/save accessed via POST")
+    print("🌍 [ROUTE] /api/save accessed via POST")
     logger.info("Received request to save configuration")
 
     try:
@@ -667,7 +668,7 @@ def save_to_server():
 @json_editor_blueprint.route('/debug/routes')
 def debug_routes():
     """Debug endpoint to show all registered routes."""
-    print("🌐 [ROUTE] /debug/routes accessed")
+    print("🌍 [ROUTE] /debug/routes accessed")
     from flask import current_app
     routes = []
     for rule in current_app.url_map.iter_rules():

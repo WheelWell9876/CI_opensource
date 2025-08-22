@@ -6,7 +6,7 @@
       "url": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/EPA_Disaster_Debris_Recovery_Data/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
       "description": "EPA disaster recovery and debris management data",
       "category": "Environmental",
-      "built_in": true,
+      "api_type": "built_in",
       "created_by": "system",
       "created_at": "2025-01-01T00:00:00Z"
     },
@@ -16,7 +16,7 @@
       "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Agricultural_Minerals_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
       "description": "Agricultural mineral operations across the US",
       "category": "Mining",
-      "built_in": true,
+      "api_type": "built_in",
       "created_by": "system",
       "created_at": "2025-01-01T00:00:00Z"
     },
@@ -26,7 +26,7 @@
       "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Construction_Minerals_Operations/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
       "description": "Construction mineral operations data",
       "category": "Mining",
-      "built_in": true,
+      "api_type": "built_in",
       "created_by": "system",
       "created_at": "2025-01-01T00:00:00Z"
     },
@@ -36,7 +36,7 @@
       "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Reclamation_Reservoirs/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
       "description": "US Army Corps of Engineers reservoir data",
       "category": "Infrastructure",
-      "built_in": true,
+      "api_type": "built_in",
       "created_by": "system",
       "created_at": "2025-01-01T00:00:00Z"
     },
@@ -46,9 +46,19 @@
       "url": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/NID_v1/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
       "description": "National dams inventory across the United States",
       "category": "Infrastructure",
-      "built_in": true,
+      "api_type": "built_in",
       "created_by": "system",
       "created_at": "2025-01-01T00:00:00Z"
+    },
+    "15c322e6-9194-4124-80da-c70022ccea06": {
+      "id": "15c322e6-9194-4124-80da-c70022ccea06",
+      "name": "Antenna Structure Registration (ASR)",
+      "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/asr/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+      "description": "QQQ",
+      "category": "Custom",
+      "api_type": "user_created",
+      "created_by": "user",
+      "created_at": "2025-08-22T15:06:53.389100Z"
     }
   }
 }
