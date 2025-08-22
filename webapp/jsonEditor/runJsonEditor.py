@@ -615,6 +615,126 @@ def upload_file():
         return jsonify({'error': f'Error processing file: {str(e)}'}), 500
 
 
+@json_editor_blueprint.route('/api/save_projects', methods=['POST'])
+def save_projects():
+    """Save projects to server database."""
+    print("🌍 [ROUTE] /api/save_projects accessed via POST")
+    logger.info("Received request to save projects")
+
+    try:
+        data = request.get_json()
+        projects = data.get('projects')
+
+        if not projects:
+            return jsonify({'error': 'No projects provided'}), 400
+
+        # Save to JSON file (as database substitute)
+        projects_dir = os.path.join(DATA_DIR, 'projects')
+        os.makedirs(projects_dir, exist_ok=True)
+
+        # Save each project type
+        for project_type in ['datasets', 'categories', 'featurelayers']:
+            if project_type in projects:
+                filename = f"{project_type}.json"
+                filepath = os.path.join(projects_dir, filename)
+
+                with open(filepath, 'w') as f:
+                    json.dump(projects[project_type], f, indent=2)
+
+        logger.info("Projects saved to server successfully")
+        print(f"✅ [SAVE] Projects saved successfully")
+
+        return jsonify({
+            'success': True,
+            'message': 'Projects saved successfully'
+        })
+
+    except Exception as e:
+        logger.exception("Error saving projects")
+        print(f"❌ [SAVE] Error: {e}")
+        return jsonify({'error': f'Error saving projects: {str(e)}'}), 500
+
+
+@json_editor_blueprint.route('/api/load_projects', methods=['GET'])
+def load_projects():
+    """Load projects from server database."""
+    print("🌍 [ROUTE] /api/load_projects accessed via GET")
+    logger.info("Loading projects from server")
+
+    try:
+        projects_dir = os.path.join(DATA_DIR, 'projects')
+        projects = {
+            'datasets': [],
+            'categories': [],
+            'featurelayers': []
+        }
+
+        # Load each project type if file exists
+        for project_type in ['datasets', 'categories', 'featurelayers']:
+            filepath = os.path.join(projects_dir, f"{project_type}.json")
+            if os.path.exists(filepath):
+                try:
+                    with open(filepath, 'r') as f:
+                        projects[project_type] = json.load(f)
+                    print(f"✅ [LOAD] Loaded {len(projects[project_type])} {project_type}")
+                except Exception as e:
+                    print(f"❌ [LOAD] Error loading {project_type}: {e}")
+                    projects[project_type] = []
+
+        return jsonify({
+            'success': True,
+            'projects': projects
+        })
+
+    except Exception as e:
+        logger.exception("Error loading projects")
+        print(f"❌ [LOAD] Error: {e}")
+        return jsonify({'error': f'Error loading projects: {str(e)}'}), 500
+
+
+@json_editor_blueprint.route('/api/delete_project', methods=['DELETE'])
+def delete_project():
+    """Delete a specific project."""
+    print("🌍 [ROUTE] /api/delete_project accessed via DELETE")
+
+    try:
+        data = request.get_json()
+        project_id = data.get('project_id')
+        project_type = data.get('project_type')  # 'datasets', 'categories', 'featurelayers'
+
+        if not project_id or not project_type:
+            return jsonify({'error': 'project_id and project_type are required'}), 400
+
+        projects_dir = os.path.join(DATA_DIR, 'projects')
+        filepath = os.path.join(projects_dir, f"{project_type}.json")
+
+        if not os.path.exists(filepath):
+            return jsonify({'error': f'No {project_type} file found'}), 404
+
+        # Load current projects
+        with open(filepath, 'r') as f:
+            projects = json.load(f)
+
+        # Remove the project
+        projects = [p for p in projects if p.get('id') != project_id]
+
+        # Save back to file
+        with open(filepath, 'w') as f:
+            json.dump(projects, f, indent=2)
+
+        print(f"✅ [DELETE] Project {project_id} deleted from {project_type}")
+
+        return jsonify({
+            'success': True,
+            'message': f'Project deleted successfully'
+        })
+
+    except Exception as e:
+        logger.exception("Error deleting project")
+        print(f"❌ [DELETE] Error: {e}")
+        return jsonify({'error': f'Error deleting project: {str(e)}'}), 500
+
+
 @json_editor_blueprint.route('/api/save', methods=['POST'])
 def save_to_server():
     """Save configuration to server database."""

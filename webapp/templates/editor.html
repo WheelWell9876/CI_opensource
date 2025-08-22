@@ -33,23 +33,33 @@
     <!-- Workflow Steps -->
     <div class="workflow-header">
       <div class="steps">
-        <div class="step active" data-step="1">
+        <div class="step active" data-step="0">
+          <div class="step-number">0</div>
+          <div class="step-title">Project Type</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="1">
           <div class="step-number">1</div>
-          <div class="step-title">Load Data</div>
+          <div class="step-title">Load/Build</div>
           <div class="step-line"></div>
         </div>
         <div class="step" data-step="2">
           <div class="step-number">2</div>
-          <div class="step-title">Select Fields</div>
+          <div class="step-title">Configure</div>
           <div class="step-line"></div>
         </div>
         <div class="step" data-step="3">
           <div class="step-number">3</div>
-          <div class="step-title">Apply Weights</div>
+          <div class="step-title">Select Fields</div>
           <div class="step-line"></div>
         </div>
         <div class="step" data-step="4">
           <div class="step-number">4</div>
+          <div class="step-title">Apply Weights</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="5">
+          <div class="step-number">5</div>
           <div class="step-title">Export</div>
         </div>
       </div>
@@ -59,112 +69,163 @@
     <div class="main-content">
       <!-- Left Panel - Input/Configuration -->
       <div class="panel">
-        <!-- Step 1: Load Data -->
-        <div class="step-content active" data-step="1">
+
+        <!-- Step 0: Project Selection -->
+        <div class="step-content active" data-step="0">
           <div class="panel-title">
-            <div class="panel-icon">📊</div>
-            Load Your GeoJSON Data
+            <div class="panel-icon">🚀</div>
+            Choose Your Project Type
           </div>
 
-          <!-- Data Source Selection -->
-          <div class="input-group">
-            <label class="input-label">Choose Data Source</label>
-            <select id="dataSourceSelect">
-              <option value="">Select data source...</option>
-              <option value="file">📤 Upload File</option>
-              <option value="builtin">🏢 Built-in APIs</option>
-              <option value="user">👤 My Custom APIs</option>
-              <option value="custom">🔗 Enter Custom URL</option>
-              <option value="create">➕ Create New API</option>
-            </select>
+          <div id="projectSelection">
+            <!-- Project selection content will be populated by JavaScript -->
           </div>
-
-          <!-- File Upload Container -->
-          <div id="fileUploadContainer" style="display: none;">
-            <div class="upload-area" id="uploadArea">
-              <div class="upload-icon">📤</div>
-              <h3>Drop your GeoJSON file here</h3>
-              <p style="color: #999; margin: 1rem 0;">or click to browse</p>
-              <input type="file" id="fileInput" accept=".json,.geojson" style="display: none;">
-            </div>
-          </div>
-
-          <!-- Built-in APIs Container -->
-          <div id="builtInApiContainer" style="display: none;">
-            <div class="input-group">
-              <label class="input-label">Select Built-in API</label>
-              <select id="builtInApiSelect">
-                <option value="">Loading APIs...</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- User APIs Container -->
-          <div id="userApiContainer" style="display: none;">
-            <div class="input-group">
-              <label class="input-label">Select Custom API</label>
-              <select id="userApiSelect">
-                <option value="">Loading APIs...</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Custom URL Container -->
-          <div id="customUrlContainer" style="display: none;">
-            <div class="input-group">
-              <label class="input-label">Custom API URL</label>
-              <input type="url" id="customApiUrl" placeholder="https://services.example.com/...">
-              <small style="color: #666; margin-top: 0.25rem; display: block;">
-                Enter a direct API URL or ArcGIS Feature Service URL
-              </small>
-            </div>
-          </div>
-
-          <!-- Create New API Container -->
-          <div id="createApiContainer" style="display: none;">
-            <div class="panel-title" style="margin: 1rem 0 0.5rem 0; font-size: 1rem;">
-              <div class="panel-icon">➕</div>
-              Create New API
-            </div>
-
-            <form id="createApiForm">
-              <div class="input-group">
-                <label class="input-label">API Name*</label>
-                <input type="text" name="apiName" placeholder="My Custom API" required>
-              </div>
-
-              <div class="input-group">
-                <label class="input-label">API URL*</label>
-                <input type="url" name="apiUrl" placeholder="https://example.com/api/data" required>
-                <small style="color: #666; margin-top: 0.25rem; display: block;">
-                  Must return valid GeoJSON with a "features" property
-                </small>
-              </div>
-
-              <div class="input-group">
-                <label class="input-label">Description</label>
-                <textarea name="apiDescription" rows="2" placeholder="Brief description of the API..."></textarea>
-              </div>
-
-              <div class="input-group">
-                <label class="input-label">Category</label>
-                <input type="text" name="apiCategory" placeholder="Custom" value="Custom">
-              </div>
-
-              <div class="btn-group">
-                <button type="button" class="btn btn-secondary" onclick="cancelApiCreation()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create API</button>
-              </div>
-            </form>
-          </div>
-
-          <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="loadData()">
-            Load Data
-          </button>
         </div>
 
-        <!-- Step 2: Select Fields -->
+        <!-- Step 1: Load Data / Project Builder -->
+        <div class="step-content" data-step="1">
+          <div class="panel-title">
+            <div class="panel-icon">📊</div>
+            <span id="step1Title">Load Your Data</span>
+          </div>
+
+          <!-- Data Loading (for datasets) -->
+          <div id="dataLoadingSection">
+            <!-- Data Source Selection -->
+            <div class="input-group">
+              <label class="input-label">Choose Data Source</label>
+              <select id="dataSourceSelect">
+                <option value="">Select data source...</option>
+                <option value="file">📤 Upload File</option>
+                <option value="builtin">🏢 Built-in APIs</option>
+                <option value="user">👤 My Custom APIs</option>
+                <option value="custom">🔗 Enter Custom URL</option>
+                <option value="create">➕ Create New API</option>
+              </select>
+            </div>
+
+            <!-- File Upload Container -->
+            <div id="fileUploadContainer" style="display: none;">
+              <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📤</div>
+                <h3>Drop your GeoJSON file here</h3>
+                <p style="color: #999; margin: 1rem 0;">or click to browse</p>
+                <input type="file" id="fileInput" accept=".json,.geojson" style="display: none;">
+              </div>
+            </div>
+
+            <!-- Built-in APIs Container -->
+            <div id="builtInApiContainer" style="display: none;">
+              <div class="input-group">
+                <label class="input-label">Select Built-in API</label>
+                <select id="builtInApiSelect">
+                  <option value="">Loading APIs...</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- User APIs Container -->
+            <div id="userApiContainer" style="display: none;">
+              <div class="input-group">
+                <label class="input-label">Select Custom API</label>
+                <select id="userApiSelect">
+                  <option value="">Loading APIs...</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Custom URL Container -->
+            <div id="customUrlContainer" style="display: none;">
+              <div class="input-group">
+                <label class="input-label">Custom API URL</label>
+                <input type="url" id="customApiUrl" placeholder="https://services.example.com/...">
+                <small style="color: #666; margin-top: 0.25rem; display: block;">
+                  Enter a direct API URL or ArcGIS Feature Service URL
+                </small>
+              </div>
+            </div>
+
+            <!-- Create New API Container -->
+            <div id="createApiContainer" style="display: none;">
+              <div class="panel-title" style="margin: 1rem 0 0.5rem 0; font-size: 1rem;">
+                <div class="panel-icon">➕</div>
+                Create New API
+              </div>
+
+              <form id="createApiForm">
+                <div class="input-group">
+                  <label class="input-label">API Name*</label>
+                  <input type="text" name="apiName" placeholder="My Custom API" required>
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label">API URL*</label>
+                  <input type="url" name="apiUrl" placeholder="https://example.com/api/data" required>
+                  <small style="color: #666; margin-top: 0.25rem; display: block;">
+                    Must return valid GeoJSON with a "features" property
+                  </small>
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label">Description</label>
+                  <textarea name="apiDescription" rows="2" placeholder="Brief description of the API..."></textarea>
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label">Category</label>
+                  <input type="text" name="apiCategory" placeholder="Custom" value="Custom">
+                </div>
+
+                <div class="btn-group">
+                  <button type="button" class="btn btn-secondary" onclick="cancelApiCreation()">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Create API</button>
+                </div>
+              </form>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="loadData()">
+              Load Data
+            </button>
+          </div>
+
+          <!-- Project Builder (for categories and feature layers) -->
+          <div id="projectBuilder" style="display: none;">
+            <!-- Project builder content will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Step 2: Configuration (Dataset metadata or additional settings) -->
         <div class="step-content" data-step="2">
+          <div class="panel-title">
+            <div class="panel-icon">⚙️</div>
+            <span id="step2Title">Configure Project</span>
+          </div>
+
+          <div id="configurationSection">
+            <div class="input-group">
+              <label class="input-label">Project Name</label>
+              <input type="text" id="projectName" placeholder="Enter project name">
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Description</label>
+              <textarea id="projectDescription" rows="3" placeholder="Describe your project..."></textarea>
+            </div>
+
+            <!-- Additional configuration options will be added based on project type -->
+            <div id="additionalConfig">
+              <!-- Populated by JavaScript based on project type -->
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+            <button class="btn btn-primary" onclick="goToStep(3)">Continue</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Select Fields -->
+        <div class="step-content" data-step="3">
           <div class="panel-title">
             <div class="panel-icon">✅</div>
             Select Fields to Include
@@ -187,13 +248,13 @@
           </div>
 
           <div class="btn-group">
-            <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
-            <button class="btn btn-primary" onclick="goToStep(3)">Continue</button>
+            <button class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+            <button class="btn btn-primary" onclick="goToStep(4)">Continue</button>
           </div>
         </div>
 
-        <!-- Step 3: Apply Weights -->
-        <div class="step-content" data-step="3">
+        <!-- Step 4: Apply Weights -->
+        <div class="step-content" data-step="4">
           <div class="panel-title">
             <div class="panel-icon">⚖️</div>
             Apply Weights to Fields
@@ -218,30 +279,30 @@
           </div>
 
           <div class="btn-group">
-            <button class="btn btn-secondary" onclick="goToStep(2)">Back</button>
-            <button class="btn btn-primary" onclick="goToStep(4)">Continue</button>
+            <button class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+            <button class="btn btn-primary" onclick="goToStep(5)">Continue</button>
           </div>
         </div>
 
-        <!-- Step 4: Export -->
-        <div class="step-content" data-step="4">
+        <!-- Step 5: Export -->
+        <div class="step-content" data-step="5">
           <div class="panel-title">
             <div class="panel-icon">💾</div>
             Export Configuration
           </div>
 
           <div class="input-group">
-            <label class="input-label">Dataset Name</label>
-            <input type="text" id="datasetName" placeholder="Enter a name for your dataset">
+            <label class="input-label">Final Name</label>
+            <input type="text" id="datasetName" placeholder="Enter final name for your project">
           </div>
 
           <div class="input-group">
-            <label class="input-label">Description</label>
-            <textarea id="datasetDescription" rows="3" placeholder="Describe your dataset and its purpose..."></textarea>
+            <label class="input-label">Final Description</label>
+            <textarea id="datasetDescription" rows="3" placeholder="Final description and notes..."></textarea>
           </div>
 
           <div class="btn-group">
-            <button class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+            <button class="btn btn-secondary" onclick="goToStep(4)">Back</button>
             <button class="btn btn-primary" onclick="exportConfig()">
               Export Configuration
             </button>
@@ -280,7 +341,7 @@
 
         <div class="preview-content" id="previewContent">
           <div id="previewData" class="preview-pane">
-            <p style="color: #999;">Load data to see preview...</p>
+            <p style="color: #999;">Select a project type to begin...</p>
           </div>
           <div id="previewSchema" class="preview-pane" style="display: none;">
             <p style="color: #999;">Schema will appear here...</p>

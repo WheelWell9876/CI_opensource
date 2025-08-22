@@ -1,35 +1,21 @@
-// data-source-controller.js - Manages the data source selection UI
+// data_source_controller.js - Manages data source selection and loading
 
 function initDataSourceController() {
   debugLog('Data Source Controller - Initializing');
-  setupDataSourceSelector();
-}
 
-function setupDataSourceSelector() {
-  debugLog('Data Source Controller - Setting up selector');
-
-  const selector = document.getElementById('dataSourceSelect');
-  if (!selector) {
-    debugLog('Data Source Controller - Selector not found');
-    return;
+  const dataSourceSelect = document.getElementById('dataSourceSelect');
+  if (dataSourceSelect) {
+    dataSourceSelect.addEventListener('change', handleDataSourceChange);
   }
-
-  selector.addEventListener('change', handleDataSourceChange);
-
-  // Initialize the UI
-  handleDataSourceChange();
-
-  debugLog('Data Source Controller - Setup complete');
 }
 
 function handleDataSourceChange() {
-  const selector = document.getElementById('dataSourceSelect');
-  if (!selector) return;
+  const select = document.getElementById('dataSourceSelect');
+  const selectedValue = select.value;
 
-  const selectedValue = selector.value;
-  debugLog('Data Source Controller - Source changed to:', selectedValue);
+  debugLog('Data source selected:', selectedValue);
 
-  // Hide all containers
+  // Hide all containers first
   hideAllDataSourceContainers();
 
   // Show the appropriate container
@@ -39,18 +25,24 @@ function handleDataSourceChange() {
       break;
     case 'builtin':
       showContainer('builtInApiContainer');
+      if (typeof loadBuiltInApis === 'function') {
+        loadBuiltInApis();
+      }
       break;
     case 'user':
       showContainer('userApiContainer');
+      if (typeof loadUserApis === 'function') {
+        loadUserApis();
+      }
       break;
     case 'custom':
       showContainer('customUrlContainer');
       break;
     case 'create':
       showContainer('createApiContainer');
-      if (typeof showApiCreationForm === 'function') {
-        showApiCreationForm();
-      }
+      break;
+    default:
+      // No container to show
       break;
   }
 }
@@ -76,50 +68,92 @@ function showContainer(containerId) {
   const container = document.getElementById(containerId);
   if (container) {
     container.style.display = 'block';
-    debugLog('Data Source Controller - Showing container:', containerId);
   }
 }
 
-// Main load data function called by the UI
 function loadData() {
-  const selector = document.getElementById('dataSourceSelect');
-  if (!selector) {
-    showMessage('Data source selector not found', 'error');
+  const dataSourceSelect = document.getElementById('dataSourceSelect');
+  const selectedSource = dataSourceSelect.value;
+
+  debugLog('Loading data from source:', selectedSource);
+
+  if (!selectedSource) {
+    showMessage('Please select a data source first', 'error');
     return;
   }
 
-  const selectedValue = selector.value;
-  debugLog('Data Source Controller - Loading data from:', selectedValue);
+  switch (selectedSource) {
+    case 'file':
+      // Trigger file upload
+      const fileInput = document.getElementById('fileInput');
+      if (fileInput && fileInput.files.length > 0) {
+        if (typeof handleFileSelect === 'function') {
+          handleFileSelect({ target: { files: fileInput.files } });
+        }
+      } else {
+        showMessage('Please select a file first', 'error');
+      }
+      break;
 
-  switch (selectedValue) {
     case 'builtin':
       if (typeof loadFromBuiltInApi === 'function') {
         loadFromBuiltInApi();
-      } else {
-        showMessage('Built-in API loader not available', 'error');
       }
       break;
+
     case 'user':
       if (typeof loadFromUserApi === 'function') {
         loadFromUserApi();
-      } else {
-        showMessage('User API loader not available', 'error');
       }
       break;
+
     case 'custom':
       if (typeof loadFromCustomUrl === 'function') {
         loadFromCustomUrl();
-      } else {
-        showMessage('Custom URL loader not available', 'error');
       }
       break;
-    case 'file':
-      showMessage('Please drag and drop a file or click the upload area', 'info');
-      break;
-    case 'create':
-      showMessage('Please fill out the form to create a new API', 'info');
-      break;
+
     default:
-      showMessage('Please select a data source', 'error');
+      showMessage('Invalid data source selected', 'error');
+      break;
   }
+}
+
+function cancelApiCreation() {
+  const select = document.getElementById('dataSourceSelect');
+  select.value = '';
+  hideAllDataSourceContainers();
+}
+
+// Update step titles and sections based on project type
+function updateStepLabels(projectType) {
+  debugLog('Updating step labels for project type:', projectType);
+
+  const step1Title = document.getElementById('step1Title');
+  const step2Title = document.getElementById('step2Title');
+  const dataLoadingSection = document.getElementById('dataLoadingSection');
+  const projectBuilder = document.getElementById('projectBuilder');
+
+  if (projectType === 'dataset') {
+    if (step1Title) step1Title.textContent = 'Load Your Data';
+    if (step2Title) step2Title.textContent = 'Configure Dataset';
+    if (dataLoadingSection) dataLoadingSection.style.display = 'block';
+    if (projectBuilder) projectBuilder.style.display = 'none';
+  } else if (projectType === 'category') {
+    if (step1Title) step1Title.textContent = 'Build Category';
+    if (step2Title) step2Title.textContent = 'Configure Category';
+    if (dataLoadingSection) dataLoadingSection.style.display = 'none';
+    if (projectBuilder) projectBuilder.style.display = 'block';
+  } else if (projectType === 'featurelayer') {
+    if (step1Title) step1Title.textContent = 'Build Feature Layer';
+    if (step2Title) step2Title.textContent = 'Configure Feature Layer';
+    if (dataLoadingSection) dataLoadingSection.style.display = 'none';
+    if (projectBuilder) projectBuilder.style.display = 'block';
+  }
+}
+
+// Call this when project type is selected
+function onProjectTypeSelected(type) {
+  debugLog('Project type selected:', type);
+  updateStepLabels(type);
 }
