@@ -87,7 +87,7 @@ select option {
   box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3);
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled):not(.btn-disabled) {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(33, 150, 243, 0.4);
 }
@@ -103,10 +103,14 @@ select option {
   color: #333;
 }
 
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.btn:disabled,
+.btn.btn-disabled {
+  background: #e0e0e0 !important;
+  color: #999 !important;
+  cursor: not-allowed !important;
   transform: none !important;
+  box-shadow: none !important;
+  opacity: 0.6;
 }
 
 .btn-group {

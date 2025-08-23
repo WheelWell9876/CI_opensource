@@ -44,7 +44,7 @@ var GeometryFilter = (function() {
                         ⚡ Instant Geometry Filtering
                     </span>
                 </label>
-                <small style="color: #666; display: block; margin-top: 5px;">
+                <small style="color: #665; display: block; margin-top: 5px;">
                     When enabled, changes to geometry types instantly update the map without reloading
                 </small>
             </div>

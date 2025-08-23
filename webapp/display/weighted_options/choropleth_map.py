@@ -350,7 +350,7 @@ def create_state_hover_text(state_data: dict, weight_type: str) -> str:
         f"<b style='color: #FF6B35; font-size: 14px;'>Total Weight ({weight_type}): {state_data['total_weight']:.2f}</b>",
         f"<b style='color: #FF8C00; font-size: 13px;'>Average Weight: {state_data['avg_weight']:.3f}</b>",
         f"<b style='color: #32CD32; font-size: 12px;'>Data Points: {state_data['point_count']}</b>",
-        "<span style='color: #666;'>─────────────────────────────────</span>",
+        "<span style='color: #665;'>─────────────────────────────────</span>",
         f"<b style='color: #555; font-size: 11px;'>State Center:</b> <span style='color: #000; font-size: 11px;'>{state_data['center_lat']:.2f}°N, {state_data['center_lon']:.2f}°W</span>"
     ]
 

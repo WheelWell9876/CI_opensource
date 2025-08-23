@@ -617,7 +617,7 @@ def upload_file():
 
 @json_editor_blueprint.route('/api/save_projects', methods=['POST'])
 def save_projects():
-    """Save projects to server database."""
+    """Save projects to server database with weight support."""
     print("🌍 [ROUTE] /api/save_projects accessed via POST")
     logger.info("Received request to save projects")
 
@@ -628,7 +628,35 @@ def save_projects():
         if not projects:
             return jsonify({'error': 'No projects provided'}), 400
 
-        # Save to JSON file (as database substitute)
+        # Validate project structures
+        for project_type in ['datasets', 'categories', 'featurelayers']:
+            if project_type in projects:
+                for project in projects[project_type]:
+                    # Add validation for project structure
+                    if not project.get('id'):
+                        project['id'] = str(uuid.uuid4())
+
+                    if not project.get('created_at'):
+                        project['created_at'] = datetime.utcnow().isoformat() + "Z"
+
+                    # Ensure weight structures exist for categories and feature layers
+                    if project_type == 'categories':
+                        if 'datasets' in project and 'dataset_weights' not in project:
+                            # Initialize equal weights
+                            equal_weight = 100.0 / len(project['datasets']) if project['datasets'] else 100.0
+                            project['dataset_weights'] = {
+                                dataset_id: equal_weight for dataset_id in project['datasets']
+                            }
+
+                    elif project_type == 'featurelayers':
+                        if 'categories' in project and 'category_weights' not in project:
+                            # Initialize equal weights
+                            equal_weight = 100.0 / len(project['categories']) if project['categories'] else 100.0
+                            project['category_weights'] = {
+                                category_id: equal_weight for category_id in project['categories']
+                            }
+
+        # Save to JSON files (as database substitute)
         projects_dir = os.path.join(DATA_DIR, 'projects')
         os.makedirs(projects_dir, exist_ok=True)
 
@@ -640,6 +668,8 @@ def save_projects():
 
                 with open(filepath, 'w') as f:
                     json.dump(projects[project_type], f, indent=2)
+
+                print(f"✅ [SAVE] Saved {len(projects[project_type])} {project_type}")
 
         logger.info("Projects saved to server successfully")
         print(f"✅ [SAVE] Projects saved successfully")
@@ -824,6 +854,343 @@ def register_json_editor(app):
         print(f"❌ [REGISTER] Failed to register blueprint: {e}")
         logger.error(f"Failed to register blueprint: {e}")
         raise
+
+
+@json_editor_blueprint.route('/api/generate_python_code', methods=['POST'])
+def generate_python_code():
+    """Generate Python code for a project configuration."""
+    print("🌍 [ROUTE] /api/generate_python_code accessed via POST")
+
+    try:
+        data = request.get_json()
+        project_type = data.get('project_type')
+        project_data = data.get('project_data')
+        field_weights = data.get('field_weights', {})
+        field_types = data.get('field_types', {})
+        selected_fields = data.get('selected_fields', [])
+
+        if not project_type or not project_data:
+            return jsonify({'error': 'project_type and project_data are required'}), 400
+
+        # Generate appropriate Python code based on project type
+        if project_type == 'dataset':
+            python_code = generate_dataset_python_code(project_data, selected_fields, field_weights, field_types)
+        elif project_type == 'category':
+            python_code = generate_category_python_code(project_data, selected_fields, field_weights, field_types)
+        elif project_type == 'featurelayer':
+            python_code = generate_featurelayer_python_code(project_data, selected_fields, field_weights, field_types)
+        else:
+            return jsonify({'error': f'Unsupported project type: {project_type}'}), 400
+
+        return jsonify({
+            'success': True,
+            'python_code': python_code
+        })
+
+    except Exception as e:
+        logger.exception("Error generating Python code")
+        print(f"❌ [GENERATE] Error: {e}")
+        return jsonify({'error': f'Error generating Python code: {str(e)}'}), 500
+
+
+def generate_dataset_python_code(project_data, selected_fields, field_weights, field_types):
+    """Generate Python code for dataset processing."""
+    class_name = project_data.get('name', 'Dataset').replace(' ', '').replace('-', '')
+
+    return f'''import geopandas as gpd
+import pandas as pd
+import numpy as np
+from typing import Dict, List, Any
+
+class {class_name}Processor:
+    """Process {project_data.get('name', 'dataset')} with field selection and weighting."""
+
+    def __init__(self, filepath: str):
+        """Initialize with GeoJSON file path."""
+        self.gdf = gpd.read_file(filepath)
+        self.selected_fields = {selected_fields}
+        self.field_weights = {dict(field_weights)}
+        self.field_types = {dict(field_types)}
+
+    def filter_fields(self) -> gpd.GeoDataFrame:
+        """Filter GeoDataFrame to include only selected fields."""
+        fields_to_keep = ['geometry'] + [f for f in self.selected_fields
+                                         if f in self.gdf.columns]
+        return self.gdf[fields_to_keep]
+
+    def apply_weights(self) -> gpd.GeoDataFrame:
+        """Apply weights to quantitative fields."""
+        gdf_filtered = self.filter_fields()
+        weighted_score = pd.Series(0, index=gdf_filtered.index)
+
+        for field, weight in self.field_weights.items():
+            if field in gdf_filtered.columns and self.field_types.get(field) == 'quantitative':
+                field_values = pd.to_numeric(gdf_filtered[field], errors='coerce')
+                if field_values.notna().any():
+                    min_val = field_values.min()
+                    max_val = field_values.max()
+                    if max_val > min_val:
+                        normalized = (field_values - min_val) / (max_val - min_val)
+                        weighted_score += normalized * weight
+
+        gdf_filtered['weighted_score'] = weighted_score
+        return gdf_filtered
+
+    def export_processed_data(self, output_path: str):
+        """Export the processed GeoDataFrame."""
+        gdf_processed = self.apply_weights()
+        gdf_processed.to_file(output_path, driver='GeoJSON')
+        print(f"Processed data exported to: {{output_path}}")
+
+# Usage example
+if __name__ == "__main__":
+    processor = {class_name}Processor("input_data.geojson")
+    processor.export_processed_data("output_weighted.geojson")'''
+
+
+def generate_category_python_code(project_data, selected_fields, field_weights, field_types):
+    """Generate Python code for category processing with dataset weights."""
+    class_name = project_data.get('name', 'Category').replace(' ', '').replace('-', '')
+    dataset_weights = project_data.get('dataset_weights', {})
+
+    return f'''import geopandas as gpd
+import pandas as pd
+import numpy as np
+from typing import Dict, List, Any
+from pathlib import Path
+
+class {class_name}Processor:
+    """Process {project_data.get('name', 'category')} with multiple datasets and weights."""
+
+    def __init__(self, dataset_paths: Dict[str, str]):
+        """Initialize with dictionary of dataset_id to file path."""
+        self.dataset_paths = dataset_paths
+        self.dataset_weights = {dict(dataset_weights)}
+        self.selected_fields = {selected_fields}
+        self.field_weights = {dict(field_weights)}
+        self.field_types = {dict(field_types)}
+
+    def load_and_weight_datasets(self) -> gpd.GeoDataFrame:
+        """Load datasets and apply dataset-level weights."""
+        combined_gdfs = []
+
+        for dataset_id, file_path in self.dataset_paths.items():
+            # Load dataset
+            gdf = gpd.read_file(file_path)
+
+            # Add dataset metadata
+            gdf['source_dataset_id'] = dataset_id
+            gdf['dataset_weight'] = self.dataset_weights.get(dataset_id, 1.0) / 100.0
+
+            # Filter to selected fields
+            fields_to_keep = ['geometry', 'source_dataset_id', 'dataset_weight'] + [
+                f for f in self.selected_fields if f in gdf.columns
+            ]
+            gdf_filtered = gdf[fields_to_keep]
+
+            combined_gdfs.append(gdf_filtered)
+
+        # Combine all datasets
+        if combined_gdfs:
+            return gpd.GeoDataFrame(pd.concat(combined_gdfs, ignore_index=True))
+        else:
+            return gpd.GeoDataFrame()
+
+    def apply_field_weights(self, gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+        """Apply field-level weights to quantitative fields."""
+        weighted_score = pd.Series(0, index=gdf.index)
+
+        for field, weight in self.field_weights.items():
+            if field in gdf.columns and self.field_types.get(field) == 'quantitative':
+                field_values = pd.to_numeric(gdf[field], errors='coerce')
+                if field_values.notna().any():
+                    min_val = field_values.min()
+                    max_val = field_values.max()
+                    if max_val > min_val:
+                        normalized = (field_values - min_val) / (max_val - min_val)
+                        weighted_score += normalized * weight / 100.0
+
+        # Apply dataset weights to the field-weighted score
+        gdf['field_weighted_score'] = weighted_score
+        gdf['final_weighted_score'] = gdf['field_weighted_score'] * gdf['dataset_weight']
+
+        return gdf
+
+    def process_category(self) -> gpd.GeoDataFrame:
+        """Process the entire category with all weights applied."""
+        gdf_combined = self.load_and_weight_datasets()
+        return self.apply_field_weights(gdf_combined)
+
+    def export_category(self, output_path: str):
+        """Export the processed category."""
+        gdf_processed = self.process_category()
+        gdf_processed.to_file(output_path, driver='GeoJSON')
+        print(f"Category exported to: {{output_path}}")
+
+# Usage example
+if __name__ == "__main__":
+    # Map dataset IDs to file paths
+    dataset_files = {{
+        "dataset_1": "dataset1.geojson",
+        "dataset_2": "dataset2.geojson",
+        # Add more datasets as needed
+    }}
+
+    processor = {class_name}Processor(dataset_files)
+    processor.export_category("category_output.geojson")'''
+
+
+def generate_featurelayer_python_code(project_data, selected_fields, field_weights, field_types):
+    """Generate Python code for feature layer processing with category weights."""
+    class_name = project_data.get('name', 'FeatureLayer').replace(' ', '').replace('-', '')
+    category_weights = project_data.get('category_weights', {})
+
+    return f'''import geopandas as gpd
+import pandas as pd
+import numpy as np
+from typing import Dict, List, Any
+from pathlib import Path
+
+class {class_name}Processor:
+    """Process {project_data.get('name', 'feature layer')} with multiple categories and weights."""
+
+    def __init__(self, category_configs: Dict[str, Dict]):
+        """
+        Initialize with category configurations.
+
+        category_configs format:
+        {{
+            "category_id": {{
+                "dataset_paths": {{"dataset_id": "file_path"}},
+                "dataset_weights": {{"dataset_id": weight_percentage}}
+            }}
+        }}
+        """
+        self.category_configs = category_configs
+        self.category_weights = {dict(category_weights)}
+        self.selected_fields = {selected_fields}
+        self.field_weights = {dict(field_weights)}
+        self.field_types = {dict(field_types)}
+
+    def process_category(self, category_id: str, config: Dict) -> gpd.GeoDataFrame:
+        """Process a single category with its datasets."""
+        combined_gdfs = []
+        category_weight = self.category_weights.get(category_id, 1.0) / 100.0
+
+        for dataset_id, file_path in config['dataset_paths'].items():
+            # Load dataset
+            gdf = gpd.read_file(file_path)
+
+            # Add metadata
+            gdf['source_category_id'] = category_id
+            gdf['source_dataset_id'] = dataset_id
+            gdf['category_weight'] = category_weight
+
+            # Get dataset weight from category config
+            dataset_weights = config.get('dataset_weights', {{}})
+            dataset_weight = dataset_weights.get(dataset_id, 1.0) / 100.0
+            gdf['dataset_weight'] = dataset_weight
+
+            # Filter to selected fields
+            fields_to_keep = [
+                'geometry', 'source_category_id', 'source_dataset_id', 
+                'category_weight', 'dataset_weight'
+            ] + [f for f in self.selected_fields if f in gdf.columns]
+
+            gdf_filtered = gdf[fields_to_keep]
+            combined_gdfs.append(gdf_filtered)
+
+        if combined_gdfs:
+            return gpd.GeoDataFrame(pd.concat(combined_gdfs, ignore_index=True))
+        else:
+            return gpd.GeoDataFrame()
+
+    def apply_field_weights(self, gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+        """Apply field-level weights to quantitative fields."""
+        weighted_score = pd.Series(0, index=gdf.index)
+
+        for field, weight in self.field_weights.items():
+            if field in gdf.columns and self.field_types.get(field) == 'quantitative':
+                field_values = pd.to_numeric(gdf[field], errors='coerce')
+                if field_values.notna().any():
+                    min_val = field_values.min()
+                    max_val = field_values.max()
+                    if max_val > min_val:
+                        normalized = (field_values - min_val) / (max_val - min_val)
+                        weighted_score += normalized * weight / 100.0
+
+        # Apply hierarchical weights: field -> dataset -> category
+        gdf['field_weighted_score'] = weighted_score
+        gdf['dataset_weighted_score'] = gdf['field_weighted_score'] * gdf['dataset_weight']
+        gdf['final_weighted_score'] = gdf['dataset_weighted_score'] * gdf['category_weight']
+
+        return gdf
+
+    def process_feature_layer(self) -> gpd.GeoDataFrame:
+        """Process the entire feature layer with all categories."""
+        all_categories = []
+
+        for category_id, config in self.category_configs.items():
+            category_gdf = self.process_category(category_id, config)
+            if not category_gdf.empty:
+                all_categories.append(category_gdf)
+
+        if all_categories:
+            combined_gdf = gpd.GeoDataFrame(pd.concat(all_categories, ignore_index=True))
+            return self.apply_field_weights(combined_gdf)
+        else:
+            return gpd.GeoDataFrame()
+
+    def export_feature_layer(self, output_path: str):
+        """Export the processed feature layer."""
+        gdf_processed = self.process_feature_layer()
+        gdf_processed.to_file(output_path, driver='GeoJSON')
+        print(f"Feature layer exported to: {{output_path}}")
+
+    def export_by_category(self, output_dir: str):
+        """Export each category separately."""
+        gdf_processed = self.process_feature_layer()
+        output_path = Path(output_dir)
+        output_path.mkdir(exist_ok=True)
+
+        for category_id in self.category_configs.keys():
+            category_data = gdf_processed[gdf_processed['source_category_id'] == category_id]
+            if not category_data.empty:
+                category_file = output_path / f"{{category_id}}.geojson"
+                category_data.to_file(category_file, driver='GeoJSON')
+                print(f"Category '{{category_id}}' exported to: {{category_file}}")
+
+# Usage example
+if __name__ == "__main__":
+    # Configure categories with their datasets
+    categories = {{
+        "environmental": {{
+            "dataset_paths": {{
+                "air_quality": "air_quality.geojson",
+                "water_sources": "water_sources.geojson"
+            }},
+            "dataset_weights": {{
+                "air_quality": 60.0,
+                "water_sources": 40.0
+            }}
+        }},
+        "infrastructure": {{
+            "dataset_paths": {{
+                "roads": "roads.geojson",
+                "utilities": "utilities.geojson"
+            }},
+            "dataset_weights": {{
+                "roads": 70.0,
+                "utilities": 30.0
+            }}
+        }}
+    }}
+
+    processor = {class_name}Processor(categories)
+    processor.export_feature_layer("feature_layer_output.geojson")
+    processor.export_by_category("category_outputs/")'''
+
+
 
 
 print("🏁 [INIT] runJsonEditor.py initialization complete")

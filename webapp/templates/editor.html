@@ -39,9 +39,10 @@
 
   <!-- Main Container -->
   <div class="container">
-    <!-- Workflow Steps -->
+    <!-- Workflow Steps - Different for each project type -->
     <div class="workflow-header">
-      <div class="steps">
+      <!-- Dataset Workflow Steps -->
+      <div class="steps" id="datasetSteps">
         <div class="step active" data-step="0">
           <div class="step-number">0</div>
           <div class="step-title">Project Type</div>
@@ -49,7 +50,7 @@
         </div>
         <div class="step" data-step="1">
           <div class="step-number">1</div>
-          <div class="step-title">Load/Build</div>
+          <div class="step-title">Load Data</div>
           <div class="step-line"></div>
         </div>
         <div class="step" data-step="2">
@@ -72,6 +73,72 @@
           <div class="step-title">Export</div>
         </div>
       </div>
+
+      <!-- Category Workflow Steps -->
+      <div class="steps" id="categorySteps" style="display: none;">
+        <div class="step active" data-step="0">
+          <div class="step-number">0</div>
+          <div class="step-title">Project Type</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="1">
+          <div class="step-number">1</div>
+          <div class="step-title">Select Datasets</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-number">2</div>
+          <div class="step-title">Dataset Weights</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-number">3</div>
+          <div class="step-title">Select Fields</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="4">
+          <div class="step-number">4</div>
+          <div class="step-title">Field Weights</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="5">
+          <div class="step-number">5</div>
+          <div class="step-title">Export</div>
+        </div>
+      </div>
+
+      <!-- Feature Layer Workflow Steps -->
+      <div class="steps" id="featurelayerSteps" style="display: none;">
+        <div class="step active" data-step="0">
+          <div class="step-number">0</div>
+          <div class="step-title">Project Type</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="1">
+          <div class="step-number">1</div>
+          <div class="step-title">Select Categories</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-number">2</div>
+          <div class="step-title">Category Weights</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-number">3</div>
+          <div class="step-title">Select Fields</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="4">
+          <div class="step-number">4</div>
+          <div class="step-title">Field Weights</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step" data-step="5">
+          <div class="step-number">5</div>
+          <div class="step-title">Export</div>
+        </div>
+      </div>
     </div>
 
     <!-- Main Content Area -->
@@ -79,7 +146,7 @@
       <!-- Left Panel - Input/Configuration -->
       <div class="panel">
 
-        <!-- Step 0: Project Selection -->
+        <!-- Step 0: Project Selection (shared by all) -->
         <div class="step-content active" data-step="0">
           <div class="panel-title">
             <div class="panel-icon">🚀</div>
@@ -91,15 +158,22 @@
           </div>
         </div>
 
-        <!-- Step 1: Load Data / Project Builder -->
-        <div class="step-content" data-step="1">
+        <!-- DATASET WORKFLOW STEPS -->
+        <!-- Step 1: Load Data (for datasets only) -->
+        <div class="step-content dataset-step" data-step="1">
           <div class="panel-title">
             <div class="panel-icon">📊</div>
-            <span id="step1Title">Load Your Data</span>
+            Load Your Data
           </div>
 
-          <!-- Data Loading (for datasets) -->
           <div id="dataLoadingSection">
+            <!-- Dataset Name Input -->
+            <div class="input-group">
+              <label class="input-label">Dataset Name*</label>
+              <input type="text" id="datasetName" placeholder="Enter dataset name" required>
+              <small>This will be the name for your dataset</small>
+            </div>
+
             <!-- Data Source Selection -->
             <div class="input-group">
               <label class="input-label">Choose Data Source</label>
@@ -148,7 +222,7 @@
               <div class="input-group">
                 <label class="input-label">Custom API URL</label>
                 <input type="url" id="customApiUrl" placeholder="https://services.example.com/...">
-                <small style="color: #666; margin-top: 0.25rem; display: block;">
+                <small style="color: #665; margin-top: 0.25rem; display: block;">
                   Enter a direct API URL or ArcGIS Feature Service URL
                 </small>
               </div>
@@ -170,7 +244,7 @@
                 <div class="input-group">
                   <label class="input-label">API URL*</label>
                   <input type="url" name="apiUrl" placeholder="https://example.com/api/data" required>
-                  <small style="color: #666; margin-top: 0.25rem; display: block;">
+                  <small style="color: #665; margin-top: 0.25rem; display: block;">
                     Must return valid GeoJSON with a "features" property
                   </small>
                 </div>
@@ -196,44 +270,85 @@
               Load Data
             </button>
           </div>
+        </div>
 
-          <!-- Project Builder (for categories and feature layers) -->
-          <div id="projectBuilder" style="display: none;">
-            <!-- Project builder content will be populated by JavaScript -->
+        <!-- CATEGORY WORKFLOW STEPS -->
+        <!-- Step 1: Select Datasets (for categories) -->
+        <div class="step-content category-step" data-step="1">
+          <div class="panel-title">
+            <div class="panel-icon">📁</div>
+            Select Datasets for Category
+          </div>
+
+          <div id="categoryDatasetSelection">
+            <!-- Category dataset selection content will be populated by JavaScript -->
           </div>
         </div>
 
-        <!-- Step 2: Configuration (Dataset metadata or additional settings) -->
-        <div class="step-content" data-step="2">
+        <!-- Step 2: Apply Dataset Weights (for categories) -->
+        <div class="step-content category-step" data-step="2">
+          <div class="panel-title">
+            <div class="panel-icon">⚖️</div>
+            Apply Dataset Weights
+          </div>
+
+          <div id="categoryDatasetWeights">
+            <!-- Category dataset weights will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- FEATURE LAYER WORKFLOW STEPS -->
+        <!-- Step 1: Select Categories (for feature layers) -->
+        <div class="step-content featurelayer-step" data-step="1">
+          <div class="panel-title">
+            <div class="panel-icon">🗺️</div>
+            Select Categories for Feature Layer
+          </div>
+
+          <div id="featureLayerCategorySelection">
+            <!-- Feature layer category selection content will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Step 2: Apply Category Weights (for feature layers) -->
+        <div class="step-content featurelayer-step" data-step="2">
+          <div class="panel-title">
+            <div class="panel-icon">⚖️</div>
+            Apply Category Weights
+          </div>
+
+          <div id="featureLayerCategoryWeights">
+            <!-- Feature layer category weights will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- SHARED STEPS -->
+        <!-- Step 2: Configuration (for datasets only) -->
+        <div class="step-content dataset-step" data-step="2">
           <div class="panel-title">
             <div class="panel-icon">⚙️</div>
-            <span id="step2Title">Configure Project</span>
+            Configure Dataset
           </div>
 
           <div id="configurationSection">
             <div class="input-group">
-              <label class="input-label">Project Name</label>
-              <input type="text" id="projectName" placeholder="Enter project name">
+              <label class="input-label">Dataset Name</label>
+              <input type="text" id="projectName" placeholder="Enter dataset name">
             </div>
 
             <div class="input-group">
               <label class="input-label">Description</label>
-              <textarea id="projectDescription" rows="3" placeholder="Describe your project..."></textarea>
-            </div>
-
-            <!-- Additional configuration options will be added based on project type -->
-            <div id="additionalConfig">
-              <!-- Populated by JavaScript based on project type -->
+              <textarea id="projectDescription" rows="3" placeholder="Describe your dataset..."></textarea>
             </div>
           </div>
 
           <div class="btn-group">
             <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
-            <button class="btn btn-primary" onclick="goToStep(3)">Continue</button>
+            <button class="btn btn-primary" onclick="continueFromStep2()">Continue</button>
           </div>
         </div>
 
-        <!-- Step 3: Select Fields -->
+        <!-- Step 3: Select Fields (shared) -->
         <div class="step-content" data-step="3">
           <div class="panel-title">
             <div class="panel-icon">✅</div>
@@ -262,11 +377,11 @@
           </div>
         </div>
 
-        <!-- Step 4: Apply Weights -->
+        <!-- Step 4: Apply Field Weights (shared) -->
         <div class="step-content" data-step="4">
           <div class="panel-title">
             <div class="panel-icon">⚖️</div>
-            Apply Weights to Fields
+            Apply Field Weights
           </div>
 
           <div class="status-message status-info">
@@ -293,7 +408,7 @@
           </div>
         </div>
 
-        <!-- Step 5: Export -->
+        <!-- Step 5: Export (shared) -->
         <div class="step-content" data-step="5">
           <div class="panel-title">
             <div class="panel-icon">💾</div>
@@ -302,12 +417,12 @@
 
           <div class="input-group">
             <label class="input-label">Final Name</label>
-            <input type="text" id="datasetName" placeholder="Enter final name for your project">
+            <input type="text" id="finalProjectName" placeholder="Enter final name for your project">
           </div>
 
           <div class="input-group">
             <label class="input-label">Final Description</label>
-            <textarea id="datasetDescription" rows="3" placeholder="Final description and notes..."></textarea>
+            <textarea id="finalProjectDescription" rows="3" placeholder="Final description and notes..."></textarea>
           </div>
 
           <div class="btn-group">
@@ -395,6 +510,19 @@
         initDataSourceController();
       }
     });
+
+    // Universal continue function that detects the context
+    function continueFromStep2() {
+      updateProjectConfiguration();
+
+      if (projectType === 'dataset') {
+        goToStep(3); // Go to field selection
+      } else if (projectType === 'category' || projectType === 'featurelayer') {
+        // For categories and feature layers, step 2 is weight assignment
+        // Continue to field selection
+        goToStep(3);
+      }
+    }
   </script>
 </body>
 </html>

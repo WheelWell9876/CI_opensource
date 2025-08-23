@@ -8,9 +8,28 @@ function populateFieldSelection() {
     populateCategoryFieldSelection();
   } else if (projectType === 'featurelayer') {
     populateFeatureLayerFieldSelection();
+  } else if (projectType === 'dataset') {
+    populateDatasetFieldSelection();
+  }
+}
+
+function populateDatasetFieldSelection() {
+  debugLog('Populating dataset field selection');
+
+  const container = document.getElementById('fieldList');
+  if (!container || !loadedData) return;
+
+  container.innerHTML = '<h4>Fields from your dataset:</h4>';
+
+  // Get all fields from the loaded dataset
+  if (loadedData.features && loadedData.features.length > 0) {
+    const firstFeature = loadedData.features[0];
+    const properties = firstFeature.properties || firstFeature.attributes || {};
+    const fields = Object.keys(properties);
+
+    populateFieldList(fields);
   } else {
-    // Regular dataset field selection (existing functionality)
-    // This would be the current field selection logic
+    container.innerHTML += '<p style="color: #999;">No fields found in the dataset</p>';
   }
 }
 
@@ -31,10 +50,32 @@ function populateCategoryFieldSelection() {
         allFields.add(field);
         fieldTypes[field] = dataset.field_info.field_types[field];
       });
+    } else if (dataset && dataset.data && dataset.data.features && dataset.data.features.length > 0) {
+      // Fallback to extracting from data directly
+      const firstFeature = dataset.data.features[0];
+      const properties = firstFeature.properties || firstFeature.attributes || {};
+      Object.keys(properties).forEach(field => {
+        allFields.add(field);
+        const value = properties[field];
+        // Determine field type
+        if (value === null || value === undefined) {
+          fieldTypes[field] = 'unknown';
+        } else if (typeof value === 'boolean') {
+          fieldTypes[field] = 'boolean';
+        } else if (typeof value === 'number') {
+          fieldTypes[field] = 'quantitative';
+        } else {
+          fieldTypes[field] = 'qualitative';
+        }
+      });
     }
   });
 
-  populateFieldList(Array.from(allFields));
+  if (allFields.size > 0) {
+    populateFieldList(Array.from(allFields));
+  } else {
+    container.innerHTML += '<p style="color: #999;">No fields found in the selected datasets</p>';
+  }
 }
 
 function populateFeatureLayerFieldSelection() {
@@ -49,7 +90,7 @@ function populateFeatureLayerFieldSelection() {
   const allFields = new Set();
   currentProject.categories.forEach(categoryId => {
     const category = findProject(categoryId);
-    if (category) {
+    if (category && category.datasets) {
       category.datasets.forEach(datasetId => {
         const dataset = findProject(datasetId);
         if (dataset && dataset.field_info) {
@@ -57,12 +98,34 @@ function populateFeatureLayerFieldSelection() {
             allFields.add(field);
             fieldTypes[field] = dataset.field_info.field_types[field];
           });
+        } else if (dataset && dataset.data && dataset.data.features && dataset.data.features.length > 0) {
+          // Fallback to extracting from data directly
+          const firstFeature = dataset.data.features[0];
+          const properties = firstFeature.properties || firstFeature.attributes || {};
+          Object.keys(properties).forEach(field => {
+            allFields.add(field);
+            const value = properties[field];
+            // Determine field type
+            if (value === null || value === undefined) {
+              fieldTypes[field] = 'unknown';
+            } else if (typeof value === 'boolean') {
+              fieldTypes[field] = 'boolean';
+            } else if (typeof value === 'number') {
+              fieldTypes[field] = 'quantitative';
+            } else {
+              fieldTypes[field] = 'qualitative';
+            }
+          });
         }
       });
     }
   });
 
-  populateFieldList(Array.from(allFields));
+  if (allFields.size > 0) {
+    populateFieldList(Array.from(allFields));
+  } else {
+    container.innerHTML += '<p style="color: #999;">No fields found in the selected categories</p>';
+  }
 }
 
 // Populate field list
@@ -80,6 +143,14 @@ function populateFieldList(fields) {
   fieldList.innerHTML = '';
   if (existingHeader) {
     fieldList.appendChild(existingHeader);
+  }
+
+  if (fields.length === 0) {
+    const noFieldsMsg = document.createElement('p');
+    noFieldsMsg.style.color = '#999';
+    noFieldsMsg.textContent = 'No fields available for selection';
+    fieldList.appendChild(noFieldsMsg);
+    return;
   }
 
   fields.forEach(field => {
@@ -114,8 +185,14 @@ function toggleField(field, isSelected) {
 
   if (isSelected) {
     selectedFields.add(field);
+    // Initialize field weight if not exists
+    if (!(field in fieldWeights)) {
+      fieldWeights[field] = 1.0;
+    }
   } else {
     selectedFields.delete(field);
+    // Remove field weight
+    delete fieldWeights[field];
   }
 
   debugLog('Selected fields updated:', Array.from(selectedFields));
@@ -129,6 +206,9 @@ function selectAll() {
     cb.checked = true;
     const field = cb.id.replace('field_', '');
     selectedFields.add(field);
+    if (!(field in fieldWeights)) {
+      fieldWeights[field] = 1.0;
+    }
   });
   updatePreview();
 }
@@ -139,6 +219,7 @@ function selectNone() {
     cb.checked = false;
   });
   selectedFields.clear();
+  fieldWeights = {};
   updatePreview();
 }
 
@@ -150,8 +231,12 @@ function selectQuantitative() {
     cb.checked = isQuantitative;
     if (isQuantitative) {
       selectedFields.add(field);
+      if (!(field in fieldWeights)) {
+        fieldWeights[field] = 1.0;
+      }
     } else {
       selectedFields.delete(field);
+      delete fieldWeights[field];
     }
   });
   updatePreview();
@@ -174,11 +259,21 @@ function populateWeightControls() {
     return;
   }
 
+  // Initialize field weights to equal distribution if not set
+  const fieldCount = selectedFields.size;
+  const equalWeight = 1.0 / fieldCount;
+
+  selectedFields.forEach(field => {
+    if (!(field in fieldWeights)) {
+      fieldWeights[field] = equalWeight;
+    }
+  });
+
   selectedFields.forEach(field => {
     const control = document.createElement('div');
     control.className = 'weight-control';
 
-    const currentWeight = fieldWeights[field] || 1.0;
+    const currentWeight = fieldWeights[field] || equalWeight;
     const weightPercent = Math.round(currentWeight * 100);
     const isLocked = lockedFields.has(field);
 
@@ -191,6 +286,7 @@ function populateWeightControls() {
                   title="${isLocked ? 'Unlock field' : 'Lock field'}">
             ${isLocked ? '🔒' : '🔓'}
           </button>
+          <span class="field-type-indicator">${fieldTypes[field] || 'unknown'}</span>
         </div>
         <span class="weight-value" id="weightVal_${field}">${weightPercent}%</span>
       </div>
@@ -233,10 +329,36 @@ function toggleFieldLock(field) {
 function updateWeight(field, value) {
   debugLog('Updating weight for field', { field, value });
 
-  fieldWeights[field] = value / 100;
+  const newWeight = parseFloat(value) / 100;
+  const oldWeight = fieldWeights[field] || 0;
+  const weightDiff = newWeight - oldWeight;
+
+  fieldWeights[field] = newWeight;
+
+  // Update display
   const weightDisplay = document.getElementById(`weightVal_${field}`);
   if (weightDisplay) {
     weightDisplay.textContent = `${value}%`;
+  }
+
+  // Redistribute weights among unlocked fields
+  const unlockedFields = Array.from(selectedFields).filter(f => f !== field && !lockedFields.has(f));
+  if (unlockedFields.length > 0 && Math.abs(weightDiff) > 0.001) {
+    const redistributeAmount = -weightDiff / unlockedFields.length;
+
+    unlockedFields.forEach(f => {
+      const currentWeight = fieldWeights[f] || 0;
+      const newUnlockedWeight = Math.max(0, Math.min(1, currentWeight + redistributeAmount));
+      fieldWeights[f] = newUnlockedWeight;
+
+      // Update UI
+      const slider = document.getElementById(`weight_${f}`);
+      const display = document.getElementById(`weightVal_${f}`);
+      const percent = Math.round(newUnlockedWeight * 100);
+
+      if (slider && !slider.disabled) slider.value = percent;
+      if (display) display.textContent = `${percent}%`;
+    });
   }
 
   updateTotalWeightDisplay();
@@ -267,20 +389,21 @@ function resetWeightsEqual() {
   const fieldCount = selectedFields.size;
   if (fieldCount === 0) return;
 
-  const equalWeight = 100 / fieldCount;
+  const equalWeight = 1.0 / fieldCount;
 
   selectedFields.forEach(field => {
-    fieldWeights[field] = equalWeight / 100;
+    fieldWeights[field] = equalWeight;
 
     // Update slider and display
     const slider = document.getElementById(`weight_${field}`);
     const display = document.getElementById(`weightVal_${field}`);
+    const percent = Math.round(equalWeight * 100);
 
-    if (slider) slider.value = Math.round(equalWeight);
-    if (display) display.textContent = `${Math.round(equalWeight)}%`;
+    if (slider && !slider.disabled) slider.value = percent;
+    if (display) display.textContent = `${percent}%`;
   });
 
   updateTotalWeightDisplay();
   updatePreview();
-  showMessage('Weights reset to equal distribution', 'success');
+  showMessage('Field weights reset to equal distribution', 'success');
 }

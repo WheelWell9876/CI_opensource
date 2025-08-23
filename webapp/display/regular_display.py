@@ -282,7 +282,7 @@ def create_regular_hover_text(row) -> str:
     else:
         hover_parts.append(f"<b style='color: #1E88E5; font-size: 14px;'>Data Point</b>")
 
-    hover_parts.append("<span style='color: #666;'>────────────────────────────────────────</span>")
+    hover_parts.append("<span style='color: #665;'>────────────────────────────────────────</span>")
 
     # Show priority fields
     priority_fields = ['Dataset', 'Category', 'State', 'County', 'City', 'Type', 'Status']

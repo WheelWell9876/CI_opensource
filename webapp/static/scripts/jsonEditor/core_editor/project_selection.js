@@ -72,7 +72,17 @@ function populateProjectSelection() {
         </div>
       </div>
     </div>
+
+    <!-- Always visible continue button -->
+    <div class="continue-section">
+      <button class="btn btn-primary" id="continueButton" onclick="continueToNextStep()" disabled>
+        <span id="continueButtonText">Select a project type to continue</span>
+      </button>
+    </div>
   `;
+
+  // Update continue button state
+  updateContinueButton();
 }
 
 function selectProjectType(type) {
@@ -87,6 +97,9 @@ function selectProjectType(type) {
 
   // Show action selector
   showActionSelector(type);
+
+  // Update continue button
+  updateContinueButton();
 }
 
 function showActionSelector(type) {
@@ -117,6 +130,8 @@ function createActionSelector(type, container) {
     pluralType = type + 's'; // works for 'dataset' -> 'datasets'
   }
 
+  // Insert action selector before the continue button
+  const continueSection = container.querySelector('.continue-section');
   const actionHtml = `
     <div class="action-selector">
       <h3>What would you like to do with this ${type}?</h3>
@@ -154,7 +169,7 @@ function createActionSelector(type, container) {
     </div>
   `;
 
-  container.insertAdjacentHTML('beforeend', actionHtml);
+  continueSection.insertAdjacentHTML('beforebegin', actionHtml);
 
   // Animate in the new selector
   setTimeout(() => {
@@ -184,31 +199,32 @@ function selectAction(action) {
   });
   event.target.classList.add('selected');
 
-  // Show continue button with animation
-  const container = document.getElementById('projectSelection');
-  let existingContinue = container.querySelector('.continue-section');
+  // Update continue button
+  updateContinueButton();
+}
 
-  if (existingContinue) {
-    existingContinue.remove();
+function updateContinueButton() {
+  const continueButton = document.getElementById('continueButton');
+  const continueButtonText = document.getElementById('continueButtonText');
+
+  if (!continueButton || !continueButtonText) return;
+
+  if (!projectType) {
+    // No project type selected
+    continueButton.disabled = true;
+    continueButton.classList.add('btn-disabled');
+    continueButtonText.textContent = 'Select a project type to continue';
+  } else if (!projectAction) {
+    // Project type selected but no action
+    continueButton.disabled = true;
+    continueButton.classList.add('btn-disabled');
+    continueButtonText.textContent = 'Select an action to continue';
+  } else {
+    // Both selected - enable button
+    continueButton.disabled = false;
+    continueButton.classList.remove('btn-disabled');
+    continueButtonText.textContent = `Continue to ${getNextStepName()}`;
   }
-
-  const continueHtml = `
-    <div class="continue-section slide-down">
-      <button class="btn btn-primary" onclick="continueToNextStep()">
-        Continue to ${getNextStepName()}
-      </button>
-    </div>
-  `;
-
-  container.insertAdjacentHTML('beforeend', continueHtml);
-
-  // Animate in the continue section
-  setTimeout(() => {
-    const continueSection = container.querySelector('.continue-section');
-    if (continueSection) {
-      continueSection.classList.add('expanded');
-    }
-  }, 50);
 }
 
 function getNextStepName() {
@@ -224,10 +240,18 @@ function getNextStepName() {
 function continueToNextStep() {
   debugLog('Continuing to next step', { projectType, projectAction });
 
+  // Don't continue if button is disabled
+  const continueButton = document.getElementById('continueButton');
+  if (continueButton && continueButton.disabled) {
+    return;
+  }
+
   if (projectType === 'dataset' && projectAction === 'create') {
     goToStep(1); // Go to data loading
-  } else {
+  } else if ((projectType === 'category' || projectType === 'featurelayer') && projectAction === 'create') {
     goToStep(1); // Go to project builder
+  } else {
+    goToStep(1); // Go to appropriate step for edit/view
   }
 }
 
@@ -237,6 +261,7 @@ function selectExistingProject(projectId) {
   if (project) {
     currentProject = project;
     projectAction = 'edit'; // Default to edit when selecting existing
+    updateContinueButton(); // Update the button state
     continueToNextStep();
   }
 }

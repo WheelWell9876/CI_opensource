@@ -84,7 +84,7 @@ function updatePythonPreview() {
 
   const selectedFieldsList = Array.from(selectedFields);
   const projectName = currentProject?.name || 'GeoProject';
-  const className = projectName.replace(/\s+/g, '');
+  const className = projectName.replace(/\s+/g, '').replace(/[^a-zA-Z0-9]/g, '');
 
   let pythonCode = '';
 
