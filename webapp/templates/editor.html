@@ -4,8 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GeoJSON Editor - CI Sentinel</title>
+
+  <!-- Base Styles -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/editor_modern.css') }}">
+
+  <!-- Modular Editor Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/base_layout.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/project_selection.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/forms_components.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/field_weight.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/project_builder.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/responsive.css') }}">
 </head>
 <body>
   <!-- Header -->
@@ -362,8 +371,17 @@
     <p>Created by Thomas Numnum</p>
   </footer>
 
-  <!-- Load JavaScript modules in order -->
-  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor.js') }}"></script>
+  <!-- Load JavaScript modules in dependency order -->
+  <!-- Core modules first -->
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/core_navigation.js') }}"></script>
+
+  <!-- Feature modules -->
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/project_selection.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/project_builder.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/field_management.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/preview_export.js') }}"></script>
+
+  <!-- Data loading modules (existing) -->
   <script src="{{ url_for('static', filename='scripts/jsonEditor/file_upload.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/jsonEditor/builtin_apis.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/jsonEditor/user_apis.js') }}"></script>

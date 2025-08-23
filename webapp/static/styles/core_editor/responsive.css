@@ -1,0 +1,158 @@
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 1200px) {
+  .main-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .steps {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .step {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .step-number {
+    margin-bottom: 0;
+    margin-right: 0.5rem;
+  }
+
+  .step-line {
+    display: none;
+  }
+
+  .btn-group {
+    flex-direction: column;
+  }
+
+  .quick-actions {
+    justify-content: center;
+  }
+
+  .upload-area {
+    padding: 1.5rem;
+  }
+
+  .upload-icon {
+    font-size: 2rem;
+  }
+
+  .project-type-card {
+    flex-direction: column;
+    text-align: center;
+    min-height: auto;
+    padding: 1rem;
+  }
+
+  .project-type-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .project-type-card.selected {
+    transform: translateY(-2px);
+  }
+
+  .project-type-content {
+    margin-top: 0.5rem;
+  }
+
+  .project-type-visual {
+    margin: 0.5rem auto 0;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+
+  .dataset-selector,
+  .category-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .dataset-actions,
+  .category-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .builder-actions {
+    flex-direction: column;
+  }
+
+  .hierarchy-chain {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .hierarchy-arrow {
+    transform: rotate(90deg);
+    align-self: center;
+  }
+
+  .panel {
+    min-height: auto;
+    max-height: 80vh; /* Smaller max height on mobile */
+  }
+
+  .preview-content {
+    min-height: 250px;
+    max-height: 50vh; /* Smaller on mobile */
+  }
+
+  #weightControls {
+    max-height: 40vh; /* Smaller on mobile */
+  }
+
+  .field-list {
+    max-height: 30vh; /* Smaller on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .panel {
+    padding: 1rem;
+  }
+
+  .workflow-header {
+    padding: 1rem;
+  }
+
+  .steps {
+    gap: 0.25rem;
+  }
+
+  .step-title {
+    font-size: 0.8rem;
+  }
+
+  .step-number {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+
+  .project-type-card {
+    padding: 1rem;
+  }
+
+  .project-type-icon {
+    font-size: 2rem;
+  }
+}

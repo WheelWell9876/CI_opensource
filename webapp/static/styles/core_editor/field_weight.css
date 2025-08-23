@@ -1,0 +1,131 @@
+/* ========================================
+   FIELD SELECTION
+   ======================================== */
+
+.field-list {
+  max-height: 40vh;
+  overflow-y: auto;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.field-item {
+  padding: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.field-item:hover {
+  border-color: #2196f3;
+  box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.field-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #2196f3;
+}
+
+.field-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.field-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.field-type {
+  font-size: 0.8rem;
+  color: #666;
+  background: #f5f5f5;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+}
+
+/* ========================================
+   WEIGHT CONTROLS
+   ======================================== */
+
+/* Make weight controls container scrollable */
+#weightControls {
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 0.5rem; /* Account for scrollbar */
+}
+
+.weight-control {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.weight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.lock-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.lock-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.lock-btn.locked {
+  background-color: #ffeb3b;
+}
+
+.weight-slider {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.weight-slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.weight-value {
+  font-weight: 600;
+  color: #2196f3;
+}
+
+.total-weight {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #e3f2fd;
+  border-radius: 6px;
+  text-align: center;
+  border: 1px solid #bbdefb;
+  /* Keep total weight sticky at bottom */
+  position: sticky;
+  bottom: 0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
