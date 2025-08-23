@@ -108,23 +108,64 @@ function populateProjectSelection() {
   }
 
   container.innerHTML = `
+    <div class="hierarchy-info">
+      <h4>📊 Project Hierarchy</h4>
+      <div class="hierarchy-chain">
+        <div class="hierarchy-item">📊 Dataset</div>
+        <div class="hierarchy-arrow">→</div>
+        <div class="hierarchy-item">📁 Category</div>
+        <div class="hierarchy-arrow">→</div>
+        <div class="hierarchy-item">🗺️ Feature Layer</div>
+      </div>
+      <p style="margin-top: 0.5rem; font-size: 0.75rem; color: #666;">
+        Categories combine multiple datasets • Feature layers combine multiple categories
+      </p>
+    </div>
+
     <div class="project-type-selector">
       <h3>What would you like to work with?</h3>
       <div class="project-types">
-        <div class="project-type-card" onclick="selectProjectType('dataset')">
+        <div class="project-type-card" data-type="dataset" onclick="selectProjectType('dataset')">
           <div class="project-type-icon">📊</div>
-          <h4>Dataset</h4>
-          <p>Work with individual data sources (GeoJSON, APIs, files)</p>
+          <div class="project-type-content">
+            <h4>Dataset</h4>
+            <p>Individual data sources (GeoJSON, APIs, files)</p>
+          </div>
+          <div class="project-type-visual">
+            <div class="hierarchy-visual">
+              <div class="hierarchy-level"></div>
+              <div class="hierarchy-level"></div>
+              <div class="hierarchy-level"></div>
+            </div>
+          </div>
         </div>
-        <div class="project-type-card" onclick="selectProjectType('category')">
+        <div class="project-type-card" data-type="category" onclick="selectProjectType('category')">
           <div class="project-type-icon">📁</div>
-          <h4>Category</h4>
-          <p>Combine multiple datasets into organized categories</p>
+          <div class="project-type-content">
+            <h4>Category</h4>
+            <p>Combine multiple datasets into organized groups</p>
+          </div>
+          <div class="project-type-visual">
+            <div class="hierarchy-visual">
+              <div class="hierarchy-level"></div>
+              <div class="hierarchy-level"></div>
+              <div class="hierarchy-level"></div>
+            </div>
+          </div>
         </div>
-        <div class="project-type-card" onclick="selectProjectType('featurelayer')">
+        <div class="project-type-card" data-type="featurelayer" onclick="selectProjectType('featurelayer')">
           <div class="project-type-icon">🗺️</div>
-          <h4>Feature Layer</h4>
-          <p>Create map layers from multiple categories</p>
+          <div class="project-type-content">
+            <h4>Feature Layer</h4>
+            <p>Create map layers from multiple categories</p>
+          </div>
+          <div class="project-type-visual">
+            <div class="hierarchy-visual">
+              <div class="hierarchy-level"></div>
+              <div class="hierarchy-level"></div>
+              <div class="hierarchy-level"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -151,9 +192,18 @@ function showActionSelector(type) {
   const container = document.getElementById('projectSelection');
   const existingActions = container.querySelector('.action-selector');
   if (existingActions) {
-    existingActions.remove();
+    // Animate out existing selector
+    existingActions.classList.remove('show');
+    setTimeout(() => {
+      existingActions.remove();
+      createActionSelector(type, container);
+    }, 300);
+  } else {
+    createActionSelector(type, container);
   }
+}
 
+function createActionSelector(type, container) {
   // Simple fix for pluralization
   let pluralType;
   if (type === 'category') {
@@ -202,6 +252,22 @@ function showActionSelector(type) {
   `;
 
   container.insertAdjacentHTML('beforeend', actionHtml);
+
+  // Animate in the new selector
+  setTimeout(() => {
+    const newSelector = container.querySelector('.action-selector');
+    if (newSelector) {
+      newSelector.classList.add('show');
+
+      // Show existing projects if any
+      const existingProjects = newSelector.querySelector('.existing-projects');
+      if (existingProjects) {
+        setTimeout(() => {
+          existingProjects.classList.add('show');
+        }, 200);
+      }
+    }
+  }, 50);
 }
 
 function selectAction(action) {
@@ -307,6 +373,20 @@ function populateCategoryBuilder(container) {
   };
 
   container.innerHTML = `
+    <div class="hierarchy-info">
+      <h4>📁 Category Structure</h4>
+      <div class="hierarchy-chain">
+        <div class="hierarchy-item">📊 Dataset</div>
+        <div class="hierarchy-arrow">→</div>
+        <div class="hierarchy-item" style="background: #e3f2fd; border-color: #2196f3;">📁 Category</div>
+        <div class="hierarchy-arrow">→</div>
+        <div class="hierarchy-item">🗺️ Feature Layer</div>
+      </div>
+      <p style="margin-top: 0.5rem; font-size: 0.75rem; color: #666;">
+        You're creating a category that will contain multiple datasets
+      </p>
+    </div>
+
     <div class="project-builder-header">
       <h3>${projectAction === 'create' ? 'Create New' : 'Edit'} Category</h3>
     </div>
@@ -319,39 +399,46 @@ function populateCategoryBuilder(container) {
 
       <div class="input-group">
         <label class="input-label">Description</label>
-        <textarea id="categoryDescription" placeholder="Describe this category">${category.description}</textarea>
+        <textarea id="categoryDescription" placeholder="Describe this category" rows="2">${category.description}</textarea>
       </div>
     </div>
 
     <div class="datasets-section">
-      <h4>Datasets in this Category</h4>
-      <div class="dataset-selector">
-        <select id="availableDatasets" multiple>
-          ${projects.datasets.map(dataset => `
-            <option value="${dataset.id}" ${category.datasets.includes(dataset.id) ? 'selected' : ''}>
-              ${dataset.name}
-            </option>
-          `).join('')}
-        </select>
-        <div class="dataset-actions">
-          <button class="btn btn-secondary" onclick="addDatasetToCategory()">Add Selected</button>
-          <button class="btn btn-secondary" onclick="removeDatasetFromCategory()">Remove Selected</button>
+      <h4>📊 Datasets in this Category</h4>
+      ${projects.datasets.length === 0 ? `
+        <div class="status-message status-info">
+          <span>ℹ️</span>
+          <span>No datasets available. Create some datasets first before building categories.</span>
         </div>
-      </div>
+      ` : `
+        <div class="dataset-selector">
+          <select id="availableDatasets" multiple size="4">
+            ${projects.datasets.map(dataset => `
+              <option value="${dataset.id}" ${category.datasets.includes(dataset.id) ? 'selected' : ''}>
+                ${dataset.name}
+              </option>
+            `).join('')}
+          </select>
+          <div class="dataset-actions">
+            <button class="btn btn-secondary" onclick="addDatasetToCategory()">Add →</button>
+            <button class="btn btn-secondary" onclick="removeDatasetFromCategory()">← Remove</button>
+          </div>
+        </div>
 
-      <div class="selected-datasets">
-        <h5>Selected Datasets:</h5>
-        <div id="selectedDatasetsList">
-          ${category.datasets.map(id => {
-            const dataset = findProject(id);
-            return dataset ? `<div class="dataset-item">${dataset.name}</div>` : '';
-          }).join('')}
+        <div class="selected-datasets">
+          <h5>Selected Datasets (${category.datasets.length}):</h5>
+          <div id="selectedDatasetsList">
+            ${category.datasets.map(id => {
+              const dataset = findProject(id);
+              return dataset ? `<div class="dataset-item">📊 ${dataset.name}</div>` : '';
+            }).join('')}
+          </div>
         </div>
-      </div>
+      `}
     </div>
 
     <div class="builder-actions">
-      <button class="btn btn-primary" onclick="saveCategory()">Save Category</button>
+      <button class="btn btn-primary" onclick="saveCategory()" ${projects.datasets.length === 0 ? 'disabled' : ''}>Save Category</button>
       <button class="btn btn-secondary" onclick="goToStep(0)">Cancel</button>
     </div>
   `;
@@ -369,6 +456,20 @@ function populateFeatureLayerBuilder(container) {
   };
 
   container.innerHTML = `
+    <div class="hierarchy-info">
+      <h4>🗺️ Feature Layer Structure</h4>
+      <div class="hierarchy-chain">
+        <div class="hierarchy-item">📊 Dataset</div>
+        <div class="hierarchy-arrow">→</div>
+        <div class="hierarchy-item">📁 Category</div>
+        <div class="hierarchy-arrow">→</div>
+        <div class="hierarchy-item" style="background: #e3f2fd; border-color: #2196f3;">🗺️ Feature Layer</div>
+      </div>
+      <p style="margin-top: 0.5rem; font-size: 0.75rem; color: #666;">
+        You're creating a feature layer that will contain multiple categories
+      </p>
+    </div>
+
     <div class="project-builder-header">
       <h3>${projectAction === 'create' ? 'Create New' : 'Edit'} Feature Layer</h3>
     </div>
@@ -381,43 +482,51 @@ function populateFeatureLayerBuilder(container) {
 
       <div class="input-group">
         <label class="input-label">Description</label>
-        <textarea id="featureLayerDescription" placeholder="Describe this feature layer">${featureLayer.description}</textarea>
+        <textarea id="featureLayerDescription" placeholder="Describe this feature layer" rows="2">${featureLayer.description}</textarea>
       </div>
     </div>
 
     <div class="categories-section">
-      <h4>Categories in this Feature Layer</h4>
-      <div class="category-selector">
-        <select id="availableCategories" multiple>
-          ${projects.categories.map(category => `
-            <option value="${category.id}" ${featureLayer.categories.includes(category.id) ? 'selected' : ''}>
-              ${category.name}
-            </option>
-          `).join('')}
-        </select>
-        <div class="category-actions">
-          <button class="btn btn-secondary" onclick="addCategoryToFeatureLayer()">Add Selected</button>
-          <button class="btn btn-secondary" onclick="removeCategoryFromFeatureLayer()">Remove Selected</button>
+      <h4>📁 Categories in this Feature Layer</h4>
+      ${projects.categories.length === 0 ? `
+        <div class="status-message status-info">
+          <span>ℹ️</span>
+          <span>No categories available. Create some categories first before building feature layers.</span>
         </div>
-      </div>
+      ` : `
+        <div class="category-selector">
+          <select id="availableCategories" multiple size="4">
+            ${projects.categories.map(category => `
+              <option value="${category.id}" ${featureLayer.categories.includes(category.id) ? 'selected' : ''}>
+                ${category.name}
+              </option>
+            `).join('')}
+          </select>
+          <div class="category-actions">
+            <button class="btn btn-secondary" onclick="addCategoryToFeatureLayer()">Add →</button>
+            <button class="btn btn-secondary" onclick="removeCategoryFromFeatureLayer()">← Remove</button>
+          </div>
+        </div>
 
-      <div class="selected-categories">
-        <h5>Selected Categories:</h5>
-        <div id="selectedCategoriesList">
-          ${featureLayer.categories.map(id => {
-            const category = findProject(id);
-            return category ? `<div class="category-item">${category.name}</div>` : '';
-          }).join('')}
+        <div class="selected-categories">
+          <h5>Selected Categories (${featureLayer.categories.length}):</h5>
+          <div id="selectedCategoriesList">
+            ${featureLayer.categories.map(id => {
+              const category = findProject(id);
+              return category ? `<div class="category-item">📁 ${category.name}</div>` : '';
+            }).join('')}
+          </div>
         </div>
-      </div>
+      `}
     </div>
 
     <div class="builder-actions">
-      <button class="btn btn-primary" onclick="saveFeatureLayer()">Save Feature Layer</button>
+      <button class="btn btn-primary" onclick="saveFeatureLayer()" ${projects.categories.length === 0 ? 'disabled' : ''}>Save Feature Layer</button>
       <button class="btn btn-secondary" onclick="goToStep(0)">Cancel</button>
     </div>
   `;
 }
+
 
 // Category management functions
 function addDatasetToCategory() {
