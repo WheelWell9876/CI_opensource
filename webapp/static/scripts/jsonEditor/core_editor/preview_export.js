@@ -100,13 +100,19 @@ function updatePythonPreview() {
 }
 
 function generateDatasetPythonCode(className, selectedFields) {
+  // Check if we have attribute data to include
+  const hasAttributes = fieldAttributes && Object.keys(fieldAttributes).length > 0;
+  const attributeFieldsCount = Object.values(fieldAttributes || {}).filter(attrs =>
+    attrs.uniqueValues && attrs.uniqueValues.length > 0
+  ).length;
+
   return `import geopandas as gpd
 import pandas as pd
 import numpy as np
 from typing import Dict, List, Any
 
 class ${className}:
-    """Process individual dataset with field selection and weighting."""
+    """Process individual dataset with field selection, weighting, and ${hasAttributes ? 'attribute-level weighting' : 'basic weighting'}."""
 
     def __init__(self, filepath: str):
         """Initialize with GeoJSON file path."""
@@ -114,6 +120,8 @@ class ${className}:
         self.selected_fields = ${JSON.stringify(selectedFields)}
         self.field_weights = ${JSON.stringify(fieldWeights, null, 8)}
         self.field_types = ${JSON.stringify(fieldTypes, null, 8)}
+        self.field_meta = ${JSON.stringify(fieldMeta || {}, null, 8)}${hasAttributes ? `
+        self.field_attributes = ${JSON.stringify(fieldAttributes, null, 8)}` : ''}
 
     def filter_fields(self) -> gpd.GeoDataFrame:
         """Filter GeoDataFrame to include only selected fields."""
@@ -122,102 +130,106 @@ class ${className}:
         return self.gdf[fields_to_keep]
 
     def apply_weights(self) -> gpd.GeoDataFrame:
-        """Apply weights to quantitative fields."""
+        """Apply weights to fields${hasAttributes ? ' with attribute-level weighting for qualitative fields' : ''}."""
         gdf_filtered = self.filter_fields()
         weighted_score = pd.Series(0, index=gdf_filtered.index)
 
         for field, weight in self.field_weights.items():
-            if field in gdf_filtered.columns and self.field_types.get(field) == 'quantitative':
+            if field not in gdf_filtered.columns:
+                continue
+
+            field_type = self.field_types.get(field, 'unknown')
+
+            if field_type == 'quantitative':
                 field_values = pd.to_numeric(gdf_filtered[field], errors='coerce')
                 if field_values.notna().any():
                     min_val = field_values.min()
                     max_val = field_values.max()
                     if max_val > min_val:
                         normalized = (field_values - min_val) / (max_val - min_val)
-                        weighted_score += normalized * weight
+                        weighted_score += normalized * weight${hasAttributes ? `
+
+            elif field_type == 'qualitative' and hasattr(self, 'field_attributes') and field in self.field_attributes:
+                # Apply attribute-level weighting
+                field_score = self.calculate_attribute_weighted_score(gdf_filtered, field)
+                weighted_score += field_score * weight` : ''}
 
         gdf_filtered['weighted_score'] = weighted_score
-        return gdf_filtered
+        return gdf_filtered${hasAttributes ? `
+
+    def calculate_attribute_weighted_score(self, gdf, field):
+        """Calculate weighted score for qualitative field based on attribute values."""
+        field_attrs = self.field_attributes.get(field, {})
+        attribute_weights = field_attrs.get('attributeWeights', {})
+
+        if not attribute_weights:
+            return pd.Series(0, index=gdf.index)
+
+        score = pd.Series(0.0, index=gdf.index)
+
+        # Apply weights based on attribute values
+        for attr_value, weight in attribute_weights.items():
+            mask = gdf[field].astype(str) == str(attr_value)
+            score.loc[mask] = weight / 100.0  # Convert percentage to decimal
+
+        return score
+
+    def get_attribute_info(self, field, attribute_value):
+        """Get detailed information about a specific attribute value."""
+        if not hasattr(self, 'field_attributes') or field not in self.field_attributes:
+            return None
+
+        field_attrs = self.field_attributes[field]
+        attr_meta = field_attrs.get('attributeMeta', {}).get(attribute_value, {})
+        attr_weight = field_attrs.get('attributeWeights', {}).get(attribute_value, 0)
+        attr_count = field_attrs.get('valueCounts', {}).get(attribute_value, 0)
+
+        return {
+            'weight': attr_weight,
+            'count': attr_count,
+            'meaning': attr_meta.get('meaning', ''),
+            'importance': attr_meta.get('importance', '')
+        }
+
+    def print_attribute_summary(self):
+        """Print summary of all attribute weightings."""
+        if not hasattr(self, 'field_attributes'):
+            print("No attribute weighting data available.")
+            return
+
+        print("\\n" + "="*60)
+        print("ATTRIBUTE WEIGHTING SUMMARY")
+        print("="*60)
+
+        for field in self.selected_fields:
+            if field in self.field_attributes:
+                field_attrs = self.field_attributes[field]
+                unique_values = field_attrs.get('uniqueValues', [])
+                print(f"\\nField: {field} ({len(unique_values)} unique values)")
+
+                for attr_value in unique_values[:10]:  # Show top 10
+                    attr_info = self.get_attribute_info(field, attr_value)
+                    if attr_info:
+                        print(f"  '{attr_value}': {attr_info['weight']:.1f}% ({attr_info['count']} occurrences)")
+                        if attr_info['meaning']:
+                            print(f"    Meaning: {attr_info['meaning']}")` : ''}
+
+    def get_field_metadata(self, field: str) -> Dict[str, str]:
+        """Return meaning/importance metadata for a field."""
+        return self.field_meta.get(field, {})
 
     def export_processed_data(self, output_path: str):
         """Export the processed GeoDataFrame."""
         gdf_processed = self.apply_weights()
         gdf_processed.to_file(output_path, driver='GeoJSON')
-        print(f"Processed data exported to: {output_path}")
+        print(f"Processed data exported to: {output_path}")${hasAttributes ? `
+        print(f"Applied attribute weighting to {attributeFieldsCount} qualitative fields")` : ''}
 
 # Usage example
 if __name__ == "__main__":
-    processor = ${className}("input_data.geojson")
+    processor = ${className}("input_data.geojson")${hasAttributes ? `
+    processor.print_attribute_summary()` : ''}
     processor.export_processed_data("output_weighted.geojson")`;
-}
-
-function generateCategoryPythonCode(className, selectedFields) {
-  return `import geopandas as gpd
-import pandas as pd
-import numpy as np
-from typing import Dict, List, Any
-from pathlib import Path
-
-class ${className}:
-    """Process category with multiple datasets."""
-
-    def __init__(self, dataset_paths: List[str]):
-        """Initialize with list of dataset file paths."""
-        self.dataset_paths = dataset_paths
-        self.datasets = [gpd.read_file(path) for path in dataset_paths]
-        self.selected_fields = ${JSON.stringify(selectedFields)}
-        self.field_weights = ${JSON.stringify(fieldWeights, null, 8)}
-        self.field_types = ${JSON.stringify(fieldTypes, null, 8)}
-
-    def combine_datasets(self) -> gpd.GeoDataFrame:
-        """Combine all datasets in the category."""
-        combined_gdfs = []
-
-        for i, gdf in enumerate(self.datasets):
-            # Add source dataset identifier
-            gdf = gdf.copy()
-            gdf['source_dataset'] = f'dataset_{i}'
-
-            # Filter to selected fields
-            fields_to_keep = ['geometry', 'source_dataset'] + [
-                f for f in self.selected_fields if f in gdf.columns
-            ]
-            gdf_filtered = gdf[fields_to_keep]
-            combined_gdfs.append(gdf_filtered)
-
-        # Combine all datasets
-        combined = gpd.GeoDataFrame(pd.concat(combined_gdfs, ignore_index=True))
-        return combined
-
-    def apply_weights(self) -> gpd.GeoDataFrame:
-        """Apply weights to quantitative fields across all datasets."""
-        gdf_combined = self.combine_datasets()
-        weighted_score = pd.Series(0, index=gdf_combined.index)
-
-        for field, weight in self.field_weights.items():
-            if field in gdf_combined.columns and self.field_types.get(field) == 'quantitative':
-                field_values = pd.to_numeric(gdf_combined[field], errors='coerce')
-                if field_values.notna().any():
-                    min_val = field_values.min()
-                    max_val = field_values.max()
-                    if max_val > min_val:
-                        normalized = (field_values - min_val) / (max_val - min_val)
-                        weighted_score += normalized * weight
-
-        gdf_combined['weighted_score'] = weighted_score
-        return gdf_combined
-
-    def export_category(self, output_path: str):
-        """Export the processed category."""
-        gdf_processed = self.apply_weights()
-        gdf_processed.to_file(output_path, driver='GeoJSON')
-        print(f"Category exported to: {output_path}")
-
-# Usage example
-if __name__ == "__main__":
-    dataset_files = ["dataset1.geojson", "dataset2.geojson", "dataset3.geojson"]
-    processor = ${className}(dataset_files)
-    processor.export_category("category_output.geojson")`;
 }
 
 function generateFeatureLayerPythonCode(className, selectedFields) {
@@ -451,23 +463,55 @@ function calculateFeatureLayerStatistics() {
 
 // Export functions
 function exportConfig() {
-  debugLog('Exporting configuration');
+  debugLog('Exporting enhanced configuration with attributes');
 
   const config = {
     projectType: projectType,
     projectAction: projectAction,
     currentProject: currentProject,
-    datasetName: currentProject?.name || 'Untitled Project',
-    description: currentProject?.description || '',
+    datasetName: document.getElementById('finalProjectName')?.value || currentProject?.name || 'Untitled Project',
+    description: document.getElementById('finalProjectDescription')?.value || currentProject?.description || '',
     timestamp: new Date().toISOString(),
     selectedFields: Array.from(selectedFields),
     fieldTypes: fieldTypes,
     fieldWeights: fieldWeights,
-    statistics: calculateCurrentStatistics()
+    fieldMeta: fieldMeta || {},  // ✅ Include field metadata
+    fieldAttributes: fieldAttributes || {},  // ✅ Include attribute data
+    statistics: calculateCurrentStatistics(),
+    version: '2.0'  // Updated version for attribute support
   };
 
-  debugLog('Configuration exported:', config);
-  showMessage('Configuration exported successfully!', 'success');
+  // Add project-specific data based on type
+  if (projectType === 'dataset' && loadedData) {
+    config.dataInfo = {
+      totalFeatures: loadedData.features ? loadedData.features.length : 0,
+      dataSource: 'uploaded'
+    };
+  } else if (projectType === 'category' && currentProject) {
+    config.categoryInfo = {
+      datasets: currentProject.datasets || [],
+      datasetWeights: currentProject.dataset_weights || {}
+    };
+  } else if (projectType === 'featurelayer' && currentProject) {
+    config.featureLayerInfo = {
+      categories: currentProject.categories || [],
+      categoryWeights: currentProject.category_weights || {}
+    };
+  }
+
+  debugLog('Enhanced configuration exported with field metadata and attributes:', config);
+  console.log('Field metadata in export:', fieldMeta);
+  console.log('Field attributes in export:', fieldAttributes);
+
+  // Log attribute summary
+  Object.keys(fieldAttributes || {}).forEach(field => {
+    const attrs = fieldAttributes[field];
+    const uniqueCount = attrs.uniqueValues?.length || 0;
+    const weightCount = Object.keys(attrs.attributeWeights || {}).length;
+    const metaCount = Object.keys(attrs.attributeMeta || {}).length;
+    console.log(`Attribute summary for ${field}: ${uniqueCount} values, ${weightCount} weights, ${metaCount} metadata entries`);
+  });
+
   return config;
 }
 
@@ -511,13 +555,13 @@ function copyPython() {
 
 // Updated saveToServer function for preview_export.js
 function saveToServer() {
-  debugLog('Saving configuration to server');
+  debugLog('Saving enhanced configuration to server with attributes');
 
-  // Get the enhanced configuration with field metadata
+  // Get the enhanced configuration with field metadata and attributes
   const config = exportConfig();
 
   // Show loading message
-  showMessage('Saving to server...', 'info');
+  showMessage('Saving enhanced configuration to server...', 'info');
 
   fetch('/json-editor/api/save', {
     method: 'POST',
@@ -526,6 +570,7 @@ function saveToServer() {
       config: {
         ...config,
         fieldMeta: fieldMeta || {},  // ✅ Include field metadata
+        fieldAttributes: fieldAttributes || {},  // ✅ Include attribute data
         selectedFields: Array.from(selectedFields),
         fieldWeights: fieldWeights,
         fieldTypes: fieldTypes
@@ -539,13 +584,24 @@ function saveToServer() {
     return response.json();
   })
   .then(data => {
-    console.log("Save response:", data); // Debug log
+    console.log("Enhanced save response:", data);
     if (data.success) {
-      showMessage(`Configuration saved to server with ID: ${data.config_id}!`, 'success');
+      let message = `Configuration saved to server with ID: ${data.config_id}!`;
 
-      // Log field metadata info if available
+      // Show additional info about saved data
       if (data.field_meta_count !== undefined) {
         console.log(`Field metadata entries saved: ${data.field_meta_count}`);
+      }
+      if (data.field_attributes_count !== undefined) {
+        console.log(`Fields with attribute data saved: ${data.field_attributes_count}`);
+        message += ` (${data.field_attributes_count} fields with attribute weighting)`;
+      }
+
+      showMessage(message, 'success');
+
+      // Log debug info if available
+      if (data.debug_info) {
+        console.log('Save debug info:', data.debug_info);
       }
     } else {
       showMessage(data.error || 'Failed to save to server', 'error');

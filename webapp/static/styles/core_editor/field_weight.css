@@ -1,5 +1,7 @@
+/* Enhanced field_weight.css with attribute controls styling */
+
 /* ========================================
-   FIELD SELECTION
+   FIELD SELECTION WITH ATTRIBUTE COUNTS
    ======================================== */
 
 .field-list {
@@ -58,23 +60,29 @@
   border-radius: 12px;
 }
 
-/* ========================================
-   WEIGHT CONTROLS
-   ======================================== */
-
-/* Make weight controls container scrollable */
-#weightControls {
-  max-height: 50vh;
-  overflow-y: auto;
-  padding-right: 0.5rem; /* Account for scrollbar */
+.attribute-count {
+  color: #888 !important;
+  font-style: italic;
+  margin-left: 2.5rem;
 }
 
-.weight-control {
-  margin-bottom: 1rem;
+/* ========================================
+   ENHANCED WEIGHT CONTROLS WITH ATTRIBUTES
+   ======================================== */
+
+#weightControls {
+  max-height: 65vh; /* Increased height for attribute controls */
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.enhanced-field-control {
+  margin-bottom: 1.5rem;
   padding: 1rem;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .weight-header {
@@ -105,6 +113,7 @@
 .weight-slider {
   width: 100%;
   margin-top: 0.5rem;
+  accent-color: #2196f3;
 }
 
 .weight-slider:disabled {
@@ -115,27 +124,16 @@
 .weight-value {
   font-weight: 600;
   color: #2196f3;
+  font-size: 1.1rem;
 }
-
-.total-weight {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: #e3f2fd;
-  border-radius: 6px;
-  text-align: center;
-  border: 1px solid #bbdefb;
-  /* Keep total weight sticky at bottom */
-  position: sticky;
-  bottom: 0;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-}
-
 
 .meta-inputs {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e0e0e0;
 }
 
 .meta-inputs label {
@@ -143,6 +141,7 @@
   color: #444;
   display: flex;
   flex-direction: column;
+  gap: 0.25rem;
 }
 
 .meta-inputs input {
@@ -150,4 +149,317 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.85rem;
+  transition: border-color 0.2s ease;
+}
+
+.meta-inputs input:focus {
+  outline: none;
+  border-color: #2196f3;
+}
+
+/* ========================================
+   ATTRIBUTE SECTION STYLING
+   ======================================== */
+
+.attribute-section {
+  margin-top: 1.5rem;
+  border-top: 2px solid #e3f2fd;
+  padding-top: 1rem;
+}
+
+.attribute-toggle-btn {
+  background: none !important;
+  border: none !important;
+  color: #1976d2 !important;
+  cursor: pointer;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.attribute-toggle-btn:hover {
+  color: #0d47a1 !important;
+  text-decoration: underline;
+}
+
+.attribute-controls {
+  background: #ffffff;
+  border: 1px solid #e3f2fd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.attribute-info {
+  background: #f0f8ff !important;
+  border: 1px solid #bbdefb;
+  padding: 0.75rem !important;
+  border-radius: 6px !important;
+  margin-bottom: 1rem !important;
+  font-size: 0.85rem !important;
+}
+
+.attribute-quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.attribute-quick-actions .quick-action {
+  font-size: 0.75rem !important;
+  padding: 0.25rem 0.75rem !important;
+  background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%) !important;
+}
+
+.attribute-total-weight {
+  font-weight: 600;
+  color: #333;
+}
+
+.attribute-item {
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  padding: 1rem !important;
+  margin-bottom: 1rem !important;
+  background: #fafafa !important;
+  transition: all 0.2s ease;
+}
+
+.attribute-item:hover {
+  border-color: #2196f3 !important;
+  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.1);
+}
+
+.attribute-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.attribute-header strong {
+  color: #1565c0 !important;
+  font-size: 0.9rem;
+}
+
+.attribute-header small {
+  background: #e1f5fe !important;
+  color: #01579b !important;
+  padding: 0.2rem 0.5rem !important;
+  border-radius: 12px !important;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.attribute-weight-value {
+  font-weight: 700 !important;
+  color: #1976d2 !important;
+  font-size: 1rem;
+}
+
+.attribute-weight-slider {
+  width: 100% !important;
+  margin-bottom: 0.75rem !important;
+  accent-color: #2196f3 !important;
+  height: 6px;
+}
+
+.attribute-meta-inputs {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 0.75rem !important;
+}
+
+.attribute-meta-inputs label {
+  font-size: 0.8rem !important;
+  color: #444 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem;
+}
+
+.attribute-meta-inputs input {
+  font-size: 0.8rem !important;
+  padding: 0.4rem 0.5rem !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease;
+}
+
+.attribute-meta-inputs input:focus {
+  outline: none !important;
+  border-color: #2196f3 !important;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}
+
+/* ========================================
+   TOTAL WEIGHT DISPLAY
+   ======================================== */
+
+.total-weight {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-radius: 8px;
+  text-align: center;
+  border: 2px solid #90caf9;
+  position: sticky;
+  bottom: 0;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.total-weight strong {
+  color: #1565c0;
+  font-size: 1.1rem;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN FOR ATTRIBUTES
+   ======================================== */
+
+@media (max-width: 768px) {
+  .attribute-meta-inputs {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  .attribute-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem;
+  }
+
+  .attribute-quick-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .enhanced-field-control {
+    padding: 0.75rem;
+  }
+
+  #weightControls {
+    max-height: 70vh;
+  }
+}
+
+/* ========================================
+   ANIMATION EFFECTS
+   ======================================== */
+
+.attribute-controls {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.attribute-item {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.attribute-toggle-btn span:first-child {
+  transition: transform 0.2s ease;
+}
+
+/* ========================================
+   ENHANCED SCROLLBAR STYLING
+   ======================================== */
+
+#weightControls::-webkit-scrollbar {
+  width: 10px;
+}
+
+#weightControls::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+#weightControls::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #2196f3, #21cbf3);
+  border-radius: 5px;
+}
+
+#weightControls::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #1976d2, #0288d1);
+}
+
+.attribute-controls::-webkit-scrollbar {
+  width: 6px;
+}
+
+.attribute-controls::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 3px;
+}
+
+.attribute-controls::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+/* ========================================
+   FIELD TYPE INDICATORS
+   ======================================== */
+
+.field-type-indicator {
+  background: #e3f2fd !important;
+  color: #1565c0 !important;
+  padding: 0.15rem 0.4rem;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Qualitative fields with attributes get special styling */
+.enhanced-field-control[data-field-type="qualitative"] {
+  border-left: 4px solid #4caf50;
+}
+
+.enhanced-field-control[data-field-type="quantitative"] {
+  border-left: 4px solid #2196f3;
+}
+
+/* ========================================
+   LOADING STATES FOR ATTRIBUTE ANALYSIS
+   ======================================== */
+
+.analyzing-attributes {
+  opacity: 0.7;
+  pointer-events: none;
+  position: relative;
+}
+
+.analyzing-attributes::after {
+  content: "Analyzing attributes...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #666;
+  z-index: 1000;
 }

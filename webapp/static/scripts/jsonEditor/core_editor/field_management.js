@@ -1,10 +1,12 @@
 // field_management.js - Field selection and weight management
 
 let fieldMeta = {}; // store { fieldName: { meaning: '', importance: '' } }
+let fieldAttributes = {}; // store { fieldName: { uniqueValues: [], valueCounts: {}, attributeWeights: {}, attributeMeta: {} } }
+let expandedFields = new Set(); // Track which qualitative fields are expanded
 
-// Field Selection (Step 3)
+// Field Selection (Step 3) - Enhanced with attribute counting
 function populateFieldSelection() {
-  debugLog('Populating field selection');
+  debugLog('Populating field selection with attribute analysis');
 
   if (projectType === 'category') {
     populateCategoryFieldSelection();
@@ -16,23 +18,67 @@ function populateFieldSelection() {
 }
 
 function populateDatasetFieldSelection() {
-  debugLog('Populating dataset field selection');
+  debugLog('Populating dataset field selection with attribute analysis');
 
   const container = document.getElementById('fieldList');
   if (!container || !loadedData) return;
 
   container.innerHTML = '<h4>Fields from your dataset:</h4>';
 
-  // Get all fields from the loaded dataset
+  // Get all fields from the loaded dataset and analyze attributes
   if (loadedData.features && loadedData.features.length > 0) {
     const firstFeature = loadedData.features[0];
     const properties = firstFeature.properties || firstFeature.attributes || {};
     const fields = Object.keys(properties);
 
+    // Analyze attributes for each field
+    analyzeFieldAttributes(loadedData.features, fields);
     populateFieldList(fields);
   } else {
     container.innerHTML += '<p style="color: #999;">No fields found in the dataset</p>';
   }
+}
+
+// NEW: Analyze unique values and their frequencies for qualitative fields
+function analyzeFieldAttributes(features, fields) {
+  debugLog('Analyzing field attributes for qualitative fields');
+
+  fields.forEach(field => {
+    const fieldType = fieldTypes[field];
+
+    if (fieldType === 'qualitative') {
+      const values = [];
+      const valueCounts = {};
+
+      // Collect all values for this field
+      features.forEach(feature => {
+        const props = feature.properties || feature.attributes || {};
+        const value = props[field];
+
+        if (value !== null && value !== undefined && value !== '') {
+          values.push(String(value));
+        }
+      });
+
+      // Count frequencies
+      values.forEach(value => {
+        valueCounts[value] = (valueCounts[value] || 0) + 1;
+      });
+
+      // Get unique values sorted by frequency
+      const uniqueValues = Object.keys(valueCounts).sort((a, b) => valueCounts[b] - valueCounts[a]);
+
+      // Store attribute information
+      fieldAttributes[field] = {
+        uniqueValues: uniqueValues,
+        valueCounts: valueCounts,
+        attributeWeights: {},
+        attributeMeta: {} // { attributeValue: { meaning: '', importance: '' } }
+      };
+
+      debugLog(`Field ${field} has ${uniqueValues.length} unique values:`, uniqueValues.slice(0, 10));
+    }
+  });
 }
 
 function populateCategoryFieldSelection() {
@@ -130,9 +176,9 @@ function populateFeatureLayerFieldSelection() {
   }
 }
 
-// Populate field list
+// Enhanced field list population with attribute counts
 function populateFieldList(fields) {
-  debugLog('Populating field list', fields);
+  debugLog('Populating enhanced field list with attribute counts', fields);
 
   const fieldList = document.getElementById('fieldList');
   if (!fieldList) {
@@ -164,6 +210,15 @@ function populateFieldList(fields) {
                     fieldType === 'qualitative' ? '📝' :
                     fieldType === 'boolean' ? '☑️' : '❓';
 
+    // Get attribute info for qualitative fields
+    let attributeInfo = '';
+    if (fieldType === 'qualitative' && fieldAttributes[field]) {
+      const uniqueCount = fieldAttributes[field].uniqueValues.length;
+      attributeInfo = `<small class="attribute-count" style="color: #666; font-size: 0.7rem; display: block; margin-top: 0.25rem;">
+        ${uniqueCount} unique values
+      </small>`;
+    }
+
     fieldDiv.innerHTML = `
       <label class="field-label">
         <input type="checkbox" class="field-checkbox" id="field_${field}"
@@ -173,12 +228,13 @@ function populateFieldList(fields) {
           <span class="field-type">${typeIcon} ${fieldType}</span>
         </span>
       </label>
+      ${attributeInfo}
     `;
 
     fieldList.appendChild(fieldDiv);
   });
 
-  debugLog('Field list populated with', fields.length, 'fields');
+  debugLog('Enhanced field list populated with', fields.length, 'fields');
 }
 
 // Toggle field selection
@@ -244,9 +300,9 @@ function selectQuantitative() {
   updatePreview();
 }
 
-// Enhanced populateWeightControls with debugging
+// Enhanced weight controls with attribute-level weighting
 function populateWeightControls() {
-  debugFieldMetaState('populateWeightControls - START', 'Populating weight controls');
+  debugFieldMetaState('populateWeightControls - START', 'Populating enhanced weight controls with attributes');
 
   debugLog('Populating weight controls for fields:', Array.from(selectedFields));
 
@@ -263,7 +319,7 @@ function populateWeightControls() {
     return;
   }
 
-  // Initialize field weights to equal distribution if not set
+  // Initialize field weights and metadata
   const fieldCount = selectedFields.size;
   const equalWeight = 1.0 / fieldCount;
 
@@ -271,65 +327,19 @@ function populateWeightControls() {
     if (!(field in fieldWeights)) {
       fieldWeights[field] = equalWeight;
     }
-    // Initialize metadata if not exists
     if (!(field in fieldMeta)) {
       fieldMeta[field] = { meaning: '', importance: '' };
-      console.log(`🆕 Initialized fieldMeta for field: ${field}`);
-    } else {
-      console.log(`✅ fieldMeta already exists for field: ${field}`, fieldMeta[field]);
+    }
+
+    // Initialize attribute weights for qualitative fields
+    if (fieldTypes[field] === 'qualitative' && fieldAttributes[field]) {
+      initializeAttributeWeights(field);
     }
   });
 
+  // Create controls for each field
   selectedFields.forEach(field => {
-    const control = document.createElement('div');
-    control.className = 'weight-control';
-
-    const currentWeight = fieldWeights[field] || equalWeight;
-    const weightPercent = Math.round(currentWeight * 100);
-    const isLocked = lockedFields.has(field);
-
-    // Get current metadata values
-    const currentMeaning = fieldMeta[field]?.meaning || '';
-    const currentImportance = fieldMeta[field]?.importance || '';
-
-    console.log(`🎛️ Creating control for field "${field}":`, {
-      meaning: currentMeaning,
-      importance: currentImportance,
-      weight: weightPercent
-    });
-
-    control.innerHTML = `
-      <div class="weight-header">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <strong>${field}</strong>
-          <button class="lock-btn ${isLocked ? 'locked' : ''}"
-                  onclick="toggleFieldLock('${field}')"
-                  title="${isLocked ? 'Unlock field' : 'Lock field'}">
-            ${isLocked ? '🔒' : '🔓'}
-          </button>
-          <span class="field-type-indicator">${fieldTypes[field] || 'unknown'}</span>
-        </div>
-        <span class="weight-value" id="weightVal_${field}">${weightPercent}%</span>
-      </div>
-      <input type="range" class="weight-slider"
-             id="weight_${field}"
-             min="0" max="100" value="${weightPercent}"
-             ${isLocked ? 'disabled' : ''}
-             oninput="updateWeight('${field}', this.value)">
-      <div class="meta-inputs">
-        <label>
-          Meaning:
-          <input type="text" value="${currentMeaning}"
-                 oninput="debugUpdateFieldMeta('${field}', 'meaning', this.value)">
-        </label>
-        <label>
-          Importance:
-          <input type="text" value="${currentImportance}"
-                 oninput="debugUpdateFieldMeta('${field}', 'importance', this.value)">
-        </label>
-      </div>
-    `;
-
+    const control = createFieldWeightControl(field, equalWeight);
     container.appendChild(control);
   });
 
@@ -344,9 +354,267 @@ function populateWeightControls() {
   container.appendChild(totalDiv);
 
   updateTotalWeightDisplay();
-  debugLog('Weight controls populated for', selectedFields.size, 'fields');
+  debugFieldMetaState('populateWeightControls - END', 'Enhanced weight controls populated');
+}
 
-  debugFieldMetaState('populateWeightControls - END', 'Finished populating weight controls');
+// Initialize equal weights for all attributes in a qualitative field
+function initializeAttributeWeights(field) {
+  if (!fieldAttributes[field]) return;
+
+  const uniqueValues = fieldAttributes[field].uniqueValues;
+  const equalWeight = 100.0 / uniqueValues.length;
+
+  uniqueValues.forEach(value => {
+    if (!(value in fieldAttributes[field].attributeWeights)) {
+      fieldAttributes[field].attributeWeights[value] = equalWeight;
+    }
+    if (!(value in fieldAttributes[field].attributeMeta)) {
+      fieldAttributes[field].attributeMeta[value] = { meaning: '', importance: '' };
+    }
+  });
+
+  debugLog(`Initialized attribute weights for field ${field}:`, fieldAttributes[field].attributeWeights);
+}
+
+// Create enhanced field weight control with attribute support
+function createFieldWeightControl(field, equalWeight) {
+  const control = document.createElement('div');
+  control.className = 'weight-control enhanced-field-control';
+
+  const currentWeight = fieldWeights[field] || equalWeight;
+  const weightPercent = Math.round(currentWeight * 100);
+  const isLocked = lockedFields.has(field);
+  const fieldType = fieldTypes[field] || 'unknown';
+
+  // Get current metadata values
+  const currentMeaning = fieldMeta[field]?.meaning || '';
+  const currentImportance = fieldMeta[field]?.importance || '';
+
+  // Check if this is a qualitative field with attributes
+  const isQualitative = fieldType === 'qualitative';
+  const hasAttributes = isQualitative && fieldAttributes[field] && fieldAttributes[field].uniqueValues.length > 0;
+  const isExpanded = expandedFields.has(field);
+
+  let attributeSection = '';
+  if (hasAttributes) {
+    const uniqueCount = fieldAttributes[field].uniqueValues.length;
+    const expandIcon = isExpanded ? '🔽' : '▶️';
+
+    attributeSection = `
+      <div class="attribute-section" style="margin-top: 1rem;">
+        <button class="attribute-toggle-btn" onclick="toggleAttributeSection('${field}')" type="button"
+                style="background: none; border: none; color: #2196f3; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+          <span>${expandIcon}</span>
+          <span>Attribute Weights (${uniqueCount} values)</span>
+        </button>
+        <div class="attribute-controls" id="attributeControls_${field}" style="display: ${isExpanded ? 'block' : 'none'}; margin-top: 1rem;">
+          ${createAttributeControls(field)}
+        </div>
+      </div>
+    `;
+  }
+
+  control.innerHTML = `
+    <div class="weight-header">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <strong>${field}</strong>
+        <button class="lock-btn ${isLocked ? 'locked' : ''}"
+                onclick="toggleFieldLock('${field}')"
+                title="${isLocked ? 'Unlock field' : 'Lock field'}" type="button">
+          ${isLocked ? '🔒' : '🔓'}
+        </button>
+        <span class="field-type-indicator">${fieldType}</span>
+      </div>
+      <span class="weight-value" id="weightVal_${field}">${weightPercent}%</span>
+    </div>
+
+    <input type="range" class="weight-slider"
+           id="weight_${field}"
+           min="0" max="100" value="${weightPercent}"
+           ${isLocked ? 'disabled' : ''}
+           oninput="updateWeight('${field}', this.value)">
+
+    <div class="meta-inputs">
+      <label>
+        Field Meaning:
+        <input type="text" value="${currentMeaning}"
+               oninput="debugUpdateFieldMeta('${field}', 'meaning', this.value)"
+               placeholder="What does this field represent?">
+      </label>
+      <label>
+        Field Importance:
+        <input type="text" value="${currentImportance}"
+               oninput="debugUpdateFieldMeta('${field}', 'importance', this.value)"
+               placeholder="Why is this field important?">
+      </label>
+    </div>
+
+    ${attributeSection}
+  `;
+
+  return control;
+}
+
+// Create attribute weight controls for a qualitative field
+function createAttributeControls(field) {
+  if (!fieldAttributes[field]) return '';
+
+  const uniqueValues = fieldAttributes[field].uniqueValues;
+  const valueCounts = fieldAttributes[field].valueCounts;
+  const attributeWeights = fieldAttributes[field].attributeWeights;
+  const attributeMeta = fieldAttributes[field].attributeMeta;
+
+  let controlsHTML = `
+    <div class="attribute-info" style="background: #f0f8ff; padding: 0.5rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.85rem;">
+      <strong>Attribute weighting for "${field}"</strong><br>
+      <span style="color: #666;">Adjust the importance of each value. Total must equal 100%.</span>
+    </div>
+
+    <div class="attribute-quick-actions" style="margin-bottom: 1rem;">
+      <button class="quick-action" onclick="resetAttributeWeightsEqual('${field}')" type="button" style="font-size: 0.75rem; padding: 0.25rem 0.75rem;">
+        ⚖️ Equal Weights
+      </button>
+      <span class="attribute-total-weight" style="margin-left: 1rem; font-weight: 600;">
+        Total: <span id="attributeTotalWeight_${field}">100%</span>
+      </span>
+    </div>
+  `;
+
+  uniqueValues.forEach(value => {
+    const weight = attributeWeights[value] || 0;
+    const count = valueCounts[value] || 0;
+    const meta = attributeMeta[value] || { meaning: '', importance: '' };
+
+    controlsHTML += `
+      <div class="attribute-item" style="border: 1px solid #ddd; border-radius: 6px; padding: 0.75rem; margin-bottom: 0.75rem; background: #fafafa;">
+        <div class="attribute-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <strong style="color: #333;">"${value}"</strong>
+            <small style="color: #666; background: #e0e0e0; padding: 0.15rem 0.4rem; border-radius: 10px;">
+              ${count} occurrences
+            </small>
+          </div>
+          <span class="attribute-weight-value" id="attributeWeightVal_${field}_${value.replace(/[^a-zA-Z0-9]/g, '_')}">${Math.round(weight)}%</span>
+        </div>
+
+        <input type="range" class="attribute-weight-slider" style="width: 100%; margin-bottom: 0.75rem;"
+               id="attributeWeight_${field}_${value.replace(/[^a-zA-Z0-9]/g, '_')}"
+               min="0" max="100" value="${Math.round(weight)}"
+               oninput="updateAttributeWeight('${field}', '${value}', this.value)">
+
+        <div class="attribute-meta-inputs" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+          <label style="font-size: 0.8rem;">
+            Meaning:
+            <input type="text" value="${meta.meaning}" style="font-size: 0.8rem; padding: 0.25rem;"
+                   oninput="updateAttributeMeta('${field}', '${value}', 'meaning', this.value)"
+                   placeholder="What does '${value}' mean?">
+          </label>
+          <label style="font-size: 0.8rem;">
+            Importance:
+            <input type="text" value="${meta.importance}" style="font-size: 0.8rem; padding: 0.25rem;"
+                   oninput="updateAttributeMeta('${field}', '${value}', 'importance', this.value)"
+                   placeholder="Why is '${value}' important?">
+          </label>
+        </div>
+      </div>
+    `;
+  });
+
+  return controlsHTML;
+}
+
+// Toggle attribute section visibility
+function toggleAttributeSection(field) {
+  const isExpanded = expandedFields.has(field);
+  const controlsDiv = document.getElementById(`attributeControls_${field}`);
+  const toggleBtn = controlsDiv.previousElementSibling;
+
+  if (isExpanded) {
+    expandedFields.delete(field);
+    controlsDiv.style.display = 'none';
+    toggleBtn.querySelector('span:first-child').textContent = '▶️';
+  } else {
+    expandedFields.add(field);
+    controlsDiv.style.display = 'block';
+    toggleBtn.querySelector('span:first-child').textContent = '🔽';
+  }
+}
+
+// Update attribute weight
+function updateAttributeWeight(field, attributeValue, value) {
+  const newWeight = parseFloat(value);
+
+  if (!fieldAttributes[field]) return;
+
+  fieldAttributes[field].attributeWeights[attributeValue] = newWeight;
+
+  // Update display
+  const safeId = attributeValue.replace(/[^a-zA-Z0-9]/g, '_');
+  const weightDisplay = document.getElementById(`attributeWeightVal_${field}_${safeId}`);
+  if (weightDisplay) {
+    weightDisplay.textContent = `${Math.round(newWeight)}%`;
+  }
+
+  // Update total weight for this field's attributes
+  updateAttributeTotalWeight(field);
+
+  debugLog(`Updated attribute weight: ${field}.${attributeValue} = ${newWeight}%`);
+}
+
+// Update attribute metadata
+function updateAttributeMeta(field, attributeValue, key, value) {
+  if (!fieldAttributes[field]) return;
+  if (!fieldAttributes[field].attributeMeta[attributeValue]) {
+    fieldAttributes[field].attributeMeta[attributeValue] = { meaning: '', importance: '' };
+  }
+
+  fieldAttributes[field].attributeMeta[attributeValue][key] = value;
+
+  debugLog(`Updated attribute meta: ${field}.${attributeValue}.${key} = "${value}"`);
+}
+
+// Update total weight display for attribute section
+function updateAttributeTotalWeight(field) {
+  if (!fieldAttributes[field]) return;
+
+  const totalElement = document.getElementById(`attributeTotalWeight_${field}`);
+  if (!totalElement) return;
+
+  const weights = Object.values(fieldAttributes[field].attributeWeights);
+  const total = weights.reduce((sum, weight) => sum + weight, 0);
+  const totalPercent = Math.round(total);
+
+  totalElement.textContent = `${totalPercent}%`;
+
+  // Color code the total
+  if (totalPercent < 95 || totalPercent > 105) {
+    totalElement.style.color = '#d32f2f';
+  } else {
+    totalElement.style.color = '#2e7d32';
+  }
+}
+
+// Reset attribute weights to equal distribution
+function resetAttributeWeightsEqual(field) {
+  if (!fieldAttributes[field]) return;
+
+  const uniqueValues = fieldAttributes[field].uniqueValues;
+  const equalWeight = 100.0 / uniqueValues.length;
+
+  uniqueValues.forEach(value => {
+    fieldAttributes[field].attributeWeights[value] = equalWeight;
+
+    // Update slider and display
+    const safeId = value.replace(/[^a-zA-Z0-9]/g, '_');
+    const slider = document.getElementById(`attributeWeight_${field}_${safeId}`);
+    const display = document.getElementById(`attributeWeightVal_${field}_${safeId}`);
+
+    if (slider) slider.value = Math.round(equalWeight);
+    if (display) display.textContent = `${Math.round(equalWeight)}%`;
+  });
+
+  updateAttributeTotalWeight(field);
+  showMessage(`Attribute weights for "${field}" reset to equal distribution`, 'success');
 }
 
 // Debug version of updateFieldMeta that gets called from HTML
@@ -497,20 +765,41 @@ function resetWeightsEqual() {
 // ===============================
 // Export Config (Step 5)
 // ===============================
-// ✅ Keep this function - it's the correct one with field metadata
 function exportConfig() {
+  debugFieldMetaState('exportConfig - START', 'Starting enhanced export with attributes');
+
   const config = {
-    datasetName: document.getElementById('finalProjectName').value,
-    description: document.getElementById('finalProjectDescription').value,
+    datasetName: document.getElementById('finalProjectName')?.value || 'Untitled Dataset',
+    description: document.getElementById('finalProjectDescription')?.value || '',
     projectType,
     selectedFields: Array.from(selectedFields),
     fieldWeights,
     fieldTypes,
-    fieldMeta   // ✅ include meaning + importance
+    fieldMeta,   // ✅ field-level metadata
+    fieldAttributes // ✅ attribute-level data (weights, metadata, unique values)
   };
 
-  console.log("Exporting config:", config);
+  console.log("🏗️ Enhanced config with attributes:", config);
+  console.log("📊 fieldAttributes:", fieldAttributes);
+
+  debugFieldMetaState('exportConfig - END', 'Enhanced export completed');
+
   return config;
+}
+
+function debugFieldAttributes() {
+  console.log('=== FIELD ATTRIBUTES DEBUG ===');
+  console.log('fieldAttributes:', fieldAttributes);
+
+  Object.keys(fieldAttributes).forEach(field => {
+    const attrs = fieldAttributes[field];
+    console.log(`Field "${field}":`, {
+      uniqueValues: attrs.uniqueValues?.length || 0,
+      weights: attrs.attributeWeights,
+      metadata: attrs.attributeMeta
+    });
+  });
+  console.log('==============================');
 }
 
 
@@ -624,3 +913,5 @@ setInterval(() => {
 }, 10000);
 
 console.log('🔍 Enhanced fieldMeta debugging loaded. Use debugFieldMeta() in console for manual check.');
+window.debugFieldAttributes = debugFieldAttributes;
+
