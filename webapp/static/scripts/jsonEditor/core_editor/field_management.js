@@ -1,5 +1,7 @@
 // field_management.js - Field selection and weight management
 
+let fieldMeta = {}; // store { fieldName: { meaning: '', importance: '' } }
+
 // Field Selection (Step 3)
 function populateFieldSelection() {
   debugLog('Populating field selection');
@@ -242,8 +244,10 @@ function selectQuantitative() {
   updatePreview();
 }
 
-// Weight management
+// Enhanced populateWeightControls with debugging
 function populateWeightControls() {
+  debugFieldMetaState('populateWeightControls - START', 'Populating weight controls');
+
   debugLog('Populating weight controls for fields:', Array.from(selectedFields));
 
   const container = document.getElementById('weightControls');
@@ -267,6 +271,13 @@ function populateWeightControls() {
     if (!(field in fieldWeights)) {
       fieldWeights[field] = equalWeight;
     }
+    // Initialize metadata if not exists
+    if (!(field in fieldMeta)) {
+      fieldMeta[field] = { meaning: '', importance: '' };
+      console.log(`🆕 Initialized fieldMeta for field: ${field}`);
+    } else {
+      console.log(`✅ fieldMeta already exists for field: ${field}`, fieldMeta[field]);
+    }
   });
 
   selectedFields.forEach(field => {
@@ -276,6 +287,16 @@ function populateWeightControls() {
     const currentWeight = fieldWeights[field] || equalWeight;
     const weightPercent = Math.round(currentWeight * 100);
     const isLocked = lockedFields.has(field);
+
+    // Get current metadata values
+    const currentMeaning = fieldMeta[field]?.meaning || '';
+    const currentImportance = fieldMeta[field]?.importance || '';
+
+    console.log(`🎛️ Creating control for field "${field}":`, {
+      meaning: currentMeaning,
+      importance: currentImportance,
+      weight: weightPercent
+    });
 
     control.innerHTML = `
       <div class="weight-header">
@@ -295,6 +316,18 @@ function populateWeightControls() {
              min="0" max="100" value="${weightPercent}"
              ${isLocked ? 'disabled' : ''}
              oninput="updateWeight('${field}', this.value)">
+      <div class="meta-inputs">
+        <label>
+          Meaning:
+          <input type="text" value="${currentMeaning}"
+                 oninput="debugUpdateFieldMeta('${field}', 'meaning', this.value)">
+        </label>
+        <label>
+          Importance:
+          <input type="text" value="${currentImportance}"
+                 oninput="debugUpdateFieldMeta('${field}', 'importance', this.value)">
+        </label>
+      </div>
     `;
 
     container.appendChild(control);
@@ -312,7 +345,60 @@ function populateWeightControls() {
 
   updateTotalWeightDisplay();
   debugLog('Weight controls populated for', selectedFields.size, 'fields');
+
+  debugFieldMetaState('populateWeightControls - END', 'Finished populating weight controls');
 }
+
+// Debug version of updateFieldMeta that gets called from HTML
+function debugUpdateFieldMeta(field, key, value) {
+  console.log(`🖱️ HTML Input triggered: field="${field}", key="${key}", value="${value}"`);
+  updateFieldMeta(field, key, value);
+}
+
+// Enhanced debugging for fieldMeta tracking
+function debugFieldMetaState(location, action = '') {
+  const timestamp = new Date().toISOString();
+  console.log(`==================== FIELD META DEBUG ====================`);
+  console.log(`🕐 Time: ${timestamp}`);
+  console.log(`📍 Location: ${location}`);
+  console.log(`🎬 Action: ${action}`);
+  console.log(`📊 fieldMeta object:`, JSON.stringify(fieldMeta, null, 2));
+  console.log(`📈 fieldMeta keys:`, Object.keys(fieldMeta));
+  console.log(`🔢 fieldMeta count:`, Object.keys(fieldMeta).length);
+  console.log(`✅ selectedFields:`, Array.from(selectedFields));
+  console.log(`⚖️ fieldWeights:`, fieldWeights);
+  console.log(`🏷️ fieldTypes:`, fieldTypes);
+
+  // Check if fieldMeta has data for selected fields
+  selectedFields.forEach(field => {
+    const meta = fieldMeta[field];
+    console.log(`📝 Field "${field}" metadata:`, meta || 'MISSING');
+  });
+  console.log(`===========================================================`);
+}
+
+// Enhanced updateFieldMeta with debugging
+function updateFieldMeta(field, key, value) {
+  debugFieldMetaState('updateFieldMeta - START', `Updating ${field}.${key} = "${value}"`);
+
+  if (!(field in fieldMeta)) {
+    fieldMeta[field] = { meaning: '', importance: '' };
+    console.log(`🆕 Created new fieldMeta entry for field: ${field}`);
+  }
+
+  const oldValue = fieldMeta[field][key];
+  fieldMeta[field][key] = value;
+
+  console.log(`🔄 Updated ${field}.${key}: "${oldValue}" → "${value}"`);
+
+  debugFieldMetaState('updateFieldMeta - END', `Updated ${field}.${key}`);
+
+  // Trigger preview update to reflect changes
+  if (typeof updatePreview === 'function') {
+    updatePreview();
+  }
+}
+
 
 function toggleFieldLock(field) {
   debugLog('Toggling lock for field', field);
@@ -407,3 +493,134 @@ function resetWeightsEqual() {
   updatePreview();
   showMessage('Field weights reset to equal distribution', 'success');
 }
+
+// ===============================
+// Export Config (Step 5)
+// ===============================
+// ✅ Keep this function - it's the correct one with field metadata
+function exportConfig() {
+  const config = {
+    datasetName: document.getElementById('finalProjectName').value,
+    description: document.getElementById('finalProjectDescription').value,
+    projectType,
+    selectedFields: Array.from(selectedFields),
+    fieldWeights,
+    fieldTypes,
+    fieldMeta   // ✅ include meaning + importance
+  };
+
+  console.log("Exporting config:", config);
+  return config;
+}
+
+
+// Enhanced saveToServer with comprehensive debugging
+function saveToServer() {
+  debugFieldMetaState('saveToServer - START', 'Starting save to server');
+
+  // Get the export configuration
+  const config = exportConfig();
+
+  console.log("📦 Config from exportConfig():", config);
+  console.log("📝 Config.fieldMeta from exportConfig():", config.fieldMeta);
+
+  // Ensure all field metadata is properly included
+  const payload = {
+    config: {
+      ...config,
+      fieldMeta: fieldMeta,  // ✅ Explicitly include fieldMeta
+      selectedFields: Array.from(selectedFields),
+      fieldWeights: fieldWeights,
+      fieldTypes: fieldTypes
+    }
+  };
+
+  console.log("🚀 Final payload being sent:", JSON.stringify(payload, null, 2));
+  console.log("📝 Payload.config.fieldMeta specifically:", payload.config.fieldMeta);
+
+  // Show loading state
+  showMessage('Saving configuration...', 'info');
+
+  fetch('/json-editor/api/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+    .then(res => {
+      console.log("📡 Server response status:", res.status);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      console.log("✅ Save response from server:", data);
+      if (data.success) {
+        showMessage(`Configuration saved with ID: ${data.config_id}`, 'success');
+
+        // Show additional info if field metadata was saved
+        if (data.field_meta_count !== undefined) {
+          console.log(`📊 Field metadata entries confirmed saved: ${data.field_meta_count}`);
+        }
+      } else {
+        showMessage(data.error || 'Failed to save config', 'error');
+      }
+    })
+    .catch(err => {
+      console.error("❌ Error saving config:", err);
+      showMessage("Error saving configuration", "error");
+    });
+
+  debugFieldMetaState('saveToServer - END', 'Save request sent');
+}
+
+
+// Add debugging to the step navigation
+function debugGoToStep(step) {
+  debugFieldMetaState(`goToStep(${step}) - BEFORE`, `Navigating to step ${step}`);
+
+  // Call original goToStep
+  goToStep(step);
+
+  // Add a small delay to let DOM update, then debug again
+  setTimeout(() => {
+    debugFieldMetaState(`goToStep(${step}) - AFTER`, `Completed navigation to step ${step}`);
+  }, 100);
+}
+
+// Debug version of field selection functions
+function debugSelectField(field, isSelected) {
+  debugFieldMetaState('selectField - START', `${isSelected ? 'Selecting' : 'Deselecting'} field: ${field}`);
+
+  // Call original toggleField function
+  toggleField(field, isSelected);
+
+  debugFieldMetaState('selectField - END', `Field ${field} ${isSelected ? 'selected' : 'deselected'}`);
+}
+
+// Add window-level debugging function
+window.debugFieldMeta = function() {
+  debugFieldMetaState('MANUAL DEBUG', 'Called from console');
+};
+
+// Add debugging when DOM loads
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🚀 DOM loaded, setting up fieldMeta debugging');
+
+  // Initialize fieldMeta if it doesn't exist
+  if (typeof fieldMeta === 'undefined') {
+    console.log('⚠️ fieldMeta was undefined, initializing');
+    window.fieldMeta = {};
+  }
+
+  debugFieldMetaState('DOM_LOADED', 'Initial state');
+});
+
+// Add periodic debugging (every 10 seconds when in step 4)
+setInterval(() => {
+  if (currentStep === 4) {
+    debugFieldMetaState('PERIODIC_CHECK', `Auto-check while on step 4`);
+  }
+}, 10000);
+
+console.log('🔍 Enhanced fieldMeta debugging loaded. Use debugFieldMeta() in console for manual check.');

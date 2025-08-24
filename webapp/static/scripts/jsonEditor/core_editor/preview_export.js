@@ -509,21 +509,44 @@ function copyPython() {
   }
 }
 
+// Updated saveToServer function for preview_export.js
 function saveToServer() {
   debugLog('Saving configuration to server');
+
+  // Get the enhanced configuration with field metadata
   const config = exportConfig();
 
+  // Show loading message
   showMessage('Saving to server...', 'info');
 
   fetch('/json-editor/api/save', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ config })
+    body: JSON.stringify({
+      config: {
+        ...config,
+        fieldMeta: fieldMeta || {},  // ✅ Include field metadata
+        selectedFields: Array.from(selectedFields),
+        fieldWeights: fieldWeights,
+        fieldTypes: fieldTypes
+      }
+    })
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
   .then(data => {
+    console.log("Save response:", data); // Debug log
     if (data.success) {
-      showMessage('Configuration saved to server!', 'success');
+      showMessage(`Configuration saved to server with ID: ${data.config_id}!`, 'success');
+
+      // Log field metadata info if available
+      if (data.field_meta_count !== undefined) {
+        console.log(`Field metadata entries saved: ${data.field_meta_count}`);
+      }
     } else {
       showMessage(data.error || 'Failed to save to server', 'error');
     }
@@ -532,4 +555,46 @@ function saveToServer() {
     console.error('Error saving to server:', error);
     showMessage('Error saving to server: ' + error.message, 'error');
   });
+}
+
+// Updated exportConfig function to include field metadata
+function exportConfig() {
+  debugLog('Exporting configuration');
+
+  const config = {
+    projectType: projectType,
+    projectAction: projectAction,
+    currentProject: currentProject,
+    datasetName: document.getElementById('finalProjectName')?.value || currentProject?.name || 'Untitled Project',
+    description: document.getElementById('finalProjectDescription')?.value || currentProject?.description || '',
+    timestamp: new Date().toISOString(),
+    selectedFields: Array.from(selectedFields),
+    fieldTypes: fieldTypes,
+    fieldWeights: fieldWeights,
+    fieldMeta: fieldMeta || {},  // ✅ Include field metadata
+    statistics: calculateCurrentStatistics(),
+    version: '1.0'
+  };
+
+  // Add project-specific data based on type
+  if (projectType === 'dataset' && loadedData) {
+    config.dataInfo = {
+      totalFeatures: loadedData.features ? loadedData.features.length : 0,
+      dataSource: 'uploaded' // or API info if loaded from API
+    };
+  } else if (projectType === 'category' && currentProject) {
+    config.categoryInfo = {
+      datasets: currentProject.datasets || [],
+      datasetWeights: currentProject.dataset_weights || {}
+    };
+  } else if (projectType === 'featurelayer' && currentProject) {
+    config.featureLayerInfo = {
+      categories: currentProject.categories || [],
+      categoryWeights: currentProject.category_weights || {}
+    };
+  }
+
+  debugLog('Configuration exported with field metadata:', config);
+  console.log('Field metadata in export:', fieldMeta); // Debug log
+  return config;
 }

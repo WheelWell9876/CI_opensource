@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "proj_1755965355794_ik1kiuia0",
+    "name": "lll",
+    "description": "",
+    "type": "featurelayer",
+    "categories": [
+      "proj_1755964997752_ulq3a83t1"
+    ],
+    "category_weights": {
+      "proj_1755964997752_ulq3a83t1": 100
+    },
+    "created_at": "2025-08-23T16:09:15.794Z",
+    "updated_at": "2025-08-23T16:09:23.726Z"
+  }
+]
