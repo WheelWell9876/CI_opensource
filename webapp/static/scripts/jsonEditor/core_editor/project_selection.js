@@ -222,6 +222,7 @@ function showActionSelector(type) {
   }
 }
 
+// Enhanced createActionSelector function with scrollable project list
 function createActionSelector(type, container) {
   // Simple fix for pluralization
   let pluralType;
@@ -255,17 +256,19 @@ function createActionSelector(type, container) {
       ${projects[pluralType].length > 0 ? `
         <div class="existing-projects">
           <h4>Your existing ${type}s:</h4>
-          <div class="project-list">
-            ${projects[pluralType].map(project => `
-              <div class="project-item" onclick="selectExistingProject('${project.id}')">
-                <span class="project-name">${project.name}</span>
-                <span class="project-date">${new Date(project.created_at).toLocaleDateString()}</span>
-                <div class="project-actions">
-                  <button onclick="editProject('${project.id}'); event.stopPropagation();">Edit</button>
-                  <button onclick="deleteProject('${project.id}'); event.stopPropagation();" class="delete-btn">Delete</button>
+          <div class="project-list-container">
+            <div class="project-list" id="projectList-${type}">
+              ${projects[pluralType].map(project => `
+                <div class="project-item" onclick="selectExistingProject('${project.id}')">
+                  <span class="project-name">${project.name}</span>
+                  <span class="project-date">${new Date(project.created_at).toLocaleDateString()}</span>
+                  <div class="project-actions">
+                    <button onclick="editProject('${project.id}'); event.stopPropagation();">Edit</button>
+                    <button onclick="deleteProject('${project.id}'); event.stopPropagation();" class="delete-btn">Delete</button>
+                  </div>
                 </div>
-              </div>
-            `).join('')}
+              `).join('')}
+            </div>
           </div>
         </div>
       ` : ''}
@@ -285,11 +288,62 @@ function createActionSelector(type, container) {
       if (existingProjects) {
         setTimeout(() => {
           existingProjects.classList.add('show');
+
+          // Setup scroll detection for fade effects
+          setupScrollableProjectList(`projectList-${type}`);
         }, 200);
       }
     }
   }, 50);
 }
+
+// Function to setup scrollable project list with fade effects
+function setupScrollableProjectList(listId) {
+  const projectList = document.getElementById(listId);
+  const container = projectList?.closest('.project-list-container');
+
+  if (!projectList || !container) return;
+
+  // Check if scrolling is needed
+  const checkScrollable = () => {
+    if (projectList.scrollHeight > projectList.clientHeight) {
+      container.classList.add('scrollable');
+    } else {
+      container.classList.remove('scrollable');
+    }
+  };
+
+  // Initial check
+  checkScrollable();
+
+  // Check again when window resizes
+  window.addEventListener('resize', checkScrollable);
+
+  // Optional: Add smooth scroll behavior for better UX
+  projectList.style.scrollBehavior = 'smooth';
+
+  // Add scroll event listener for enhanced UX (optional)
+  projectList.addEventListener('scroll', () => {
+    const scrollTop = projectList.scrollTop;
+    const scrollBottom = projectList.scrollHeight - projectList.clientHeight - scrollTop;
+
+    // You can add additional scroll-based animations here if needed
+    // For example, hiding/showing the fade gradients based on scroll position
+    if (scrollTop > 10) {
+      container.classList.add('scroll-top');
+    } else {
+      container.classList.remove('scroll-top');
+    }
+
+    if (scrollBottom > 10) {
+      container.classList.add('scroll-bottom');
+    } else {
+      container.classList.remove('scroll-bottom');
+    }
+  });
+}
+
+
 
 // Enhanced action selector that maintains workflow context
 function selectAction(action) {
@@ -441,16 +495,35 @@ function editProject(projectId) {
   selectExistingProject(projectId);
 }
 
+// Enhanced delete project function with smooth removal
 function deleteProject(projectId) {
   debugLog('Delete project:', projectId);
   if (confirm('Are you sure you want to delete this project?')) {
-    // Remove from appropriate array
-    for (let type of ['datasets', 'categories', 'featurelayers']) {
-      projects[type] = projects[type].filter(p => p.id !== projectId);
+    // Add fade-out animation to the item being deleted
+    const projectItem = document.querySelector(`[onclick*="${projectId}"]`);
+    if (projectItem) {
+      projectItem.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      projectItem.style.opacity = '0';
+      projectItem.style.transform = 'translateX(-20px)';
+
+      setTimeout(() => {
+        // Remove from appropriate array
+        for (let type of ['datasets', 'categories', 'featurelayers']) {
+          projects[type] = projects[type].filter(p => p.id !== projectId);
+        }
+        saveProjects();
+        showActionSelector(projectType); // Refresh the view
+        showMessage('Project deleted successfully', 'success');
+      }, 300);
+    } else {
+      // Fallback if animation element not found
+      for (let type of ['datasets', 'categories', 'featurelayers']) {
+        projects[type] = projects[type].filter(p => p.id !== projectId);
+      }
+      saveProjects();
+      showActionSelector(projectType);
+      showMessage('Project deleted successfully', 'success');
     }
-    saveProjects();
-    showActionSelector(projectType); // Refresh the view
-    showMessage('Project deleted successfully', 'success');
   }
 }
 

@@ -113,12 +113,6 @@ select option {
   opacity: 0.6;
 }
 
-.btn-group {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
 /* ========================================
    DATA SOURCE CONTAINERS
    ======================================== */

@@ -68,35 +68,41 @@ body {
    ======================================== */
 
 .container {
-  max-width: 1400px;
-  margin: 2rem auto;
+  max-width: 1600px; /* Increased for larger panels */
+  margin: 1rem auto; /* Reduced margin for more space */
   padding: 0 2rem;
 }
+
 
 .main-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   margin-bottom: 2rem;
-  align-items: start; /* Align panels to top */
+  align-items: start;
 }
 
 .panel {
   background: white;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1.5rem 1.5rem 0; /* Remove bottom padding for fixed buttons */
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  /* Add back max-height and scrolling */
-  max-height: 85vh;
-  overflow-y: auto;
-  min-height: 600px; /* Set minimum height */
-  transition: all 0.3s ease; /* Smooth transition */
+  min-height: 900px;
+  height: 95vh;
+  max-height: none;
+  overflow-y: visible;
+  transition: none;
+  display: flex;
+  flex-direction: column;
+  position: relative; /* For absolute positioning of buttons */
 }
 
-/* Ensure step content can scroll within panels */
 .step-content {
-  max-height: none; /* Let step content use full panel height */
-  overflow-y: visible; /* Panel handles the scrolling */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: visible;
+  padding-bottom: 80px; /* Space for fixed buttons */
 }
 
 .panel-title {

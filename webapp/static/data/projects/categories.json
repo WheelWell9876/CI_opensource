@@ -1,21 +1,5 @@
 [
   {
-    "id": "proj_1755964997752_ulq3a83t1",
-    "name": "ddd",
-    "description": "eee",
-    "type": "category",
-    "datasets": [
-      "proj_1755963012592_c6dm43szn",
-      "proj_1755964737084_hipvdfos8"
-    ],
-    "dataset_weights": {
-      "proj_1755963012592_c6dm43szn": 50,
-      "proj_1755964737084_hipvdfos8": 50
-    },
-    "created_at": "2025-08-23T16:03:17.752Z",
-    "updated_at": "2025-08-23T16:03:31.828Z"
-  },
-  {
     "id": "proj_1756048628671_pmdt8k1f2",
     "name": "BRRRT",
     "description": "",

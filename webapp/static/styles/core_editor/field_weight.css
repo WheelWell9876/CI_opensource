@@ -5,18 +5,19 @@
    ======================================== */
 
 .field-list {
-  max-height: 40vh;
+  max-height: 600px; /* Much larger height - same as stage 1 content area */
   overflow-y: auto;
   border: 2px solid #f0f0f0;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .field-item {
-  padding: 0.75rem;
+  padding: 0.6rem;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   background: white;
   transition: all 0.2s ease;
 }
@@ -29,15 +30,16 @@
 .field-label {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
   cursor: pointer;
   width: 100%;
 }
 
 .field-checkbox {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   accent-color: #2196f3;
+  flex-shrink: 0;
 }
 
 .field-info {
@@ -50,20 +52,24 @@
 .field-name {
   font-weight: 600;
   color: #333;
+  font-size: 0.9rem;
 }
 
 .field-type {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #666;
   background: #f5f5f5;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
+  padding: 0.2rem 0.4rem;
+  border-radius: 10px;
+  white-space: nowrap;
 }
 
 .attribute-count {
   color: #888 !important;
   font-style: italic;
-  margin-left: 2.5rem;
+  font-size: 0.75rem;
+  margin-left: 2rem;
+  margin-top: 0.2rem;
 }
 
 /* ========================================
@@ -71,33 +77,34 @@
    ======================================== */
 
 #weightControls {
-  max-height: 65vh; /* Increased height for attribute controls */
+  max-height: 600px; /* Much larger height - same as field list */
   overflow-y: auto;
   padding-right: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .enhanced-field-control {
-  margin-bottom: 1.5rem;
-  padding: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
   border: 1px solid #ddd;
-  border-radius: 12px;
+  border-radius: 10px;
   background: #f9f9f9;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .weight-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 .lock-btn {
   background: none;
   border: none;
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
-  padding: 0.25rem;
+  padding: 0.2rem;
   border-radius: 4px;
   transition: background-color 0.2s ease;
 }
@@ -112,8 +119,15 @@
 
 .weight-slider {
   width: 100%;
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
   accent-color: #2196f3;
+  height: 5px;
+}
+
+.weight-value {
+  font-weight: 600;
+  color: #2196f3;
+  font-size: 1rem;
 }
 
 .weight-slider:disabled {
@@ -121,34 +135,28 @@
   cursor: not-allowed;
 }
 
-.weight-value {
-  font-weight: 600;
-  color: #2196f3;
-  font-size: 1.1rem;
-}
-
 .meta-inputs {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
   border-top: 1px solid #e0e0e0;
 }
 
 .meta-inputs label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #444;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
 }
 
 .meta-inputs input {
-  padding: 0.35rem 0.5rem;
+  padding: 0.3rem 0.4rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   transition: border-color 0.2s ease;
 }
 
@@ -158,13 +166,31 @@
 }
 
 /* ========================================
+   FIXED NAVIGATION BUTTONS
+   ======================================== */
+
+/* Fixed button container at bottom of all panels */
+.panel-navigation {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 2px solid #f0f0f0;
+  padding: 1rem 1.5rem;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  z-index: 20;
+}
+
+/* ========================================
    ATTRIBUTE SECTION STYLING
    ======================================== */
 
 .attribute-section {
-  margin-top: 1.5rem;
+  margin-top: 1rem; /* Reduced margin */
   border-top: 2px solid #e3f2fd;
-  padding-top: 1rem;
+  padding-top: 0.8rem; /* Reduced padding */
 }
 
 .attribute-toggle-btn {
@@ -175,9 +201,9 @@
   font-weight: 600 !important;
   display: flex !important;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-  font-size: 0.9rem;
+  gap: 0.4rem; /* Reduced gap */
+  padding: 0.4rem 0; /* Reduced padding */
+  font-size: 0.85rem; /* Smaller font */
   transition: color 0.2s ease;
 }
 
@@ -190,45 +216,46 @@
   background: #ffffff;
   border: 1px solid #e3f2fd;
   border-radius: 8px;
-  padding: 1rem;
-  margin-top: 0.5rem;
+  padding: 0.8rem; /* Reduced padding */
+  margin-top: 0.4rem; /* Reduced margin */
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .attribute-info {
   background: #f0f8ff !important;
   border: 1px solid #bbdefb;
-  padding: 0.75rem !important;
+  padding: 0.6rem !important; /* Reduced padding */
   border-radius: 6px !important;
-  margin-bottom: 1rem !important;
-  font-size: 0.85rem !important;
+  margin-bottom: 0.8rem !important; /* Reduced margin */
+  font-size: 0.8rem !important; /* Smaller font */
 }
 
 .attribute-quick-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
+  gap: 0.8rem; /* Reduced gap */
+  margin-bottom: 0.8rem; /* Reduced margin */
+  padding-bottom: 0.4rem; /* Reduced padding */
   border-bottom: 1px solid #e0e0e0;
 }
 
 .attribute-quick-actions .quick-action {
-  font-size: 0.75rem !important;
-  padding: 0.25rem 0.75rem !important;
+  font-size: 0.7rem !important; /* Smaller font */
+  padding: 0.2rem 0.6rem !important; /* Reduced padding */
   background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%) !important;
 }
 
 .attribute-total-weight {
   font-weight: 600;
   color: #333;
+  font-size: 0.85rem; /* Smaller font */
 }
 
 .attribute-item {
   border: 1px solid #e0e0e0 !important;
-  border-radius: 8px !important;
-  padding: 1rem !important;
-  margin-bottom: 1rem !important;
+  border-radius: 6px !important; /* Smaller radius */
+  padding: 0.8rem !important; /* Reduced padding */
+  margin-bottom: 0.8rem !important; /* Reduced margin */
   background: #fafafa !important;
   transition: all 0.2s ease;
 }
@@ -242,53 +269,53 @@
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  margin-bottom: 0.75rem !important;
+  margin-bottom: 0.6rem !important; /* Reduced margin */
 }
 
 .attribute-header strong {
   color: #1565c0 !important;
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* Smaller font */
 }
 
 .attribute-header small {
   background: #e1f5fe !important;
   color: #01579b !important;
-  padding: 0.2rem 0.5rem !important;
-  border-radius: 12px !important;
-  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem !important; /* Reduced padding */
+  border-radius: 10px !important; /* Smaller radius */
+  font-size: 0.65rem; /* Smaller font */
   font-weight: 600;
 }
 
 .attribute-weight-value {
   font-weight: 700 !important;
   color: #1976d2 !important;
-  font-size: 1rem;
+  font-size: 0.9rem; /* Smaller font */
 }
 
 .attribute-weight-slider {
   width: 100% !important;
-  margin-bottom: 0.75rem !important;
+  margin-bottom: 0.6rem !important; /* Reduced margin */
   accent-color: #2196f3 !important;
-  height: 6px;
+  height: 5px; /* Smaller height */
 }
 
 .attribute-meta-inputs {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: 0.75rem !important;
+  gap: 0.6rem !important; /* Reduced gap */
 }
 
 .attribute-meta-inputs label {
-  font-size: 0.8rem !important;
+  font-size: 0.75rem !important; /* Smaller font */
   color: #444 !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 0.25rem;
+  gap: 0.2rem;
 }
 
 .attribute-meta-inputs input {
-  font-size: 0.8rem !important;
-  padding: 0.4rem 0.5rem !important;
+  font-size: 0.75rem !important; /* Smaller font */
+  padding: 0.3rem 0.4rem !important; /* Reduced padding */
   border: 1px solid #ccc !important;
   border-radius: 4px !important;
   transition: all 0.2s ease;
@@ -305,51 +332,156 @@
    ======================================== */
 
 .total-weight {
-  margin-top: 1.5rem;
-  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem; /* Add bottom margin to account for fixed buttons */
+  padding: 0.8rem;
   background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
   border-radius: 8px;
   text-align: center;
   border: 2px solid #90caf9;
-  position: sticky;
-  bottom: 0;
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
   z-index: 10;
+  position: relative; /* Change from sticky to relative */
 }
 
 .total-weight strong {
   color: #1565c0;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 /* ========================================
-   RESPONSIVE DESIGN FOR ATTRIBUTES
+   RESPONSIVE DESIGN FOR FIXED BUTTONS
    ======================================== */
 
 @media (max-width: 768px) {
-  .attribute-meta-inputs {
-    grid-template-columns: 1fr !important;
-    gap: 0.5rem !important;
+  .step-content {
+    padding-bottom: 100px; /* More space for buttons on mobile */
   }
 
-  .attribute-header {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.5rem;
+  .panel-navigation,
+  .continue-section,
+  .streamlined-navigation,
+  .builder-actions {
+    padding: 0.75rem 1rem; /* Smaller padding on mobile */
   }
 
-  .attribute-quick-actions {
+  .btn-group {
     flex-direction: column;
-    align-items: flex-start;
     gap: 0.5rem;
   }
 
-  .enhanced-field-control {
-    padding: 0.75rem;
+  .streamlined-navigation {
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
-  #weightControls {
-    max-height: 70vh;
+  .builder-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .btn-group .btn,
+  .continue-section .btn,
+  .streamlined-navigation .btn,
+  .builder-actions .btn {
+    width: 100%;
+    min-width: auto;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .step-content {
+    padding-bottom: 120px; /* Even more space on small mobile */
+  }
+
+  .panel-navigation,
+  .continue-section,
+  .streamlined-navigation,
+  .builder-actions {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN FOR STAGE 1
+   ======================================== */
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    margin: 0.5rem auto;
+    padding: 0 1rem;
+  }
+
+  .main-content {
+    grid-template-columns: 1fr; /* Stack panels on mobile */
+    gap: 1rem;
+  }
+
+  .panel {
+    height: auto;
+    min-height: 700px;
+    max-height: 90vh;
+    overflow-y: auto; /* Add scrolling back for mobile if needed */
+  }
+
+  .project-types {
+    gap: 0.4rem; /* Even smaller gap on mobile */
+  }
+
+  .project-type-card {
+    padding: 0.6rem 0.8rem; /* Even smaller on mobile */
+    min-height: 45px;
+  }
+
+  .project-type-card h4 {
+    font-size: 0.85rem;
+  }
+
+  .project-type-card p {
+    font-size: 0.7rem;
+  }
+
+  .actions {
+    grid-template-columns: 1fr; /* Stack action buttons on mobile */
+    gap: 0.4rem;
+  }
+
+  .action-btn {
+    padding: 0.4rem 0.6rem;
+    min-height: 40px;
+  }
+
+  .project-list {
+    max-height: 150px; /* Smaller on mobile */
+    padding: 0.5rem;
+  }
+
+  .project-item {
+    padding: 0.5rem 0.6rem;
+    min-height: 40px;
+  }
+
+  .project-actions button {
+    padding: 0.15rem 0.4rem;
+    font-size: 0.65rem;
+  }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1800px;
+  }
+
+  .panel {
+    min-height: 950px;
+  }
+
+  .project-list {
+    max-height: 250px; /* More space for content on large screens */
   }
 }
 
@@ -386,21 +518,39 @@
    ======================================== */
 
 #weightControls::-webkit-scrollbar {
-  width: 10px;
+  width: 8px; /* Slightly smaller */
 }
 
 #weightControls::-webkit-scrollbar-track {
   background: #f1f1f1;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 #weightControls::-webkit-scrollbar-thumb {
   background: linear-gradient(135deg, #2196f3, #21cbf3);
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 #weightControls::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #1976d2, #0288d1);
+}
+
+.field-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.field-list::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.field-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.field-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
 .attribute-controls::-webkit-scrollbar {
@@ -424,9 +574,9 @@
 .field-type-indicator {
   background: #e3f2fd !important;
   color: #1565c0 !important;
-  padding: 0.15rem 0.4rem;
-  border-radius: 10px;
-  font-size: 0.7rem;
+  padding: 0.1rem 0.3rem; /* Reduced padding */
+  border-radius: 8px; /* Smaller radius */
+  font-size: 0.65rem; /* Smaller font */
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -457,9 +607,9 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background: rgba(255, 255, 255, 0.9);
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem; /* Reduced padding */
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: 0.75rem; /* Smaller font */
   color: #666;
   z-index: 1000;
 }
@@ -794,14 +944,26 @@
    ======================================== */
 
 .streamlined-navigation {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 2px solid #f0f0f0;
+  padding: 1rem 1.5rem;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  z-index: 20;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  background: white;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.streamlined-navigation .btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 120px;
 }
 
 /* ========================================
