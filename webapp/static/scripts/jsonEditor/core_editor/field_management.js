@@ -6,7 +6,7 @@ let expandedFields = new Set(); // Track which qualitative fields are expanded
 
 // Field Selection (Step 3) - Enhanced with attribute counting
 function populateFieldSelection() {
-  debugLog('Populating field selection with attribute analysis');
+  debugLog('Populating field selection with attribute analysis and fixed navigation');
 
   if (projectType === 'category') {
     populateCategoryFieldSelection();
@@ -18,12 +18,26 @@ function populateFieldSelection() {
 }
 
 function populateDatasetFieldSelection() {
-  debugLog('Populating dataset field selection with attribute analysis');
+  debugLog('Populating dataset field selection with fixed navigation');
 
   const container = document.getElementById('fieldList');
   if (!container || !loadedData) return;
 
-  container.innerHTML = '<h4>Fields from your dataset:</h4>';
+  // Create the field selection content with fixed navigation structure
+  container.innerHTML = `
+    <h4>Fields from your dataset:</h4>
+    <div class="field-list" id="actualFieldList">
+      <!-- Field items will be populated here -->
+    </div>
+
+    <!-- Fixed navigation buttons -->
+    <div class="panel-navigation">
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="goToStep(1)">← Back to Load Data</button>
+        <button class="btn btn-primary" onclick="goToStep(3)" id="continueToWeights" disabled>Continue to Apply Weights →</button>
+      </div>
+    </div>
+  `;
 
   // Get all fields from the loaded dataset and analyze attributes
   if (loadedData.features && loadedData.features.length > 0) {
@@ -33,9 +47,11 @@ function populateDatasetFieldSelection() {
 
     // Analyze attributes for each field
     analyzeFieldAttributes(loadedData.features, fields);
-    populateFieldList(fields);
+    populateFieldList(fields, 'actualFieldList');
+    updateContinueButton();
   } else {
-    container.innerHTML += '<p style="color: #999;">No fields found in the dataset</p>';
+    const fieldList = document.getElementById('actualFieldList');
+    fieldList.innerHTML = '<p style="color: #999;">No fields found in the dataset</p>';
   }
 }
 
@@ -81,117 +97,153 @@ function analyzeFieldAttributes(features, fields) {
   });
 }
 
-function populateCategoryFieldSelection() {
-  debugLog('Populating category field selection');
+//function populateCategoryFieldSelection() {
+//  debugLog('Populating category field selection with fixed navigation');
+//
+//  const container = document.getElementById('fieldList');
+//  if (!container || !currentProject) return;
+//
+//  container.innerHTML = `
+//    <h4>Fields from datasets in this category:</h4>
+//    <div class="quick-actions" style="margin-bottom: 1rem;">
+//      <button class="quick-action" onclick="selectAll()">Select All</button>
+//      <button class="quick-action" onclick="selectNone()">Select None</button>
+//      <button class="quick-action" onclick="selectQuantitative()">Quantitative Only</button>
+//    </div>
+//    <div class="field-list" id="actualFieldList">
+//      <!-- Field items will be populated here -->
+//    </div>
+//
+//    <!-- Fixed navigation buttons -->
+//    <div class="panel-navigation">
+//      <div class="btn-group">
+//        <button class="btn btn-secondary" onclick="goToStep(2)">← Back to Dataset Weights</button>
+//        <button class="btn btn-primary" onclick="goToStep(3)" id="continueToWeights" disabled>Continue to Export →</button>
+//      </div>
+//    </div>
+//  `;
+//
+//  // Get all fields from all datasets in the category
+//  const allFields = new Set();
+//  currentProject.datasets.forEach(datasetId => {
+//    const dataset = findProject(datasetId);
+//    if (dataset && dataset.field_info) {
+//      Object.keys(dataset.field_info.field_types || {}).forEach(field => {
+//        allFields.add(field);
+//        fieldTypes[field] = dataset.field_info.field_types[field];
+//      });
+//    } else if (dataset && dataset.data && dataset.data.features && dataset.data.features.length > 0) {
+//      // Fallback to extracting from data directly
+//      const firstFeature = dataset.data.features[0];
+//      const properties = firstFeature.properties || firstFeature.attributes || {};
+//      Object.keys(properties).forEach(field => {
+//        allFields.add(field);
+//        const value = properties[field];
+//        // Determine field type
+//        if (value === null || value === undefined) {
+//          fieldTypes[field] = 'unknown';
+//        } else if (typeof value === 'boolean') {
+//          fieldTypes[field] = 'boolean';
+//        } else if (typeof value === 'number') {
+//          fieldTypes[field] = 'quantitative';
+//        } else {
+//          fieldTypes[field] = 'qualitative';
+//        }
+//      });
+//    }
+//  });
+//
+//  if (allFields.size > 0) {
+//    populateFieldList(Array.from(allFields), 'actualFieldList');
+//    updateContinueButton();
+//  } else {
+//    const fieldList = document.getElementById('actualFieldList');
+//    fieldList.innerHTML = '<p style="color: #999;">No fields found in the selected datasets</p>';
+//  }
+//}
 
-  const container = document.getElementById('fieldList');
-  if (!container || !currentProject) return;
+//function populateFeatureLayerFieldSelection() {
+//  debugLog('Populating feature layer field selection with fixed navigation');
+//
+//  const container = document.getElementById('fieldList');
+//  if (!container || !currentProject) return;
+//
+//  container.innerHTML = `
+//    <h4>Fields from categories in this feature layer:</h4>
+//    <div class="quick-actions" style="margin-bottom: 1rem;">
+//      <button class="quick-action" onclick="selectAll()">Select All</button>
+//      <button class="quick-action" onclick="selectNone()">Select None</button>
+//      <button class="quick-action" onclick="selectQuantitative()">Quantitative Only</button>
+//    </div>
+//    <div class="field-list" id="actualFieldList">
+//      <!-- Field items will be populated here -->
+//    </div>
+//
+//    <!-- Fixed navigation buttons -->
+//    <div class="panel-navigation">
+//      <div class="btn-group">
+//        <button class="btn btn-secondary" onclick="goToStep(2)">← Back to Category Weights</button>
+//        <button class="btn btn-primary" onclick="goToStep(3)" id="continueToWeights" disabled>Continue to Export →</button>
+//      </div>
+//    </div>
+//  `;
+//
+//  // Get all fields from all categories (and their datasets) in the feature layer
+//  const allFields = new Set();
+//  currentProject.categories.forEach(categoryId => {
+//    const category = findProject(categoryId);
+//    if (category && category.datasets) {
+//      category.datasets.forEach(datasetId => {
+//        const dataset = findProject(datasetId);
+//        if (dataset && dataset.field_info) {
+//          Object.keys(dataset.field_info.field_types || {}).forEach(field => {
+//            allFields.add(field);
+//            fieldTypes[field] = dataset.field_info.field_types[field];
+//          });
+//        } else if (dataset && dataset.data && dataset.data.features && dataset.data.features.length > 0) {
+//          // Fallback to extracting from data directly
+//          const firstFeature = dataset.data.features[0];
+//          const properties = firstFeature.properties || firstFeature.attributes || {};
+//          Object.keys(properties).forEach(field => {
+//            allFields.add(field);
+//            const value = properties[field];
+//            // Determine field type
+//            if (value === null || value === undefined) {
+//              fieldTypes[field] = 'unknown';
+//            } else if (typeof value === 'boolean') {
+//              fieldTypes[field] = 'boolean';
+//            } else if (typeof value === 'number') {
+//              fieldTypes[field] = 'quantitative';
+//            } else {
+//              fieldTypes[field] = 'qualitative';
+//            }
+//          });
+//        }
+//      });
+//    }
+//  });
+//
+//  if (allFields.size > 0) {
+//    populateFieldList(Array.from(allFields), 'actualFieldList');
+//    updateContinueButton();
+//  } else {
+//    const fieldList = document.getElementById('actualFieldList');
+//    fieldList.innerHTML = '<p style="color: #999;">No fields found in the selected categories</p>';
+//  }
+//}
 
-  container.innerHTML = '<h4>Fields from datasets in this category:</h4>';
-
-  // Get all fields from all datasets in the category
-  const allFields = new Set();
-  currentProject.datasets.forEach(datasetId => {
-    const dataset = findProject(datasetId);
-    if (dataset && dataset.field_info) {
-      Object.keys(dataset.field_info.field_types || {}).forEach(field => {
-        allFields.add(field);
-        fieldTypes[field] = dataset.field_info.field_types[field];
-      });
-    } else if (dataset && dataset.data && dataset.data.features && dataset.data.features.length > 0) {
-      // Fallback to extracting from data directly
-      const firstFeature = dataset.data.features[0];
-      const properties = firstFeature.properties || firstFeature.attributes || {};
-      Object.keys(properties).forEach(field => {
-        allFields.add(field);
-        const value = properties[field];
-        // Determine field type
-        if (value === null || value === undefined) {
-          fieldTypes[field] = 'unknown';
-        } else if (typeof value === 'boolean') {
-          fieldTypes[field] = 'boolean';
-        } else if (typeof value === 'number') {
-          fieldTypes[field] = 'quantitative';
-        } else {
-          fieldTypes[field] = 'qualitative';
-        }
-      });
-    }
-  });
-
-  if (allFields.size > 0) {
-    populateFieldList(Array.from(allFields));
-  } else {
-    container.innerHTML += '<p style="color: #999;">No fields found in the selected datasets</p>';
-  }
-}
-
-function populateFeatureLayerFieldSelection() {
-  debugLog('Populating feature layer field selection');
-
-  const container = document.getElementById('fieldList');
-  if (!container || !currentProject) return;
-
-  container.innerHTML = '<h4>Fields from categories in this feature layer:</h4>';
-
-  // Get all fields from all categories (and their datasets) in the feature layer
-  const allFields = new Set();
-  currentProject.categories.forEach(categoryId => {
-    const category = findProject(categoryId);
-    if (category && category.datasets) {
-      category.datasets.forEach(datasetId => {
-        const dataset = findProject(datasetId);
-        if (dataset && dataset.field_info) {
-          Object.keys(dataset.field_info.field_types || {}).forEach(field => {
-            allFields.add(field);
-            fieldTypes[field] = dataset.field_info.field_types[field];
-          });
-        } else if (dataset && dataset.data && dataset.data.features && dataset.data.features.length > 0) {
-          // Fallback to extracting from data directly
-          const firstFeature = dataset.data.features[0];
-          const properties = firstFeature.properties || firstFeature.attributes || {};
-          Object.keys(properties).forEach(field => {
-            allFields.add(field);
-            const value = properties[field];
-            // Determine field type
-            if (value === null || value === undefined) {
-              fieldTypes[field] = 'unknown';
-            } else if (typeof value === 'boolean') {
-              fieldTypes[field] = 'boolean';
-            } else if (typeof value === 'number') {
-              fieldTypes[field] = 'quantitative';
-            } else {
-              fieldTypes[field] = 'qualitative';
-            }
-          });
-        }
-      });
-    }
-  });
-
-  if (allFields.size > 0) {
-    populateFieldList(Array.from(allFields));
-  } else {
-    container.innerHTML += '<p style="color: #999;">No fields found in the selected categories</p>';
-  }
-}
-
-// Enhanced field list population with attribute counts
-function populateFieldList(fields) {
+// Enhanced field list population with attribute counts and proper container ID
+function populateFieldList(fields, containerId = 'actualFieldList') {
   debugLog('Populating enhanced field list with attribute counts', fields);
 
-  const fieldList = document.getElementById('fieldList');
+  const fieldList = document.getElementById(containerId);
   if (!fieldList) {
-    console.error('Field list container not found');
+    console.error('Field list container not found:', containerId);
     return;
   }
 
-  // Clear previous content but keep any headers
-  const existingHeader = fieldList.querySelector('h4');
+  // Clear previous content
   fieldList.innerHTML = '';
-  if (existingHeader) {
-    fieldList.appendChild(existingHeader);
-  }
 
   if (fields.length === 0) {
     const noFieldsMsg = document.createElement('p');
@@ -214,9 +266,7 @@ function populateFieldList(fields) {
     let attributeInfo = '';
     if (fieldType === 'qualitative' && fieldAttributes[field]) {
       const uniqueCount = fieldAttributes[field].uniqueValues.length;
-      attributeInfo = `<small class="attribute-count" style="color: #666; font-size: 0.7rem; display: block; margin-top: 0.25rem;">
-        ${uniqueCount} unique values
-      </small>`;
+      attributeInfo = `<small class="attribute-count">${uniqueCount} unique values</small>`;
     }
 
     fieldDiv.innerHTML = `
@@ -257,7 +307,7 @@ function toggleField(field, isSelected) {
   updatePreview();
 }
 
-// Field selection helpers
+// Field selection helpers with continue button updates
 function selectAll() {
   debugLog('Selecting all fields');
   document.querySelectorAll('.field-checkbox').forEach(cb => {
@@ -268,6 +318,7 @@ function selectAll() {
       fieldWeights[field] = 1.0;
     }
   });
+  updateContinueButton();
   updatePreview();
 }
 
@@ -278,6 +329,7 @@ function selectNone() {
   });
   selectedFields.clear();
   fieldWeights = {};
+  updateContinueButton();
   updatePreview();
 }
 
@@ -297,14 +349,20 @@ function selectQuantitative() {
       delete fieldWeights[field];
     }
   });
+  updateContinueButton();
   updatePreview();
 }
 
-// Enhanced weight controls with attribute-level weighting
-function populateWeightControls() {
-  debugFieldMetaState('populateWeightControls - START', 'Populating enhanced weight controls with attributes');
+//// Add unlock all fields function
+//function unlockAllFields() {
+//  lockedFields.clear();
+//  populateWeightControls();
+//  showMessage('All fields unlocked', 'success');
+//}
 
-  debugLog('Populating weight controls for fields:', Array.from(selectedFields));
+// Enhanced weight controls with fixed navigation
+function populateWeightControls() {
+  debugLog('Populating weight controls with fixed navigation');
 
   const container = document.getElementById('weightControls');
   if (!container) {
@@ -312,10 +370,30 @@ function populateWeightControls() {
     return;
   }
 
-  container.innerHTML = '';
+  // Create the weight controls structure with fixed navigation - NO duplicate quick actions
+  container.innerHTML = `
+    <div id="actualWeightControls">
+      <!-- Weight controls will be populated here -->
+    </div>
+
+    <div class="total-weight">
+      <strong>Total Weight: <span id="totalWeight">100%</span></strong>
+    </div>
+
+    <!-- Fixed navigation buttons -->
+    <div class="panel-navigation">
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="goToStep(2)">← Back to Select Fields</button>
+        <button class="btn btn-primary" onclick="goToStep(4)">Continue to Export →</button>
+      </div>
+    </div>
+  `;
+
+  const actualContainer = document.getElementById('actualWeightControls');
+  if (!actualContainer) return;
 
   if (selectedFields.size === 0) {
-    container.innerHTML = '<p style="color: #999;">No fields selected. Go back to select fields.</p>';
+    actualContainer.innerHTML = '<p style="color: #999;">No fields selected. Go back to select fields.</p>';
     return;
   }
 
@@ -340,21 +418,10 @@ function populateWeightControls() {
   // Create controls for each field
   selectedFields.forEach(field => {
     const control = createFieldWeightControl(field, equalWeight);
-    container.appendChild(control);
+    actualContainer.appendChild(control);
   });
 
-  // Add total weight display
-  const totalDiv = document.createElement('div');
-  totalDiv.className = 'total-weight';
-  totalDiv.innerHTML = `
-    <div style="text-align: center; margin-top: 1rem; padding: 0.5rem; background: #f0f0f0; border-radius: 4px;">
-      <strong>Total Weight: <span id="totalWeight">100%</span></strong>
-    </div>
-  `;
-  container.appendChild(totalDiv);
-
   updateTotalWeightDisplay();
-  debugFieldMetaState('populateWeightControls - END', 'Enhanced weight controls populated');
 }
 
 // Initialize equal weights for all attributes in a qualitative field
@@ -401,13 +468,12 @@ function createFieldWeightControl(field, equalWeight) {
     const expandIcon = isExpanded ? '🔽' : '▶️';
 
     attributeSection = `
-      <div class="attribute-section" style="margin-top: 1rem;">
-        <button class="attribute-toggle-btn" onclick="toggleAttributeSection('${field}')" type="button"
-                style="background: none; border: none; color: #2196f3; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+      <div class="attribute-section">
+        <button class="attribute-toggle-btn" onclick="toggleAttributeSection('${field}')" type="button">
           <span>${expandIcon}</span>
           <span>Attribute Weights (${uniqueCount} values)</span>
         </button>
-        <div class="attribute-controls" id="attributeControls_${field}" style="display: ${isExpanded ? 'block' : 'none'}; margin-top: 1rem;">
+        <div class="attribute-controls" id="attributeControls_${field}" style="display: ${isExpanded ? 'block' : 'none'};">
           ${createAttributeControls(field)}
         </div>
       </div>
@@ -455,7 +521,6 @@ function createFieldWeightControl(field, equalWeight) {
   return control;
 }
 
-// Create attribute weight controls for a qualitative field
 function createAttributeControls(field) {
   if (!fieldAttributes[field]) return '';
 
@@ -465,16 +530,16 @@ function createAttributeControls(field) {
   const attributeMeta = fieldAttributes[field].attributeMeta;
 
   let controlsHTML = `
-    <div class="attribute-info" style="background: #f0f8ff; padding: 0.5rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.85rem;">
+    <div class="attribute-info">
       <strong>Attribute weighting for "${field}"</strong><br>
-      <span style="color: #666;">Adjust the importance of each value. Total must equal 100%.</span>
+      <span>Adjust the importance of each value. Total must equal 100%.</span>
     </div>
 
-    <div class="attribute-quick-actions" style="margin-bottom: 1rem;">
-      <button class="quick-action" onclick="resetAttributeWeightsEqual('${field}')" type="button" style="font-size: 0.75rem; padding: 0.25rem 0.75rem;">
+    <div class="attribute-quick-actions">
+      <button class="quick-action" onclick="resetAttributeWeightsEqual('${field}')" type="button">
         ⚖️ Equal Weights
       </button>
-      <span class="attribute-total-weight" style="margin-left: 1rem; font-weight: 600;">
+      <span class="attribute-total-weight">
         Total: <span id="attributeTotalWeight_${field}">100%</span>
       </span>
     </div>
@@ -486,32 +551,30 @@ function createAttributeControls(field) {
     const meta = attributeMeta[value] || { meaning: '', importance: '' };
 
     controlsHTML += `
-      <div class="attribute-item" style="border: 1px solid #ddd; border-radius: 6px; padding: 0.75rem; margin-bottom: 0.75rem; background: #fafafa;">
-        <div class="attribute-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <strong style="color: #333;">"${value}"</strong>
-            <small style="color: #666; background: #e0e0e0; padding: 0.15rem 0.4rem; border-radius: 10px;">
-              ${count} occurrences
-            </small>
+      <div class="attribute-item">
+        <div class="attribute-header">
+          <div>
+            <strong>"${value}"</strong>
+            <small>${count} occurrences</small>
           </div>
           <span class="attribute-weight-value" id="attributeWeightVal_${field}_${value.replace(/[^a-zA-Z0-9]/g, '_')}">${Math.round(weight)}%</span>
         </div>
 
-        <input type="range" class="attribute-weight-slider" style="width: 100%; margin-bottom: 0.75rem;"
+        <input type="range" class="attribute-weight-slider"
                id="attributeWeight_${field}_${value.replace(/[^a-zA-Z0-9]/g, '_')}"
                min="0" max="100" value="${Math.round(weight)}"
                oninput="updateAttributeWeight('${field}', '${value}', this.value)">
 
-        <div class="attribute-meta-inputs" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-          <label style="font-size: 0.8rem;">
+        <div class="attribute-meta-inputs">
+          <label>
             Meaning:
-            <input type="text" value="${meta.meaning}" style="font-size: 0.8rem; padding: 0.25rem;"
+            <input type="text" value="${meta.meaning}"
                    oninput="updateAttributeMeta('${field}', '${value}', 'meaning', this.value)"
                    placeholder="What does '${value}' mean?">
           </label>
-          <label style="font-size: 0.8rem;">
+          <label>
             Importance:
-            <input type="text" value="${meta.importance}" style="font-size: 0.8rem; padding: 0.25rem;"
+            <input type="text" value="${meta.importance}"
                    oninput="updateAttributeMeta('${field}', '${value}', 'importance', this.value)"
                    placeholder="Why is '${value}' important?">
           </label>
@@ -522,7 +585,6 @@ function createAttributeControls(field) {
 
   return controlsHTML;
 }
-
 // Toggle attribute section visibility
 function toggleAttributeSection(field) {
   const isExpanded = expandedFields.has(field);
@@ -557,8 +619,6 @@ function updateAttributeWeight(field, attributeValue, value) {
 
   // Update total weight for this field's attributes
   updateAttributeTotalWeight(field);
-
-  debugLog(`Updated attribute weight: ${field}.${attributeValue} = ${newWeight}%`);
 }
 
 // Update attribute metadata
@@ -569,8 +629,6 @@ function updateAttributeMeta(field, attributeValue, key, value) {
   }
 
   fieldAttributes[field].attributeMeta[attributeValue][key] = value;
-
-  debugLog(`Updated attribute meta: ${field}.${attributeValue}.${key} = "${value}"`);
 }
 
 // Update total weight display for attribute section
@@ -619,7 +677,6 @@ function resetAttributeWeightsEqual(field) {
 
 // Debug version of updateFieldMeta that gets called from HTML
 function debugUpdateFieldMeta(field, key, value) {
-  console.log(`🖱️ HTML Input triggered: field="${field}", key="${key}", value="${value}"`);
   updateFieldMeta(field, key, value);
 }
 
@@ -645,21 +702,13 @@ function debugFieldMetaState(location, action = '') {
   console.log(`===========================================================`);
 }
 
-// Enhanced updateFieldMeta with debugging
+// Enhanced updateFieldMeta
 function updateFieldMeta(field, key, value) {
-  debugFieldMetaState('updateFieldMeta - START', `Updating ${field}.${key} = "${value}"`);
-
   if (!(field in fieldMeta)) {
     fieldMeta[field] = { meaning: '', importance: '' };
-    console.log(`🆕 Created new fieldMeta entry for field: ${field}`);
   }
 
-  const oldValue = fieldMeta[field][key];
   fieldMeta[field][key] = value;
-
-  console.log(`🔄 Updated ${field}.${key}: "${oldValue}" → "${value}"`);
-
-  debugFieldMetaState('updateFieldMeta - END', `Updated ${field}.${key}`);
 
   // Trigger preview update to reflect changes
   if (typeof updatePreview === 'function') {
@@ -667,10 +716,7 @@ function updateFieldMeta(field, key, value) {
   }
 }
 
-
 function toggleFieldLock(field) {
-  debugLog('Toggling lock for field', field);
-
   if (lockedFields.has(field)) {
     lockedFields.delete(field);
   } else {
@@ -680,9 +726,28 @@ function toggleFieldLock(field) {
   populateWeightControls();
 }
 
-function updateWeight(field, value) {
-  debugLog('Updating weight for field', { field, value });
 
+// Toggle field selection with continue button update
+function toggleField(field, isSelected) {
+  debugLog('Toggling field', { field, isSelected });
+
+  if (isSelected) {
+    selectedFields.add(field);
+    // Initialize field weight if not exists
+    if (!(field in fieldWeights)) {
+      fieldWeights[field] = 1.0;
+    }
+  } else {
+    selectedFields.delete(field);
+    // Remove field weight
+    delete fieldWeights[field];
+  }
+
+  updateContinueButton();
+  updatePreview();
+}
+
+function updateWeight(field, value) {
   const newWeight = parseFloat(value) / 100;
   const oldWeight = fieldWeights[field] || 0;
   const weightDiff = newWeight - oldWeight;
@@ -738,8 +803,6 @@ function updateTotalWeightDisplay() {
 }
 
 function resetWeightsEqual() {
-  debugLog('Resetting weights to equal distribution');
-
   const fieldCount = selectedFields.size;
   if (fieldCount === 0) return;
 

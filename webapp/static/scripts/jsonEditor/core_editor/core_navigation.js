@@ -316,7 +316,7 @@ function populateEnhancedDataLoadingSection() {
         </div>
       </div>
 
-      <!-- Built-in APIs Container -->
+      <!-- Other containers remain the same -->
       <div id="builtInApiContainer" style="display: ${existingSource === 'builtin' ? 'block' : 'none'};">
         <div class="input-group">
           <label class="input-label">Select Built-in API</label>
@@ -326,7 +326,6 @@ function populateEnhancedDataLoadingSection() {
         </div>
       </div>
 
-      <!-- User APIs Container -->
       <div id="userApiContainer" style="display: ${existingSource === 'user' ? 'block' : 'none'};">
         <div class="input-group">
           <label class="input-label">Select Custom API</label>
@@ -336,7 +335,6 @@ function populateEnhancedDataLoadingSection() {
         </div>
       </div>
 
-      <!-- Custom URL Container -->
       <div id="customUrlContainer" style="display: ${existingSource === 'custom' ? 'block' : 'none'};">
         <div class="input-group">
           <label class="input-label">Custom API URL</label>
@@ -347,7 +345,6 @@ function populateEnhancedDataLoadingSection() {
         </div>
       </div>
 
-      <!-- Create New API Container -->
       <div id="createApiContainer" style="display: ${existingSource === 'create' ? 'block' : 'none'};">
         <div class="panel-title" style="margin: 1rem 0 0.5rem 0; font-size: 1rem;">
           <div class="panel-icon">➕</div>
@@ -386,6 +383,7 @@ function populateEnhancedDataLoadingSection() {
       </div>
     </div>
 
+    <!-- Fixed navigation buttons -->
     <div class="streamlined-navigation">
       <button class="btn btn-secondary" onclick="goToStep(0)">← Back to Project Type</button>
       <button class="btn btn-primary" onclick="validateAndLoadData()">Load Data & Continue →</button>
@@ -466,9 +464,9 @@ function handleStepTransition(step) {
   }
 }
 
-// Enhanced Category Dataset Selection with detailed breakdown
+// Enhanced Category Dataset Selection with fixed navigation and expanded list
 function populateEnhancedCategoryDatasetSelection() {
-  debugLog('Populating enhanced category dataset selection');
+  debugLog('Populating enhanced category dataset selection with fixed navigation');
 
   const container = document.getElementById('categoryDatasetSelection');
   if (!container) return;
@@ -526,12 +524,13 @@ function populateEnhancedCategoryDatasetSelection() {
           <button class="btn btn-primary" onclick="goToStep(0)">Create Dataset</button>
         </div>
       ` : `
-        <div class="enhanced-dataset-grid">
+        <div class="enhanced-dataset-grid" style="max-height: 600px; overflow-y: auto;">
           ${projects.datasets.map(dataset => createDatasetSelectionCard(dataset, currentProject.datasets?.includes(dataset.id))).join('')}
         </div>
       `}
     </div>
 
+    <!-- Fixed navigation buttons -->
     <div class="streamlined-navigation">
       <button class="btn btn-secondary" onclick="goToStep(0)">← Back to Project Type</button>
       <button class="btn btn-primary" id="continueToWeights" onclick="saveCategorySelection()" ${projects.datasets.length === 0 || !currentProject.datasets?.length ? 'disabled' : ''}>
@@ -707,9 +706,9 @@ function showFieldWeightModal() {
   showMessage('Field weight review modal - Coming soon! For now, edit individual datasets to modify field weights.', 'info');
 }
 
-// Enhanced Feature Layer Category Selection
+// Enhanced Feature Layer Category Selection with fixed navigation and expanded list
 function populateEnhancedFeatureLayerCategorySelection() {
-  debugLog('Populating enhanced feature layer category selection');
+  debugLog('Populating enhanced feature layer category selection with fixed navigation');
 
   const container = document.getElementById('featureLayerCategorySelection');
   if (!container) return;
@@ -767,12 +766,13 @@ function populateEnhancedFeatureLayerCategorySelection() {
           <button class="btn btn-primary" onclick="goToStep(0)">Create Category</button>
         </div>
       ` : `
-        <div class="enhanced-dataset-grid">
+        <div class="enhanced-dataset-grid" style="max-height: 600px; overflow-y: auto;">
           ${projects.categories.map(category => createCategorySelectionCard(category, currentProject.categories?.includes(category.id))).join('')}
         </div>
       `}
     </div>
 
+    <!-- Fixed navigation buttons -->
     <div class="streamlined-navigation">
       <button class="btn btn-secondary" onclick="goToStep(0)">← Back to Project Type</button>
       <button class="btn btn-primary" id="continueToWeights" onclick="saveFeatureLayerSelection()" ${projects.categories.length === 0 || !currentProject.categories?.length ? 'disabled' : ''}>
@@ -917,9 +917,9 @@ function saveFeatureLayerSelection() {
   goToStep(2); // Go to category weights
 }
 
-// Enhanced dataset weight display for categories
+// Enhanced dataset weight display for categories with fixed navigation
 function populateEnhancedCategoryDatasetWeights() {
-  debugLog('Populating enhanced category dataset weights');
+  debugLog('Populating enhanced category dataset weights with fixed navigation');
 
   const container = document.getElementById('categoryDatasetWeights');
   if (!container || !currentProject) return;
@@ -957,11 +957,12 @@ function populateEnhancedCategoryDatasetWeights() {
         </div>
       </div>
 
-      <div id="enhancedCategoryDatasetWeightControls">
+      <div id="enhancedCategoryDatasetWeightControls" style="max-height: 600px; overflow-y: auto;">
         <!-- Enhanced weight controls will be populated here -->
       </div>
     </div>
 
+    <!-- Fixed navigation buttons -->
     <div class="streamlined-navigation">
       <button class="btn btn-secondary" onclick="goToStep(1)">← Back to Dataset Selection</button>
       <button class="btn btn-primary" onclick="finalizeCategoryCreation()">Continue to Export →</button>
@@ -1280,9 +1281,9 @@ function populateCategoryDatasetWeights() {
   populateCategoryDatasetWeightControls();
 }
 
-// Feature Layer Category Weights (Step 2 for feature layers)
+// Enhanced feature layer category weights with fixed navigation
 function populateFeatureLayerCategoryWeights() {
-  debugLog('Populating feature layer category weights');
+  debugLog('Populating feature layer category weights with fixed navigation');
 
   const container = document.getElementById('featureLayerCategoryWeights');
   if (!container || !currentProject) return;
@@ -1297,28 +1298,38 @@ function populateFeatureLayerCategoryWeights() {
   }
 
   container.innerHTML = `
-    <div class="status-message status-info">
-      <span>ℹ️</span>
-      <span>Assign importance weights to each category in "${currentProject.name}". Total weight should equal 100%.</span>
-    </div>
-
-    <div class="quick-actions" style="margin-bottom: 1.5rem;">
-      <div class="quick-action" onclick="resetFeatureLayerCategoryWeightsEqual()">
-        <strong>⚖️ Equal Weights</strong>
+    <div class="streamlined-workflow-info">
+      <div class="workflow-step-indicator">
+        <span class="step-badge">Step 2 of 3</span>
+        <h3>Apply Category Weights</h3>
+      </div>
+      <div class="workflow-description">
+        <p>Assign importance weights to each category in "${currentProject.name}". These weights determine the relative influence of each category.</p>
       </div>
     </div>
 
-    <div id="featureLayerCategoryWeightControls">
-      <!-- Category weight controls will be populated here -->
+    <div class="enhanced-weight-controls">
+      <div class="weight-controls-header">
+        <h4>📁 Category Importance Weights</h4>
+        <div class="weight-actions">
+          <button class="btn btn-secondary btn-sm" onclick="resetFeatureLayerCategoryWeightsEqual()">
+            ⚖️ Equal Weights
+          </button>
+          <div class="weight-total">
+            Total: <strong id="totalFeatureLayerCategoryWeight">100%</strong>
+          </div>
+        </div>
+      </div>
+
+      <div id="featureLayerCategoryWeightControls" style="max-height: 600px; overflow-y: auto;">
+        <!-- Category weight controls will be populated here -->
+      </div>
     </div>
 
-    <div class="total-weight">
-      <strong>Total Weight: <span id="totalFeatureLayerCategoryWeight">100%</span></strong>
-    </div>
-
-    <div class="btn-group">
-      <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
-      <button class="btn btn-primary" onclick="saveFeatureLayerCategoryWeights()">Continue to Field Selection</button>
+    <!-- Fixed navigation buttons -->
+    <div class="streamlined-navigation">
+      <button class="btn btn-secondary" onclick="goToStep(1)">← Back to Category Selection</button>
+      <button class="btn btn-primary" onclick="finalizeFeatureLayerCreation()">Continue to Export →</button>
     </div>
   `;
 
@@ -1517,23 +1528,40 @@ function populateFeatureLayerCategoryWeightControls() {
     if (!category) return;
 
     const currentWeight = currentProject.category_weights?.[categoryId] || 0;
+    const datasetCount = category.datasets?.length || 0;
+    const totalFeatures = calculateTotalCategoryFeatures(category);
+
     const control = document.createElement('div');
-    control.className = 'weight-control';
+    control.className = 'enhanced-weight-control';
 
     control.innerHTML = `
-      <div class="weight-header">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <strong>${category.name}</strong>
-          <small style="color: #666;">(📁 Category)</small>
+      <div class="weight-control-card">
+        <div class="weight-control-header">
+          <div class="dataset-info">
+            <div class="dataset-icon">📁</div>
+            <div class="dataset-details">
+              <h5 class="dataset-name">${category.name}</h5>
+              <div class="dataset-stats">
+                <span class="stat">${datasetCount} datasets</span>
+                <span class="stat">${totalFeatures.toLocaleString()} features</span>
+              </div>
+            </div>
+          </div>
+          <div class="weight-display">
+            <span class="weight-value" id="enhancedCategoryWeightVal_${categoryId}">${Math.round(currentWeight)}%</span>
+          </div>
         </div>
-        <span class="weight-value" id="featureLayerCategoryWeightVal_${categoryId}">${Math.round(currentWeight)}%</span>
-      </div>
-      <input type="range" class="weight-slider"
-             id="featureLayerCategoryWeight_${categoryId}"
-             min="0" max="100" value="${Math.round(currentWeight)}"
-             oninput="updateFeatureLayerCategoryWeight('${categoryId}', this.value)">
-      <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem;">
-        Datasets: ${category.datasets?.length || 0}
+
+        <div class="weight-slider-container">
+          <input type="range" class="enhanced-weight-slider"
+                 id="enhancedCategoryWeight_${categoryId}"
+                 min="0" max="100" value="${Math.round(currentWeight)}"
+                 oninput="updateFeatureLayerCategoryWeight('${categoryId}', this.value)">
+        </div>
+
+        ${category.description ? `
+          <div class="dataset-description">${category.description}</div>
+        ` : ''}
       </div>
     `;
 
@@ -1548,7 +1576,7 @@ function updateCategoryDatasetWeight(datasetId, value) {
   currentProject.dataset_weights[datasetId] = parseFloat(value);
 
   // Update display
-  const display = document.getElementById(`categoryDatasetWeightVal_${datasetId}`);
+  const display = document.getElementById(`enhancedWeightVal_${datasetId}`);
   if (display) display.textContent = `${value}%`;
 
   updateTotalCategoryDatasetWeight();
@@ -1561,7 +1589,7 @@ function updateFeatureLayerCategoryWeight(categoryId, value) {
   currentProject.category_weights[categoryId] = parseFloat(value);
 
   // Update display
-  const display = document.getElementById(`featureLayerCategoryWeightVal_${categoryId}`);
+  const display = document.getElementById(`enhancedCategoryWeightVal_${categoryId}`);
   if (display) display.textContent = `${value}%`;
 
   updateTotalFeatureLayerCategoryWeight();
@@ -1611,8 +1639,8 @@ function resetCategoryDatasetWeightsEqual() {
     currentProject.dataset_weights[datasetId] = equalWeight;
 
     // Update slider and display
-    const slider = document.getElementById(`categoryDatasetWeight_${datasetId}`);
-    const display = document.getElementById(`categoryDatasetWeightVal_${datasetId}`);
+    const slider = document.getElementById(`enhancedWeight_${datasetId}`);
+    const display = document.getElementById(`enhancedWeightVal_${datasetId}`);
 
     if (slider) slider.value = Math.round(equalWeight);
     if (display) display.textContent = `${Math.round(equalWeight)}%`;
@@ -1633,8 +1661,8 @@ function resetFeatureLayerCategoryWeightsEqual() {
     currentProject.category_weights[categoryId] = equalWeight;
 
     // Update slider and display
-    const slider = document.getElementById(`featureLayerCategoryWeight_${categoryId}`);
-    const display = document.getElementById(`featureLayerCategoryWeightVal_${categoryId}`);
+    const slider = document.getElementById(`enhancedCategoryWeight_${categoryId}`);
+    const display = document.getElementById(`enhancedCategoryWeightVal_${categoryId}`);
 
     if (slider) slider.value = Math.round(equalWeight);
     if (display) display.textContent = `${Math.round(equalWeight)}%`;

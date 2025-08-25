@@ -103,8 +103,10 @@ function selectProjectType(type) {
     clickedCard.classList.add('selected');
   }
 
-  // ✅ CRITICAL: Switch workflow steps immediately when project type is selected
-  showWorkflowSteps(type);
+  // Switch workflow steps immediately when project type is selected
+  if (typeof showWorkflowSteps === 'function') {
+    showWorkflowSteps(type);
+  }
 
   // Show action selector
   showActionSelector(type);
@@ -209,17 +211,15 @@ function showActionSelector(type) {
   debugLog('Showing action selector for type:', type);
 
   const container = document.getElementById('projectSelection');
+  if (!container) return;
+
+  // Remove any existing action selector first
   const existingActions = container.querySelector('.action-selector');
   if (existingActions) {
-    // Animate out existing selector
-    existingActions.classList.remove('show');
-    setTimeout(() => {
-      existingActions.remove();
-      createActionSelector(type, container);
-    }, 300);
-  } else {
-    createActionSelector(type, container);
+    existingActions.remove();
   }
+
+  createActionSelector(type, container);
 }
 
 // Enhanced createActionSelector function with scrollable project list
@@ -231,25 +231,27 @@ function createActionSelector(type, container) {
   } else if (type === 'featurelayer') {
     pluralType = 'featurelayers';
   } else {
-    pluralType = type + 's'; // works for 'dataset' -> 'datasets'
+    pluralType = type + 's';
   }
 
   // Insert action selector before the continue button
   const continueSection = container.querySelector('.continue-section');
+  if (!continueSection) return;
+
   const actionHtml = `
     <div class="action-selector">
       <h3>What would you like to do with this ${type}?</h3>
       <div class="actions">
         <button class="action-btn" onclick="selectAction('create')">
-          <span class="action-icon">➕</span>
+          <span class="action-icon">+</span>
           <span>Create New</span>
         </button>
         <button class="action-btn" onclick="selectAction('edit')">
-          <span class="action-icon">✏️</span>
+          <span class="action-icon">✏</span>
           <span>Edit Existing</span>
         </button>
         <button class="action-btn" onclick="selectAction('view')">
-          <span class="action-icon">👁️</span>
+          <span class="action-icon">👁</span>
           <span>View/Load</span>
         </button>
       </div>
@@ -277,24 +279,11 @@ function createActionSelector(type, container) {
 
   continueSection.insertAdjacentHTML('beforebegin', actionHtml);
 
-  // Animate in the new selector
-  setTimeout(() => {
-    const newSelector = container.querySelector('.action-selector');
-    if (newSelector) {
-      newSelector.classList.add('show');
-
-      // Show existing projects if any
-      const existingProjects = newSelector.querySelector('.existing-projects');
-      if (existingProjects) {
-        setTimeout(() => {
-          existingProjects.classList.add('show');
-
-          // Setup scroll detection for fade effects
-          setupScrollableProjectList(`projectList-${type}`);
-        }, 200);
-      }
-    }
-  }, 50);
+  // Setup scroll detection for the project list if it exists
+  const projectList = document.getElementById(`projectList-${type}`);
+  if (projectList) {
+    setupScrollableProjectList(`projectList-${type}`);
+  }
 }
 
 // Function to setup scrollable project list with fade effects
@@ -382,39 +371,18 @@ function highlightExistingProjects() {
   }
 }
 
-
-
+// Update continue button state
 function updateContinueButton() {
-  const continueButton = document.getElementById('continueButton');
-  const continueButtonText = document.getElementById('continueButtonText');
-
-  if (!continueButton || !continueButtonText) return;
-
-  if (!projectType) {
-    continueButton.disabled = true;
-    continueButton.classList.add('btn-disabled');
-    continueButtonText.textContent = 'Select a project type to continue';
-  } else if (!projectAction) {
-    continueButton.disabled = true;
-    continueButton.classList.add('btn-disabled');
-    continueButtonText.textContent = 'Select an action to continue';
-  } else {
-    continueButton.disabled = false;
-    continueButton.classList.remove('btn-disabled');
-
-    // Set appropriate text based on project type and action
-    let nextStepName = 'Continue';
-    if (projectAction === 'create') {
-      if (projectType === 'dataset') nextStepName = 'Load Data';
-      else if (projectType === 'category') nextStepName = 'Select Datasets';
-      else if (projectType === 'featurelayer') nextStepName = 'Select Categories';
-    } else if (projectAction === 'edit') {
-      nextStepName = 'Edit Project';
-    } else if (projectAction === 'view') {
-      nextStepName = 'View Project';
+  const continueBtn = document.getElementById('continueToWeights');
+  if (continueBtn) {
+    continueBtn.disabled = selectedFields.size === 0;
+    if (selectedFields.size === 0) {
+      continueBtn.classList.add('btn-disabled');
+      continueBtn.textContent = 'Select fields to continue →';
+    } else {
+      continueBtn.classList.remove('btn-disabled');
+      continueBtn.textContent = `Continue to Apply Weights (${selectedFields.size} fields) →`;
     }
-
-    continueButtonText.textContent = `Continue to ${nextStepName}`;
   }
 }
 
@@ -450,16 +418,16 @@ function getNextStepName() {
 
 // Continue function that detects project type and navigates appropriately
 function continueToNextStep() {
-  debugLog('🎯 Continue to next step', { projectType, projectAction, currentStep });
+  debugLog('Continue to next step', { projectType, projectAction, currentStep });
 
   // Don't continue if button is disabled
   const continueButton = document.getElementById('continueButton');
   if (continueButton && continueButton.disabled) {
-    debugLog('❌ Continue button is disabled');
+    debugLog('Continue button is disabled');
     return;
   }
 
-  // Navigate based on project type
+  // Navigate based on project type and action
   if (projectType === 'dataset' && projectAction === 'create') {
     goToStep(1); // Go to data loading
   } else if (projectType === 'category' && projectAction === 'create') {
@@ -474,7 +442,7 @@ function continueToNextStep() {
       showMessage('Please select a project to edit or view', 'error');
     }
   } else {
-    debugLog('❌ Unknown project type or action combination');
+    debugLog('Unknown project type or action combination');
     showMessage('Please select both a project type and action', 'error');
   }
 }
