@@ -88,16 +88,25 @@ function updatePythonPreview() {
 
   let pythonCode = '';
 
-  if (projectType === 'dataset') {
-    pythonCode = generateDatasetPythonCode(className, selectedFieldsList);
-  } else if (projectType === 'category') {
-    pythonCode = generateCategoryPythonCode(className, selectedFieldsList);
-  } else if (projectType === 'featurelayer') {
-    pythonCode = generateFeatureLayerPythonCode(className, selectedFieldsList);
+  try {
+    if (projectType === 'dataset') {
+      pythonCode = generateDatasetPythonCode(className, selectedFieldsList);
+    } else if (projectType === 'category') {
+      pythonCode = generateCategoryPythonCode(className, selectedFieldsList);
+    } else if (projectType === 'featurelayer') {
+      pythonCode = generateFeatureLayerPythonCode(className, selectedFieldsList);
+    } else {
+      pythonCode = '# Select a project type and configure fields to generate Python code';
+    }
+  } catch (error) {
+    console.error('Error generating Python code:', error);
+    pythonCode = `# Error generating Python code: ${error.message}\n# Please check your configuration and try again.`;
   }
 
   pythonPreview.innerHTML = `<pre style="max-height: 400px; overflow-y: auto;"><code>${pythonCode}</code></pre>`;
 }
+
+
 
 function generateDatasetPythonCode(className, selectedFields) {
   // Check if we have attribute data to include
@@ -109,53 +118,47 @@ function generateDatasetPythonCode(className, selectedFields) {
   return `import geopandas as gpd
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Any
 
-class ${className}:
+class ${className}Processor:
     """Process individual dataset with field selection, weighting, and ${hasAttributes ? 'attribute-level weighting' : 'basic weighting'}."""
 
     def __init__(self, filepath: str):
         """Initialize with GeoJSON file path."""
         self.gdf = gpd.read_file(filepath)
-        self.selected_fields = ${JSON.stringify(selectedFields)}
+        self.selected_fields = ${JSON.stringify(selectedFields, null, 8)}
         self.field_weights = ${JSON.stringify(fieldWeights, null, 8)}
         self.field_types = ${JSON.stringify(fieldTypes, null, 8)}
         self.field_meta = ${JSON.stringify(fieldMeta || {}, null, 8)}${hasAttributes ? `
         self.field_attributes = ${JSON.stringify(fieldAttributes, null, 8)}` : ''}
 
-    def filter_fields(self) -> gpd.GeoDataFrame:
-        """Filter GeoDataFrame to include only selected fields."""
-        fields_to_keep = ['geometry'] + [f for f in self.selected_fields
-                                         if f in self.gdf.columns]
-        return self.gdf[fields_to_keep]
+    def process(self):
+        """Apply field selection and weights${hasAttributes ? ' with attribute-level weighting' : ''}."""
+        # Filter to selected fields
+        fields_to_keep = ['geometry'] + [f for f in self.selected_fields if f in self.gdf.columns]
+        gdf = self.gdf[fields_to_keep].copy()
 
-    def apply_weights(self) -> gpd.GeoDataFrame:
-        """Apply weights to fields${hasAttributes ? ' with attribute-level weighting for qualitative fields' : ''}."""
-        gdf_filtered = self.filter_fields()
-        weighted_score = pd.Series(0, index=gdf_filtered.index)
+        # Apply weights to fields
+        weighted_score = pd.Series(0.0, index=gdf.index)
 
         for field, weight in self.field_weights.items():
-            if field not in gdf_filtered.columns:
+            if field not in gdf.columns:
                 continue
 
             field_type = self.field_types.get(field, 'unknown')
 
             if field_type == 'quantitative':
-                field_values = pd.to_numeric(gdf_filtered[field], errors='coerce')
-                if field_values.notna().any():
-                    min_val = field_values.min()
-                    max_val = field_values.max()
-                    if max_val > min_val:
-                        normalized = (field_values - min_val) / (max_val - min_val)
-                        weighted_score += normalized * weight${hasAttributes ? `
+                values = pd.to_numeric(gdf[field], errors='coerce')
+                if values.notna().any() and values.max() > values.min():
+                    normalized = (values - values.min()) / (values.max() - values.min())
+                    weighted_score += normalized * weight${hasAttributes ? `
 
             elif field_type == 'qualitative' and hasattr(self, 'field_attributes') and field in self.field_attributes:
                 # Apply attribute-level weighting
-                field_score = self.calculate_attribute_weighted_score(gdf_filtered, field)
+                field_score = self.calculate_attribute_weighted_score(gdf, field)
                 weighted_score += field_score * weight` : ''}
 
-        gdf_filtered['weighted_score'] = weighted_score
-        return gdf_filtered${hasAttributes ? `
+        gdf['weighted_score'] = weighted_score
+        return gdf${hasAttributes ? `
 
     def calculate_attribute_weighted_score(self, gdf, field):
         """Calculate weighted score for qualitative field based on attribute values."""
@@ -163,7 +166,7 @@ class ${className}:
         attribute_weights = field_attrs.get('attributeWeights', {})
 
         if not attribute_weights:
-            return pd.Series(0, index=gdf.index)
+            return pd.Series(0.0, index=gdf.index)
 
         score = pd.Series(0.0, index=gdf.index)
 
@@ -172,166 +175,231 @@ class ${className}:
             mask = gdf[field].astype(str) == str(attr_value)
             score.loc[mask] = weight / 100.0  # Convert percentage to decimal
 
-        return score
+        return score` : ''}
 
-    def get_attribute_info(self, field, attribute_value):
-        """Get detailed information about a specific attribute value."""
-        if not hasattr(self, 'field_attributes') or field not in self.field_attributes:
-            return None
-
-        field_attrs = self.field_attributes[field]
-        attr_meta = field_attrs.get('attributeMeta', {}).get(attribute_value, {})
-        attr_weight = field_attrs.get('attributeWeights', {}).get(attribute_value, 0)
-        attr_count = field_attrs.get('valueCounts', {}).get(attribute_value, 0)
-
+    def get_field_info(self, field):
+        """Get metadata for a field."""
+        meta = self.field_meta.get(field, {})
         return {
-            'weight': attr_weight,
-            'count': attr_count,
-            'meaning': attr_meta.get('meaning', ''),
-            'importance': attr_meta.get('importance', '')
+            'type': self.field_types.get(field, 'unknown'),
+            'weight': self.field_weights.get(field, 0),
+            'meaning': meta.get('meaning', ''),
+            'importance': meta.get('importance', '')
         }
 
-    def print_attribute_summary(self):
-        """Print summary of all attribute weightings."""
-        if not hasattr(self, 'field_attributes'):
-            print("No attribute weighting data available.")
-            return
+    def export(self, output_path: str):
+        """Export processed data."""
+        processed = self.process()
+        processed.to_file(output_path, driver='GeoJSON')
+        print(f"Exported to: {output_path}")
 
-        print("\\n" + "="*60)
-        print("ATTRIBUTE WEIGHTING SUMMARY")
-        print("="*60)
-
-        for field in self.selected_fields:
-            if field in self.field_attributes:
-                field_attrs = self.field_attributes[field]
-                unique_values = field_attrs.get('uniqueValues', [])
-                print(f"\\nField: {field} ({len(unique_values)} unique values)")
-
-                for attr_value in unique_values[:10]:  # Show top 10
-                    attr_info = self.get_attribute_info(field, attr_value)
-                    if attr_info:
-                        print(f"  '{attr_value}': {attr_info['weight']:.1f}% ({attr_info['count']} occurrences)")
-                        if attr_info['meaning']:
-                            print(f"    Meaning: {attr_info['meaning']}")` : ''}
-
-    def get_field_metadata(self, field: str) -> Dict[str, str]:
-        """Return meaning/importance metadata for a field."""
-        return self.field_meta.get(field, {})
-
-    def export_processed_data(self, output_path: str):
-        """Export the processed GeoDataFrame."""
-        gdf_processed = self.apply_weights()
-        gdf_processed.to_file(output_path, driver='GeoJSON')
-        print(f"Processed data exported to: {output_path}")${hasAttributes ? `
-        print(f"Applied attribute weighting to {attributeFieldsCount} qualitative fields")` : ''}
-
-# Usage example
+# Usage
 if __name__ == "__main__":
-    processor = ${className}("input_data.geojson")${hasAttributes ? `
-    processor.print_attribute_summary()` : ''}
-    processor.export_processed_data("output_weighted.geojson")`;
+    processor = ${className}Processor("data.geojson")
+    processor.export("output.geojson")`;
 }
 
-function generateFeatureLayerPythonCode(className, selectedFields) {
+function generateCategoryPythonCode(className, selectedFields) {
+  const hasWeights = currentProject && currentProject.dataset_weights && Object.keys(currentProject.dataset_weights).length > 0;
+  const datasetCount = currentProject?.datasets?.length || 0;
+
   return `import geopandas as gpd
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Any
-from pathlib import Path
 
-class ${className}:
-    """Process feature layer with multiple categories."""
+class ${className}Processor:
+    """Process category '${currentProject?.name || className}' with ${datasetCount} datasets."""
 
-    def __init__(self, category_paths: Dict[str, List[str]]):
-        """Initialize with dictionary of category names to dataset paths."""
-        self.category_paths = category_paths
-        self.selected_fields = ${JSON.stringify(selectedFields)}
-        self.field_weights = ${JSON.stringify(fieldWeights, null, 8)}
-        self.field_types = ${JSON.stringify(fieldTypes, null, 8)}
+    def __init__(self, dataset_files: dict):
+        """Initialize with dataset files mapping."""
+        self.dataset_files = dataset_files  # {"dataset_id": "file_path"}
+        self.dataset_weights = ${JSON.stringify(currentProject?.dataset_weights || {}, null, 8)}
+        self.category_info = {
+            'name': '${currentProject?.name || 'Unnamed Category'}',
+            'description': '${currentProject?.description || 'No description'}',
+            'datasets': ${JSON.stringify(currentProject?.datasets || [], null, 8)}
+        }
 
-    def load_categories(self) -> gpd.GeoDataFrame:
-        """Load and combine all categories."""
-        all_gdfs = []
+    def process(self):
+        """Combine datasets and apply category-level weighting."""
+        combined = []
 
-        for category_name, dataset_paths in self.category_paths.items():
-            category_gdfs = []
+        for dataset_id, filepath in self.dataset_files.items():
+            gdf = gpd.read_file(filepath)
+            gdf['dataset_id'] = dataset_id
+            gdf['dataset_weight'] = self.dataset_weights.get(dataset_id, 100) / 100
 
-            for i, path in enumerate(dataset_paths):
-                gdf = gpd.read_file(path)
-                gdf['source_dataset'] = f'{category_name}_dataset_{i}'
-                gdf['category'] = category_name
+            # Include all fields from each dataset
+            combined.append(gdf)
 
-                # Filter to selected fields
-                fields_to_keep = ['geometry', 'source_dataset', 'category'] + [
-                    f for f in self.selected_fields if f in gdf.columns
-                ]
-                gdf_filtered = gdf[fields_to_keep]
-                category_gdfs.append(gdf_filtered)
+        # Combine all datasets
+        if combined:
+            gdf = gpd.GeoDataFrame(pd.concat(combined, ignore_index=True))
 
-            if category_gdfs:
-                category_combined = gpd.GeoDataFrame(pd.concat(category_gdfs, ignore_index=True))
-                all_gdfs.append(category_combined)
+            # Apply dataset-level weighting to any existing scores
+            if 'weighted_score' in gdf.columns:
+                gdf['category_weighted_score'] = gdf['weighted_score'] * gdf['dataset_weight']
+            else:
+                gdf['category_weighted_score'] = gdf['dataset_weight']
 
-        # Combine all categories
-        if all_gdfs:
-            feature_layer = gpd.GeoDataFrame(pd.concat(all_gdfs, ignore_index=True))
-            return feature_layer
+            return gdf
         else:
             return gpd.GeoDataFrame()
 
-    def apply_weights_by_category(self) -> gpd.GeoDataFrame:
-        """Apply weights to fields, calculated separately for each category."""
-        gdf_combined = self.load_categories()
-        gdf_combined['weighted_score'] = 0.0
+    def get_category_info(self):
+        """Get information about this category."""
+        return self.category_info
 
-        for category in gdf_combined['category'].unique():
-            category_mask = gdf_combined['category'] == category
-            category_data = gdf_combined[category_mask]
+    def print_dataset_weights(self):
+        """Print dataset weight information."""
+        print(f"Category: {self.category_info['name']}")
+        print(f"Description: {self.category_info['description']}")
+        print("\\nDataset Weights:")
+        for dataset_id, weight in self.dataset_weights.items():
+            print(f"  {dataset_id}: {weight:.1f}%")
 
-            weighted_score = pd.Series(0, index=category_data.index)
+    def export(self, output_path: str):
+        """Export processed category."""
+        processed = self.process()
+        processed.to_file(output_path, driver='GeoJSON')
+        print(f"Exported category to: {output_path}")
+        print(f"Total features: {len(processed)}")
 
-            for field, weight in self.field_weights.items():
-                if field in category_data.columns and self.field_types.get(field) == 'quantitative':
-                    field_values = pd.to_numeric(category_data[field], errors='coerce')
-                    if field_values.notna().any():
-                        min_val = field_values.min()
-                        max_val = field_values.max()
-                        if max_val > min_val:
-                            normalized = (field_values - min_val) / (max_val - min_val)
-                            weighted_score += normalized * weight
+# Usage
+if __name__ == "__main__":
+    # Map dataset IDs to their file paths
+    dataset_files = {
+        ${currentProject?.datasets?.map(id => {
+          const dataset = findProject ? findProject(id) : null;
+          const name = dataset ? dataset.name : id;
+          return `"${id}": "${name.replace(/[^a-zA-Z0-9]/g, '_')}.geojson"`;
+        }).join(',\n        ') || '"dataset1": "dataset1.geojson"'}
+    }
 
-            gdf_combined.loc[category_mask, 'weighted_score'] = weighted_score
+    processor = ${className}Processor(dataset_files)
+    processor.print_dataset_weights()
+    processor.export("${className.toLowerCase()}_output.geojson")`;
+}
 
-        return gdf_combined
+function generateFeatureLayerPythonCode(className, selectedFields) {
+  const hasWeights = currentProject && currentProject.category_weights && Object.keys(currentProject.category_weights).length > 0;
+  const categoryCount = currentProject?.categories?.length || 0;
 
-    def export_feature_layer(self, output_path: str):
-        """Export the processed feature layer."""
-        gdf_processed = self.apply_weights_by_category()
-        gdf_processed.to_file(output_path, driver='GeoJSON')
-        print(f"Feature layer exported to: {output_path}")
+  return `import geopandas as gpd
+import pandas as pd
+import numpy as np
+
+class ${className}Processor:
+    """Process feature layer '${currentProject?.name || className}' with ${categoryCount} categories."""
+
+    def __init__(self, category_configs: dict):
+        """
+        Initialize with category configurations.
+
+        category_configs format:
+        {
+            "category_id": {
+                "dataset_files": {"dataset_id": "file_path"},
+                "dataset_weights": {"dataset_id": weight}
+            }
+        }
+        """
+        self.category_configs = category_configs
+        self.category_weights = ${JSON.stringify(currentProject?.category_weights || {}, null, 8)}
+        self.feature_layer_info = {
+            'name': '${currentProject?.name || 'Unnamed Feature Layer'}',
+            'description': '${currentProject?.description || 'No description'}',
+            'categories': ${JSON.stringify(currentProject?.categories || [], null, 8)}
+        }
+
+    def process(self):
+        """Process all categories and datasets."""
+        all_data = []
+
+        for cat_id, cat_config in self.category_configs.items():
+            cat_weight = self.category_weights.get(cat_id, 100) / 100
+            dataset_files = cat_config.get('dataset_files', {})
+            dataset_weights = cat_config.get('dataset_weights', {})
+
+            for ds_id, filepath in dataset_files.items():
+                gdf = gpd.read_file(filepath)
+                gdf['category_id'] = cat_id
+                gdf['dataset_id'] = ds_id
+                gdf['category_weight'] = cat_weight
+                gdf['dataset_weight'] = dataset_weights.get(ds_id, 100) / 100
+
+                all_data.append(gdf)
+
+        # Combine all data
+        if all_data:
+            gdf = gpd.GeoDataFrame(pd.concat(all_data, ignore_index=True))
+
+            # Apply hierarchical weighting
+            if 'weighted_score' in gdf.columns:
+                # Dataset score * dataset weight * category weight
+                gdf['final_score'] = gdf['weighted_score'] * gdf['dataset_weight'] * gdf['category_weight']
+            else:
+                gdf['final_score'] = gdf['dataset_weight'] * gdf['category_weight']
+
+            return gdf
+        else:
+            return gpd.GeoDataFrame()
+
+    def get_feature_layer_info(self):
+        """Get information about this feature layer."""
+        return self.feature_layer_info
+
+    def print_hierarchy(self):
+        """Print the complete weighting hierarchy."""
+        print(f"Feature Layer: {self.feature_layer_info['name']}")
+        print(f"Description: {self.feature_layer_info['description']}")
+        print("\\nCategory Weights:")
+        for cat_id, weight in self.category_weights.items():
+            print(f"  {cat_id}: {weight:.1f}%")
+
+    def export(self, output_path: str):
+        """Export processed feature layer."""
+        processed = self.process()
+        processed.to_file(output_path, driver='GeoJSON')
+        print(f"Exported feature layer to: {output_path}")
+        print(f"Total features: {len(processed)}")
 
     def export_by_category(self, output_dir: str):
         """Export each category separately."""
-        gdf_processed = self.apply_weights_by_category()
-        output_path = Path(output_dir)
-        output_path.mkdir(exist_ok=True)
+        from pathlib import Path
+        processed = self.process()
+        Path(output_dir).mkdir(exist_ok=True)
 
-        for category in gdf_processed['category'].unique():
-            category_data = gdf_processed[gdf_processed['category'] == category]
-            category_file = output_path / f"{category}.geojson"
-            category_data.to_file(category_file, driver='GeoJSON')
-            print(f"Category '{category}' exported to: {category_file}")
+        for cat_id in processed['category_id'].unique():
+            cat_data = processed[processed['category_id'] == cat_id]
+            cat_data.to_file(f"{output_dir}/{cat_id}.geojson", driver='GeoJSON')
+            print(f"Exported {cat_id} to {output_dir}/{cat_id}.geojson")
 
-# Usage example
+# Usage
 if __name__ == "__main__":
+    # Configure categories with their datasets
     categories = {
-        "environmental": ["env_dataset1.geojson", "env_dataset2.geojson"],
-        "infrastructure": ["infra_dataset1.geojson", "infra_dataset2.geojson"],
-        "economic": ["econ_dataset1.geojson"]
+        ${currentProject?.categories?.map(id => {
+          const category = findProject ? findProject(id) : null;
+          const name = category ? category.name : id;
+          const datasets = category?.datasets || [];
+          return `"${id}": {
+            "dataset_files": {
+                ${datasets.map(dsId => {
+                  const ds = findProject ? findProject(dsId) : null;
+                  const dsName = ds ? ds.name : dsId;
+                  return `"${dsId}": "${dsName.replace(/[^a-zA-Z0-9]/g, '_')}.geojson"`;
+                }).join(',\n                ')}
+            },
+            "dataset_weights": ${JSON.stringify(category?.dataset_weights || {}, null, 16)}
+        }`;
+        }).join(',\n        ') || '"category1": {"dataset_files": {"ds1": "dataset1.geojson"}, "dataset_weights": {"ds1": 100}}'}
     }
-    processor = ${className}(categories)
-    processor.export_feature_layer("feature_layer_output.geojson")
-    processor.export_by_category("category_outputs/")`;
+
+    processor = ${className}Processor(categories)
+    processor.print_hierarchy()
+    processor.export("${className.toLowerCase()}_output.geojson")
+    processor.export_by_category("categories/")`;
 }
 
 function updateStatsPreview() {
@@ -654,3 +722,8 @@ function exportConfig() {
   console.log('Field metadata in export:', fieldMeta); // Debug log
   return config;
 }
+
+// Make sure these functions are globally available
+window.generateDatasetPythonCode = generateDatasetPythonCode;
+window.generateCategoryPythonCode = generateCategoryPythonCode;
+window.generateFeatureLayerPythonCode = generateFeatureLayerPythonCode;

@@ -1,0 +1,53 @@
+{
+  "projectType": "category",
+  "projectAction": "create",
+  "currentProject": {
+    "id": "proj_1756074475410_s58xz1ylk",
+    "name": "Test cat",
+    "description": "",
+    "type": "category",
+    "datasets": [
+      "proj_1756048628671_pmdt8k1f2",
+      "proj_1756005272917_n3xc6ylj0"
+    ],
+    "dataset_weights": {
+      "proj_1756048628671_pmdt8k1f2": 55,
+      "proj_1756005272917_n3xc6ylj0": 45
+    },
+    "created_at": "2025-08-24T22:27:55.410Z",
+    "updated_at": "2025-08-24T22:28:11.077Z"
+  },
+  "datasetName": "Test cat",
+  "description": "",
+  "timestamp": "2025-08-24T22:28:28.126Z",
+  "selectedFields": [],
+  "fieldTypes": {},
+  "fieldWeights": {},
+  "fieldMeta": {},
+  "statistics": {
+    "summary": {
+      "Category Name": "Test cat",
+      "Total Datasets": 2,
+      "Selected Fields": 0,
+      "Created": "8/24/2025"
+    },
+    "details": "\n      <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n        <strong>BRRRT</strong>\n        <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n          Type: dataset<br>\n          Fields: 11\n        </div>\n      </div>\n    \n      <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n        <strong>MMM</strong>\n        <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n          Type: dataset<br>\n          Fields: 11\n        </div>\n      </div>\n    "
+  },
+  "version": "1.0",
+  "categoryInfo": {
+    "datasets": [
+      "proj_1756048628671_pmdt8k1f2",
+      "proj_1756005272917_n3xc6ylj0"
+    ],
+    "datasetWeights": {
+      "proj_1756048628671_pmdt8k1f2": 55,
+      "proj_1756005272917_n3xc6ylj0": 45
+    }
+  },
+  "fieldAttributes": {},
+  "_metadata": {
+    "id": "20250824172828",
+    "created_at": "2025-08-24T17:28:28.132615",
+    "version": "2.0"
+  }
+}

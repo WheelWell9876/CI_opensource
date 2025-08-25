@@ -15876,6 +15876,14 @@
       "total_features": 236
     },
     "created_at": "2025-08-24T15:17:08.671Z",
-    "updated_at": "2025-08-24T15:17:12.603Z"
+    "updated_at": "2025-08-24T15:25:06.109Z",
+    "datasets": [
+      "proj_1756048628671_pmdt8k1f2",
+      "proj_1755965221998_c4prf0fkm"
+    ],
+    "dataset_weights": {
+      "proj_1756048628671_pmdt8k1f2": 50,
+      "proj_1755965221998_c4prf0fkm": 50
+    }
   }
 ]

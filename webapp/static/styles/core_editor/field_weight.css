@@ -463,3 +463,718 @@
   color: #666;
   z-index: 1000;
 }
+
+/* Streamlined Workflow CSS - Add to your existing CSS files */
+
+/* ========================================
+   STREAMLINED WORKFLOW INDICATORS
+   ======================================== */
+
+.streamlined-workflow-info {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+  border: 1px solid #2196f3;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.workflow-step-indicator {
+  margin-bottom: 1rem;
+}
+
+.step-badge {
+  background: #1976d2;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.workflow-step-indicator h3 {
+  margin: 0;
+  color: #0d47a1;
+  font-size: 1.5rem;
+}
+
+.workflow-description {
+  color: #1565c0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* ========================================
+   ENHANCED PROJECT FORM
+   ======================================== */
+
+.enhanced-project-form {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* ========================================
+   ENHANCED SELECTION AREA
+   ======================================== */
+
+.enhanced-selection-area {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.selection-header h4 {
+  margin: 0;
+  color: #495057;
+  font-size: 1.1rem;
+}
+
+.selection-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-item {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.stat-item strong {
+  color: #2196f3;
+  font-weight: 700;
+}
+
+/* ========================================
+   ENHANCED DATASET/CATEGORY GRID
+   ======================================== */
+
+.enhanced-dataset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.selection-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.selection-card:hover {
+  border-color: #2196f3;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
+  transform: translateY(-2px);
+}
+
+.selection-card.selected {
+  border-color: #4caf50;
+  background: #f1f8e9;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.card-icon {
+  font-size: 1.5rem;
+  background: #e3f2fd;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.selection-card.selected .card-icon {
+  background: #c8e6c9;
+}
+
+.card-title-area {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-title {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212529;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.card-meta {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+.selection-indicator {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 600;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.selection-indicator.selected {
+  background: #4caf50;
+  border-color: #4caf50;
+  color: white;
+}
+
+.card-content {
+  padding-left: 3.25rem; /* Align with icon */
+}
+
+.card-description {
+  font-size: 0.85rem;
+  color: #6c757d;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.card-stats .stat-item {
+  text-align: center;
+}
+
+.card-stats .stat-value {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2196f3;
+  line-height: 1;
+}
+
+.card-stats .stat-label {
+  display: block;
+  font-size: 0.7rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.25rem;
+}
+
+.field-preview {
+  border-top: 1px solid #e9ecef;
+  padding-top: 0.75rem;
+}
+
+.field-preview-label {
+  font-size: 0.7rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.field-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.field-tag {
+  background: #e9ecef;
+  color: #495057;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.field-tag.field-quantitative {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.field-tag.field-qualitative {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.field-tag.field-boolean {
+  background: #e8f5e8;
+  color: #388e3c;
+}
+
+.field-tag-more {
+  background: #f5f5f5;
+  color: #757575;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-style: italic;
+}
+
+/* ========================================
+   EMPTY STATE
+   ======================================== */
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #6c757d;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  margin: 0 0 0.5rem 0;
+  color: #495057;
+}
+
+.empty-state p {
+  margin-bottom: 1.5rem;
+  color: #6c757d;
+}
+
+/* ========================================
+   STREAMLINED NAVIGATION
+   ======================================== */
+
+.streamlined-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ========================================
+   STREAMLINED EXPORT STEP
+   ======================================== */
+
+.streamlined-export-message {
+  margin-bottom: 1.5rem;
+}
+
+.field-weight-options {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.field-weight-options button {
+  margin-right: 1rem;
+}
+
+.field-weight-options small {
+  display: block;
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .enhanced-dataset-grid {
+    grid-template-columns: 1fr;
+    max-height: 50vh;
+  }
+
+  .selection-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .card-stats {
+    gap: 1rem;
+  }
+
+  .card-content {
+    padding-left: 0;
+  }
+
+  .streamlined-navigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .streamlined-navigation .btn {
+    width: 100%;
+  }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+.selection-card {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.selection-card.selected {
+  animation: selectPulse 0.3s ease-out;
+}
+
+@keyframes selectPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Enhanced Weight Controls CSS - Add to your existing CSS */
+
+/* ========================================
+   ENHANCED WEIGHT CONTROLS
+   ======================================== */
+
+.enhanced-weight-controls {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.weight-controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+.weight-controls-header h4 {
+  margin: 0;
+  color: #495057;
+  font-size: 1.1rem;
+}
+
+.weight-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.weight-total {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.weight-total strong {
+  color: #2196f3;
+  font-size: 1.1rem;
+}
+
+.enhanced-weight-control {
+  margin-bottom: 1rem;
+}
+
+.weight-control-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.weight-control-card:hover {
+  border-color: #2196f3;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);
+}
+
+.weight-control-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dataset-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.dataset-icon {
+  font-size: 1.5rem;
+  background: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e9ecef;
+  flex-shrink: 0;
+}
+
+.dataset-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.dataset-name {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212529;
+  line-height: 1.2;
+}
+
+.dataset-stats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.dataset-stats .stat {
+  background: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  font-weight: 500;
+}
+
+.weight-display {
+  text-align: right;
+}
+
+.weight-display .weight-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2196f3;
+  display: block;
+}
+
+.weight-slider-container {
+  margin-bottom: 0.75rem;
+}
+
+.enhanced-weight-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #e9ecef;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.enhanced-weight-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #2196f3;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
+
+.enhanced-weight-slider::-webkit-slider-thumb:hover {
+  background: #1976d2;
+  transform: scale(1.1);
+}
+
+.enhanced-weight-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #2196f3;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.dataset-description {
+  font-size: 0.85rem;
+  color: #6c757d;
+  line-height: 1.4;
+  border-top: 1px solid #e9ecef;
+  padding-top: 0.75rem;
+  font-style: italic;
+}
+
+/* ========================================
+   FIELD TAG VARIANTS
+   ======================================== */
+
+.field-tag.field-dataset {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+/* ========================================
+   RESPONSIVE ENHANCEMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+  .weight-controls-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .weight-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .weight-control-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .dataset-info {
+    width: 100%;
+  }
+
+  .weight-display {
+    text-align: left;
+    width: 100%;
+  }
+
+  .dataset-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* ========================================
+   ANIMATIONS FOR ENHANCED CONTROLS
+   ======================================== */
+
+.weight-control-card {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.enhanced-weight-slider {
+  background: linear-gradient(to right, #e9ecef 0%, #2196f3 0%, #2196f3 50%, #e9ecef 50%);
+  background-size: 200% 100%;
+  transition: background-position 0.2s ease;
+}
+
+/* ========================================
+   WEIGHT TOTAL INDICATOR COLORS
+   ======================================== */
+
+#totalCategoryDatasetWeight,
+#totalFeatureLayerCategoryWeight {
+  transition: color 0.3s ease;
+}
+
+/* Color coding will be applied via JavaScript */
+.weight-total-warning {
+  color: #f57c00 !important;
+}
+
+.weight-total-error {
+  color: #d32f2f !important;
+}
+
+.weight-total-success {
+  color: #2e7d32 !important;
+}
+

@@ -64,7 +64,7 @@ function setupEventListeners() {
 
 // Show appropriate workflow steps based on project type
 function showWorkflowSteps(type) {
-  debugLog('Showing workflow steps for type:', type);
+  debugLog('Showing streamlined workflow steps for type:', type);
 
   // Hide all step workflows
   const allSteps = ['datasetSteps', 'categorySteps', 'featurelayerSteps'];
@@ -76,18 +76,17 @@ function showWorkflowSteps(type) {
   // Show appropriate workflow
   let targetStepsId;
   if (type === 'dataset') {
-    targetStepsId = 'datasetSteps';
+    targetStepsId = 'datasetSteps'; // 6 steps: 0,1,2,3,4,5
   } else if (type === 'category') {
-    targetStepsId = 'categorySteps';
+    targetStepsId = 'categorySteps'; // 4 steps: 0,1,2,3
   } else if (type === 'featurelayer') {
-    targetStepsId = 'featurelayerSteps';
+    targetStepsId = 'featurelayerSteps'; // 4 steps: 0,1,2,3
   }
 
   if (targetStepsId) {
     const targetSteps = document.getElementById(targetStepsId);
     if (targetSteps) {
       targetSteps.style.display = 'flex';
-      // Re-setup event listeners for the new workflow
       setupStepListeners(targetSteps);
     }
   }
@@ -158,29 +157,19 @@ function showStepContent(step) {
 
 // Add panel expansion animation when moving between steps
 function goToStep(step) {
-  debugLog('Going to step', step);
+  debugLog('Going to step with streamlined workflow logic:', step, 'for project type:', projectType);
 
-  // Add expanding animation to panels
-  const panels = document.querySelectorAll('.panel');
-  panels.forEach(panel => {
-    panel.classList.add('panel-expanding');
-  });
+  // Validate step bounds based on project type
+  const maxStep = getMaxStepForProjectType(projectType);
+  if (step > maxStep) {
+    debugLog('Step', step, 'exceeds max for', projectType, '(max:', maxStep + ')');
+    return;
+  }
 
   currentStep = step;
 
   // Update step indicators for the current workflow
-  let currentStepsContainer;
-  if (projectType === 'dataset') {
-    currentStepsContainer = document.getElementById('datasetSteps');
-  } else if (projectType === 'category') {
-    currentStepsContainer = document.getElementById('categorySteps');
-  } else if (projectType === 'featurelayer') {
-    currentStepsContainer = document.getElementById('featurelayerSteps');
-  } else {
-    // Default to dataset steps if no project type selected yet
-    currentStepsContainer = document.getElementById('datasetSteps');
-  }
-
+  let currentStepsContainer = document.getElementById(`${projectType}Steps`);
   if (currentStepsContainer) {
     currentStepsContainer.querySelectorAll('.step').forEach(s => {
       const stepNum = parseInt(s.dataset.step);
@@ -193,20 +182,92 @@ function goToStep(step) {
     });
   }
 
-  // Show appropriate step content
-  showStepContent(step);
+  // Show appropriate step content with workflow logic
+  showStepContentWithWorkflow(step);
 
-  // Special handling for specific steps
+  // Handle step-specific logic
+  handleStepTransition(step);
+
+  debugLog('Streamlined step transition completed to', step);
+}
+
+// Get maximum step number for each project type
+function getMaxStepForProjectType(type) {
+  switch(type) {
+    case 'dataset': return 5; // 0,1,2,3,4,5
+    case 'category': return 3; // 0,1,2,3
+    case 'featurelayer': return 3; // 0,1,2,3
+    default: return 5;
+  }
+}
+
+// Show step content based on streamlined workflow
+function showStepContentWithWorkflow(step) {
+  debugLog('Showing streamlined step content:', step, 'for project type:', projectType);
+
+  // Hide all step content
+  document.querySelectorAll('.step-content').forEach(content => {
+    content.classList.remove('active');
+    content.style.display = 'none';
+  });
+
+  // Step 0 is always project selection
+  if (step === 0) {
+    const projectSelectionStep = document.querySelector('.step-content[data-step="0"]');
+    if (projectSelectionStep) {
+      projectSelectionStep.classList.add('active');
+      projectSelectionStep.style.display = 'block';
+    }
+    return;
+  }
+
+  // Handle steps based on project type and streamlined workflow
+  let targetSelector;
+
+  if (projectType === 'dataset') {
+    // Dataset workflow unchanged: 0→1→2→3→4→5
+    if (step === 1) targetSelector = '.step-content.dataset-step[data-step="1"]'; // Load Data
+    else if (step === 2) targetSelector = '.step-content.dataset-step[data-step="2"]'; // Configure
+    else if (step === 3) targetSelector = '.step-content[data-step="3"]'; // Select Fields
+    else if (step === 4) targetSelector = '.step-content[data-step="4"]'; // Apply Weights
+    else if (step === 5) targetSelector = '.step-content[data-step="5"]'; // Export
+
+  } else if (projectType === 'category') {
+    // Category streamlined workflow: 0→1→2→3
+    if (step === 1) targetSelector = '.step-content.category-step[data-step="1"]'; // Select Datasets (Enhanced)
+    else if (step === 2) targetSelector = '.step-content.category-step[data-step="2"]'; // Dataset Weights
+    else if (step === 3) targetSelector = '.step-content[data-step="5"]'; // Skip to Export (reuse export step)
+
+  } else if (projectType === 'featurelayer') {
+    // Feature Layer streamlined workflow: 0→1→2→3
+    if (step === 1) targetSelector = '.step-content.featurelayer-step[data-step="1"]'; // Select Categories (Enhanced)
+    else if (step === 2) targetSelector = '.step-content.featurelayer-step[data-step="2"]'; // Category Weights
+    else if (step === 3) targetSelector = '.step-content[data-step="5"]'; // Skip to Export (reuse export step)
+  }
+
+  const targetContent = document.querySelector(targetSelector);
+  if (targetContent) {
+    targetContent.classList.add('active');
+    targetContent.style.display = 'block';
+  } else {
+    console.warn('Could not find step content for:', targetSelector);
+  }
+}
+
+// Handle step-specific initialization and logic
+function handleStepTransition(step) {
   if (step === 0) {
     populateProjectSelection();
+
   } else if (step === 1) {
     if (projectType === 'dataset') {
       // Dataset data loading handled by existing modules
     } else if (projectType === 'category') {
-      populateCategoryDatasetSelection();
+      populateEnhancedCategoryDatasetSelection();
     } else if (projectType === 'featurelayer') {
-      populateFeatureLayerCategorySelection();
+      populateEnhancedFeatureLayerCategorySelection();
     }
+
   } else if (step === 2) {
     if (projectType === 'dataset') {
       // Dataset configuration
@@ -215,20 +276,611 @@ function goToStep(step) {
     } else if (projectType === 'featurelayer') {
       populateFeatureLayerCategoryWeights();
     }
+
   } else if (step === 3) {
-    populateFieldSelection();
+    if (projectType === 'dataset') {
+      populateFieldSelection(); // Normal field selection for datasets
+    } else if (projectType === 'category' || projectType === 'featurelayer') {
+      populateStreamlinedExportStep(); // Skip to streamlined export
+    }
+
   } else if (step === 4) {
-    populateWeightControls();
+    if (projectType === 'dataset') {
+      populateWeightControls(); // Normal weight controls for datasets
+    }
+
+  } else if (step === 5) {
+    if (projectType === 'dataset') {
+      // Regular export step - no changes needed
+    }
+  }
+}
+
+// Enhanced Category Dataset Selection with detailed breakdown
+function populateEnhancedCategoryDatasetSelection() {
+  debugLog('Populating enhanced category dataset selection');
+
+  const container = document.getElementById('categoryDatasetSelection');
+  if (!container) return;
+
+  // Initialize currentProject if needed
+  if (!currentProject) {
+    currentProject = {
+      id: generateId(),
+      name: '',
+      description: '',
+      type: 'category',
+      datasets: [],
+      dataset_weights: {},
+      created_at: new Date().toISOString()
+    };
   }
 
-  // Remove expanding animation after transition
-  setTimeout(() => {
-    panels.forEach(panel => {
-      panel.classList.remove('panel-expanding');
-    });
-  }, 400);
+  container.innerHTML = `
+    <div class="streamlined-workflow-info">
+      <div class="workflow-step-indicator">
+        <span class="step-badge">Step 1 of 3</span>
+        <h3>Select Datasets for Category</h3>
+      </div>
+      <div class="workflow-description">
+        <p>Choose datasets to include in this category. Each dataset maintains its field weights and attribute settings.</p>
+      </div>
+    </div>
 
-  debugLog('Step transition completed to', step);
+    <div class="enhanced-project-form">
+      <div class="form-row">
+        <div class="input-group">
+          <label class="input-label">Category Name*</label>
+          <input type="text" id="categoryName" value="${currentProject.name || ''}" placeholder="e.g., Mining Operations" required>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Description</label>
+          <textarea id="categoryDescription" placeholder="Describe what this category represents..." rows="2">${currentProject.description || ''}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="enhanced-selection-area">
+      <div class="selection-header">
+        <h4>📊 Available Datasets (${projects.datasets.length})</h4>
+        <div class="selection-stats">
+          <span class="stat-item">Selected: <strong id="selectedDatasetCount">${currentProject.datasets?.length || 0}</strong></span>
+        </div>
+      </div>
+
+      ${projects.datasets.length === 0 ? `
+        <div class="empty-state">
+          <div class="empty-icon">📊</div>
+          <h3>No Datasets Available</h3>
+          <p>Create some datasets first before building categories.</p>
+          <button class="btn btn-primary" onclick="goToStep(0)">Create Dataset</button>
+        </div>
+      ` : `
+        <div class="enhanced-dataset-grid">
+          ${projects.datasets.map(dataset => createDatasetSelectionCard(dataset, currentProject.datasets?.includes(dataset.id))).join('')}
+        </div>
+      `}
+    </div>
+
+    <div class="streamlined-navigation">
+      <button class="btn btn-secondary" onclick="goToStep(0)">← Back to Project Type</button>
+      <button class="btn btn-primary" id="continueToWeights" onclick="saveCategorySelection()" ${projects.datasets.length === 0 || !currentProject.datasets?.length ? 'disabled' : ''}>
+        Continue to Dataset Weights →
+      </button>
+    </div>
+  `;
+}
+
+// Create enhanced dataset selection card with detailed info
+function createDatasetSelectionCard(dataset, isSelected) {
+  const featureCount = dataset.data?.features?.length || 0;
+  const fieldCount = dataset.field_info ? Object.keys(dataset.field_info.field_types || {}).length : 0;
+  const createdDate = new Date(dataset.created_at).toLocaleDateString();
+
+  return `
+    <div class="selection-card ${isSelected ? 'selected' : ''}" onclick="toggleDatasetSelection('${dataset.id}')">
+      <div class="card-header">
+        <div class="card-icon">📊</div>
+        <div class="card-title-area">
+          <h4 class="card-title">${dataset.name}</h4>
+          <div class="card-meta">Created ${createdDate}</div>
+        </div>
+        <div class="selection-indicator ${isSelected ? 'selected' : ''}">
+          ${isSelected ? '✓' : '+'}
+        </div>
+      </div>
+
+      <div class="card-content">
+        <div class="card-description">${dataset.description || 'No description provided'}</div>
+
+        <div class="card-stats">
+          <div class="stat-item">
+            <span class="stat-value">${featureCount.toLocaleString()}</span>
+            <span class="stat-label">Features</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">${fieldCount}</span>
+            <span class="stat-label">Fields</span>
+          </div>
+        </div>
+
+        ${dataset.field_info && Object.keys(dataset.field_info.field_types || {}).length > 0 ? `
+          <div class="field-preview">
+            <small class="field-preview-label">Sample Fields:</small>
+            <div class="field-tags">
+              ${Object.entries(dataset.field_info.field_types || {}).slice(0, 4).map(([field, type]) =>
+                `<span class="field-tag field-${type}">${field}</span>`
+              ).join('')}
+              ${Object.keys(dataset.field_info.field_types || {}).length > 4 ?
+                `<span class="field-tag-more">+${Object.keys(dataset.field_info.field_types).length - 4} more</span>` : ''
+              }
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// Toggle dataset selection
+function toggleDatasetSelection(datasetId) {
+  if (!currentProject.datasets) {
+    currentProject.datasets = [];
+  }
+
+  const index = currentProject.datasets.indexOf(datasetId);
+  if (index > -1) {
+    currentProject.datasets.splice(index, 1);
+  } else {
+    currentProject.datasets.push(datasetId);
+  }
+
+  // Update UI
+  const card = document.querySelector(`.selection-card[onclick*="${datasetId}"]`);
+  if (card) {
+    card.classList.toggle('selected');
+    const indicator = card.querySelector('.selection-indicator');
+    if (currentProject.datasets.includes(datasetId)) {
+      indicator.classList.add('selected');
+      indicator.textContent = '✓';
+    } else {
+      indicator.classList.remove('selected');
+      indicator.textContent = '+';
+    }
+  }
+
+  // Update counter and continue button
+  const counter = document.getElementById('selectedDatasetCount');
+  const continueBtn = document.getElementById('continueToWeights');
+
+  if (counter) counter.textContent = currentProject.datasets.length;
+  if (continueBtn) {
+    continueBtn.disabled = currentProject.datasets.length === 0;
+    continueBtn.classList.toggle('btn-disabled', currentProject.datasets.length === 0);
+  }
+}
+
+// Save category selection and proceed
+function saveCategorySelection() {
+  const name = document.getElementById('categoryName').value.trim();
+  const description = document.getElementById('categoryDescription').value.trim();
+
+  if (!name) {
+    showMessage('Please enter a category name', 'error');
+    document.getElementById('categoryName').focus();
+    return;
+  }
+
+  if (!currentProject.datasets || currentProject.datasets.length === 0) {
+    showMessage('Please select at least one dataset for this category', 'error');
+    return;
+  }
+
+  currentProject.name = name;
+  currentProject.description = description;
+  currentProject.updated_at = new Date().toISOString();
+
+  showMessage(`Category "${name}" configured with ${currentProject.datasets.length} datasets!`, 'success');
+  goToStep(2); // Go to dataset weights
+}
+
+// Streamlined export step for categories and feature layers
+function populateStreamlinedExportStep() {
+  debugLog('Populating streamlined export step');
+
+  const container = document.querySelector('.step-content[data-step="5"]');
+  if (!container) return;
+
+  const isCategory = projectType === 'category';
+  const itemType = isCategory ? 'datasets' : 'categories';
+  const itemCount = isCategory ? currentProject.datasets?.length : currentProject.categories?.length;
+
+  // Update the export step content for streamlined workflow
+  const exportContent = container.querySelector('.panel-title');
+  if (exportContent) {
+    exportContent.innerHTML = `
+      <div class="panel-icon">💾</div>
+      Export ${projectType.charAt(0).toUpperCase() + projectType.slice(1)}
+    `;
+  }
+
+  // Add streamlined export message
+  const existingMessage = container.querySelector('.streamlined-export-message');
+  if (!existingMessage) {
+    const message = document.createElement('div');
+    message.className = 'streamlined-export-message';
+    message.innerHTML = `
+      <div class="status-message status-info" style="margin-bottom: 1.5rem;">
+        <span>ℹ️</span>
+        <span>This ${projectType} includes ${itemCount} ${itemType} with their pre-configured field weights and attribute settings.
+        ${projectType === 'category' ? 'Dataset-level weights' : 'Category-level weights'} have been applied.</span>
+      </div>
+
+      <div class="field-weight-options" style="margin-bottom: 1.5rem;">
+        <button class="btn btn-secondary" onclick="showFieldWeightModal()" style="margin-right: 1rem;">
+          🎛️ Review Field Weights
+        </button>
+        <small style="color: #666;">Optional: Review or modify field and attribute weights from underlying ${itemType}</small>
+      </div>
+    `;
+
+    // Insert after panel title
+    const panelTitle = container.querySelector('.panel-title');
+    if (panelTitle && panelTitle.nextSibling) {
+      panelTitle.parentNode.insertBefore(message, panelTitle.nextSibling);
+    }
+  }
+}
+
+// Show field weight review modal (placeholder for now)
+function showFieldWeightModal() {
+  showMessage('Field weight review modal - Coming soon! For now, edit individual datasets to modify field weights.', 'info');
+}
+
+// Enhanced Feature Layer Category Selection
+function populateEnhancedFeatureLayerCategorySelection() {
+  debugLog('Populating enhanced feature layer category selection');
+
+  const container = document.getElementById('featureLayerCategorySelection');
+  if (!container) return;
+
+  // Initialize currentProject if needed
+  if (!currentProject) {
+    currentProject = {
+      id: generateId(),
+      name: '',
+      description: '',
+      type: 'featurelayer',
+      categories: [],
+      category_weights: {},
+      created_at: new Date().toISOString()
+    };
+  }
+
+  container.innerHTML = `
+    <div class="streamlined-workflow-info">
+      <div class="workflow-step-indicator">
+        <span class="step-badge">Step 1 of 3</span>
+        <h3>Select Categories for Feature Layer</h3>
+      </div>
+      <div class="workflow-description">
+        <p>Choose categories to include in this feature layer. Each category maintains its dataset weights and field configurations.</p>
+      </div>
+    </div>
+
+    <div class="enhanced-project-form">
+      <div class="form-row">
+        <div class="input-group">
+          <label class="input-label">Feature Layer Name*</label>
+          <input type="text" id="featureLayerName" value="${currentProject.name || ''}" placeholder="e.g., Regional Infrastructure" required>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Description</label>
+          <textarea id="featureLayerDescription" placeholder="Describe what this feature layer represents..." rows="2">${currentProject.description || ''}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="enhanced-selection-area">
+      <div class="selection-header">
+        <h4>📁 Available Categories (${projects.categories.length})</h4>
+        <div class="selection-stats">
+          <span class="stat-item">Selected: <strong id="selectedCategoryCount">${currentProject.categories?.length || 0}</strong></span>
+        </div>
+      </div>
+
+      ${projects.categories.length === 0 ? `
+        <div class="empty-state">
+          <div class="empty-icon">📁</div>
+          <h3>No Categories Available</h3>
+          <p>Create some categories first before building feature layers.</p>
+          <button class="btn btn-primary" onclick="goToStep(0)">Create Category</button>
+        </div>
+      ` : `
+        <div class="enhanced-dataset-grid">
+          ${projects.categories.map(category => createCategorySelectionCard(category, currentProject.categories?.includes(category.id))).join('')}
+        </div>
+      `}
+    </div>
+
+    <div class="streamlined-navigation">
+      <button class="btn btn-secondary" onclick="goToStep(0)">← Back to Project Type</button>
+      <button class="btn btn-primary" id="continueToWeights" onclick="saveFeatureLayerSelection()" ${projects.categories.length === 0 || !currentProject.categories?.length ? 'disabled' : ''}>
+        Continue to Category Weights →
+      </button>
+    </div>
+  `;
+}
+
+// Create enhanced category selection card with detailed breakdown
+function createCategorySelectionCard(category, isSelected) {
+  const datasetCount = category.datasets?.length || 0;
+  const totalFeatures = calculateTotalCategoryFeatures(category);
+  const createdDate = new Date(category.created_at).toLocaleDateString();
+
+  return `
+    <div class="selection-card ${isSelected ? 'selected' : ''}" onclick="toggleCategorySelection('${category.id}')">
+      <div class="card-header">
+        <div class="card-icon">📁</div>
+        <div class="card-title-area">
+          <h4 class="card-title">${category.name}</h4>
+          <div class="card-meta">Created ${createdDate}</div>
+        </div>
+        <div class="selection-indicator ${isSelected ? 'selected' : ''}">
+          ${isSelected ? '✓' : '+'}
+        </div>
+      </div>
+
+      <div class="card-content">
+        <div class="card-description">${category.description || 'No description provided'}</div>
+
+        <div class="card-stats">
+          <div class="stat-item">
+            <span class="stat-value">${datasetCount}</span>
+            <span class="stat-label">Datasets</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">${totalFeatures.toLocaleString()}</span>
+            <span class="stat-label">Total Features</span>
+          </div>
+        </div>
+
+        ${datasetCount > 0 ? `
+          <div class="field-preview">
+            <small class="field-preview-label">Included Datasets:</small>
+            <div class="field-tags">
+              ${category.datasets.slice(0, 3).map(datasetId => {
+                const dataset = findProject(datasetId);
+                return dataset ? `<span class="field-tag field-dataset">${dataset.name}</span>` : '';
+              }).join('')}
+              ${datasetCount > 3 ?
+                `<span class="field-tag-more">+${datasetCount - 3} more datasets</span>` : ''
+              }
+            </div>
+
+            ${category.dataset_weights ? `
+              <div class="weight-preview" style="margin-top: 0.5rem; font-size: 0.7rem; color: #6c757d;">
+                <strong>Dataset Weights:</strong>
+                ${Object.entries(category.dataset_weights).slice(0, 2).map(([id, weight]) => {
+                  const dataset = findProject(id);
+                  return dataset ? `${dataset.name}: ${Math.round(weight)}%` : '';
+                }).join(', ')}
+                ${Object.keys(category.dataset_weights).length > 2 ? '...' : ''}
+              </div>
+            ` : ''}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// Calculate total features across all datasets in a category
+function calculateTotalCategoryFeatures(category) {
+  if (!category.datasets || category.datasets.length === 0) return 0;
+
+  return category.datasets.reduce((total, datasetId) => {
+    const dataset = findProject(datasetId);
+    return total + (dataset?.data?.features?.length || 0);
+  }, 0);
+}
+
+// Toggle category selection
+function toggleCategorySelection(categoryId) {
+  if (!currentProject.categories) {
+    currentProject.categories = [];
+  }
+
+  const index = currentProject.categories.indexOf(categoryId);
+  if (index > -1) {
+    currentProject.categories.splice(index, 1);
+  } else {
+    currentProject.categories.push(categoryId);
+  }
+
+  // Update UI
+  const card = document.querySelector(`.selection-card[onclick*="${categoryId}"]`);
+  if (card) {
+    card.classList.toggle('selected');
+    const indicator = card.querySelector('.selection-indicator');
+    if (currentProject.categories.includes(categoryId)) {
+      indicator.classList.add('selected');
+      indicator.textContent = '✓';
+    } else {
+      indicator.classList.remove('selected');
+      indicator.textContent = '+';
+    }
+  }
+
+  // Update counter and continue button
+  const counter = document.getElementById('selectedCategoryCount');
+  const continueBtn = document.getElementById('continueToWeights');
+
+  if (counter) counter.textContent = currentProject.categories.length;
+  if (continueBtn) {
+    continueBtn.disabled = currentProject.categories.length === 0;
+    continueBtn.classList.toggle('btn-disabled', currentProject.categories.length === 0);
+  }
+}
+
+// Save feature layer selection and proceed
+function saveFeatureLayerSelection() {
+  const name = document.getElementById('featureLayerName').value.trim();
+  const description = document.getElementById('featureLayerDescription').value.trim();
+
+  if (!name) {
+    showMessage('Please enter a feature layer name', 'error');
+    document.getElementById('featureLayerName').focus();
+    return;
+  }
+
+  if (!currentProject.categories || currentProject.categories.length === 0) {
+    showMessage('Please select at least one category for this feature layer', 'error');
+    return;
+  }
+
+  currentProject.name = name;
+  currentProject.description = description;
+  currentProject.updated_at = new Date().toISOString();
+
+  showMessage(`Feature Layer "${name}" configured with ${currentProject.categories.length} categories!`, 'success');
+  goToStep(2); // Go to category weights
+}
+
+// Enhanced dataset weight display for categories
+function populateEnhancedCategoryDatasetWeights() {
+  debugLog('Populating enhanced category dataset weights');
+
+  const container = document.getElementById('categoryDatasetWeights');
+  if (!container || !currentProject) return;
+
+  // Initialize dataset weights if not already set
+  if (!currentProject.dataset_weights || Object.keys(currentProject.dataset_weights).length === 0) {
+    currentProject.dataset_weights = {};
+    const equalWeight = 100 / (currentProject.datasets?.length || 1);
+    currentProject.datasets?.forEach(datasetId => {
+      currentProject.dataset_weights[datasetId] = equalWeight;
+    });
+  }
+
+  container.innerHTML = `
+    <div class="streamlined-workflow-info">
+      <div class="workflow-step-indicator">
+        <span class="step-badge">Step 2 of 3</span>
+        <h3>Apply Dataset Weights</h3>
+      </div>
+      <div class="workflow-description">
+        <p>Assign importance weights to each dataset in "${currentProject.name}". These weights determine the relative influence of each dataset.</p>
+      </div>
+    </div>
+
+    <div class="enhanced-weight-controls">
+      <div class="weight-controls-header">
+        <h4>📊 Dataset Importance Weights</h4>
+        <div class="weight-actions">
+          <button class="btn btn-secondary btn-sm" onclick="resetCategoryDatasetWeightsEqual()">
+            ⚖️ Equal Weights
+          </button>
+          <div class="weight-total">
+            Total: <strong id="totalCategoryDatasetWeight">100%</strong>
+          </div>
+        </div>
+      </div>
+
+      <div id="enhancedCategoryDatasetWeightControls">
+        <!-- Enhanced weight controls will be populated here -->
+      </div>
+    </div>
+
+    <div class="streamlined-navigation">
+      <button class="btn btn-secondary" onclick="goToStep(1)">← Back to Dataset Selection</button>
+      <button class="btn btn-primary" onclick="finalizeCategoryCreation()">Continue to Export →</button>
+    </div>
+  `;
+
+  populateEnhancedCategoryDatasetWeightControls();
+}
+
+// Create enhanced weight controls with dataset details
+function populateEnhancedCategoryDatasetWeightControls() {
+  const container = document.getElementById('enhancedCategoryDatasetWeightControls');
+  if (!container || !currentProject?.datasets) return;
+
+  container.innerHTML = '';
+
+  currentProject.datasets.forEach(datasetId => {
+    const dataset = findProject(datasetId);
+    if (!dataset) return;
+
+    const currentWeight = currentProject.dataset_weights?.[datasetId] || 0;
+    const featureCount = dataset.data?.features?.length || 0;
+    const fieldCount = dataset.field_info ? Object.keys(dataset.field_info.field_types || {}).length : 0;
+
+    const control = document.createElement('div');
+    control.className = 'enhanced-weight-control';
+
+    control.innerHTML = `
+      <div class="weight-control-card">
+        <div class="weight-control-header">
+          <div class="dataset-info">
+            <div class="dataset-icon">📊</div>
+            <div class="dataset-details">
+              <h5 class="dataset-name">${dataset.name}</h5>
+              <div class="dataset-stats">
+                <span class="stat">${featureCount.toLocaleString()} features</span>
+                <span class="stat">${fieldCount} fields</span>
+              </div>
+            </div>
+          </div>
+          <div class="weight-display">
+            <span class="weight-value" id="enhancedWeightVal_${datasetId}">${Math.round(currentWeight)}%</span>
+          </div>
+        </div>
+
+        <div class="weight-slider-container">
+          <input type="range" class="enhanced-weight-slider"
+                 id="enhancedWeight_${datasetId}"
+                 min="0" max="100" value="${Math.round(currentWeight)}"
+                 oninput="updateCategoryDatasetWeight('${datasetId}', this.value)">
+        </div>
+
+        ${dataset.description ? `
+          <div class="dataset-description">${dataset.description}</div>
+        ` : ''}
+      </div>
+    `;
+
+    container.appendChild(control);
+  });
+}
+
+// Finalize category creation and save
+function finalizeCategoryCreation() {
+  // Save current project to projects array
+  const existingIndex = projects.categories.findIndex(c => c.id === currentProject.id);
+  if (existingIndex >= 0) {
+    projects.categories[existingIndex] = currentProject;
+  } else {
+    projects.categories.push(currentProject);
+  }
+
+  saveProjects();
+  showMessage(`Category "${currentProject.name}" created successfully!`, 'success');
+  goToStep(3); // Go to streamlined export
+}
+
+// Similar function for feature layer finalization
+function finalizeFeatureLayerCreation() {
+  const existingIndex = projects.featurelayers.findIndex(f => f.id === currentProject.id);
+  if (existingIndex >= 0) {
+    projects.featurelayers[existingIndex] = currentProject;
+  } else {
+    projects.featurelayers.push(currentProject);
+  }
+
+  saveProjects();
+  showMessage(`Feature Layer "${currentProject.name}" created successfully!`, 'success');
+  goToStep(3); // Go to streamlined export
 }
 
 // Category Dataset Selection (Step 1 for categories)
