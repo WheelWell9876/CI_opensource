@@ -28,5 +28,23 @@
     },
     "created_at": "2025-08-25T01:25:31.208Z",
     "updated_at": "2025-08-25T01:25:48.651Z"
+  },
+  {
+    "id": "proj_1756094838612_i0z3f12ea",
+    "name": "rrrrrrrr",
+    "description": "",
+    "type": "category",
+    "datasets": [],
+    "dataset_weights": {},
+    "created_at": "2025-08-25T04:07:18.612Z",
+    "categories": [
+      "proj_1756074475410_s58xz1ylk",
+      "proj_1756084859431_s2m5nk5j9"
+    ],
+    "category_weights": {
+      "proj_1756074475410_s58xz1ylk": 50,
+      "proj_1756084859431_s2m5nk5j9": 50
+    },
+    "updated_at": "2025-08-25T04:08:28.791Z"
   }
 ]

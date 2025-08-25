@@ -201,11 +201,11 @@ function getMaxStepForProjectType(type) {
   }
 }
 
-// Show step content based on streamlined workflow
+// Enhanced step content switching
 function showStepContentWithWorkflow(step) {
-  debugLog('Showing streamlined step content:', step, 'for project type:', projectType);
+  debugLog(`🎨 Showing step content: step=${step}, projectType=${projectType}`);
 
-  // Hide all step content
+  // Hide all step content first
   document.querySelectorAll('.step-content').forEach(content => {
     content.classList.remove('active');
     content.style.display = 'none';
@@ -217,6 +217,7 @@ function showStepContentWithWorkflow(step) {
     if (projectSelectionStep) {
       projectSelectionStep.classList.add('active');
       projectSelectionStep.style.display = 'block';
+      debugLog('✅ Showing project selection step');
     }
     return;
   }
@@ -225,32 +226,40 @@ function showStepContentWithWorkflow(step) {
   let targetSelector;
 
   if (projectType === 'dataset') {
-    // Dataset workflow unchanged: 0→1→2→3→4→5
-    if (step === 1) targetSelector = '.step-content.dataset-step[data-step="1"]'; // Load Data
-    else if (step === 2) targetSelector = '.step-content.dataset-step[data-step="2"]'; // Configure
-    else if (step === 3) targetSelector = '.step-content[data-step="3"]'; // Select Fields
-    else if (step === 4) targetSelector = '.step-content[data-step="4"]'; // Apply Weights
-    else if (step === 5) targetSelector = '.step-content[data-step="5"]'; // Export
+    // Dataset workflow: 0→1→2→3→4→5 (unchanged)
+    if (step === 1) targetSelector = '.step-content.dataset-step[data-step="1"]';
+    else if (step === 2) targetSelector = '.step-content.dataset-step[data-step="2"]';
+    else if (step === 3) targetSelector = '.step-content[data-step="3"]';
+    else if (step === 4) targetSelector = '.step-content[data-step="4"]';
+    else if (step === 5) targetSelector = '.step-content[data-step="5"]';
 
   } else if (projectType === 'category') {
-    // Category streamlined workflow: 0→1→2→3
-    if (step === 1) targetSelector = '.step-content.category-step[data-step="1"]'; // Select Datasets (Enhanced)
-    else if (step === 2) targetSelector = '.step-content.category-step[data-step="2"]'; // Dataset Weights
-    else if (step === 3) targetSelector = '.step-content[data-step="5"]'; // Skip to Export (reuse export step)
+    // Category streamlined workflow: 0→1→2→3 (maps to 0→1→2→5)
+    if (step === 1) targetSelector = '.step-content.category-step[data-step="1"]';
+    else if (step === 2) targetSelector = '.step-content.category-step[data-step="2"]';
+    else if (step === 3) targetSelector = '.step-content[data-step="5"]'; // Skip to export
 
   } else if (projectType === 'featurelayer') {
-    // Feature Layer streamlined workflow: 0→1→2→3
-    if (step === 1) targetSelector = '.step-content.featurelayer-step[data-step="1"]'; // Select Categories (Enhanced)
-    else if (step === 2) targetSelector = '.step-content.featurelayer-step[data-step="2"]'; // Category Weights
-    else if (step === 3) targetSelector = '.step-content[data-step="5"]'; // Skip to Export (reuse export step)
+    // Feature Layer streamlined workflow: 0→1→2→3 (maps to 0→1→2→5)
+    if (step === 1) targetSelector = '.step-content.featurelayer-step[data-step="1"]';
+    else if (step === 2) targetSelector = '.step-content.featurelayer-step[data-step="2"]';
+    else if (step === 3) targetSelector = '.step-content[data-step="5"]'; // Skip to export
   }
+
+  debugLog(`🎯 Looking for step content: ${targetSelector}`);
 
   const targetContent = document.querySelector(targetSelector);
   if (targetContent) {
     targetContent.classList.add('active');
     targetContent.style.display = 'block';
+    debugLog(`✅ Showing step content: ${targetSelector}`);
   } else {
-    console.warn('Could not find step content for:', targetSelector);
+    console.error(`❌ Could not find step content for: ${targetSelector}`);
+    debugLog('Available step contents:',
+      Array.from(document.querySelectorAll('.step-content')).map(el =>
+        `${el.className} [data-step="${el.dataset.step}"]`
+      )
+    );
   }
 }
 

@@ -802,3 +802,100 @@ select[multiple] option:hover {
 .panel::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #1976d2 0%, #0288d1 100%);
 }
+
+
+/* Enhanced project type selection styling */
+
+.project-type-card {
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-type-card:hover {
+  border-color: #2196f3;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
+  transform: translateY(-2px);
+}
+
+.project-type-card.selected {
+  border-color: #4caf50 !important;
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.25);
+  transform: translateY(-4px);
+}
+
+.project-type-card.selected::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4caf50, #66bb6a);
+}
+
+.project-type-card.selected .project-type-icon {
+  background: #4caf50;
+  color: white;
+  transform: scale(1.1);
+}
+
+.project-type-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  display: block;
+  background: #f5f5f5;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.project-type-content h4 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.project-type-card.selected .project-type-content h4 {
+  color: #2e7d32;
+}
+
+/* Workflow steps visibility animation */
+.steps {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.steps[style*="flex"] {
+  opacity: 1;
+}
+
+/* Debug styles for workflow switching */
+.workflow-debug {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 0.8rem;
+  z-index: 9999;
+  max-width: 300px;
+}
+
+.workflow-debug.hidden {
+  display: none;
+}
