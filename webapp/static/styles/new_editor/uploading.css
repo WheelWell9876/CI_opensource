@@ -1,0 +1,53 @@
+/* ============================================================================
+   23. upload.css - File Upload Styles
+   ============================================================================ */
+
+.upload-area {
+  border: 2px dashed #ccc;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  background: var(--bg-lighter);
+}
+
+.upload-area:hover {
+  border-color: var(--primary-color);
+  background: #f0f8ff;
+}
+
+.upload-area.dragover {
+  border-color: var(--primary-color);
+  background: #e3f2fd;
+  transform: scale(1.02);
+}
+
+.upload-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.upload-area h3 {
+  margin: 0.5rem 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+#fileUploadContainer,
+#builtInApiContainer,
+#userApiContainer,
+#customUrlContainer,
+#createApiContainer {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--bg-light);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color-light);
+}
+
+#createApiContainer {
+  background: #f0f8ff;
+  border-color: #b3d9ff;
+}

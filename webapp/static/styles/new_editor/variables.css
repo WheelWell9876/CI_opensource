@@ -1,0 +1,64 @@
+/* ============================================================================
+   2. variables.css - CSS Variables and Constants
+   ============================================================================ */
+
+:root {
+  /* Colors */
+  --primary-color: #2196f3;
+  --primary-dark: #1976d2;
+  --primary-light: #21cbf3;
+  --secondary-color: #667eea;
+  --secondary-dark: #764ba2;
+  --success-color: #4caf50;
+  --success-dark: #388e3c;
+  --error-color: #f44336;
+  --warning-color: #f57c00;
+
+  /* Backgrounds */
+  --bg-white: #ffffff;
+  --bg-light: #f8f9fa;
+  --bg-lighter: #fafafa;
+  --bg-dark: #333;
+
+  /* Borders */
+  --border-color: #e0e0e0;
+  --border-color-light: #e9ecef;
+  --border-color-dark: #dee2e6;
+
+  /* Text */
+  --text-primary: #333;
+  --text-secondary: #666;
+  --text-muted: #999;
+  --text-light: #6c757d;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-round: 50%;
+
+  /* Font Sizes */
+  --font-xs: 0.7rem;
+  --font-sm: 0.8rem;
+  --font-md: 0.9rem;
+  --font-lg: 1rem;
+  --font-xl: 1.25rem;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.15);
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}

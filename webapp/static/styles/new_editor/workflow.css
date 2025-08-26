@@ -1,0 +1,111 @@
+/* ============================================================================
+   6. workflow.css - Workflow Steps
+   ============================================================================ */
+
+.workflow-header {
+  background: var(--bg-white);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-md);
+  min-height: 80px;
+  max-height: 120px;
+  overflow: hidden;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  transition: all var(--transition-medium);
+  opacity: 0;
+}
+
+.steps[style*="flex"] {
+  opacity: 1;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  position: relative;
+  opacity: 0.7;
+}
+
+.step.active,
+.step.completed {
+  opacity: 1;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-round);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  background: #f0f0f0;
+  color: var(--text-muted);
+  transition: all var(--transition-medium);
+  margin-bottom: 0.5rem;
+  border: 2px solid transparent;
+}
+
+.step.active .step-number {
+  background: var(--primary-color);
+  color: white;
+  transform: scale(1.1);
+  border-color: var(--primary-dark);
+  box-shadow: 0 3px 8px rgba(33, 150, 243, 0.3);
+}
+
+.step.completed .step-number {
+  background: var(--success-color);
+  color: white;
+  border-color: var(--success-dark);
+}
+
+.step-title {
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: color var(--transition-medium);
+  font-size: 0.85rem;
+  text-align: center;
+  max-width: 80px;
+  line-height: 1.2;
+}
+
+.step.active .step-title {
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.step.completed .step-title {
+  color: var(--success-color);
+  font-weight: 700;
+}
+
+.step-line {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  right: -50%;
+  height: 3px;
+  background: var(--border-color);
+  z-index: -1;
+  transition: background-color var(--transition-medium);
+  border-radius: 2px;
+}
+
+.step.completed .step-line {
+  background: linear-gradient(90deg, var(--success-color) 0%, #81c784 100%);
+}
+
+.step:last-child .step-line {
+  display: none;
+}

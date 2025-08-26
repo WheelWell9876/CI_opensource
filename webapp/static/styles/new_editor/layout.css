@@ -1,0 +1,47 @@
+/* ============================================================================
+   4. layout.css - Main Layout Components
+   ============================================================================ */
+
+.container {
+  max-width: 1600px;
+  margin: 1rem auto;
+  padding: 0 2rem;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  align-items: start;
+}
+
+.panel {
+  background: var(--bg-white);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 1.5rem 0;
+  box-shadow: var(--shadow-md);
+  min-height: 900px;
+  height: 95vh;
+  max-height: none;
+  overflow-y: visible;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.panel-icon {
+  font-size: 1.5rem;
+}

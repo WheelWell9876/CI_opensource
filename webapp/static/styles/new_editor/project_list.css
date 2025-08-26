@@ -1,0 +1,91 @@
+/* ============================================================================
+   11. project_list.css - Project List Styles
+   ============================================================================ */
+
+.existing-projects {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  max-height: none;
+  overflow: visible;
+  opacity: 1;
+}
+
+.existing-projects h4 {
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--radius-md);
+  background: var(--bg-lighter);
+}
+
+.project-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  min-height: 45px;
+}
+
+.project-item:hover {
+  border-color: var(--primary-color);
+  background: #f9f9f9;
+  box-shadow: 0 1px 4px rgba(33, 150, 243, 0.1);
+}
+
+.project-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.project-date {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+}
+
+.project-actions {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.project-actions button {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background: var(--bg-white);
+  cursor: pointer;
+  font-size: var(--font-xs);
+  transition: all var(--transition-fast);
+}
+
+.project-actions button:hover {
+  background: #f0f0f0;
+}
+
+.project-actions button.delete-btn {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.project-actions button.delete-btn:hover {
+  background: #dc3545;
+  color: white;
+}

@@ -9,12 +9,38 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
 
   <!-- Modular Editor Styles -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/base_layout.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/project_selection.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/forms_components.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/field_weight.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/project_builder.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/responsive.css') }}">
+<!--  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/base_layout.css') }}">-->
+<!--  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/project_selection.css') }}">-->
+<!--  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/forms_components.css') }}">-->
+<!--  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/field_weight.css') }}">-->
+<!--  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/project_builder.css') }}">-->
+<!--  <link rel="stylesheet" href="{{ url_for('static', filename='styles/core_editor/responsive.css') }}">-->
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/action_selector.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/animations.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/attribute_controls.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/buttons.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/field_selection.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/forms.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/layout.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/loading.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/messages.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/navigation.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/preview.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/project_list.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/project_selection.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/reset.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/responsive.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/scrollbars.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/selection_cards.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/typography.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/uploading.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/utilities.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/variables.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/weight_controls.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/new_editor/workflow.css') }}">
+
 </head>
 <body>
   <!-- Header -->
@@ -465,14 +491,37 @@
   </footer>
 
   <!-- Load JavaScript modules in dependency order -->
-  <!-- Core modules first -->
-  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/core_navigation.js') }}"></script>
+<!--  &lt;!&ndash; Core modules first &ndash;&gt;-->
+<!--  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/core_navigation.js') }}"></script>-->
 
-  <!-- Feature modules -->
-  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/project_selection.js') }}"></script>
-  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/project_builder.js') }}"></script>
-  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/field_management.js') }}"></script>
-  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/preview_export.js') }}"></script>
+<!--  &lt;!&ndash; Feature modules &ndash;&gt;-->
+<!--  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/project_selection.js') }}"></script>-->
+<!--  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/project_builder.js') }}"></script>-->
+<!--  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/field_management.js') }}"></script>-->
+<!--  <script src="{{ url_for('static', filename='scripts/jsonEditor/core_editor/preview_export.js') }}"></script>-->
+
+  <!-- new modules -->
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/attribute_management.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/category_management.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/config.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/data_loading.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/debug.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/export.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/feature_layer_management.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/field_management.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/initialization.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/navigation.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/preview.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/project_selection.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/python_generation.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/state.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/statistics.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/step_handling.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/storage.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/ui_helpers.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/utils.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/jsonEditor/new_editor/weight_management.js') }}"></script>
+
 
   <!-- Data loading modules (existing) -->
   <script src="{{ url_for('static', filename='scripts/jsonEditor/file_upload.js') }}"></script>

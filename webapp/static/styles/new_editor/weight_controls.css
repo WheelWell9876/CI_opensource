@@ -1,0 +1,163 @@
+/* ============================================================================
+   13. weight_controls.css - Weight Control Styles
+   ============================================================================ */
+
+#weightControls {
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.enhanced-field-control {
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #f9f9f9;
+  box-shadow: var(--shadow-sm);
+}
+
+.enhanced-field-control[data-field-type="qualitative"] {
+  border-left: 4px solid var(--success-color);
+}
+
+.enhanced-field-control[data-field-type="quantitative"] {
+  border-left: 4px solid var(--primary-color);
+}
+
+.weight-control {
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.weight-control:hover {
+  background: var(--bg-light);
+  transform: translateX(2px);
+}
+
+.weight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.weight-header > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.lock-btn {
+  background: none;
+  border: none;
+  font-size: var(--font-md);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  min-width: 24px;
+  text-align: center;
+}
+
+.lock-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.lock-btn.locked {
+  background-color: #fff3e0;
+  color: var(--warning-color);
+}
+
+.weight-value {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: var(--font-md);
+  min-width: 45px;
+  text-align: right;
+}
+
+.weight-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border-color);
+  outline: none;
+  transition: all var(--transition-fast);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.weight-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-round);
+  background: var(--primary-color);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3);
+}
+
+.weight-slider::-webkit-slider-thumb:hover {
+  background: var(--primary-dark);
+  transform: scale(1.1);
+  box-shadow: 0 3px 6px rgba(33, 150, 243, 0.4);
+}
+
+.weight-slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.meta-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.meta-inputs label {
+  font-size: var(--font-sm);
+  color: #444;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.meta-inputs input {
+  padding: 0.3rem 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  transition: border-color var(--transition-fast);
+}
+
+.meta-inputs input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.total-weight {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  border: 2px solid #90caf9;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+  z-index: 10;
+  position: relative;
+}
+
+.total-weight strong {
+  color: #1565c0;
+  font-size: 1rem;
+}
