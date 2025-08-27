@@ -280,6 +280,7 @@ function populateFeatureLayerCategoryWeightControls() {
     const currentWeight = currentProject.category_weights?.[categoryId] || 0;
     const datasetCount = category.datasets?.length || 0;
     const totalFeatures = calculateTotalCategoryFeatures(category);
+    const totalFields = calculateTotalCategoryFields(category);
 
     const control = document.createElement('div');
     control.className = 'enhanced-weight-control';
@@ -288,12 +289,13 @@ function populateFeatureLayerCategoryWeightControls() {
       <div class="weight-control-card">
         <div class="weight-control-header">
           <div class="dataset-info">
-            <div class="dataset-icon">📁</div>
+            <div class="dataset-icon">📂</div>
             <div class="dataset-details">
               <h5 class="dataset-name">${category.name}</h5>
               <div class="dataset-stats">
                 <span class="stat">${datasetCount} datasets</span>
                 <span class="stat">${totalFeatures.toLocaleString()} features</span>
+                <span class="stat">${totalFields} fields</span>
               </div>
             </div>
           </div>
@@ -309,14 +311,79 @@ function populateFeatureLayerCategoryWeightControls() {
                  oninput="updateFeatureLayerCategoryWeight('${categoryId}', this.value)">
         </div>
 
-        ${category.description ? `
-          <div class="dataset-description">${category.description}</div>
-        ` : ''}
+        <div class="dataset-meta-info">
+          ${category.description ? `
+            <div class="dataset-description">${category.description}</div>
+          ` : ''}
+
+          ${datasetCount > 0 ? `
+            <div class="category-datasets-breakdown">
+              <small class="breakdown-label">Included Datasets:</small>
+              <div class="dataset-breakdown-grid">
+                ${category.datasets.slice(0, 4).map(datasetId => {
+                  const dataset = findProject(datasetId);
+                  if (!dataset) return '';
+                  const weight = category.dataset_weights?.[datasetId] || 0;
+                  const features = dataset.data?.features?.length || 0;
+                  return `
+                    <div class="dataset-breakdown-item">
+                      <span class="dataset-breakdown-name">${dataset.name}</span>
+                      <span class="dataset-breakdown-stats">${Math.round(weight)}% • ${features.toLocaleString()} features</span>
+                    </div>
+                  `;
+                }).join('')}
+                ${datasetCount > 4 ? `
+                  <div class="dataset-breakdown-more">+${datasetCount - 4} more datasets</div>
+                ` : ''}
+              </div>
+            </div>
+          ` : ''}
+        </div>
       </div>
     `;
 
     container.appendChild(control);
   });
+
+  updateTotalFeatureLayerCategoryWeight();
+}
+
+function updateTotalFeatureLayerCategoryWeight() {
+  const totalElement = document.getElementById('totalFeatureLayerCategoryWeight');
+  if (!totalElement || !currentProject?.category_weights) return;
+
+  const total = Object.values(currentProject.category_weights).reduce((sum, weight) => sum + weight, 0);
+  const totalPercent = Math.round(total);
+  totalElement.textContent = `${totalPercent}%`;
+
+  // Color code the total
+  if (totalPercent < 95 || totalPercent > 105) {
+    totalElement.style.color = '#d32f2f';
+  } else {
+    totalElement.style.color = '#2e7d32';
+  }
+}
+
+function resetFeatureLayerCategoryWeightsEqual() {
+  if (!currentProject?.categories) return;
+
+  const equalWeight = 100 / currentProject.categories.length;
+  currentProject.category_weights = {};
+
+  currentProject.categories.forEach(categoryId => {
+    currentProject.category_weights[categoryId] = equalWeight;
+
+    // Update slider and display
+    const slider = document.getElementById(`enhancedCategoryWeight_${categoryId}`);
+    const display = document.getElementById(`enhancedCategoryWeightVal_${categoryId}`);
+
+    if (slider) slider.value = Math.round(equalWeight);
+    if (display) display.textContent = `${Math.round(equalWeight)}%`;
+  });
+
+  updateTotalFeatureLayerCategoryWeight();
+  updatePreview();
+  showMessage('Category weights reset to equal distribution', 'success');
 }
 
 // Similar function for feature layer finalization

@@ -128,3 +128,14 @@ function updateTotalWeightDisplay() {
 
   totalWeightElement.style.color = (totalPercent < 95 || totalPercent > 105) ? '#d32f2f' : '#2e7d32';
 }
+
+
+function getFieldTypeBreakdown(fieldTypes) {
+  const breakdown = {};
+  Object.values(fieldTypes).forEach(type => {
+    breakdown[type] = (breakdown[type] || 0) + 1;
+  });
+
+  return Object.entries(breakdown).map(([type, count]) => ({type, count}));
+}
+

@@ -257,6 +257,7 @@ function populateEnhancedCategoryDatasetWeightControls() {
     const currentWeight = currentProject.dataset_weights?.[datasetId] || 0;
     const featureCount = dataset.data?.features?.length || 0;
     const fieldCount = dataset.field_info ? Object.keys(dataset.field_info.field_types || {}).length : 0;
+    const selectedFields = dataset.selected_fields ? dataset.selected_fields.length : fieldCount;
 
     const control = document.createElement('div');
     control.className = 'enhanced-weight-control';
@@ -270,7 +271,7 @@ function populateEnhancedCategoryDatasetWeightControls() {
               <h5 class="dataset-name">${dataset.name}</h5>
               <div class="dataset-stats">
                 <span class="stat">${featureCount.toLocaleString()} features</span>
-                <span class="stat">${fieldCount} fields</span>
+                <span class="stat">${selectedFields}/${fieldCount} fields</span>
               </div>
             </div>
           </div>
@@ -286,14 +287,56 @@ function populateEnhancedCategoryDatasetWeightControls() {
                  oninput="updateCategoryDatasetWeight('${datasetId}', this.value)">
         </div>
 
-        ${dataset.description ? `
-          <div class="dataset-description">${dataset.description}</div>
-        ` : ''}
+        <div class="dataset-meta-info">
+          ${dataset.description ? `
+            <div class="dataset-description">${dataset.description}</div>
+          ` : ''}
+
+          ${dataset.field_info && Object.keys(dataset.field_info.field_types || {}).length > 0 ? `
+            <div class="field-type-breakdown">
+              <small class="breakdown-label">Field Types:</small>
+              <div class="field-type-tags">
+                ${getFieldTypeBreakdown(dataset.field_info.field_types).map(({type, count}) =>
+                  `<span class="field-type-tag field-${type}">${type} (${count})</span>`
+                ).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
       </div>
     `;
 
     container.appendChild(control);
   });
+
+  updateTotalCategoryDatasetWeight();
+}
+
+function calculateTotalCategoryFields(category) {
+  if (!category.datasets || category.datasets.length === 0) return 0;
+
+  return category.datasets.reduce((total, datasetId) => {
+    const dataset = findProject(datasetId);
+    if (!dataset?.field_info) return total;
+
+    const fieldCount = dataset.selected_fields ?
+      dataset.selected_fields.length :
+      Object.keys(dataset.field_info.field_types || {}).length;
+
+    return total + fieldCount;
+  }, 0);
+}
+
+function updateTotalCategoryDatasetWeight() {
+  if (!currentProject?.dataset_weights) return;
+
+  const total = Object.values(currentProject.dataset_weights).reduce((sum, weight) => sum + weight, 0);
+  const totalElement = document.getElementById('totalCategoryDatasetWeight');
+
+  if (totalElement) {
+    totalElement.textContent = `${Math.round(total)}%`;
+    totalElement.style.color = Math.abs(total - 100) < 1 ? '#2e7d32' : '#d32f2f';
+  }
 }
 
 // Finalize category creation and save

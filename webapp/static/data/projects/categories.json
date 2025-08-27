@@ -9987,5 +9987,23 @@
       ],
       "total_features": 1000
     }
+  },
+  {
+    "id": "proj_1756257850951_q0up2j014",
+    "name": "65544",
+    "description": "",
+    "type": "category",
+    "datasets": [
+      "proj_1755965221998_c4prf0fkm",
+      "proj_1756135475254_fztjzapgs",
+      "proj_1756147610974_w6u9u05mq"
+    ],
+    "dataset_weights": {
+      "proj_1755965221998_c4prf0fkm": 33.333333333333336,
+      "proj_1756135475254_fztjzapgs": 33.333333333333336,
+      "proj_1756147610974_w6u9u05mq": 33.333333333333336
+    },
+    "created_at": "2025-08-27T01:24:10.951Z",
+    "updated_at": "2025-08-27T01:24:17.597Z"
   }
 ]
