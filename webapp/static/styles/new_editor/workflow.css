@@ -109,3 +109,61 @@
 .step:last-child .step-line {
   display: none;
 }
+
+
+/* Edit mode workflow indicator */
+.workflow-header.edit-mode {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+  border: 2px solid #ffb74d;
+}
+
+.workflow-header.view-mode {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  border: 2px solid #81c784;
+}
+
+/* Edit mode step indicators */
+.edit-mode .step.active .step-number {
+  background: #ff9800;
+  border-color: #f57c00;
+  box-shadow: 0 3px 8px rgba(255, 152, 0, 0.3);
+}
+
+.edit-mode .step.completed .step-number {
+  background: #ffa726;
+  border-color: #ff9800;
+}
+
+.view-mode .step.active .step-number {
+  background: #4caf50;
+  border-color: #388e3c;
+  box-shadow: 0 3px 8px rgba(76, 175, 80, 0.3);
+}
+
+/* Mode indicator badge */
+.mode-indicator {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mode-indicator.edit {
+  background: #ff9800;
+  color: white;
+}
+
+.mode-indicator.view {
+  background: #4caf50;
+  color: white;
+}
+
+.mode-indicator.create {
+  background: var(--primary-color);
+  color: white;
+}

@@ -248,6 +248,7 @@ function populateFeatureLayerFieldSelection() {
 
 function populateFieldList(fields, containerId = 'actualFieldList') {
   debugLog('Populating enhanced field list with attribute counts', fields);
+  debugLog('Edit mode - pre-selected fields:', Array.from(selectedFields));
 
   const fieldList = document.getElementById(containerId);
   if (!fieldList) {
@@ -270,9 +271,12 @@ function populateFieldList(fields, containerId = 'actualFieldList') {
     fieldDiv.className = 'field-item';
 
     const fieldType = fieldTypes[field] || 'unknown';
-    const typeIcon = fieldType === 'quantitative' ? '🔢' :
+    const typeIcon = fieldType === 'quantitative' ? '📢' :
                     fieldType === 'qualitative' ? '📝' :
                     fieldType === 'boolean' ? '☑️' : '❓';
+
+    // Check if field should be pre-selected in edit mode
+    const isPreSelected = projectAction === 'edit' && selectedFields.has(field);
 
     let attributeInfo = '';
     if (fieldType === 'qualitative' && fieldAttributes[field]) {
@@ -283,7 +287,8 @@ function populateFieldList(fields, containerId = 'actualFieldList') {
     fieldDiv.innerHTML = `
       <label class="field-label">
         <input type="checkbox" class="field-checkbox" id="field_${field}"
-               onchange="toggleField('${field}', this.checked)">
+               onchange="toggleField('${field}', this.checked)"
+               ${isPreSelected ? 'checked' : ''}>
         <span class="field-info">
           <span class="field-name">${field}</span>
           <span class="field-type">${typeIcon} ${fieldType}</span>
@@ -296,80 +301,83 @@ function populateFieldList(fields, containerId = 'actualFieldList') {
   });
 
   debugLog('Enhanced field list populated with', fields.length, 'fields');
+
+  // Update continue button after populating
+  updateContinueButton();
 }
 
 
-function createFieldWeightControl(field, equalWeight) {
-  const control = document.createElement('div');
-  control.className = 'weight-control enhanced-field-control';
-
-  const currentWeight = fieldWeights[field] || equalWeight;
-  const weightPercent = Math.round(currentWeight * 100);
-  const isLocked = lockedFields.has(field);
-  const fieldType = fieldTypes[field] || 'unknown';
-
-  const currentMeaning = fieldMeta[field]?.meaning || '';
-  const currentImportance = fieldMeta[field]?.importance || '';
-
-  const isQualitative = fieldType === 'qualitative';
-  const hasAttributes = isQualitative && fieldAttributes[field] && fieldAttributes[field].uniqueValues.length > 0;
-  const isExpanded = expandedFields.has(field);
-
-  let attributeSection = '';
-  if (hasAttributes) {
-    const uniqueCount = fieldAttributes[field].uniqueValues.length;
-    const expandIcon = isExpanded ? '🔽' : '▶️';
-
-    attributeSection = `
-      <div class="attribute-section">
-        <button class="attribute-toggle-btn" onclick="toggleAttributeSection('${field}')" type="button">
-          <span>${expandIcon}</span>
-          <span>Attribute Weights (${uniqueCount} values)</span>
-        </button>
-        <div class="attribute-controls" id="attributeControls_${field}" style="display: ${isExpanded ? 'block' : 'none'};">
-          ${createAttributeControls(field)}
-        </div>
-      </div>
-    `;
-  }
-
-  control.innerHTML = `
-    <div class="weight-header">
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <strong>${field}</strong>
-        <button class="lock-btn ${isLocked ? 'locked' : ''}"
-                onclick="toggleFieldLock('${field}')"
-                title="${isLocked ? 'Unlock field' : 'Lock field'}" type="button">
-          ${isLocked ? '🔒' : '🔓'}
-        </button>
-        <span class="field-type-indicator">${fieldType}</span>
-      </div>
-      <span class="weight-value" id="weightVal_${field}">${weightPercent}%</span>
-    </div>
-
-    <input type="range" class="weight-slider"
-           id="weight_${field}"
-           min="0" max="100" value="${weightPercent}"
-           ${isLocked ? 'disabled' : ''}
-           oninput="updateWeight('${field}', this.value)">
-
-    <div class="meta-inputs">
-      <label>
-        Field Meaning:
-        <input type="text" value="${currentMeaning}"
-               oninput="updateFieldMeta('${field}', 'meaning', this.value)"
-               placeholder="What does this field represent?">
-      </label>
-      <label>
-        Field Importance:
-        <input type="text" value="${currentImportance}"
-               oninput="updateFieldMeta('${field}', 'importance', this.value)"
-               placeholder="Why is this field important?">
-      </label>
-    </div>
-
-    ${attributeSection}
-  `;
-
-  return control;
-}
+//function createFieldWeightControl(field, equalWeight) {
+//  const control = document.createElement('div');
+//  control.className = 'weight-control enhanced-field-control';
+//
+//  const currentWeight = fieldWeights[field] || equalWeight;
+//  const weightPercent = Math.round(currentWeight * 100);
+//  const isLocked = lockedFields.has(field);
+//  const fieldType = fieldTypes[field] || 'unknown';
+//
+//  const currentMeaning = fieldMeta[field]?.meaning || '';
+//  const currentImportance = fieldMeta[field]?.importance || '';
+//
+//  const isQualitative = fieldType === 'qualitative';
+//  const hasAttributes = isQualitative && fieldAttributes[field] && fieldAttributes[field].uniqueValues.length > 0;
+//  const isExpanded = expandedFields.has(field);
+//
+//  let attributeSection = '';
+//  if (hasAttributes) {
+//    const uniqueCount = fieldAttributes[field].uniqueValues.length;
+//    const expandIcon = isExpanded ? '🔽' : '▶️';
+//
+//    attributeSection = `
+//      <div class="attribute-section">
+//        <button class="attribute-toggle-btn" onclick="toggleAttributeSection('${field}')" type="button">
+//          <span>${expandIcon}</span>
+//          <span>Attribute Weights (${uniqueCount} values)</span>
+//        </button>
+//        <div class="attribute-controls" id="attributeControls_${field}" style="display: ${isExpanded ? 'block' : 'none'};">
+//          ${createAttributeControls(field)}
+//        </div>
+//      </div>
+//    `;
+//  }
+//
+//  control.innerHTML = `
+//    <div class="weight-header">
+//      <div style="display: flex; align-items: center; gap: 0.5rem;">
+//        <strong>${field}</strong>
+//        <button class="lock-btn ${isLocked ? 'locked' : ''}"
+//                onclick="toggleFieldLock('${field}')"
+//                title="${isLocked ? 'Unlock field' : 'Lock field'}" type="button">
+//          ${isLocked ? '🔒' : '🔓'}
+//        </button>
+//        <span class="field-type-indicator">${fieldType}</span>
+//      </div>
+//      <span class="weight-value" id="weightVal_${field}">${weightPercent}%</span>
+//    </div>
+//
+//    <input type="range" class="weight-slider"
+//           id="weight_${field}"
+//           min="0" max="100" value="${weightPercent}"
+//           ${isLocked ? 'disabled' : ''}
+//           oninput="updateWeight('${field}', this.value)">
+//
+//    <div class="meta-inputs">
+//      <label>
+//        Field Meaning:
+//        <input type="text" value="${currentMeaning}"
+//               oninput="updateFieldMeta('${field}', 'meaning', this.value)"
+//               placeholder="What does this field represent?">
+//      </label>
+//      <label>
+//        Field Importance:
+//        <input type="text" value="${currentImportance}"
+//               oninput="updateFieldMeta('${field}', 'importance', this.value)"
+//               placeholder="Why is this field important?">
+//      </label>
+//    </div>
+//
+//    ${attributeSection}
+//  `;
+//
+//  return control;
+//}

@@ -385,3 +385,21 @@ function resetCategoryDatasetWeightsEqual() {
   updatePreview();
   showMessage('Dataset weights reset to equal distribution', 'success');
 }
+
+
+function populateEnhancedCategoryDatasetSelectionForEdit() {
+  debugLog('Populating category dataset selection for edit mode');
+
+  // Use the regular populate function but with pre-selected datasets
+  populateEnhancedCategoryDatasetSelection();
+
+  // Pre-select the datasets that were already in this category
+  if (currentProject && currentProject.datasets) {
+    currentProject.datasets.forEach(datasetId => {
+      const card = document.querySelector(`.selection-card[onclick*="${datasetId}"]`);
+      if (card && !card.classList.contains('selected')) {
+        toggleDatasetSelection(datasetId);
+      }
+    });
+  }
+}

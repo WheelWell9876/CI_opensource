@@ -2,20 +2,11 @@
   "projectType": "dataset",
   "projectAction": "create",
   "currentProject": {
-    "id": "proj_1756265789513_vccrds4lm",
-    "name": "3456ytgh",
+    "id": "proj_1756321509625_qmy9m66rr",
+    "type": "dataset",
+    "created_at": "2025-08-27T19:05:09.625Z",
+    "name": "ZXCVBNM",
     "description": "",
-    "type": "category",
-    "datasets": [
-      "proj_1755965221998_c4prf0fkm",
-      "proj_1756135475254_fztjzapgs"
-    ],
-    "dataset_weights": {
-      "proj_1755965221998_c4prf0fkm": 45,
-      "proj_1756135475254_fztjzapgs": 50
-    },
-    "created_at": "2025-08-27T03:36:29.513Z",
-    "updated_at": "2025-08-27T03:36:51.459Z",
     "data": {
       "features": [
         {
@@ -4033,10 +4024,6 @@
               8
             ],
             [
-              "3301 Acmar Rd",
-              2
-            ],
-            [
               "10724 Salem Church Rd",
               2
             ],
@@ -4045,11 +4032,11 @@
               2
             ],
             [
-              "4203 Clevemont Rd",
+              "3301 Acmar Rd",
               2
             ],
             [
-              "1319 No Business Creek Rd",
+              "4203 Clevemont Rd",
               2
             ],
             [
@@ -4057,15 +4044,19 @@
               2
             ],
             [
-              "16693 Plant Rd Hwy 235",
+              "1319 No Business Creek Rd",
+              2
+            ],
+            [
+              "5500 Derby Dr",
               1
             ],
             [
-              "680 \ufeffRising Star Rd",
+              "2350 NW 27th Ave",
               1
             ],
             [
-              "804 Clarks Pl Rd",
+              "794 Hwy 26 E",
               1
             ]
           ],
@@ -5578,7 +5569,7 @@
               8
             ],
             [
-              "Cronimet Corp",
+              "Circle J Inert Landfill",
               2
             ],
             [
@@ -5586,31 +5577,31 @@
               2
             ],
             [
-              "Circle J Inert Landfill",
+              "Cronimet Corp",
               2
             ],
             [
-              "Florida Tire Terminal",
+              "Recycle America of Sarasota",
               1
             ],
             [
-              "Shapiro Metals-Mobile",
+              "Hallman Wood Products Inc",
               1
             ],
             [
-              "Quincy Transfer Station",
+              "Rigsby&#x27;s Auto Parts &amp; Sales Inc",
               1
             ],
             [
-              "LKQ Self Service Riviera Beach",
+              "Marietta Recycling Corp",
               1
             ],
             [
-              "Calhoun County Construction / Demolition Landfill",
+              "Coffee County Sanitary Landfill",
               1
             ],
             [
-              "Robert J Baggett Inc",
+              "B &amp; B Tire Landfill",
               1
             ]
           ],
@@ -6644,31 +6635,19 @@
           "has_data": true,
           "top_values": [
             [
-              "110006789270",
+              "110001322569",
               1
             ],
             [
-              "110070008659",
+              "110000368183",
               1
             ],
             [
-              "110070031795",
+              "110070020700",
               1
             ],
             [
-              "110009072984",
-              1
-            ],
-            [
-              "110053914412",
-              1
-            ],
-            [
-              "110000589257",
-              1
-            ],
-            [
-              "110043697522",
+              "110070687744",
               1
             ],
             [
@@ -6676,11 +6655,23 @@
               1
             ],
             [
-              "110013986525",
+              "110054818845",
               1
             ],
             [
-              "110070273546",
+              "110043697522",
+              1
+            ],
+            [
+              "110005710720",
+              1
+            ],
+            [
+              "110070021745",
+              1
+            ],
+            [
+              "110070020293",
               1
             ]
           ],
@@ -6824,15 +6815,35 @@
           "has_data": true,
           "top_values": [
             [
-              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110070010753",
+              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110000369645",
               1
             ],
             [
-              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110012689046",
+              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110024577000",
               1
             ],
             [
-              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110070027724",
+              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110001323586",
+              1
+            ],
+            [
+              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110001715813",
+              1
+            ],
+            [
+              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110070834463",
+              1
+            ],
+            [
+              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110070019717",
+              1
+            ],
+            [
+              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110005710720",
+              1
+            ],
+            [
+              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110034143898",
               1
             ],
             [
@@ -6840,27 +6851,7 @@
               1
             ],
             [
-              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110070008659",
-              1
-            ],
-            [
-              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110013946347",
-              1
-            ],
-            [
-              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110070687744",
-              1
-            ],
-            [
-              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110045481242",
-              1
-            ],
-            [
-              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110006790268",
-              1
-            ],
-            [
-              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110013947435",
+              "https://frs-public.epa.gov/ords/frs_public2/fii_query_detail.disp_program_facility?p_registry_id=110015851167",
               1
             ]
           ],
@@ -7004,43 +6995,43 @@
           "has_data": true,
           "top_values": [
             [
-              "d32dc61a-da7a-4969-9c41-a5d2fd37ca8f",
+              "78e6d454-0e6b-4ad1-8b38-31023e8fcfbd",
               1
             ],
             [
-              "5b7d7031-4e35-40ff-8e75-742148c0e468",
+              "b73f6d10-b0b6-4578-ba79-4394d9c5055e",
               1
             ],
             [
-              "3c3272b3-69e4-4c9a-a89f-50974f67f75b",
+              "6302feac-3959-4e21-8754-46260308b5ce",
               1
             ],
             [
-              "bb8617e8-743d-4614-9b57-56cb72790421",
+              "f628ad9f-ec6f-4c68-9c72-c21a3d421744",
               1
             ],
             [
-              "df859781-76c9-4407-a772-209752c87606",
+              "c925869e-3592-4766-93ce-c93da05fa11e",
               1
             ],
             [
-              "cf937150-13b3-4960-b64c-ea2df2e65ac8",
+              "51ab5380-9cee-4676-be00-b6fb72661e79",
               1
             ],
             [
-              "1b188f58-4674-4f68-b201-8bfdb748caa1",
+              "75909f4e-69ef-4b81-ba82-0c03288f2853",
               1
             ],
             [
-              "bbedd1be-27b9-4a50-9aea-a589d9ec4330",
+              "dd67fb85-70e8-4ad5-bf94-db9f61e7833f",
               1
             ],
             [
-              "55c1f269-d46e-47fc-8a75-f82b96d74040",
+              "fbd58a57-214c-467f-a807-406a843022f8",
               1
             ],
             [
-              "cc23174c-5ed4-46d5-94b1-1ffff3c50bc5",
+              "07b1d9c5-ac7e-4c53-90d0-2f59cbf5681f",
               1
             ]
           ],
@@ -8168,11 +8159,11 @@
               4
             ],
             [
-              "866-909-4458",
+              "855-292-6719",
               3
             ],
             [
-              "770-867-2499",
+              "866-909-4458",
               3
             ],
             [
@@ -9198,19 +9189,19 @@
               6
             ],
             [
+              "30336",
+              5
+            ],
+            [
               "30344",
               5
             ],
             [
+              "33407",
+              5
+            ],
+            [
               "30507",
-              5
-            ],
-            [
-              "33619",
-              5
-            ],
-            [
-              "30336",
               5
             ],
             [
@@ -9954,23 +9945,18 @@
         "GlobalID"
       ],
       "total_features": 1000
-    }
+    },
+    "updated_at": "2025-08-27T19:05:09.970Z"
   },
-  "datasetName": "3456ytgh",
+  "datasetName": "ZXCVBNM",
   "description": "",
-  "timestamp": "2025-08-27T03:43:45.420Z",
+  "timestamp": "2025-08-27T19:06:02.271Z",
   "selectedFields": [
     "C_D",
     "Composting",
     "Demolition",
     "Electronics",
     "HHW",
-    "LF_C_D",
-    "LF_HW",
-    "LF_MSW",
-    "Landfill",
-    "Latitude",
-    "Longitude",
     "Metals",
     "OBJECTID",
     "Recovery",
@@ -9978,15 +9964,10 @@
     "Tires",
     "Transfer_Station",
     "Vehicles",
-    "Address",
-    "City",
-    "Company",
-    "FRS_ID",
-    "FRS_REPORT_URL",
-    "GlobalID",
-    "Phone",
-    "State",
-    "Zip"
+    "LF_HW",
+    "LF_MSW",
+    "Landfill",
+    "LF_C_D"
   ],
   "fieldTypes": {
     "Address": "qualitative",
@@ -10018,33 +9999,22 @@
     "Zip": "qualitative"
   },
   "fieldWeights": {
-    "C_D": 0.03307692307692306,
-    "Composting": 0.03307692307692306,
-    "Demolition": 0.14,
-    "Electronics": 0.03307692307692306,
-    "HHW": 0.03307692307692306,
-    "LF_C_D": 0.03307692307692306,
-    "LF_HW": 0.03307692307692306,
-    "LF_MSW": 0.03307692307692306,
-    "Landfill": 0.03307692307692306,
-    "Latitude": 0.03307692307692306,
-    "Longitude": 0.03307692307692306,
-    "Metals": 0.03307692307692306,
-    "OBJECTID": 0.03307692307692306,
-    "Recovery": 0.03307692307692306,
-    "Region": 0.03307692307692306,
-    "Tires": 0.03307692307692306,
-    "Transfer_Station": 0.03307692307692306,
-    "Vehicles": 0.03307692307692306,
-    "Address": 0.03307692307692306,
-    "City": 0.03307692307692306,
-    "Company": 0.03307692307692306,
-    "FRS_ID": 0.03307692307692306,
-    "FRS_REPORT_URL": 0.03307692307692306,
-    "GlobalID": 0.03307692307692306,
-    "Phone": 0.03307692307692306,
-    "State": 0.03307692307692306,
-    "Zip": 0.03307692307692306
+    "C_D": 0.0625,
+    "Composting": 0.0625,
+    "Demolition": 0.0625,
+    "Electronics": 0.0625,
+    "HHW": 0.0625,
+    "Metals": 0.0625,
+    "OBJECTID": 0.0625,
+    "Recovery": 0.0625,
+    "Region": 0.0625,
+    "Tires": 0.0625,
+    "Transfer_Station": 0.0625,
+    "Vehicles": 0.0625,
+    "LF_HW": 0.0625,
+    "LF_MSW": 0.0625,
+    "Landfill": 0.0625,
+    "LF_C_D": 0.0625
   },
   "fieldMeta": {
     "C_D": {
@@ -10064,30 +10034,6 @@
       "importance": ""
     },
     "HHW": {
-      "meaning": "",
-      "importance": ""
-    },
-    "LF_C_D": {
-      "meaning": "",
-      "importance": ""
-    },
-    "LF_HW": {
-      "meaning": "",
-      "importance": ""
-    },
-    "LF_MSW": {
-      "meaning": "",
-      "importance": ""
-    },
-    "Landfill": {
-      "meaning": "",
-      "importance": ""
-    },
-    "Latitude": {
-      "meaning": "",
-      "importance": ""
-    },
-    "Longitude": {
       "meaning": "",
       "importance": ""
     },
@@ -10119,41 +10065,21 @@
       "meaning": "",
       "importance": ""
     },
-    "Address": {
+    "LF_HW": {
       "meaning": "",
       "importance": ""
     },
-    "City": {
+    "LF_MSW": {
       "meaning": "",
       "importance": ""
     },
-    "Company": {
-      "meaning": "",
-      "importance": ""
+    "Landfill": {
+      "meaning": "NNNNNN",
+      "importance": "WWWWWWW"
     },
-    "FRS_ID": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FRS_REPORT_URL": {
-      "meaning": "",
-      "importance": ""
-    },
-    "GlobalID": {
-      "meaning": "",
-      "importance": ""
-    },
-    "Phone": {
-      "meaning": "",
-      "importance": ""
-    },
-    "State": {
-      "meaning": "",
-      "importance": ""
-    },
-    "Zip": {
-      "meaning": "",
-      "importance": ""
+    "LF_C_D": {
+      "meaning": "WERTYUIOP",
+      "importance": "TTTTTTT"
     }
   },
   "fieldAttributes": {
@@ -10348,475 +10274,8 @@
         "23141 C.R. 33\u00a0": 1,
         "1659 Glade Rd": 1
       },
-      "attributeWeights": {
-        "548 Douglas Ave": 1.075268817204301,
-        "242 W Keene Rd": 1.075268817204301,
-        "3000 Gamson Rd": 1.075268817204301,
-        "3602 GOLDEN GEM ROAD\u00a0": 1.075268817204301,
-        "3268 Dishong Ave": 1.075268817204301,
-        "13250 NORTHEAST HIGHWAY 70\u00a0": 1.075268817204301,
-        "3599 Old Dixie Hwy": 1.075268817204301,
-        "20900 NE 30th Ave Ste 915": 1.075268817204301,
-        "400 Feagin St": 1.075268817204301,
-        "1415 Charlie Day Rd": 1.075268817204301,
-        "16770 Rebar Rd": 1.075268817204301,
-        "2500 State Rd 60 W": 1.075268817204301,
-        "1659 NW 10th St": 1.075268817204301,
-        "1701 State Rd 15": 1.075268817204301,
-        "2497 Panhandle Ln": 1.075268817204301,
-        "2905 US 90": 1.075268817204301,
-        "28731 S Diesel Dr": 1.075268817204301,
-        "8898 Lyons Rd": 1.075268817204301,
-        "3333 Lena Rd": 1.075268817204301,
-        "14549 NW Depsey Barron Rd": 1.075268817204301,
-        "10206 Cobb Rd": 1.075268817204301,
-        "14450 Landfill Rd": 1.075268817204301,
-        "2005 Broad St": 1.075268817204301,
-        "1841 State St N": 1.075268817204301,
-        "540111 US Hwy 1": 1.075268817204301,
-        "544449 US Hwy 1": 1.075268817204301,
-        "4945 Hwy 273": 1.075268817204301,
-        "13009 Beulah Rd": 1.075268817204301,
-        "1425 SE 30th Terr": 1.075268817204301,
-        "1005 Old Coachman Rd": 1.075268817204301,
-        "11399 47th St": 1.075268817204301,
-        "12501 40th St N": 1.075268817204301,
-        "12875 60th St N": 1.075268817204301,
-        "15097 63rd St N": 1.075268817204301,
-        "1741 N Keene Rd": 1.075268817204301,
-        "22069 US Hwy 19 N": 1.075268817204301,
-        "1357 Olympia St": 1.075268817204301,
-        "2250 Adamson Rd": 1.075268817204301,
-        "810 Industry Rd S": 1.075268817204301,
-        "3053 Barnes Ln": 1.075268817204301,
-        "1261 E Chestnut Ave": 1.075268817204301,
-        "652 NE 299 St": 1.075268817204301,
-        "4950 W Hwy 486": 1.075268817204301,
-        "41111 Enterprise Rd": 1.075268817204301,
-        "9626 Handcart Rd": 1.075268817204301,
-        "4301 S State Rd 7": 1.075268817204301,
-        "7061 SW 22 Court": 1.075268817204301,
-        "1750 SW 43rd Terrace": 1.075268817204301,
-        "1118 WWII Veterans Rd": 1.075268817204301,
-        "3151 E New York Ave": 1.075268817204301,
-        "1988 W PLYMOUTH AVENUE\u00a0": 1.075268817204301,
-        "13400 S State Rd 7": 1.075268817204301,
-        "1901 SW 4th Ave": 1.075268817204301,
-        "34 SW 5th Ave": 1.075268817204301,
-        "2315 NW 107th Ave": 1.075268817204301,
-        "8801 NW 23rd St": 1.075268817204301,
-        "29612 Hwy 27": 1.075268817204301,
-        "210 Highway 65": 1.075268817204301,
-        "409 Mango Tree Rd": 1.075268817204301,
-        "3005 Allen Nease Rd": 1.075268817204301,
-        "3705 Deerpark Blvd": 1.075268817204301,
-        "5500 Church Rd": 1.075268817204301,
-        "3300 SW 13th Ave": 1.075268817204301,
-        "3560 NW 56th St": 1.075268817204301,
-        "5975 N Federal Hwy Ste 130": 1.075268817204301,
-        "6700 N Andrews Ave Suite 402": 1.075268817204301,
-        "849 SW 21st Terrace": 1.075268817204301,
-        "10500 Buckingham Rd": 1.075268817204301,
-        "12901 Village Gate St": 1.075268817204301,
-        "16711 Gator Rd": 1.075268817204301,
-        "16801 Stock Court": 1.075268817204301,
-        "2442 Rockfill Rd": 1.075268817204301,
-        "3350 Old Metro Pkwy": 1.075268817204301,
-        "3750 Veronica S Shoemaker Blvd": 1.075268817204301,
-        "4199 Bellasol Circle Unit 624": 1.075268817204301,
-        "5001 State Rd 82": 1.075268817204301,
-        "7940 Mainline Pkwy": 1.075268817204301,
-        "3890 SE lvitz Ave": 1.075268817204301,
-        "4880 Glades Cut Off Rd": 1.075268817204301,
-        "6120 Glades Cut-Off Rd": 1.075268817204301,
-        "110 NW Ready Ave": 1.075268817204301,
-        "630 Transit Way": 1.075268817204301,
-        "3222 SE Hawthorn Rd": 1.075268817204301,
-        "6001 Waldo Rd": 1.075268817204301,
-        "817 NE Waldo Rd": 1.075268817204301,
-        "8910 NW 13th St": 1.075268817204301,
-        "1930 E Osceola Rd": 1.075268817204301,
-        "13000 S US 41": 1.075268817204301,
-        "3545 Rosemary Hill Rd": 1.075268817204301,
-        "1313 SW Greenville Hills Rd": 1.075268817204301,
-        "109 Sampey Rd": 1.075268817204301,
-        "23141 C.R. 33\u00a0": 1.075268817204301,
-        "1659 Glade Rd": 1.075268817204301
-      },
-      "attributeMeta": {
-        "548 Douglas Ave": {
-          "meaning": "",
-          "importance": ""
-        },
-        "242 W Keene Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3000 Gamson Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3602 GOLDEN GEM ROAD\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3268 Dishong Ave": {
-          "meaning": "",
-          "importance": ""
-        },
-        "13250 NORTHEAST HIGHWAY 70\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3599 Old Dixie Hwy": {
-          "meaning": "",
-          "importance": ""
-        },
-        "20900 NE 30th Ave Ste 915": {
-          "meaning": "",
-          "importance": ""
-        },
-        "400 Feagin St": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1415 Charlie Day Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "16770 Rebar Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "2500 State Rd 60 W": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1659 NW 10th St": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1701 State Rd 15": {
-          "meaning": "",
-          "importance": ""
-        },
-        "2497 Panhandle Ln": {
-          "meaning": "",
-          "importance": ""
-        },
-        "2905 US 90": {
-          "meaning": "",
-          "importance": ""
-        },
-        "28731 S Diesel Dr": {
-          "meaning": "",
-          "importance": ""
-        },
-        "8898 Lyons Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3333 Lena Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "14549 NW Depsey Barron Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "10206 Cobb Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "14450 Landfill Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "2005 Broad St": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1841 State St N": {
-          "meaning": "",
-          "importance": ""
-        },
-        "540111 US Hwy 1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "544449 US Hwy 1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "4945 Hwy 273": {
-          "meaning": "",
-          "importance": ""
-        },
-        "13009 Beulah Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1425 SE 30th Terr": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1005 Old Coachman Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "11399 47th St": {
-          "meaning": "",
-          "importance": ""
-        },
-        "12501 40th St N": {
-          "meaning": "",
-          "importance": ""
-        },
-        "12875 60th St N": {
-          "meaning": "",
-          "importance": ""
-        },
-        "15097 63rd St N": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1741 N Keene Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "22069 US Hwy 19 N": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1357 Olympia St": {
-          "meaning": "",
-          "importance": ""
-        },
-        "2250 Adamson Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "810 Industry Rd S": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3053 Barnes Ln": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1261 E Chestnut Ave": {
-          "meaning": "",
-          "importance": ""
-        },
-        "652 NE 299 St": {
-          "meaning": "",
-          "importance": ""
-        },
-        "4950 W Hwy 486": {
-          "meaning": "",
-          "importance": ""
-        },
-        "41111 Enterprise Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "9626 Handcart Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "4301 S State Rd 7": {
-          "meaning": "",
-          "importance": ""
-        },
-        "7061 SW 22 Court": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1750 SW 43rd Terrace": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1118 WWII Veterans Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3151 E New York Ave": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1988 W PLYMOUTH AVENUE\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "13400 S State Rd 7": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1901 SW 4th Ave": {
-          "meaning": "",
-          "importance": ""
-        },
-        "34 SW 5th Ave": {
-          "meaning": "",
-          "importance": ""
-        },
-        "2315 NW 107th Ave": {
-          "meaning": "",
-          "importance": ""
-        },
-        "8801 NW 23rd St": {
-          "meaning": "",
-          "importance": ""
-        },
-        "29612 Hwy 27": {
-          "meaning": "",
-          "importance": ""
-        },
-        "210 Highway 65": {
-          "meaning": "",
-          "importance": ""
-        },
-        "409 Mango Tree Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3005 Allen Nease Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3705 Deerpark Blvd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "5500 Church Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3300 SW 13th Ave": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3560 NW 56th St": {
-          "meaning": "",
-          "importance": ""
-        },
-        "5975 N Federal Hwy Ste 130": {
-          "meaning": "",
-          "importance": ""
-        },
-        "6700 N Andrews Ave Suite 402": {
-          "meaning": "",
-          "importance": ""
-        },
-        "849 SW 21st Terrace": {
-          "meaning": "",
-          "importance": ""
-        },
-        "10500 Buckingham Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "12901 Village Gate St": {
-          "meaning": "",
-          "importance": ""
-        },
-        "16711 Gator Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "16801 Stock Court": {
-          "meaning": "",
-          "importance": ""
-        },
-        "2442 Rockfill Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3350 Old Metro Pkwy": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3750 Veronica S Shoemaker Blvd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "4199 Bellasol Circle Unit 624": {
-          "meaning": "",
-          "importance": ""
-        },
-        "5001 State Rd 82": {
-          "meaning": "",
-          "importance": ""
-        },
-        "7940 Mainline Pkwy": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3890 SE lvitz Ave": {
-          "meaning": "",
-          "importance": ""
-        },
-        "4880 Glades Cut Off Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "6120 Glades Cut-Off Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "110 NW Ready Ave": {
-          "meaning": "",
-          "importance": ""
-        },
-        "630 Transit Way": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3222 SE Hawthorn Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "6001 Waldo Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "817 NE Waldo Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "8910 NW 13th St": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1930 E Osceola Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "13000 S US 41": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3545 Rosemary Hill Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1313 SW Greenville Hills Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "109 Sampey Rd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "23141 C.R. 33\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1659 Glade Rd": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "City": {
       "uniqueValues": [
@@ -10923,260 +10382,8 @@
         "Groveland": 2,
         "Havana": 1
       },
-      "attributeWeights": {
-        "Fort Myers": 2,
-        "Altamonte Springs": 2,
-        "Clearwater": 2,
-        "Fort Lauderdale": 2,
-        "Gainesville": 2,
-        "Apopka": 2,
-        "Miami": 2,
-        "Brooksville": 2,
-        "Delray Beach": 2,
-        "Fort Pierce": 2,
-        "Arcadia": 2,
-        "Bonifay": 2,
-        "Callahan": 2,
-        "Cocoa": 2,
-        "Dade City": 2,
-        "Deland": 2,
-        "Elkton": 2,
-        "Fort Walton Beach": 2,
-        "Groveland": 2,
-        "Auburndale": 2,
-        "Avon Park": 2,
-        "Baker": 2,
-        "Jacksonville": 2,
-        "Bartow": 2,
-        "Bell": 2,
-        "Belle Glade": 2,
-        "Bonita Springs": 2,
-        "Boynton Beach": 2,
-        "Bradenton": 2,
-        "Hosford": 2,
-        "Bunnell": 2,
-        "Campbellton": 2,
-        "Cantonment": 2,
-        "Cape Coral": 2,
-        "Clewiston": 2,
-        "Cottondale": 2,
-        "Crestview": 2,
-        "Cross City": 2,
-        "Crystal River": 2,
-        "Deerfield Beach": 2,
-        "Defuniak Springs": 2,
-        "Dundee": 2,
-        "Eastpoint": 2,
-        "Edgewater": 2,
-        "Felda": 2,
-        "Geneva": 2,
-        "Gibsonton": 2,
-        "Green Cove Springs": 2,
-        "Greenville": 2,
-        "Havana": 2
-      },
-      "attributeMeta": {
-        "Fort Myers": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Altamonte Springs": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Clearwater": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fort Lauderdale": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Gainesville": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Apopka": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Miami": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Brooksville": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Delray Beach": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fort Pierce": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Arcadia": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bonifay": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Callahan": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cocoa": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Dade City": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Deland": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Elkton": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fort Walton Beach": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Groveland": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Auburndale": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Avon Park": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Baker": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Jacksonville": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bartow": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bell": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Belle Glade": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bonita Springs": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Boynton Beach": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bradenton": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hosford": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bunnell": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Campbellton": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cantonment": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cape Coral": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Clewiston": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cottondale": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Crestview": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cross City": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Crystal River": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Deerfield Beach": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Defuniak Springs": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Dundee": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Eastpoint": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Edgewater": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Felda": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Geneva": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Gibsonton": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Green Cove Springs": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Greenville": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Havana": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "Company": {
       "uniqueValues": [
@@ -11369,475 +10576,8 @@
         "CR 33 HEWITT LANDFILL\u00a0": 1,
         "Tallahassee Scrap Metals Inc": 1
       },
-      "attributeWeights": {
-        "JQ Recycling": 1.075268817204301,
-        "Vista Landfill LLC": 1.075268817204301,
-        "CMC Recycling-Apopka": 1.075268817204301,
-        "MID-FLORIDA MATERIALS CLASS III LANDFILL\u00a0": 1.075268817204301,
-        "Section 16 Landfill": 1.075268817204301,
-        "DESOTO RECYCLING &amp; DISPOSAL, LLC\u00a0": 1.075268817204301,
-        "All Pro Used Auto Parts PRP": 1.075268817204301,
-        "Royce Corporation": 1.075268817204301,
-        "Florida Tire Terminal": 1.075268817204301,
-        "Baker Landfill": 1.075268817204301,
-        "Gerdau-Jacksonville Steel Mill": 1.075268817204301,
-        "Cedar Trail Landfill": 1.075268817204301,
-        "Gilchrist County Central Waste Management Facility": 1.075268817204301,
-        "SWA West County Transfer Station": 1.075268817204301,
-        "LKQ West Florida": 1.075268817204301,
-        "Landress Auto Wrecking": 1.075268817204301,
-        "Vision Transfer Station": 1.075268817204301,
-        "Palm Meadows Compost Facility": 1.075268817204301,
-        "Lena Rd County Landfill": 1.075268817204301,
-        "Liberty County Landfill": 1.075268817204301,
-        "Cemex Brooksville South Plant": 1.075268817204301,
-        "Hernando County Northwest Landfill": 1.075268817204301,
-        "Regency Technologies": 1.075268817204301,
-        "Environmental Land Services": 1.075268817204301,
-        "A B &amp; B Auto Parts Inc": 1.075268817204301,
-        "Agricycle Farm Composting Facility": 1.075268817204301,
-        "Springhill Regional Landfill": 1.075268817204301,
-        "Perdido Landfill": 1.075268817204301,
-        "Jim Seamans": 1.075268817204301,
-        "City of Clearwater Transfer Station": 1.075268817204301,
-        "ViaTeK Solutions": 1.075268817204301,
-        "LKQ Copher Self Service Auto Parts-Clearwater Inc": 1.075268817204301,
-        "Clearwater Materials Transfer Facility": 1.075268817204301,
-        "Bob Walker Hauling &amp; Transfer Point": 1.075268817204301,
-        "Sarnago &amp; Sons Recycling &amp; Materials C &amp; D WPF": 1.075268817204301,
-        "Concept Concept Inc": 1.075268817204301,
-        "Clewiston Transfer Station": 1.075268817204301,
-        "Brevard Central Landfill": 1.075268817204301,
-        "Cocoa Auto Salvage Inc": 1.075268817204301,
-        "Tire Disposal Service": 1.075268817204301,
-        "Garry&#x27;s Auto Recycling": 1.075268817204301,
-        "Dixie County Solid Waste Management Facility": 1.075268817204301,
-        "LKQ Crystal River Inc": 1.075268817204301,
-        "Enterprise Landfill &amp; Recycling": 1.075268817204301,
-        "East Pasco Transfer Station": 1.075268817204301,
-        "LKQ Pick Your Part-Ft Lauderdale": 1.075268817204301,
-        "Mks Environmental Materials Recovery Facility": 1.075268817204301,
-        "Wm Recycling Sun 11": 1.075268817204301,
-        "Walton County Central Landfill": 1.075268817204301,
-        "West Volusia Transfer Station": 1.075268817204301,
-        "DELAND LANDFILL CLASS III\u00a0": 1.075268817204301,
-        "SWA Southwest County Transfer Station": 1.075268817204301,
-        "SWA South County Transfer Station": 1.075268817204301,
-        "All Phase Services Inc": 1.075268817204301,
-        "ARA Global Group DBA iCycle Green": 1.075268817204301,
-        "3Cycle LLC": 1.075268817204301,
-        "US 27 Tires LLC": 1.075268817204301,
-        "Franklin County Landfill &amp; Transfer Station": 1.075268817204301,
-        "City of Edgewater Solid Waste Transfer Station": 1.075268817204301,
-        "Tillman Ridge Waste Management Facility": 1.075268817204301,
-        "The Old City Transfer Station": 1.075268817204301,
-        "Lee/Hendry County Regional SW Disposal Facility": 1.075268817204301,
-        "Arc Tech": 1.075268817204301,
-        "Cellular Recycling": 1.075268817204301,
-        "LKQ Corp-Gov&#x27;t Affairs": 1.075268817204301,
-        "GY Telecom Inc": 1.075268817204301,
-        "Envirocycle Inc": 1.075268817204301,
-        "Lee County Resource Recovery Facility": 1.075268817204301,
-        "Creative Communications": 1.075268817204301,
-        "Pwsfl-Gator Rd C &amp; D Transfer Station": 1.075268817204301,
-        "Pwsfl Inc-Fort Myers Materials Transfer Station": 1.075268817204301,
-        "Southwest Disposal": 1.075268817204301,
-        "Garden Street Iron &amp; Metal Inc": 1.075268817204301,
-        "FPT-Fort Myers": 1.075268817204301,
-        "ARA Educational Foundation": 1.075268817204301,
-        "LKQ of Ft Myers": 1.075268817204301,
-        "Honc Destruction": 1.075268817204301,
-        "Waste Management Fort Pierce Transfer Station": 1.075268817204301,
-        "East Coast Recycling": 1.075268817204301,
-        "St Lucie Co Baling &amp; Recycling Facility Landfill": 1.075268817204301,
-        "Allied Services LLC Ft Walton Transfer Station": 1.075268817204301,
-        "Okaloosa County Transfer Station": 1.075268817204301,
-        "Florence C &amp; D Transfer Station": 1.075268817204301,
-        "Alachua County Solid Waste Transfer Station and WTCC": 1.075268817204301,
-        "Trademark Metals Recycling LLC-Gainesville": 1.075268817204301,
-        "LKQ Pick Your Part Gainesville": 1.075268817204301,
-        "Osceola Rd Solid Waste Mgmt Landfill": 1.075268817204301,
-        "South County Transfer Station": 1.075268817204301,
-        "Clay County C &amp; D Transfer Station Rosemary Hill": 1.075268817204301,
-        "Aucilla Area SW Facility CL I &amp; III": 1.075268817204301,
-        "Groveland Transfer and Recycling Facility": 1.075268817204301,
-        "CR 33 HEWITT LANDFILL\u00a0": 1.075268817204301,
-        "Tallahassee Scrap Metals Inc": 1.075268817204301
-      },
-      "attributeMeta": {
-        "JQ Recycling": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Vista Landfill LLC": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CMC Recycling-Apopka": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MID-FLORIDA MATERIALS CLASS III LANDFILL\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Section 16 Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "DESOTO RECYCLING &amp; DISPOSAL, LLC\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "All Pro Used Auto Parts PRP": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Royce Corporation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Florida Tire Terminal": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Baker Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Gerdau-Jacksonville Steel Mill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cedar Trail Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Gilchrist County Central Waste Management Facility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "SWA West County Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "LKQ West Florida": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Landress Auto Wrecking": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Vision Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Palm Meadows Compost Facility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lena Rd County Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Liberty County Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cemex Brooksville South Plant": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hernando County Northwest Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Regency Technologies": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Environmental Land Services": {
-          "meaning": "",
-          "importance": ""
-        },
-        "A B &amp; B Auto Parts Inc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Agricycle Farm Composting Facility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Springhill Regional Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Perdido Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Jim Seamans": {
-          "meaning": "",
-          "importance": ""
-        },
-        "City of Clearwater Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ViaTeK Solutions": {
-          "meaning": "",
-          "importance": ""
-        },
-        "LKQ Copher Self Service Auto Parts-Clearwater Inc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Clearwater Materials Transfer Facility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bob Walker Hauling &amp; Transfer Point": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Sarnago &amp; Sons Recycling &amp; Materials C &amp; D WPF": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Concept Concept Inc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Clewiston Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Brevard Central Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cocoa Auto Salvage Inc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tire Disposal Service": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Garry&#x27;s Auto Recycling": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Dixie County Solid Waste Management Facility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "LKQ Crystal River Inc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Enterprise Landfill &amp; Recycling": {
-          "meaning": "",
-          "importance": ""
-        },
-        "East Pasco Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "LKQ Pick Your Part-Ft Lauderdale": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Mks Environmental Materials Recovery Facility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Wm Recycling Sun 11": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Walton County Central Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "West Volusia Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "DELAND LANDFILL CLASS III\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "SWA Southwest County Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "SWA South County Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "All Phase Services Inc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ARA Global Group DBA iCycle Green": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3Cycle LLC": {
-          "meaning": "",
-          "importance": ""
-        },
-        "US 27 Tires LLC": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Franklin County Landfill &amp; Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "City of Edgewater Solid Waste Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tillman Ridge Waste Management Facility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "The Old City Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lee/Hendry County Regional SW Disposal Facility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Arc Tech": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cellular Recycling": {
-          "meaning": "",
-          "importance": ""
-        },
-        "LKQ Corp-Gov&#x27;t Affairs": {
-          "meaning": "",
-          "importance": ""
-        },
-        "GY Telecom Inc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Envirocycle Inc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lee County Resource Recovery Facility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Creative Communications": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Pwsfl-Gator Rd C &amp; D Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Pwsfl Inc-Fort Myers Materials Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Southwest Disposal": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Garden Street Iron &amp; Metal Inc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "FPT-Fort Myers": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ARA Educational Foundation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "LKQ of Ft Myers": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Honc Destruction": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Waste Management Fort Pierce Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "East Coast Recycling": {
-          "meaning": "",
-          "importance": ""
-        },
-        "St Lucie Co Baling &amp; Recycling Facility Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Allied Services LLC Ft Walton Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Okaloosa County Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Florence C &amp; D Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Alachua County Solid Waste Transfer Station and WTCC": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Trademark Metals Recycling LLC-Gainesville": {
-          "meaning": "",
-          "importance": ""
-        },
-        "LKQ Pick Your Part Gainesville": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Osceola Rd Solid Waste Mgmt Landfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "South County Transfer Station": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Clay County C &amp; D Transfer Station Rosemary Hill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Aucilla Area SW Facility CL I &amp; III": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Groveland Transfer and Recycling Facility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CR 33 HEWITT LANDFILL\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tallahassee Scrap Metals Inc": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "GlobalID": {
       "uniqueValues": [
@@ -12044,510 +10784,8 @@
         "ab33ee5f-33d3-43de-98c6-2f3ffd8906f8": 1,
         "81cb509f-47bc-4067-9bef-8883326ecbf4": 1
       },
-      "attributeWeights": {
-        "6bc4ddd4-eb88-45ef-b783-bf596fb84bf6": 1,
-        "eef33991-722e-4ce8-ac4c-ff1dd1c85bc0": 1,
-        "460f1948-8fe9-41e4-9964-4832523f5d42": 1,
-        "df7eb178-ead0-4834-8a50-dd4f9c811b5a": 1,
-        "02aac9ff-321a-45ac-9de5-79f0889790e4": 1,
-        "5825f468-d81e-46ee-bdd7-d25263f1126d": 1,
-        "bc5c527f-7b83-4598-886f-76037fb075b2": 1,
-        "4b144b45-e1d8-4f25-92ff-a86048eaa827": 1,
-        "8b52163c-b84f-47da-9e21-263550cdbc79": 1,
-        "6fe8cb89-8d8a-4d4e-8e76-60691a820a28": 1,
-        "8a9a0506-45ba-47ab-a0bb-fbfc0150e460": 1,
-        "5cf3d1d9-f3e7-4b87-b2b8-44116bc2d0d0": 1,
-        "b313e5c5-ed06-442a-a134-ed261161ffbd": 1,
-        "9c485db5-d169-4c74-b87d-c172c95239ca": 1,
-        "07ad1bac-14fc-4d42-8806-2a7519a898b4": 1,
-        "7cf4c8fb-bbe3-414f-b58f-ee794f2b2f09": 1,
-        "b22e8d7d-2535-4c1d-9570-f3d3e1d6b8ad": 1,
-        "cf2caa9c-15a1-4995-85f4-573307971ca8": 1,
-        "75541316-70bb-4f79-8441-9380b4a39c6d": 1,
-        "2f619216-2206-42c7-8277-f044d854050a": 1,
-        "e250db5d-decf-42f2-9930-9f5c622bd02b": 1,
-        "a91bde25-14de-4071-907e-af5547c149ba": 1,
-        "e7bcceea-b334-4317-a02a-318234827f88": 1,
-        "3a7bfba1-4fa5-46e6-8a6a-1ee12dc8d057": 1,
-        "55c1f269-d46e-47fc-8a75-f82b96d74040": 1,
-        "3f4a0cd0-7726-405d-8b75-52a8a53e22a9": 1,
-        "5d1d7c17-86e4-4c80-9131-8375ef241493": 1,
-        "8b98dc4b-df69-4fde-ba1a-7ebacfc8c437": 1,
-        "910bd315-7ecc-4d75-97bc-ea36cf72b91f": 1,
-        "d32dc61a-da7a-4969-9c41-a5d2fd37ca8f": 1,
-        "a5b59a5a-621a-4ece-a7c7-c1a476c3fd22": 1,
-        "0fa21f90-9dc5-44f0-bf31-a0e9343ece20": 1,
-        "ba63b890-26d9-44ef-a8e2-f73e91fa24d8": 1,
-        "b2dea43e-954e-492d-855e-d08c6b9fd21b": 1,
-        "5d0543b5-b07f-4c36-801d-9861070c459b": 1,
-        "0573a672-26be-43bf-afa8-ed15e53198d1": 1,
-        "a0d7078f-efde-4370-976f-7ef64d9a99f0": 1,
-        "d467b618-d286-4c1d-a46a-42fe54396865": 1,
-        "573a677d-1378-4f93-8a6d-e95690f0d868": 1,
-        "9ae4728d-9c89-4d6f-8ca7-1ef96f3cf1c6": 1,
-        "b6c6ee0b-e47e-4f55-8070-35694d37ce2d": 1,
-        "258443c3-e8ac-4e17-986e-5b2595cdf917": 1,
-        "a9dd386b-5e34-4bbc-b4c6-45357ecfd8d0": 1,
-        "07b1d9c5-ac7e-4c53-90d0-2f59cbf5681f": 1,
-        "cb397555-ea1f-47d2-9029-24e8dd50201e": 1,
-        "86f2e372-1c86-4caa-9bb3-775fbd0ccf05": 1,
-        "5e17c996-2c9e-42af-b79e-00f0601ce14d": 1,
-        "bd02f13c-8850-4e24-a0be-8ccb510fff07": 1,
-        "8e179a6c-0235-43a6-8ca5-6aa0240ccc16": 1,
-        "8efd2a81-3e08-4a4a-b8ab-9a66072c6239": 1,
-        "1e56a33c-f992-4c44-a4d7-ddedfb33bcb2": 1,
-        "77122018-9243-4522-8180-58eb5527f7bc": 1,
-        "60d3655d-1eb1-45f8-99f8-2ae009e9e08f": 1,
-        "d636beb0-63bc-4640-aadf-efe947439172": 1,
-        "786c23a2-08cd-4b2b-86c0-7c9879628ba1": 1,
-        "427a30cf-3287-4c7b-a1a8-786110e867f3": 1,
-        "8b9397fe-89e5-4c19-a490-fce8f5473501": 1,
-        "a337464b-d3e9-45ff-8a81-c6f263894863": 1,
-        "c96f91d0-9cf4-4e03-b980-2cce04192327": 1,
-        "0da97653-aed5-4e99-a47f-61cb33edbf42": 1,
-        "2a3b60bb-ff32-4594-a2c4-ca96ceead0ea": 1,
-        "0b85bc4b-6f15-4f6a-8130-8501eba65fd3": 1,
-        "69a6b917-9b7f-452c-a1bf-9b8b8a07213a": 1,
-        "5e05bc6d-b42b-43c5-b5e6-a0594b958b39": 1,
-        "051e168e-784c-4e3d-9ae6-b5a7965783b5": 1,
-        "d9c3cf2c-9448-4b3b-b941-7aa0371c2765": 1,
-        "91c6b7b6-4974-4500-8fd8-e44fc7915577": 1,
-        "40b6e789-353d-45f9-94e9-bc9a5eac5f65": 1,
-        "ab6adb21-f549-4377-98cc-ccc85d8d3c6f": 1,
-        "11a13fc9-1dbc-4fb9-a1a9-1bc96849575e": 1,
-        "df217cf8-5656-4403-a042-7eb4a461007d": 1,
-        "e5083cd7-00e9-4c65-92c8-ec2e719f1cc3": 1,
-        "5555d8ff-663e-4487-bfae-bba91114358d": 1,
-        "ab4f01f5-71a8-487a-9ff2-f9908e44feb7": 1,
-        "30953b1c-9d14-4549-8313-1d98139735ec": 1,
-        "8e9b844b-ad1b-49c2-9934-9062c3c03e3f": 1,
-        "0e81ed22-9e15-4f6f-92a8-fd845e76319a": 1,
-        "ae341571-7b20-40b7-91b2-a2f0f6d9b59d": 1,
-        "c5fe17b2-09f9-4271-94f5-44f3dd486cbc": 1,
-        "0bf5c4e0-4d01-41de-bae3-b4a13035d5b8": 1,
-        "03ba6722-41b9-4b0f-8fb6-2558b7152fa4": 1,
-        "1bc26e5a-1cf2-4ee4-9de8-b7dbed9674c2": 1,
-        "583a0e98-f46f-4dfb-a011-266a356b7af1": 1,
-        "ddbb3248-774e-4806-a149-769c462f3751": 1,
-        "63ccd44d-c00c-4c8e-9a1d-ee1d3e72950c": 1,
-        "c45ec98d-98d4-4afc-8092-05f299a95bdc": 1,
-        "e8cab3bf-bf2e-4f62-8b7d-359f87e9b4a4": 1,
-        "ac2acf45-5d41-4846-b708-50e7d254bcc2": 1,
-        "df21ec43-4527-4333-bf33-345eb15ab780": 1,
-        "d557a29a-a2d1-4f30-9a30-5fda0a31d2b4": 1,
-        "095f3aa4-7250-426c-b0ce-515ecb3abcfd": 1,
-        "9c0aaaa2-2b8e-4835-ab35-da65b0bb2547": 1,
-        "64ab3f44-0fbc-42ed-a51e-5aa231e5ff5a": 1,
-        "ded4a06a-4a83-4df6-89e4-23f89d3042b3": 1,
-        "8b104936-a743-485d-bb57-a95853b9428a": 1,
-        "19092baa-08af-4f72-ab5f-acdc0cbd3ebf": 1,
-        "9d85cfc6-f0e0-4f89-aa5c-dbe32e3c7532": 1,
-        "51618abc-1b4d-4605-b3f0-fdf77fb5825b": 1,
-        "ab33ee5f-33d3-43de-98c6-2f3ffd8906f8": 1,
-        "81cb509f-47bc-4067-9bef-8883326ecbf4": 1
-      },
-      "attributeMeta": {
-        "6bc4ddd4-eb88-45ef-b783-bf596fb84bf6": {
-          "meaning": "",
-          "importance": ""
-        },
-        "eef33991-722e-4ce8-ac4c-ff1dd1c85bc0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "460f1948-8fe9-41e4-9964-4832523f5d42": {
-          "meaning": "",
-          "importance": ""
-        },
-        "df7eb178-ead0-4834-8a50-dd4f9c811b5a": {
-          "meaning": "",
-          "importance": ""
-        },
-        "02aac9ff-321a-45ac-9de5-79f0889790e4": {
-          "meaning": "",
-          "importance": ""
-        },
-        "5825f468-d81e-46ee-bdd7-d25263f1126d": {
-          "meaning": "",
-          "importance": ""
-        },
-        "bc5c527f-7b83-4598-886f-76037fb075b2": {
-          "meaning": "",
-          "importance": ""
-        },
-        "4b144b45-e1d8-4f25-92ff-a86048eaa827": {
-          "meaning": "",
-          "importance": ""
-        },
-        "8b52163c-b84f-47da-9e21-263550cdbc79": {
-          "meaning": "",
-          "importance": ""
-        },
-        "6fe8cb89-8d8a-4d4e-8e76-60691a820a28": {
-          "meaning": "",
-          "importance": ""
-        },
-        "8a9a0506-45ba-47ab-a0bb-fbfc0150e460": {
-          "meaning": "",
-          "importance": ""
-        },
-        "5cf3d1d9-f3e7-4b87-b2b8-44116bc2d0d0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "b313e5c5-ed06-442a-a134-ed261161ffbd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "9c485db5-d169-4c74-b87d-c172c95239ca": {
-          "meaning": "",
-          "importance": ""
-        },
-        "07ad1bac-14fc-4d42-8806-2a7519a898b4": {
-          "meaning": "",
-          "importance": ""
-        },
-        "7cf4c8fb-bbe3-414f-b58f-ee794f2b2f09": {
-          "meaning": "",
-          "importance": ""
-        },
-        "b22e8d7d-2535-4c1d-9570-f3d3e1d6b8ad": {
-          "meaning": "",
-          "importance": ""
-        },
-        "cf2caa9c-15a1-4995-85f4-573307971ca8": {
-          "meaning": "",
-          "importance": ""
-        },
-        "75541316-70bb-4f79-8441-9380b4a39c6d": {
-          "meaning": "",
-          "importance": ""
-        },
-        "2f619216-2206-42c7-8277-f044d854050a": {
-          "meaning": "",
-          "importance": ""
-        },
-        "e250db5d-decf-42f2-9930-9f5c622bd02b": {
-          "meaning": "",
-          "importance": ""
-        },
-        "a91bde25-14de-4071-907e-af5547c149ba": {
-          "meaning": "",
-          "importance": ""
-        },
-        "e7bcceea-b334-4317-a02a-318234827f88": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3a7bfba1-4fa5-46e6-8a6a-1ee12dc8d057": {
-          "meaning": "",
-          "importance": ""
-        },
-        "55c1f269-d46e-47fc-8a75-f82b96d74040": {
-          "meaning": "",
-          "importance": ""
-        },
-        "3f4a0cd0-7726-405d-8b75-52a8a53e22a9": {
-          "meaning": "",
-          "importance": ""
-        },
-        "5d1d7c17-86e4-4c80-9131-8375ef241493": {
-          "meaning": "",
-          "importance": ""
-        },
-        "8b98dc4b-df69-4fde-ba1a-7ebacfc8c437": {
-          "meaning": "",
-          "importance": ""
-        },
-        "910bd315-7ecc-4d75-97bc-ea36cf72b91f": {
-          "meaning": "",
-          "importance": ""
-        },
-        "d32dc61a-da7a-4969-9c41-a5d2fd37ca8f": {
-          "meaning": "",
-          "importance": ""
-        },
-        "a5b59a5a-621a-4ece-a7c7-c1a476c3fd22": {
-          "meaning": "",
-          "importance": ""
-        },
-        "0fa21f90-9dc5-44f0-bf31-a0e9343ece20": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ba63b890-26d9-44ef-a8e2-f73e91fa24d8": {
-          "meaning": "",
-          "importance": ""
-        },
-        "b2dea43e-954e-492d-855e-d08c6b9fd21b": {
-          "meaning": "",
-          "importance": ""
-        },
-        "5d0543b5-b07f-4c36-801d-9861070c459b": {
-          "meaning": "",
-          "importance": ""
-        },
-        "0573a672-26be-43bf-afa8-ed15e53198d1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "a0d7078f-efde-4370-976f-7ef64d9a99f0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "d467b618-d286-4c1d-a46a-42fe54396865": {
-          "meaning": "",
-          "importance": ""
-        },
-        "573a677d-1378-4f93-8a6d-e95690f0d868": {
-          "meaning": "",
-          "importance": ""
-        },
-        "9ae4728d-9c89-4d6f-8ca7-1ef96f3cf1c6": {
-          "meaning": "",
-          "importance": ""
-        },
-        "b6c6ee0b-e47e-4f55-8070-35694d37ce2d": {
-          "meaning": "",
-          "importance": ""
-        },
-        "258443c3-e8ac-4e17-986e-5b2595cdf917": {
-          "meaning": "",
-          "importance": ""
-        },
-        "a9dd386b-5e34-4bbc-b4c6-45357ecfd8d0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "07b1d9c5-ac7e-4c53-90d0-2f59cbf5681f": {
-          "meaning": "",
-          "importance": ""
-        },
-        "cb397555-ea1f-47d2-9029-24e8dd50201e": {
-          "meaning": "",
-          "importance": ""
-        },
-        "86f2e372-1c86-4caa-9bb3-775fbd0ccf05": {
-          "meaning": "",
-          "importance": ""
-        },
-        "5e17c996-2c9e-42af-b79e-00f0601ce14d": {
-          "meaning": "",
-          "importance": ""
-        },
-        "bd02f13c-8850-4e24-a0be-8ccb510fff07": {
-          "meaning": "",
-          "importance": ""
-        },
-        "8e179a6c-0235-43a6-8ca5-6aa0240ccc16": {
-          "meaning": "",
-          "importance": ""
-        },
-        "8efd2a81-3e08-4a4a-b8ab-9a66072c6239": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1e56a33c-f992-4c44-a4d7-ddedfb33bcb2": {
-          "meaning": "",
-          "importance": ""
-        },
-        "77122018-9243-4522-8180-58eb5527f7bc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "60d3655d-1eb1-45f8-99f8-2ae009e9e08f": {
-          "meaning": "",
-          "importance": ""
-        },
-        "d636beb0-63bc-4640-aadf-efe947439172": {
-          "meaning": "",
-          "importance": ""
-        },
-        "786c23a2-08cd-4b2b-86c0-7c9879628ba1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "427a30cf-3287-4c7b-a1a8-786110e867f3": {
-          "meaning": "",
-          "importance": ""
-        },
-        "8b9397fe-89e5-4c19-a490-fce8f5473501": {
-          "meaning": "",
-          "importance": ""
-        },
-        "a337464b-d3e9-45ff-8a81-c6f263894863": {
-          "meaning": "",
-          "importance": ""
-        },
-        "c96f91d0-9cf4-4e03-b980-2cce04192327": {
-          "meaning": "",
-          "importance": ""
-        },
-        "0da97653-aed5-4e99-a47f-61cb33edbf42": {
-          "meaning": "",
-          "importance": ""
-        },
-        "2a3b60bb-ff32-4594-a2c4-ca96ceead0ea": {
-          "meaning": "",
-          "importance": ""
-        },
-        "0b85bc4b-6f15-4f6a-8130-8501eba65fd3": {
-          "meaning": "",
-          "importance": ""
-        },
-        "69a6b917-9b7f-452c-a1bf-9b8b8a07213a": {
-          "meaning": "",
-          "importance": ""
-        },
-        "5e05bc6d-b42b-43c5-b5e6-a0594b958b39": {
-          "meaning": "",
-          "importance": ""
-        },
-        "051e168e-784c-4e3d-9ae6-b5a7965783b5": {
-          "meaning": "",
-          "importance": ""
-        },
-        "d9c3cf2c-9448-4b3b-b941-7aa0371c2765": {
-          "meaning": "",
-          "importance": ""
-        },
-        "91c6b7b6-4974-4500-8fd8-e44fc7915577": {
-          "meaning": "",
-          "importance": ""
-        },
-        "40b6e789-353d-45f9-94e9-bc9a5eac5f65": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ab6adb21-f549-4377-98cc-ccc85d8d3c6f": {
-          "meaning": "",
-          "importance": ""
-        },
-        "11a13fc9-1dbc-4fb9-a1a9-1bc96849575e": {
-          "meaning": "",
-          "importance": ""
-        },
-        "df217cf8-5656-4403-a042-7eb4a461007d": {
-          "meaning": "",
-          "importance": ""
-        },
-        "e5083cd7-00e9-4c65-92c8-ec2e719f1cc3": {
-          "meaning": "",
-          "importance": ""
-        },
-        "5555d8ff-663e-4487-bfae-bba91114358d": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ab4f01f5-71a8-487a-9ff2-f9908e44feb7": {
-          "meaning": "",
-          "importance": ""
-        },
-        "30953b1c-9d14-4549-8313-1d98139735ec": {
-          "meaning": "",
-          "importance": ""
-        },
-        "8e9b844b-ad1b-49c2-9934-9062c3c03e3f": {
-          "meaning": "",
-          "importance": ""
-        },
-        "0e81ed22-9e15-4f6f-92a8-fd845e76319a": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ae341571-7b20-40b7-91b2-a2f0f6d9b59d": {
-          "meaning": "",
-          "importance": ""
-        },
-        "c5fe17b2-09f9-4271-94f5-44f3dd486cbc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "0bf5c4e0-4d01-41de-bae3-b4a13035d5b8": {
-          "meaning": "",
-          "importance": ""
-        },
-        "03ba6722-41b9-4b0f-8fb6-2558b7152fa4": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1bc26e5a-1cf2-4ee4-9de8-b7dbed9674c2": {
-          "meaning": "",
-          "importance": ""
-        },
-        "583a0e98-f46f-4dfb-a011-266a356b7af1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ddbb3248-774e-4806-a149-769c462f3751": {
-          "meaning": "",
-          "importance": ""
-        },
-        "63ccd44d-c00c-4c8e-9a1d-ee1d3e72950c": {
-          "meaning": "",
-          "importance": ""
-        },
-        "c45ec98d-98d4-4afc-8092-05f299a95bdc": {
-          "meaning": "",
-          "importance": ""
-        },
-        "e8cab3bf-bf2e-4f62-8b7d-359f87e9b4a4": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ac2acf45-5d41-4846-b708-50e7d254bcc2": {
-          "meaning": "",
-          "importance": ""
-        },
-        "df21ec43-4527-4333-bf33-345eb15ab780": {
-          "meaning": "",
-          "importance": ""
-        },
-        "d557a29a-a2d1-4f30-9a30-5fda0a31d2b4": {
-          "meaning": "",
-          "importance": ""
-        },
-        "095f3aa4-7250-426c-b0ce-515ecb3abcfd": {
-          "meaning": "",
-          "importance": ""
-        },
-        "9c0aaaa2-2b8e-4835-ab35-da65b0bb2547": {
-          "meaning": "",
-          "importance": ""
-        },
-        "64ab3f44-0fbc-42ed-a51e-5aa231e5ff5a": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ded4a06a-4a83-4df6-89e4-23f89d3042b3": {
-          "meaning": "",
-          "importance": ""
-        },
-        "8b104936-a743-485d-bb57-a95853b9428a": {
-          "meaning": "",
-          "importance": ""
-        },
-        "19092baa-08af-4f72-ab5f-acdc0cbd3ebf": {
-          "meaning": "",
-          "importance": ""
-        },
-        "9d85cfc6-f0e0-4f89-aa5c-dbe32e3c7532": {
-          "meaning": "",
-          "importance": ""
-        },
-        "51618abc-1b4d-4605-b3f0-fdf77fb5825b": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ab33ee5f-33d3-43de-98c6-2f3ffd8906f8": {
-          "meaning": "",
-          "importance": ""
-        },
-        "81cb509f-47bc-4067-9bef-8883326ecbf4": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "Phone": {
       "uniqueValues": [
@@ -12736,465 +10974,8 @@
         "352-787-5651": 1,
         "850-539-5722": 1
       },
-      "attributeWeights": {
-        "800-714-8552": 1.098901098901099,
-        "407-553-4938": 1.098901098901099,
-        "561-640-4000": 1.098901098901099,
-        "407-293-6584": 1.098901098901099,
-        "321-303-3164": 1.098901098901099,
-        "941-993-4876": 1.098901098901099,
-        "941-374-5441": 1.098901098901099,
-        "800-551-8557": 1.098901098901099,
-        "305-937-1099": 1.098901098901099,
-        "863-453-2030": 1.098901098901099,
-        "855-292-8589": 1.098901098901099,
-        "904-266-1523": 1.098901098901099,
-        "863-533-8776": 1.098901098901099,
-        "352-463-2345": 1.098901098901099,
-        "850-547-0341": 1.098901098901099,
-        "850-547-3671": 1.098901098901099,
-        "239-598-0013": 1.098901098901099,
-        "561-731-3890": 1.098901098901099,
-        "941-748-5543": 1.098901098901099,
-        "850-643-2778": 1.098901098901099,
-        "352-799-7881": 1.098901098901099,
-        "352-754-4112": 1.098901098901099,
-        "440-287-7438": 1.098901098901099,
-        "386-447-2222": 1.098901098901099,
-        "904-354-0142": 1.098901098901099,
-        "904-879-0220": 1.098901098901099,
-        "850-263-5950": 1.098901098901099,
-        "850-937-2160": 1.098901098901099,
-        "239-542-3465": 1.098901098901099,
-        "727-462-6796": 1.098901098901099,
-        "888-835-3721": 1.098901098901099,
-        "727-572-1976": 1.098901098901099,
-        "727-539-1083": 1.098901098901099,
-        "727-531-8931": 1.098901098901099,
-        "727-446-4909": 1.098901098901099,
-        "727-330-7542": 1.098901098901099,
-        "239-533-8930": 1.098901098901099,
-        "321-633-2042": 1.098901098901099,
-        "800-347-0928": 1.098901098901099,
-        "850-352-1044": 1.098901098901099,
-        "850-398-6565": 1.098901098901099,
-        "352-498-5806": 1.098901098901099,
-        "352-746-3011": 1.098901098901099,
-        "352-567-7676": 1.098901098901099,
-        "727-856-0119": 1.098901098901099,
-        "954-581-4889": 1.098901098901099,
-        "954-854-7335": 1.098901098901099,
-        "561-582-6688": 1.098901098901099,
-        "850-892-8115": 1.098901098901099,
-        "386-943-7889": 1.098901098901099,
-        "561-471-5770": 1.098901098901099,
-        "561-620-8222": 1.098901098901099,
-        "718-440-4315": 1.098901098901099,
-        "305-557-4764": 1.098901098901099,
-        "863-248-2911": 1.098901098901099,
-        "850-670-8167": 1.098901098901099,
-        "386-424-2476": 1.098901098901099,
-        "904-823-2420": 1.098901098901099,
-        "904-209-0878": 1.098901098901099,
-        "863-675-5252": 1.098901098901099,
-        "954-577-4160": 1.098901098901099,
-        "754-200-6149": 1.098901098901099,
-        "954-492-9092": 1.098901098901099,
-        "888-837-3172": 1.098901098901099,
-        "954-792-8177": 1.098901098901099,
-        "239-533-8000": 1.098901098901099,
-        "239-225-6137": 1.098901098901099,
-        "239-489-0505": 1.098901098901099,
-        "239-489-1716": 1.098901098901099,
-        "239-939-5050": 1.098901098901099,
-        "239-337-5865": 1.098901098901099,
-        "239-332-1997": 1.098901098901099,
-        "239-362-1283": 1.098901098901099,
-        "239-334-4528": 1.098901098901099,
-        "239-772-2378": 1.098901098901099,
-        "863-824-4007": 1.098901098901099,
-        "772-461-5833": 1.098901098901099,
-        "772-462-1768": 1.098901098901099,
-        "800-774-7425": 1.098901098901099,
-        "904-260-1592": 1.098901098901099,
-        "352-495-9983": 1.098901098901099,
-        "352-334-0172": 1.098901098901099,
-        "352-373-6354": 1.098901098901099,
-        "352-378-1542": 1.098901098901099,
-        "407-665-8200": 1.098901098901099,
-        "813-276-2919": 1.098901098901099,
-        "904-284-6374": 1.098901098901099,
-        "850-948-4875": 1.098901098901099,
-        "352-428-3009": 1.098901098901099,
-        "352-787-5651": 1.098901098901099,
-        "850-539-5722": 1.098901098901099
-      },
-      "attributeMeta": {
-        "800-714-8552": {
-          "meaning": "",
-          "importance": ""
-        },
-        "407-553-4938": {
-          "meaning": "",
-          "importance": ""
-        },
-        "561-640-4000": {
-          "meaning": "",
-          "importance": ""
-        },
-        "407-293-6584": {
-          "meaning": "",
-          "importance": ""
-        },
-        "321-303-3164": {
-          "meaning": "",
-          "importance": ""
-        },
-        "941-993-4876": {
-          "meaning": "",
-          "importance": ""
-        },
-        "941-374-5441": {
-          "meaning": "",
-          "importance": ""
-        },
-        "800-551-8557": {
-          "meaning": "",
-          "importance": ""
-        },
-        "305-937-1099": {
-          "meaning": "",
-          "importance": ""
-        },
-        "863-453-2030": {
-          "meaning": "",
-          "importance": ""
-        },
-        "855-292-8589": {
-          "meaning": "",
-          "importance": ""
-        },
-        "904-266-1523": {
-          "meaning": "",
-          "importance": ""
-        },
-        "863-533-8776": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-463-2345": {
-          "meaning": "",
-          "importance": ""
-        },
-        "850-547-0341": {
-          "meaning": "",
-          "importance": ""
-        },
-        "850-547-3671": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-598-0013": {
-          "meaning": "",
-          "importance": ""
-        },
-        "561-731-3890": {
-          "meaning": "",
-          "importance": ""
-        },
-        "941-748-5543": {
-          "meaning": "",
-          "importance": ""
-        },
-        "850-643-2778": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-799-7881": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-754-4112": {
-          "meaning": "",
-          "importance": ""
-        },
-        "440-287-7438": {
-          "meaning": "",
-          "importance": ""
-        },
-        "386-447-2222": {
-          "meaning": "",
-          "importance": ""
-        },
-        "904-354-0142": {
-          "meaning": "",
-          "importance": ""
-        },
-        "904-879-0220": {
-          "meaning": "",
-          "importance": ""
-        },
-        "850-263-5950": {
-          "meaning": "",
-          "importance": ""
-        },
-        "850-937-2160": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-542-3465": {
-          "meaning": "",
-          "importance": ""
-        },
-        "727-462-6796": {
-          "meaning": "",
-          "importance": ""
-        },
-        "888-835-3721": {
-          "meaning": "",
-          "importance": ""
-        },
-        "727-572-1976": {
-          "meaning": "",
-          "importance": ""
-        },
-        "727-539-1083": {
-          "meaning": "",
-          "importance": ""
-        },
-        "727-531-8931": {
-          "meaning": "",
-          "importance": ""
-        },
-        "727-446-4909": {
-          "meaning": "",
-          "importance": ""
-        },
-        "727-330-7542": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-533-8930": {
-          "meaning": "",
-          "importance": ""
-        },
-        "321-633-2042": {
-          "meaning": "",
-          "importance": ""
-        },
-        "800-347-0928": {
-          "meaning": "",
-          "importance": ""
-        },
-        "850-352-1044": {
-          "meaning": "",
-          "importance": ""
-        },
-        "850-398-6565": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-498-5806": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-746-3011": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-567-7676": {
-          "meaning": "",
-          "importance": ""
-        },
-        "727-856-0119": {
-          "meaning": "",
-          "importance": ""
-        },
-        "954-581-4889": {
-          "meaning": "",
-          "importance": ""
-        },
-        "954-854-7335": {
-          "meaning": "",
-          "importance": ""
-        },
-        "561-582-6688": {
-          "meaning": "",
-          "importance": ""
-        },
-        "850-892-8115": {
-          "meaning": "",
-          "importance": ""
-        },
-        "386-943-7889": {
-          "meaning": "",
-          "importance": ""
-        },
-        "561-471-5770": {
-          "meaning": "",
-          "importance": ""
-        },
-        "561-620-8222": {
-          "meaning": "",
-          "importance": ""
-        },
-        "718-440-4315": {
-          "meaning": "",
-          "importance": ""
-        },
-        "305-557-4764": {
-          "meaning": "",
-          "importance": ""
-        },
-        "863-248-2911": {
-          "meaning": "",
-          "importance": ""
-        },
-        "850-670-8167": {
-          "meaning": "",
-          "importance": ""
-        },
-        "386-424-2476": {
-          "meaning": "",
-          "importance": ""
-        },
-        "904-823-2420": {
-          "meaning": "",
-          "importance": ""
-        },
-        "904-209-0878": {
-          "meaning": "",
-          "importance": ""
-        },
-        "863-675-5252": {
-          "meaning": "",
-          "importance": ""
-        },
-        "954-577-4160": {
-          "meaning": "",
-          "importance": ""
-        },
-        "754-200-6149": {
-          "meaning": "",
-          "importance": ""
-        },
-        "954-492-9092": {
-          "meaning": "",
-          "importance": ""
-        },
-        "888-837-3172": {
-          "meaning": "",
-          "importance": ""
-        },
-        "954-792-8177": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-533-8000": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-225-6137": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-489-0505": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-489-1716": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-939-5050": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-337-5865": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-332-1997": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-362-1283": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-334-4528": {
-          "meaning": "",
-          "importance": ""
-        },
-        "239-772-2378": {
-          "meaning": "",
-          "importance": ""
-        },
-        "863-824-4007": {
-          "meaning": "",
-          "importance": ""
-        },
-        "772-461-5833": {
-          "meaning": "",
-          "importance": ""
-        },
-        "772-462-1768": {
-          "meaning": "",
-          "importance": ""
-        },
-        "800-774-7425": {
-          "meaning": "",
-          "importance": ""
-        },
-        "904-260-1592": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-495-9983": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-334-0172": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-373-6354": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-378-1542": {
-          "meaning": "",
-          "importance": ""
-        },
-        "407-665-8200": {
-          "meaning": "",
-          "importance": ""
-        },
-        "813-276-2919": {
-          "meaning": "",
-          "importance": ""
-        },
-        "904-284-6374": {
-          "meaning": "",
-          "importance": ""
-        },
-        "850-948-4875": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-428-3009": {
-          "meaning": "",
-          "importance": ""
-        },
-        "352-787-5651": {
-          "meaning": "",
-          "importance": ""
-        },
-        "850-539-5722": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "State": {
       "uniqueValues": [
@@ -13203,15 +10984,8 @@
       "valueCounts": {
         "FL": 100
       },
-      "attributeWeights": {
-        "FL": 100
-      },
-      "attributeMeta": {
-        "FL": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "Zip": {
       "uniqueValues": [
@@ -13372,405 +11146,18 @@
         "32331\u00a0": 1,
         "34736\u00a0": 2
       },
-      "attributeWeights": {
-        "32011": 1.2987012987012987,
-        "32234": 1.2987012987012987,
-        "32333": 1.2987012987012987,
-        "32425": 1.2987012987012987,
-        "32539": 1.2987012987012987,
-        "32641": 1.2987012987012987,
-        "32653": 1.2987012987012987,
-        "32703": 1.2987012987012987,
-        "32714": 1.2987012987012987,
-        "32926": 1.2987012987012987,
-        "33172": 1.2987012987012987,
-        "33180": 1.2987012987012987,
-        "33308": 1.2987012987012987,
-        "33309": 1.2987012987012987,
-        "33314": 1.2987012987012987,
-        "33315": 1.2987012987012987,
-        "33437": 1.2987012987012987,
-        "33444": 1.2987012987012987,
-        "33762": 1.2987012987012987,
-        "33765": 1.2987012987012987,
-        "33823": 1.2987012987012987,
-        "33904": 1.2987012987012987,
-        "33905": 1.2987012987012987,
-        "33912": 1.2987012987012987,
-        "33913": 1.2987012987012987,
-        "33916": 1.2987012987012987,
-        "34429": 1.2987012987012987,
-        "34604": 1.2987012987012987,
-        "34981\u00a0": 1.2987012987012987,
-        "34266\u00a0": 1.2987012987012987,
-        "33760\u00a0": 1.2987012987012987,
-        "33525\u00a0": 1.2987012987012987,
-        "32033\u00a0": 1.2987012987012987,
-        "33912\u00a0": 1.2987012987012987,
-        "32548\u00a0": 1.2987012987012987,
-        "34736\u00a0": 1.2987012987012987,
-        "32703\u00a0": 1.2987012987012987,
-        "32712\u00a0": 1.2987012987012987,
-        "33825\u00a0": 1.2987012987012987,
-        "32531\u00a0": 1.2987012987012987,
-        "33830\u00a0": 1.2987012987012987,
-        "32619\u00a0": 1.2987012987012987,
-        "33430\u00a0": 1.2987012987012987,
-        "34135\u00a0": 1.2987012987012987,
-        "34211\u00a0": 1.2987012987012987,
-        "32321\u00a0": 1.2987012987012987,
-        "34601\u00a0": 1.2987012987012987,
-        "34614\u00a0": 1.2987012987012987,
-        "32110\u00a0": 1.2987012987012987,
-        "32426\u00a0": 1.2987012987012987,
-        "32533\u00a0": 1.2987012987012987,
-        "33765\u00a0": 1.2987012987012987,
-        "33755\u00a0": 1.2987012987012987,
-        "33440\u00a0": 1.2987012987012987,
-        "32926\u00a0": 1.2987012987012987,
-        "32431\u00a0": 1.2987012987012987,
-        "32628\u00a0": 1.2987012987012987,
-        "33317\u00a0": 1.2987012987012987,
-        "33442\u00a0": 1.2987012987012987,
-        "32433\u00a0": 1.2987012987012987,
-        "32724\u00a0": 1.2987012987012987,
-        "32720\u00a0": 1.2987012987012987,
-        "33446\u00a0": 1.2987012987012987,
-        "33444\u00a0": 1.2987012987012987,
-        "33838\u00a0": 1.2987012987012987,
-        "32328\u00a0": 1.2987012987012987,
-        "32132\u00a0": 1.2987012987012987,
-        "33930\u00a0": 1.2987012987012987,
-        "33312\u00a0": 1.2987012987012987,
-        "33905\u00a0": 1.2987012987012987,
-        "33916\u00a0": 1.2987012987012987,
-        "32608\u00a0": 1.2987012987012987,
-        "32609\u00a0": 1.2987012987012987,
-        "32732\u00a0": 1.2987012987012987,
-        "33534\u00a0": 1.2987012987012987,
-        "32043\u00a0": 1.2987012987012987,
-        "32331\u00a0": 1.2987012987012987
-      },
-      "attributeMeta": {
-        "32011": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32234": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32333": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32425": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32539": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32641": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32653": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32703": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32714": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32926": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33172": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33180": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33308": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33309": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33314": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33315": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33437": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33444": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33762": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33765": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33823": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33904": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33905": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33912": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33913": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33916": {
-          "meaning": "",
-          "importance": ""
-        },
-        "34429": {
-          "meaning": "",
-          "importance": ""
-        },
-        "34604": {
-          "meaning": "",
-          "importance": ""
-        },
-        "34981\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "34266\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33760\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33525\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32033\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33912\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32548\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "34736\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32703\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32712\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33825\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32531\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33830\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32619\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33430\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "34135\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "34211\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32321\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "34601\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "34614\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32110\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32426\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32533\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33765\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33755\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33440\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32926\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32431\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32628\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33317\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33442\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32433\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32724\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32720\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33446\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33444\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33838\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32328\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32132\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33930\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33312\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33905\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33916\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32608\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32609\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32732\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "33534\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32043\u00a0": {
-          "meaning": "",
-          "importance": ""
-        },
-        "32331\u00a0": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     }
   },
   "statistics": {
     "summary": {
       "Total Features": 100,
-      "Selected Fields": 27,
-      "Quantitative Fields": 18,
-      "Qualitative Fields": 7
+      "Selected Fields": 16,
+      "Quantitative Fields": 16,
+      "Qualitative Fields": 0
     },
-    "details": "\n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>C_D</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.09\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Composting</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.03\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Demolition</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.02\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Electronics</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.16\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>HHW</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 0,\n                Mean: 0.00\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LF_C_D</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.12\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LF_HW</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 0,\n                Mean: 0.00\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LF_MSW</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.12\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Landfill</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.20\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Latitude</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 25.795134, Max: 30.9255551746,\n                Mean: 28.24\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Longitude</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: -87.3991755, Max: -80.0747415,\n                Mean: -82.10\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Metals</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.07\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>OBJECTID</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1, Max: 100,\n                Mean: 50.50\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Recovery</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.88\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Region</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 4, Max: 4,\n                Mean: 4.00\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Tires</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.09\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Transfer_Station</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.33\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Vehicles</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.15\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Address</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 93\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>City</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 50\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Company</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 93\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FRS_ID</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 7\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FRS_REPORT_URL</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 7\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>GlobalID</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 100\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Phone</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 91\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>State</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Zip</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 77\n          </div>\n        </div>\n      "
+    "details": "\n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>C_D</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.09\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Composting</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.03\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Demolition</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.02\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Electronics</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.16\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>HHW</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 0,\n                Mean: 0.00\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Metals</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.07\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>OBJECTID</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1, Max: 100,\n                Mean: 50.50\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Recovery</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.88\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Region</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 4, Max: 4,\n                Mean: 4.00\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Tires</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.09\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Transfer_Station</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.33\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Vehicles</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.15\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LF_HW</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 0,\n                Mean: 0.00\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LF_MSW</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.12\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Landfill</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.20\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LF_C_D</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 1,\n                Mean: 0.12\n              </div>\n            </div>\n          "
   },
   "version": "2.0",
   "dataInfo": {
@@ -13778,8 +11165,8 @@
     "dataSource": "uploaded"
   },
   "_metadata": {
-    "id": "20250826224345",
-    "created_at": "2025-08-26T22:43:45.433098",
+    "id": "20250827140602",
+    "created_at": "2025-08-27T14:06:02.287493",
     "version": "2.0"
   }
 }

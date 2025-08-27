@@ -64,6 +64,21 @@ function handleStepTransition(step) {
 }
 
 function handleStep1Transition() {
+  if (projectAction === 'edit' && currentProject) {
+    if (projectType === PROJECT_TYPES.DATASET) {
+      // For editing datasets, skip to field selection
+      goToStep(2);
+      return;
+    } else if (projectType === PROJECT_TYPES.CATEGORY) {
+      populateEnhancedCategoryDatasetSelectionForEdit();
+      return;
+    } else if (projectType === PROJECT_TYPES.FEATURE_LAYER) {
+      populateEnhancedFeatureLayerCategorySelectionForEdit();
+      return;
+    }
+  }
+
+  // Regular create flow
   if (projectType === PROJECT_TYPES.DATASET) {
     populateEnhancedDataLoadingSection();
   } else if (projectType === PROJECT_TYPES.CATEGORY) {

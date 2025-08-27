@@ -21,6 +21,21 @@ function exportConfig() {
     version: APP_CONFIG.VERSION
   };
 
+  // Save the updated state back to the current project
+  if (projectAction === 'edit' && currentProject) {
+    currentProject.selected_fields = Array.from(selectedFields);
+    currentProject.field_weights = fieldWeights;
+    currentProject.field_meta = fieldMeta;
+    currentProject.field_info = {
+      field_types: fieldTypes,
+      field_attributes: fieldAttributes
+    };
+    currentProject.updated_at = new Date().toISOString();
+
+    // Save to storage
+    saveProjects();
+  }
+
   addProjectSpecificData(config);
   return config;
 }

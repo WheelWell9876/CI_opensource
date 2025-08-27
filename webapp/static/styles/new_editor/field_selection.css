@@ -79,3 +79,33 @@
   margin-left: 2rem;
   margin-top: 0.2rem;
 }
+
+
+/* Pre-selected fields in edit mode */
+.field-item.pre-selected {
+  background: #f0f8ff;
+  border-color: var(--primary-light);
+}
+
+.field-item.pre-selected .field-name {
+  color: var(--primary-dark);
+}
+
+.field-item.pre-selected .field-checkbox:checked {
+  accent-color: var(--success-color);
+}
+
+/* Visual indicator for previously selected fields */
+.field-item.was-selected {
+  position: relative;
+}
+
+.field-item.was-selected::after {
+  content: 'Previously selected';
+  position: absolute;
+  top: 0.25rem;
+  right: 0.5rem;
+  font-size: 0.65rem;
+  color: #888;
+  font-style: italic;
+}

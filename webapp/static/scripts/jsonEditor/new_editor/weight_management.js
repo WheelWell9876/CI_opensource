@@ -24,15 +24,21 @@ function populateWeightControls() {
   const actualContainer = document.getElementById('actualWeightControls');
   if (!actualContainer) return;
 
-  if (selectedFields.size === 0) {
+  // In edit mode, show all fields that have weights, not just selected ones
+  let fieldsToShow = selectedFields;
+  if (projectAction === 'edit' && Object.keys(fieldWeights).length > 0) {
+    fieldsToShow = new Set([...selectedFields, ...Object.keys(fieldWeights)]);
+  }
+
+  if (fieldsToShow.size === 0) {
     actualContainer.innerHTML = '<p style="color: #999;">No fields selected.</p>';
     return;
   }
 
-  const fieldCount = selectedFields.size;
+  const fieldCount = selectedFields.size || 1; // Avoid division by zero
   const equalWeight = 1.0 / fieldCount;
 
-  selectedFields.forEach(field => {
+  fieldsToShow.forEach(field => {
     if (!(field in fieldWeights)) {
       fieldWeights[field] = equalWeight;
     }
@@ -49,6 +55,97 @@ function populateWeightControls() {
   });
 
   updateTotalWeightDisplay();
+}
+
+function createFieldWeightControl(field, equalWeight) {
+  const control = document.createElement('div');
+  control.className = 'weight-control enhanced-field-control';
+
+  // Check if this field is currently selected
+  const isFieldSelected = selectedFields.has(field);
+  const isDeselected = !isFieldSelected && fieldWeights[field] !== undefined;
+
+  if (isDeselected) {
+    control.classList.add('deselected-field');
+    control.style.opacity = '0.5';
+    control.style.backgroundColor = '#f0f0f0';
+  }
+
+  const currentWeight = fieldWeights[field] || equalWeight;
+  const weightPercent = Math.round(currentWeight * 100);
+  const isLocked = lockedFields.has(field);
+  const fieldType = fieldTypes[field] || 'unknown';
+
+  const currentMeaning = fieldMeta[field]?.meaning || '';
+  const currentImportance = fieldMeta[field]?.importance || '';
+
+  const isQualitative = fieldType === 'qualitative';
+  const hasAttributes = isQualitative && fieldAttributes[field] && fieldAttributes[field].uniqueValues.length > 0;
+  const isExpanded = expandedFields.has(field);
+
+  let attributeSection = '';
+  if (hasAttributes && isFieldSelected) {
+    const uniqueCount = fieldAttributes[field].uniqueValues.length;
+    const expandIcon = isExpanded ? '🔽' : '▶️';
+
+    attributeSection = `
+      <div class="attribute-section">
+        <button class="attribute-toggle-btn" onclick="toggleAttributeSection('${field}')" type="button">
+          <span>${expandIcon}</span>
+          <span>Attribute Weights (${uniqueCount} values)</span>
+        </button>
+        <div class="attribute-controls" id="attributeControls_${field}" style="display: ${isExpanded ? 'block' : 'none'};">
+          ${createAttributeControls(field)}
+        </div>
+      </div>
+    `;
+  }
+
+  control.innerHTML = `
+    <div class="weight-header">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <strong>${field}</strong>
+        ${isDeselected ? '<span style="color: #888; font-size: 0.85rem;">(Deselected)</span>' : ''}
+        ${!isDeselected ? `
+          <button class="lock-btn ${isLocked ? 'locked' : ''}"
+                  onclick="toggleFieldLock('${field}')"
+                  title="${isLocked ? 'Unlock field' : 'Lock field'}" type="button">
+            ${isLocked ? '🔒' : '🔓'}
+          </button>
+        ` : ''}
+        <span class="field-type-indicator">${fieldType}</span>
+      </div>
+      <span class="weight-value" id="weightVal_${field}">${weightPercent}%</span>
+    </div>
+
+    <input type="range" class="weight-slider"
+           id="weight_${field}"
+           min="0" max="100" value="${weightPercent}"
+           ${isLocked || isDeselected ? 'disabled' : ''}
+           oninput="updateWeight('${field}', this.value)"
+           ${isDeselected ? 'style="pointer-events: none; opacity: 0.5;"' : ''}>
+
+    <div class="meta-inputs">
+      <label>
+        Field Meaning:
+        <input type="text" value="${currentMeaning}"
+               oninput="updateFieldMeta('${field}', 'meaning', this.value)"
+               placeholder="What does this field represent?"
+               ${isDeselected ? 'disabled style="opacity: 0.5;"' : ''}>
+      </label>
+      <label>
+        Field Importance:
+        <input type="text" value="${currentImportance}"
+               oninput="updateFieldMeta('${field}', 'importance', this.value)"
+               placeholder="Why is this field important?"
+               ${isDeselected ? 'disabled style="opacity: 0.5;"' : ''}>
+      </label>
+    </div>
+
+    ${attributeSection}
+  `;
+
+  return control;
 }
 
 function updateWeight(field, value) {

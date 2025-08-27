@@ -410,3 +410,21 @@ function updateFeatureLayerCategoryWeight(categoryId, value) {
   updateTotalFeatureLayerCategoryWeight();
   updatePreview();
 }
+
+
+function populateEnhancedFeatureLayerCategorySelectionForEdit() {
+  debugLog('Populating feature layer category selection for edit mode');
+
+  // Use the regular populate function but with pre-selected categories
+  populateEnhancedFeatureLayerCategorySelection();
+
+  // Pre-select the categories that were already in this feature layer
+  if (currentProject && currentProject.categories) {
+    currentProject.categories.forEach(categoryId => {
+      const card = document.querySelector(`.selection-card[onclick*="${categoryId}"]`);
+      if (card && !card.classList.contains('selected')) {
+        toggleCategorySelection(categoryId);
+      }
+    });
+  }
+}

@@ -2,10 +2,11 @@
   "projectType": "dataset",
   "projectAction": "create",
   "currentProject": {
-    "id": "proj_1756126205380_ur7svtfwt",
-    "name": "AAAAAA",
-    "description": "",
+    "id": "proj_1756259335747_6xoulkps8",
     "type": "dataset",
+    "created_at": "2025-08-27T01:48:55.747Z",
+    "name": "WERTYU",
+    "description": "",
     "data": {
       "features": [
         {
@@ -9423,7 +9424,7 @@
               2
             ],
             [
-              "MaChis Lower Creek SDTSA",
+              "Ketchikan ANVSA",
               1
             ],
             [
@@ -9431,11 +9432,11 @@
               1
             ],
             [
-              "Navajo Nation Reservation",
+              "MaChis Lower Creek SDTSA",
               1
             ],
             [
-              "Ketchikan ANVSA",
+              "Navajo Nation Reservation",
               1
             ],
             [
@@ -9459,35 +9460,11 @@
           "has_data": true,
           "top_values": [
             [
-              "TN15501, TN15501S001, TN15501S002, TN15501S003, TN15501S004, TN15501S005, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011",
+              "CO00895S001",
               1
             ],
             [
-              "TN00906",
-              1
-            ],
-            [
-              "TN15501, TN15501S002, TN15501S003, TN15501S004, TN15501S005, TN15501S006, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011",
-              1
-            ],
-            [
-              "CA00420S001",
-              1
-            ],
-            [
-              "WA00074",
-              1
-            ],
-            [
-              "MA00849, MA00849S001, MA00849S002, MA00849S003, MA00849S005, MA00849S006",
-              1
-            ],
-            [
-              "CO01659, CO01659S001, CO01659S002, CO01659S004",
-              1
-            ],
-            [
-              "NM00129",
+              "CT00297, CT00297S03",
               1
             ],
             [
@@ -9496,6 +9473,30 @@
             ],
             [
               "MI00153, MI00153S002, MI00153S003, MI00153S004",
+              1
+            ],
+            [
+              "CO01659, CO01659S001, CO01659S003, CO01659S004",
+              1
+            ],
+            [
+              "MA00849, MA00849S001, MA00849S003, MA00849S004, MA00849S005, MA00849S006",
+              1
+            ],
+            [
+              "CT00487",
+              1
+            ],
+            [
+              "TN15501, TN15501S001, TN15501S002, TN15501S003, TN15501S004, TN15501S005, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011",
+              1
+            ],
+            [
+              "WA00238",
+              1
+            ],
+            [
+              "GA00854S001",
               1
             ]
           ],
@@ -9572,27 +9573,27 @@
               11
             ],
             [
-              "MULBERRY",
-              8
-            ],
-            [
               "TURIN",
               8
             ],
             [
-              "GREENSBORO",
-              6
+              "MULBERRY",
+              8
             ],
             [
               "WOODBINE",
               6
             ],
             [
-              "STATE OF MISSOURI",
+              "GREENSBORO",
               6
             ],
             [
               "SIOUX CITY",
+              6
+            ],
+            [
+              "STATE OF MISSOURI",
               6
             ],
             [
@@ -10353,11 +10354,11 @@
               30
             ],
             [
-              "Congressional District 04, Arkansas",
+              "Congressional District 02, Colorado",
               29
             ],
             [
-              "Congressional District 02, Colorado",
+              "Congressional District 04, Arkansas",
               29
             ],
             [
@@ -10538,7 +10539,7 @@
               28
             ],
             [
-              "Mike Rogers (R)",
+              "Bruce Westerman (R)",
               28
             ]
           ],
@@ -10687,11 +10688,11 @@
               19
             ],
             [
-              "Buttress, Stone",
+              "Roller-Compacted Concrete",
               4
             ],
             [
-              "Roller-Compacted Concrete",
+              "Buttress, Stone",
               4
             ],
             [
@@ -10723,11 +10724,11 @@
               15
             ],
             [
-              "Larimer, Colorado",
+              "Hale, Alabama",
               15
             ],
             [
-              "Hale, Alabama",
+              "Larimer, Colorado",
               15
             ],
             [
@@ -10739,11 +10740,11 @@
               9
             ],
             [
-              "Monona, Iowa",
+              "Fulton, Georgia",
               9
             ],
             [
-              "Fulton, Georgia",
+              "Monona, Iowa",
               9
             ],
             [
@@ -10751,7 +10752,7 @@
               8
             ],
             [
-              "Harrison, Iowa",
+              "Litchfield, Connecticut",
               8
             ]
           ],
@@ -11231,11 +11232,11 @@
               11
             ],
             [
-              "Earth, Rockfill",
+              "Other",
               8
             ],
             [
-              "Other",
+              "Earth, Rockfill",
               8
             ],
             [
@@ -11243,11 +11244,11 @@
               6
             ],
             [
-              "Buttress",
+              "Earth, Other",
               6
             ],
             [
-              "Earth, Other",
+              "Buttress",
               6
             ],
             [
@@ -12039,43 +12040,43 @@
           "has_data": true,
           "top_values": [
             [
-              "CA00132",
+              "CT00470",
               1
             ],
             [
-              "CO02969",
+              "GA02658",
               1
             ],
             [
-              "AR01103",
+              "IL00993",
               1
             ],
             [
-              "GA03683",
+              "GA04320",
               1
             ],
             [
-              "IA01775",
+              "AL01046",
               1
             ],
             [
-              "GA02087",
+              "IA00123",
               1
             ],
             [
-              "GA00555",
+              "IL00973",
               1
             ],
             [
-              "IA00452",
+              "CT00543",
               1
             ],
             [
-              "AL00827",
+              "IA00752",
               1
             ],
             [
-              "IN00325",
+              "IA01086",
               1
             ]
           ],
@@ -13101,15 +13102,15 @@
               3
             ],
             [
-              "Fish and Wildlife Service",
-              2
-            ],
-            [
               "US Air Force",
               2
             ],
             [
-              "Bureau of Land Management",
+              "Fish and Wildlife Service",
+              2
+            ],
+            [
+              "Bureau of Indian Affairs",
               1
             ],
             [
@@ -13117,7 +13118,7 @@
               1
             ],
             [
-              "Bureau of Indian Affairs",
+              "Bureau of Land Management",
               1
             ],
             [
@@ -13156,15 +13157,15 @@
               3
             ],
             [
-              "Fish and Wildlife Service",
-              2
-            ],
-            [
               "US Air Force",
               2
             ],
             [
-              "Bureau of Land Management",
+              "Fish and Wildlife Service",
+              2
+            ],
+            [
+              "Bureau of Indian Affairs",
               1
             ],
             [
@@ -13172,7 +13173,7 @@
               1
             ],
             [
-              "Bureau of Indian Affairs",
+              "Bureau of Land Management",
               1
             ],
             [
@@ -13215,15 +13216,15 @@
               3
             ],
             [
-              "National Park Service",
-              2
-            ],
-            [
               "US Air Force",
               2
             ],
             [
-              "Bureau of Land Management",
+              "National Park Service",
+              2
+            ],
+            [
+              "Bureau of Indian Affairs",
               1
             ],
             [
@@ -13231,7 +13232,7 @@
               1
             ],
             [
-              "Bureau of Indian Affairs",
+              "Bureau of Land Management",
               1
             ],
             [
@@ -13283,6 +13284,10 @@
               3
             ],
             [
+              "US Air Force",
+              2
+            ],
+            [
               "Fish and Wildlife Service",
               2
             ],
@@ -13291,11 +13296,7 @@
               2
             ],
             [
-              "US Air Force",
-              2
-            ],
-            [
-              "Bureau of Land Management",
+              "Bureau of Indian Affairs",
               1
             ]
           ],
@@ -13334,6 +13335,10 @@
               3
             ],
             [
+              "US Air Force",
+              2
+            ],
+            [
               "Fish and Wildlife Service",
               2
             ],
@@ -13342,11 +13347,7 @@
               2
             ],
             [
-              "US Air Force",
-              2
-            ],
-            [
-              "Bureau of Land Management",
+              "Bureau of Indian Affairs",
               1
             ],
             [
@@ -13354,7 +13355,7 @@
               1
             ],
             [
-              "Bureau of Indian Affairs",
+              "Bureau of Land Management",
               1
             ],
             [
@@ -13390,15 +13391,15 @@
               2
             ],
             [
-              "Fish and Wildlife Service",
-              1
-            ],
-            [
               "Bureau of Indian Affairs",
               1
             ],
             [
               "US Navy",
+              1
+            ],
+            [
+              "Fish and Wildlife Service",
               1
             ]
           ],
@@ -13429,6 +13430,10 @@
               5
             ],
             [
+              "US Air Force",
+              2
+            ],
+            [
               "Fish and Wildlife Service",
               2
             ],
@@ -13437,11 +13442,7 @@
               2
             ],
             [
-              "US Air Force",
-              2
-            ],
-            [
-              "Bureau of Land Management",
+              "Bureau of Indian Affairs",
               1
             ],
             [
@@ -13449,7 +13450,7 @@
               1
             ],
             [
-              "Bureau of Indian Affairs",
+              "Bureau of Land Management",
               1
             ],
             [
@@ -13497,6 +13498,10 @@
               4
             ],
             [
+              "US Air Force",
+              2
+            ],
+            [
               "Fish and Wildlife Service",
               2
             ],
@@ -13505,11 +13510,7 @@
               2
             ],
             [
-              "US Air Force",
-              2
-            ],
-            [
-              "Bureau of Land Management",
+              "Bureau of Indian Affairs",
               1
             ],
             [
@@ -13543,23 +13544,11 @@
               8
             ],
             [
-              "Jackson Lake Dam",
+              "Browns Creek Lake Dam",
               1
             ],
             [
-              "Bettis Diversion Dam",
-              1
-            ],
-            [
-              "Christmas Branch Lake Dam",
-              1
-            ],
-            [
-              "Boyd Site Dam",
-              1
-            ],
-            [
-              "Silver Lake Dam",
+              "Eagle Mountain Trout Farm Lake Dam / Hickory Nut Grove Trout Farm Land",
               1
             ],
             [
@@ -13567,15 +13556,27 @@
               1
             ],
             [
-              "Hodge Lake Dam",
+              "Patton Lake Dam",
               1
             ],
             [
-              "Shroyer Lake Dam",
+              "Kapes Lake Dam",
               1
             ],
             [
-              "James Speer Lake Dam",
+              "Structure No. 179",
+              1
+            ],
+            [
+              "Boyd Site Dam",
+              1
+            ],
+            [
+              "Foxhall Farms Lake Dam No. 4",
+              1
+            ],
+            [
+              "Minnequa Reservoir No. 2",
               1
             ]
           ],
@@ -13935,15 +13936,15 @@
               3
             ],
             [
-              "Sievers Dam",
-              2
-            ],
-            [
               "Joe Glover Dam",
               2
             ],
             [
-              "Paradise Lake Dam",
+              "Sievers Dam",
+              2
+            ],
+            [
+              "Saddle Lake Dam",
               2
             ],
             [
@@ -13955,7 +13956,7 @@
               2
             ],
             [
-              "Saddle Lake Dam",
+              "Paradise Lake Dam",
               2
             ],
             [
@@ -13963,11 +13964,11 @@
               2
             ],
             [
-              "Muir Dam",
+              "Whitman Lake",
               1
             ],
             [
-              "Davis Dam",
+              "Williamson No. 1",
               1
             ]
           ],
@@ -14977,12 +14978,16 @@
               4
             ],
             [
+              "MA00849",
+              3
+            ],
+            [
               "MI00153",
               3
             ],
             [
-              "MA00849",
-              3
+              "GA00854",
+              2
             ],
             [
               "CA00164",
@@ -14993,19 +14998,15 @@
               2
             ],
             [
-              "GA00854",
-              2
-            ],
-            [
-              "CA00132",
+              "CT00470",
               1
             ],
             [
-              "CO02969",
+              "GA02658",
               1
             ],
             [
-              "AR01103",
+              "IL00993",
               1
             ]
           ],
@@ -16067,11 +16068,11 @@
               31
             ],
             [
-              "1953 Pilot Watershed Program (Public Law 83-156)",
+              "1962 Resource Conservation and Development Act (Public Law 87-703)",
               2
             ],
             [
-              "1962 Resource Conservation and Development Act (Public Law 87-703)",
+              "1953 Pilot Watershed Program (Public Law 83-156)",
               2
             ]
           ],
@@ -16183,35 +16184,35 @@
               4
             ],
             [
-              "Cs-3",
+              "Mono Diversion",
               1
             ],
             [
-              "J. Mcclure #1",
+              "Pin6",
               1
             ],
             [
-              "Laurens Shoals",
+              "Northern Oaks Lake",
               1
             ],
             [
-              "Beaver Pond",
+              "Grandview Heights",
               1
             ],
             [
-              "M. D. Borah Lake",
+              "Mcgee Lake",
               1
             ],
             [
-              "French Meadows",
+              "Fish Pond",
               1
             ],
             [
-              "Center Lake Dam",
+              "Beech Lake, Beech River Dam",
               1
             ],
             [
-              "Boshell@S Mill Pond",
+              "Iowa Lake Dam",
               1
             ]
           ],
@@ -16467,11 +16468,11 @@
               1
             ],
             [
-              "S006",
+              "S009",
               1
             ],
             [
-              "S009",
+              "S006",
               1
             ]
           ],
@@ -16521,15 +16522,15 @@
               4
             ],
             [
-              "Tainter (radial) - 2",
-              2
-            ],
-            [
               "Vertical Lift",
               2
             ],
             [
-              "Vertical Lift - 6",
+              "Tainter (radial) - 2",
+              2
+            ],
+            [
+              "Bascule",
               1
             ]
           ],
@@ -16630,11 +16631,11 @@
               8
             ],
             [
-              "Masonry",
+              "Buttress",
               6
             ],
             [
-              "Buttress",
+              "Masonry",
               6
             ],
             [
@@ -16642,11 +16643,11 @@
               5
             ],
             [
-              "Timber Crib",
+              "Multi-Arch",
               2
             ],
             [
-              "Multi-Arch",
+              "Timber Crib",
               2
             ]
           ],
@@ -16748,7 +16749,7 @@
               27
             ],
             [
-              "Debris Control",
+              "Grade Stabilization",
               5
             ]
           ],
@@ -16856,11 +16857,11 @@
               290
             ],
             [
-              "Flood Risk Reduction",
+              "Irrigation",
               81
             ],
             [
-              "Irrigation",
+              "Flood Risk Reduction",
               81
             ],
             [
@@ -16991,16 +16992,12 @@
               7
             ],
             [
-              "TR-BOYER RIVER",
-              6
-            ],
-            [
               "TR-MUD CREEK",
               6
             ],
             [
-              "FRENCH BROAD RIVER",
-              5
+              "TR-BOYER RIVER",
+              6
             ],
             [
               "MILL CREEK",
@@ -17011,7 +17008,11 @@
               5
             ],
             [
-              "TR-WOLF CREEK",
+              "FRENCH BROAD RIVER",
+              5
+            ],
+            [
+              "CACHE LA POUDRE RIVER-TR",
               4
             ]
           ],
@@ -17898,7 +17899,7 @@
           "has_data": true,
           "top_values": [
             [
-              "3408",
+              "150",
               2
             ],
             [
@@ -17906,35 +17907,35 @@
               2
             ],
             [
-              "150",
+              "3408",
               2
             ],
             [
-              "02692-01-03",
+              "030212",
               1
             ],
             [
-              "061-043-05765",
+              "4155",
               1
             ],
             [
-              "622.003",
+              "87.015",
               1
             ],
             [
-              "035-007-01982",
+              "17-2000",
               1
             ],
             [
-              "890",
+              "643",
               1
             ],
             [
-              "035-040-04031",
+              "2010",
               1
             ],
             [
-              "077-071-04440",
+              "530104",
               1
             ]
           ],
@@ -19055,11 +19056,11 @@
               54
             ],
             [
-              "https://www.ferc.gov/dam-safety-and-inspections",
+              "https://damsafety.org/illinois",
               42
             ],
             [
-              "https://damsafety.org/illinois",
+              "https://www.ferc.gov/dam-safety-and-inspections",
               42
             ],
             [
@@ -19134,11 +19135,15 @@
               1
             ],
             [
+              "1959 - Structural",
+              1
+            ],
+            [
               "1946 - Hydraulic, 1946 - Mechanical, 1946 - Structural",
               1
             ],
             [
-              "1995 - Hydraulic, 1999 - Hydraulic",
+              "2006 - Hydraulic, 2006 - Mechanical, 2006 - Structural",
               1
             ],
             [
@@ -19146,7 +19151,11 @@
               1
             ],
             [
-              "1969 - Foundation, 1982 - Structural, 2002 - Structural",
+              "2003 - Hydraulic",
+              1
+            ],
+            [
+              "2007 - Hydraulic",
               1
             ],
             [
@@ -19154,15 +19163,7 @@
               1
             ],
             [
-              "1988 - Hydraulic, 1988 - Mechanical, 1988 - Structural",
-              1
-            ],
-            [
-              "2011 - Hydraulic",
-              1
-            ],
-            [
-              "2018 - Hydraulic",
+              "1998 - Structural",
               1
             ]
           ],
@@ -19543,94 +19544,34 @@
       ],
       "total_features": 1000
     },
-    "created_at": "2025-08-25T12:50:05.380Z",
-    "updated_at": "2025-08-25T12:50:14.721Z"
+    "updated_at": "2025-08-27T18:20:39.871Z"
   },
-  "datasetName": "AAAAA",
+  "datasetName": "WERTYU",
   "description": "",
-  "timestamp": "2025-08-25T12:52:11.704Z",
+  "timestamp": "2025-08-27T18:21:48.435Z",
   "selectedFields": [
-    "AIANNH",
-    "ASSOCIATED_STRUCTURES",
-    "BUILT_UNDER_SEC_OF_AG_AUTH",
-    "CITY",
-    "CONDITION_ASSESSMENT",
     "CONDITION_ASSESS_DATE",
-    "CONGDIST",
-    "CONG_REPRESNTATIVE",
-    "CORE_TYPES",
-    "COUNTYSTATE",
     "DAM_HEIGHT",
     "DAM_LENGTH",
-    "DAM_TYPES",
-    "DAM_VOLUME",
     "DATA_UPDATED",
-    "DESIGNER_NAMES",
-    "DISTANCE",
-    "DRAINAGE_AREA",
     "EAP_LAST_REV_DATE",
-    "EAP_PREPARED",
-    "FEDERALLY_REGULATED_DAM",
-    "FEDERAL_ID",
-    "FED_AGENCY_CONSTRUCTIONS",
-    "FED_AGENCY_DESIGNERS",
-    "FED_AGENCY_FUNDINGS",
-    "FED_AGENCY_INSPECTIONS",
-    "FED_AGENCY_OPERATIONS",
-    "FED_AGENCY_OTHERS",
-    "FED_AGENCY_OWNERS",
-    "FED_AGENCY_REGULATORIES",
-    "FORMER_NAMES",
-    "FOUNDATIONS",
-    "HAZARD_POTENTIAL",
-    "HYDRAULIC_HEIGHT",
     "INSPECTION_FREQUENCY",
-    "IS_ASSOCIATED_STRUCTURE",
     "LAST_INSPECTION_DATE",
     "LATITUDE",
-    "LENGTH_OF_LOCKS",
     "LONGITUDE",
     "MAX_DISCHARGE",
     "MAX_STORAGE",
-    "NAME",
-    "NIDID",
     "NID_HEIGHT",
     "NID_STORAGE",
-    "NON_FED_ON_FED",
     "NORMAL_STORAGE",
-    "NRCS_WATERSHED_DAM_AUTH",
     "NUMBER_ASSOCIATED_STRUCTURES",
-    "NUMBER_OF_LOCKS",
     "OBJECTID",
-    "OPERATIONAL_STATUS",
     "OPERATIONAL_STATUS_DATE",
-    "OTHER_NAMES",
-    "OTHER_STRUCTURE_ID",
-    "OUTLET_GATES",
-    "OWNER_TYPES",
-    "PRIMARY_DAM_TYPE",
-    "PRIMARY_OWNER_TYPE",
-    "PRIMARY_PURPOSE",
-    "PRIMARY_SOURCE_AGENCY",
-    "PURPOSES",
-    "RIVER_OR_STREAM",
-    "SE_ANNO_CAD_DATA",
-    "SPILLWAY_TYPE",
     "SPILLWAY_WIDTH",
-    "STATE",
-    "STATE_ENFORCEMENT",
-    "STATE_FED_AGENCY",
-    "STATE_INSPECTION",
-    "STATE_JURISDICTION",
-    "STATE_PERMITTING",
-    "STATE_REGULATED",
-    "STATE_REGULATORY_AGENCY",
-    "STRUCTURAL_HEIGHT",
     "SURFACE_AREA",
-    "WEBSITE_URL",
-    "WIDTH_OF_LOCKS",
-    "YEARS_MODIFIED",
-    "YEAR_COMPLETED"
+    "BUILT_UNDER_SEC_OF_AG_AUTH",
+    "CONDITION_ASSESSMENT",
+    "HAZARD_POTENTIAL"
   ],
   "fieldTypes": {
     "AIANNH": "unknown",
@@ -19716,126 +19657,31 @@
     "YEAR_COMPLETED": "unknown"
   },
   "fieldWeights": {
-    "AIANNH": 0.012345679012345678,
-    "ASSOCIATED_STRUCTURES": 0.012345679012345678,
-    "BUILT_UNDER_SEC_OF_AG_AUTH": 0.012345679012345678,
-    "CITY": 0.012345679012345678,
-    "CONDITION_ASSESSMENT": 0.012345679012345678,
-    "CONDITION_ASSESS_DATE": 0.012345679012345678,
-    "CONGDIST": 0.012345679012345678,
-    "CONG_REPRESNTATIVE": 0.012345679012345678,
-    "CORE_TYPES": 0.012345679012345678,
-    "COUNTYSTATE": 0.012345679012345678,
-    "DAM_HEIGHT": 0.012345679012345678,
-    "DAM_LENGTH": 0.012345679012345678,
-    "DAM_TYPES": 0.012345679012345678,
-    "DAM_VOLUME": 0.012345679012345678,
-    "DATA_UPDATED": 0.012345679012345678,
-    "DESIGNER_NAMES": 0.012345679012345678,
-    "DISTANCE": 0.012345679012345678,
-    "DRAINAGE_AREA": 0.012345679012345678,
-    "EAP_LAST_REV_DATE": 0.012345679012345678,
-    "EAP_PREPARED": 0.012345679012345678,
-    "FEDERALLY_REGULATED_DAM": 0.012345679012345678,
-    "FEDERAL_ID": 0.012345679012345678,
-    "FED_AGENCY_CONSTRUCTIONS": 0.012345679012345678,
-    "FED_AGENCY_DESIGNERS": 0.012345679012345678,
-    "FED_AGENCY_FUNDINGS": 0.012345679012345678,
-    "FED_AGENCY_INSPECTIONS": 0.012345679012345678,
-    "FED_AGENCY_OPERATIONS": 0.012345679012345678,
-    "FED_AGENCY_OTHERS": 0.012345679012345678,
-    "FED_AGENCY_OWNERS": 0.012345679012345678,
-    "FED_AGENCY_REGULATORIES": 0.012345679012345678,
-    "FORMER_NAMES": 0.012345679012345678,
-    "FOUNDATIONS": 0.012345679012345678,
-    "HAZARD_POTENTIAL": 0.012345679012345678,
-    "HYDRAULIC_HEIGHT": 0.012345679012345678,
-    "INSPECTION_FREQUENCY": 0.012345679012345678,
-    "IS_ASSOCIATED_STRUCTURE": 0.012345679012345678,
-    "LAST_INSPECTION_DATE": 0.012345679012345678,
-    "LATITUDE": 0.012345679012345678,
-    "LENGTH_OF_LOCKS": 0.012345679012345678,
-    "LONGITUDE": 0.012345679012345678,
-    "MAX_DISCHARGE": 0.012345679012345678,
-    "MAX_STORAGE": 0.012345679012345678,
-    "NAME": 0.012345679012345678,
-    "NIDID": 0.012345679012345678,
-    "NID_HEIGHT": 0.012345679012345678,
-    "NID_STORAGE": 0.012345679012345678,
-    "NON_FED_ON_FED": 0.012345679012345678,
-    "NORMAL_STORAGE": 0.012345679012345678,
-    "NRCS_WATERSHED_DAM_AUTH": 0.012345679012345678,
-    "NUMBER_ASSOCIATED_STRUCTURES": 0.012345679012345678,
-    "NUMBER_OF_LOCKS": 0.012345679012345678,
-    "OBJECTID": 0.012345679012345678,
-    "OPERATIONAL_STATUS": 0.012345679012345678,
-    "OPERATIONAL_STATUS_DATE": 0.012345679012345678,
-    "OTHER_NAMES": 0.012345679012345678,
-    "OTHER_STRUCTURE_ID": 0.012345679012345678,
-    "OUTLET_GATES": 0.012345679012345678,
-    "OWNER_TYPES": 0.012345679012345678,
-    "PRIMARY_DAM_TYPE": 0.012345679012345678,
-    "PRIMARY_OWNER_TYPE": 0.012345679012345678,
-    "PRIMARY_PURPOSE": 0.012345679012345678,
-    "PRIMARY_SOURCE_AGENCY": 0.012345679012345678,
-    "PURPOSES": 0.012345679012345678,
-    "RIVER_OR_STREAM": 0.012345679012345678,
-    "SE_ANNO_CAD_DATA": 0.012345679012345678,
-    "SPILLWAY_TYPE": 0.012345679012345678,
-    "SPILLWAY_WIDTH": 0.012345679012345678,
-    "STATE": 0.012345679012345678,
-    "STATE_ENFORCEMENT": 0.012345679012345678,
-    "STATE_FED_AGENCY": 0.012345679012345678,
-    "STATE_INSPECTION": 0.012345679012345678,
-    "STATE_JURISDICTION": 0.012345679012345678,
-    "STATE_PERMITTING": 0.012345679012345678,
-    "STATE_REGULATED": 0.012345679012345678,
-    "STATE_REGULATORY_AGENCY": 0.012345679012345678,
-    "STRUCTURAL_HEIGHT": 0.012345679012345678,
-    "SURFACE_AREA": 0.012345679012345678,
-    "WEBSITE_URL": 0.012345679012345678,
-    "WIDTH_OF_LOCKS": 0.012345679012345678,
-    "YEARS_MODIFIED": 0.012345679012345678,
-    "YEAR_COMPLETED": 0.012345679012345678
+    "CONDITION_ASSESS_DATE": 0.045454545454545456,
+    "DAM_HEIGHT": 0.045454545454545456,
+    "DAM_LENGTH": 0.045454545454545456,
+    "DATA_UPDATED": 0.045454545454545456,
+    "EAP_LAST_REV_DATE": 0.045454545454545456,
+    "INSPECTION_FREQUENCY": 0.045454545454545456,
+    "LAST_INSPECTION_DATE": 0.045454545454545456,
+    "LATITUDE": 0.045454545454545456,
+    "LONGITUDE": 0.045454545454545456,
+    "MAX_DISCHARGE": 0.045454545454545456,
+    "MAX_STORAGE": 0.045454545454545456,
+    "NID_HEIGHT": 0.045454545454545456,
+    "NID_STORAGE": 0.045454545454545456,
+    "NORMAL_STORAGE": 0.045454545454545456,
+    "NUMBER_ASSOCIATED_STRUCTURES": 0.045454545454545456,
+    "OBJECTID": 0.045454545454545456,
+    "OPERATIONAL_STATUS_DATE": 0.045454545454545456,
+    "SPILLWAY_WIDTH": 0.045454545454545456,
+    "SURFACE_AREA": 0.045454545454545456,
+    "BUILT_UNDER_SEC_OF_AG_AUTH": 0.045454545454545456,
+    "CONDITION_ASSESSMENT": 0.045454545454545456,
+    "HAZARD_POTENTIAL": 0.045454545454545456
   },
   "fieldMeta": {
-    "AIANNH": {
-      "meaning": "",
-      "importance": ""
-    },
-    "ASSOCIATED_STRUCTURES": {
-      "meaning": "",
-      "importance": ""
-    },
-    "BUILT_UNDER_SEC_OF_AG_AUTH": {
-      "meaning": "",
-      "importance": ""
-    },
-    "CITY": {
-      "meaning": "",
-      "importance": ""
-    },
-    "CONDITION_ASSESSMENT": {
-      "meaning": "",
-      "importance": ""
-    },
     "CONDITION_ASSESS_DATE": {
-      "meaning": "",
-      "importance": ""
-    },
-    "CONGDIST": {
-      "meaning": "",
-      "importance": ""
-    },
-    "CONG_REPRESNTATIVE": {
-      "meaning": "",
-      "importance": ""
-    },
-    "CORE_TYPES": {
-      "meaning": "",
-      "importance": ""
-    },
-    "COUNTYSTATE": {
       "meaning": "",
       "importance": ""
     },
@@ -19847,27 +19693,7 @@
       "meaning": "",
       "importance": ""
     },
-    "DAM_TYPES": {
-      "meaning": "",
-      "importance": ""
-    },
-    "DAM_VOLUME": {
-      "meaning": "",
-      "importance": ""
-    },
     "DATA_UPDATED": {
-      "meaning": "",
-      "importance": ""
-    },
-    "DESIGNER_NAMES": {
-      "meaning": "",
-      "importance": ""
-    },
-    "DISTANCE": {
-      "meaning": "",
-      "importance": ""
-    },
-    "DRAINAGE_AREA": {
       "meaning": "",
       "importance": ""
     },
@@ -19875,71 +19701,7 @@
       "meaning": "",
       "importance": ""
     },
-    "EAP_PREPARED": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FEDERALLY_REGULATED_DAM": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FEDERAL_ID": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FED_AGENCY_CONSTRUCTIONS": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FED_AGENCY_DESIGNERS": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FED_AGENCY_FUNDINGS": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FED_AGENCY_INSPECTIONS": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FED_AGENCY_OPERATIONS": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FED_AGENCY_OTHERS": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FED_AGENCY_OWNERS": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FED_AGENCY_REGULATORIES": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FORMER_NAMES": {
-      "meaning": "",
-      "importance": ""
-    },
-    "FOUNDATIONS": {
-      "meaning": "",
-      "importance": ""
-    },
-    "HAZARD_POTENTIAL": {
-      "meaning": "",
-      "importance": ""
-    },
-    "HYDRAULIC_HEIGHT": {
-      "meaning": "",
-      "importance": ""
-    },
     "INSPECTION_FREQUENCY": {
-      "meaning": "",
-      "importance": ""
-    },
-    "IS_ASSOCIATED_STRUCTURE": {
       "meaning": "",
       "importance": ""
     },
@@ -19948,10 +19710,6 @@
       "importance": ""
     },
     "LATITUDE": {
-      "meaning": "",
-      "importance": ""
-    },
-    "LENGTH_OF_LOCKS": {
       "meaning": "",
       "importance": ""
     },
@@ -19967,14 +19725,6 @@
       "meaning": "",
       "importance": ""
     },
-    "NAME": {
-      "meaning": "",
-      "importance": ""
-    },
-    "NIDID": {
-      "meaning": "",
-      "importance": ""
-    },
     "NID_HEIGHT": {
       "meaning": "",
       "importance": ""
@@ -19983,15 +19733,7 @@
       "meaning": "",
       "importance": ""
     },
-    "NON_FED_ON_FED": {
-      "meaning": "",
-      "importance": ""
-    },
     "NORMAL_STORAGE": {
-      "meaning": "",
-      "importance": ""
-    },
-    "NRCS_WATERSHED_DAM_AUTH": {
       "meaning": "",
       "importance": ""
     },
@@ -19999,15 +19741,7 @@
       "meaning": "",
       "importance": ""
     },
-    "NUMBER_OF_LOCKS": {
-      "meaning": "",
-      "importance": ""
-    },
     "OBJECTID": {
-      "meaning": "",
-      "importance": ""
-    },
-    "OPERATIONAL_STATUS": {
       "meaning": "",
       "importance": ""
     },
@@ -20015,91 +19749,7 @@
       "meaning": "",
       "importance": ""
     },
-    "OTHER_NAMES": {
-      "meaning": "",
-      "importance": ""
-    },
-    "OTHER_STRUCTURE_ID": {
-      "meaning": "",
-      "importance": ""
-    },
-    "OUTLET_GATES": {
-      "meaning": "",
-      "importance": ""
-    },
-    "OWNER_TYPES": {
-      "meaning": "",
-      "importance": ""
-    },
-    "PRIMARY_DAM_TYPE": {
-      "meaning": "",
-      "importance": ""
-    },
-    "PRIMARY_OWNER_TYPE": {
-      "meaning": "",
-      "importance": ""
-    },
-    "PRIMARY_PURPOSE": {
-      "meaning": "",
-      "importance": ""
-    },
-    "PRIMARY_SOURCE_AGENCY": {
-      "meaning": "",
-      "importance": ""
-    },
-    "PURPOSES": {
-      "meaning": "",
-      "importance": ""
-    },
-    "RIVER_OR_STREAM": {
-      "meaning": "",
-      "importance": ""
-    },
-    "SE_ANNO_CAD_DATA": {
-      "meaning": "",
-      "importance": ""
-    },
-    "SPILLWAY_TYPE": {
-      "meaning": "",
-      "importance": ""
-    },
     "SPILLWAY_WIDTH": {
-      "meaning": "",
-      "importance": ""
-    },
-    "STATE": {
-      "meaning": "",
-      "importance": ""
-    },
-    "STATE_ENFORCEMENT": {
-      "meaning": "",
-      "importance": ""
-    },
-    "STATE_FED_AGENCY": {
-      "meaning": "",
-      "importance": ""
-    },
-    "STATE_INSPECTION": {
-      "meaning": "",
-      "importance": ""
-    },
-    "STATE_JURISDICTION": {
-      "meaning": "",
-      "importance": ""
-    },
-    "STATE_PERMITTING": {
-      "meaning": "",
-      "importance": ""
-    },
-    "STATE_REGULATED": {
-      "meaning": "",
-      "importance": ""
-    },
-    "STATE_REGULATORY_AGENCY": {
-      "meaning": "",
-      "importance": ""
-    },
-    "STRUCTURAL_HEIGHT": {
       "meaning": "",
       "importance": ""
     },
@@ -20107,36 +19757,18 @@
       "meaning": "",
       "importance": ""
     },
-    "WEBSITE_URL": {
+    "BUILT_UNDER_SEC_OF_AG_AUTH": {
       "meaning": "",
       "importance": ""
     },
-    "WIDTH_OF_LOCKS": {
+    "CONDITION_ASSESSMENT": {
       "meaning": "",
       "importance": ""
     },
-    "YEARS_MODIFIED": {
-      "meaning": "",
-      "importance": ""
-    },
-    "YEAR_COMPLETED": {
+    "HAZARD_POTENTIAL": {
       "meaning": "",
       "importance": ""
     }
-  },
-  "statistics": {
-    "summary": {
-      "Total Features": 100,
-      "Selected Fields": 81,
-      "Quantitative Fields": 19,
-      "Qualitative Fields": 36
-    },
-    "details": "\n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>AIANNH</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>ASSOCIATED_STRUCTURES</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 29\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>BUILT_UNDER_SEC_OF_AG_AUTH</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>CITY</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 83\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>CONDITION_ASSESSMENT</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 6\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>CONDITION_ASSESS_DATE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1526644800000, Max: 1701777600000,\n                Mean: 1662736593103.45\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>CONGDIST</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 31\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>CONG_REPRESNTATIVE</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 31\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>CORE_TYPES</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 5\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>COUNTYSTATE</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 63\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>DAM_HEIGHT</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 5, Max: 245,\n                Mean: 39.16\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>DAM_LENGTH</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 60, Max: 2106,\n                Mean: 558.86\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>DAM_TYPES</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 12\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>DAM_VOLUME</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 0\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>DATA_UPDATED</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1443614400000, Max: 1754913600000,\n                Mean: 1574872654110.00\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>DESIGNER_NAMES</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 7\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>DISTANCE</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 16\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>DRAINAGE_AREA</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 35\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>EAP_LAST_REV_DATE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1042804800000, Max: 1730116800000,\n                Mean: 1557896589473.68\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>EAP_PREPARED</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 0\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FEDERALLY_REGULATED_DAM</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FEDERAL_ID</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 100\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FED_AGENCY_CONSTRUCTIONS</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FED_AGENCY_DESIGNERS</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FED_AGENCY_FUNDINGS</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 4\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FED_AGENCY_INSPECTIONS</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 5\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FED_AGENCY_OPERATIONS</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 3\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FED_AGENCY_OTHERS</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FED_AGENCY_OWNERS</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 4\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FED_AGENCY_REGULATORIES</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 5\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FORMER_NAMES</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 3\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>FOUNDATIONS</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 4\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>HAZARD_POTENTIAL</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 3\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>HYDRAULIC_HEIGHT</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 37\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>INSPECTION_FREQUENCY</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 5,\n                Mean: 1.11\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>IS_ASSOCIATED_STRUCTURE</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LAST_INSPECTION_DATE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 274536000000, Max: 1753272000000,\n                Mean: 1473562730769.23\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LATITUDE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 18.16667, Max: 61.350500000000004,\n                Mean: 37.14\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>LENGTH_OF_LOCKS</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LONGITUDE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: -176.67633, Max: -66.75,\n                Mean: -92.43\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>MAX_DISCHARGE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 184000,\n                Mean: 6946.20\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>MAX_STORAGE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 42, Max: 2593255,\n                Mean: 52194.16\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>NAME</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 100\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>NIDID</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 90\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>NID_HEIGHT</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 245,\n                Mean: 32.56\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>NID_STORAGE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 42, Max: 2593255,\n                Mean: 53050.77\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>NON_FED_ON_FED</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>NORMAL_STORAGE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 2065010,\n                Mean: 46459.34\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>NRCS_WATERSHED_DAM_AUTH</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 3\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>NUMBER_ASSOCIATED_STRUCTURES</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 11,\n                Mean: 1.19\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>NUMBER_OF_LOCKS</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>OBJECTID</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1, Max: 100,\n                Mean: 50.50\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>OPERATIONAL_STATUS</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>OPERATIONAL_STATUS_DATE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1681214400000, Max: 1695988800000,\n                Mean: 1681885963636.36\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>OTHER_NAMES</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 33\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>OTHER_STRUCTURE_ID</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 8\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>OUTLET_GATES</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 7\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>OWNER_TYPES</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 6\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>PRIMARY_DAM_TYPE</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 7\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>PRIMARY_OWNER_TYPE</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 6\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>PRIMARY_PURPOSE</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 8\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>PRIMARY_SOURCE_AGENCY</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 9\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>PURPOSES</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 27\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>RIVER_OR_STREAM</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 85\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>SE_ANNO_CAD_DATA</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>SPILLWAY_TYPE</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 3\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>SPILLWAY_WIDTH</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 800,\n                Mean: 58.94\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>STATE</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 21\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>STATE_ENFORCEMENT</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>STATE_FED_AGENCY</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 25\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>STATE_INSPECTION</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>STATE_JURISDICTION</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>STATE_PERMITTING</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>STATE_REGULATED</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>STATE_REGULATORY_AGENCY</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 7\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>STRUCTURAL_HEIGHT</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 37\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>SURFACE_AREA</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 48000,\n                Mean: 4158.98\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>WEBSITE_URL</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 9\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>WIDTH_OF_LOCKS</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>YEARS_MODIFIED</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>YEAR_COMPLETED</strong> (unknown)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 54\n          </div>\n        </div>\n      "
-  },
-  "version": "1.0",
-  "dataInfo": {
-    "totalFeatures": 100,
-    "dataSource": "uploaded"
   },
   "fieldAttributes": {
     "ASSOCIATED_STRUCTURES": {
@@ -20202,155 +19834,8 @@
         "TN15501, TN15501S002, TN15501S003, TN15501S004, TN15501S005, TN15501S006, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011": 1,
         "TN15501, TN15501S001, TN15501S002, TN15501S004, TN15501S005, TN15501S006, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011": 1
       },
-      "attributeWeights": {
-        "CO00895": 3.4482758620689653,
-        "CO01659, CO01659S002, CO01659S003, CO01659S004": 3.4482758620689653,
-        "GA00854": 3.4482758620689653,
-        "ID00223": 3.4482758620689653,
-        "NM00129": 3.4482758620689653,
-        "MI00153, MI00153S002, MI00153S003, MI00153S004": 3.4482758620689653,
-        "MN00514": 3.4482758620689653,
-        "WA00074": 3.4482758620689653,
-        "WA00238": 3.4482758620689653,
-        "CA00164, CA00164S001": 3.4482758620689653,
-        "SC00109, SC00109S002": 3.4482758620689653,
-        "TN00906": 3.4482758620689653,
-        "VA077002": 3.4482758620689653,
-        "CO01659, CO01659S001, CO01659S003, CO01659S004": 3.4482758620689653,
-        "MA00849, MA00849S001, MA00849S002, MA00849S004, MA00849S005, MA00849S006": 3.4482758620689653,
-        "MI00153, MI00153S001, MI00153S002, MI00153S004": 3.4482758620689653,
-        "MA00849, MA00849S001, MA00849S003, MA00849S004, MA00849S005, MA00849S006": 3.4482758620689653,
-        "MI00153, MI00153S001, MI00153S003, MI00153S004": 3.4482758620689653,
-        "MA00849, MA00849S001, MA00849S002, MA00849S003, MA00849S005, MA00849S006": 3.4482758620689653,
-        "CO01659, CO01659S001, CO01659S002, CO01659S004": 3.4482758620689653,
-        "MT00574, MT00574S001, MT00574S002, MT00574S003": 3.4482758620689653,
-        "CT00297, CT00297S03": 3.4482758620689653,
-        "CT00487": 3.4482758620689653,
-        "TN07705, TN07705S002": 3.4482758620689653,
-        "TN15501, TN15501S001, TN15501S002, TN15501S003, TN15501S004, TN15501S006, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011": 3.4482758620689653,
-        "TN15501, TN15501S001, TN15501S002, TN15501S003, TN15501S004, TN15501S005, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011": 3.4482758620689653,
-        "TN15501, TN15501S001, TN15501S002, TN15501S003, TN15501S004, TN15501S005, TN15501S006, TN15501S007, TN15501S008, TN15501S010, TN15501S011": 3.4482758620689653,
-        "TN15501, TN15501S002, TN15501S003, TN15501S004, TN15501S005, TN15501S006, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011": 3.4482758620689653,
-        "TN15501, TN15501S001, TN15501S002, TN15501S004, TN15501S005, TN15501S006, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011": 3.4482758620689653
-      },
-      "attributeMeta": {
-        "CO00895": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CO01659, CO01659S002, CO01659S003, CO01659S004": {
-          "meaning": "",
-          "importance": ""
-        },
-        "GA00854": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ID00223": {
-          "meaning": "",
-          "importance": ""
-        },
-        "NM00129": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MI00153, MI00153S002, MI00153S003, MI00153S004": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MN00514": {
-          "meaning": "",
-          "importance": ""
-        },
-        "WA00074": {
-          "meaning": "",
-          "importance": ""
-        },
-        "WA00238": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CA00164, CA00164S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "SC00109, SC00109S002": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN00906": {
-          "meaning": "",
-          "importance": ""
-        },
-        "VA077002": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CO01659, CO01659S001, CO01659S003, CO01659S004": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MA00849, MA00849S001, MA00849S002, MA00849S004, MA00849S005, MA00849S006": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MI00153, MI00153S001, MI00153S002, MI00153S004": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MA00849, MA00849S001, MA00849S003, MA00849S004, MA00849S005, MA00849S006": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MI00153, MI00153S001, MI00153S003, MI00153S004": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MA00849, MA00849S001, MA00849S002, MA00849S003, MA00849S005, MA00849S006": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CO01659, CO01659S001, CO01659S002, CO01659S004": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MT00574, MT00574S001, MT00574S002, MT00574S003": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CT00297, CT00297S03": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CT00487": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN07705, TN07705S002": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN15501, TN15501S001, TN15501S002, TN15501S003, TN15501S004, TN15501S006, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN15501, TN15501S001, TN15501S002, TN15501S003, TN15501S004, TN15501S005, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN15501, TN15501S001, TN15501S002, TN15501S003, TN15501S004, TN15501S005, TN15501S006, TN15501S007, TN15501S008, TN15501S010, TN15501S011": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN15501, TN15501S002, TN15501S003, TN15501S004, TN15501S005, TN15501S006, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN15501, TN15501S001, TN15501S002, TN15501S004, TN15501S005, TN15501S006, TN15501S007, TN15501S008, TN15501S009, TN15501S010, TN15501S011": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "BUILT_UNDER_SEC_OF_AG_AUTH": {
       "uniqueValues": [
@@ -20495,165 +19980,8 @@
         "Congressional District 06, Alabama": 3,
         "Congressional District 04, Alabama": 4
       },
-      "attributeWeights": {
-        "Congressional District 03, Alabama": 3.225806451612903,
-        "Congressional District 07, Alabama": 3.225806451612903,
-        "Congressional District 02, Alabama": 3.225806451612903,
-        "Congressional District 00, Alaska": 3.225806451612903,
-        "Congressional District 01, Tennessee": 3.225806451612903,
-        "Congressional District 04, Alabama": 3.225806451612903,
-        "Congressional District 02, Colorado": 3.225806451612903,
-        "Congressional District 01, Michigan": 3.225806451612903,
-        "Congressional District 02, Massachusetts": 3.225806451612903,
-        "Congressional District 06, Alabama": 3.225806451612903,
-        "Congressional District 00, Puerto Rico": 3.225806451612903,
-        "Congressional District 05, Connecticut": 3.225806451612903,
-        "Congressional District 03, Colorado": 3.225806451612903,
-        "Congressional District 10, Georgia": 3.225806451612903,
-        "Congressional District 02, Idaho": 3.225806451612903,
-        "Congressional District 02, New Mexico": 3.225806451612903,
-        "Congressional District 02, Maine": 3.225806451612903,
-        "Congressional District 02, Minnesota": 3.225806451612903,
-        "Congressional District 21, New York": 3.225806451612903,
-        "Congressional District 05, Washington": 3.225806451612903,
-        "Congressional District 08, Washington": 3.225806451612903,
-        "Congressional District 05, California": 3.225806451612903,
-        "Congressional District 03, South Carolina": 3.225806451612903,
-        "Congressional District 02, Tennessee": 3.225806451612903,
-        "Congressional District 09, Virginia": 3.225806451612903,
-        "Congressional District 01, Idaho": 3.225806451612903,
-        "Congressional District 11, North Carolina": 3.225806451612903,
-        "Congressional District 02, Montana": 3.225806451612903,
-        "Congressional District 13, Ohio": 3.225806451612903,
-        "Congressional District 08, Tennessee": 3.225806451612903,
-        "Congressional District 01, Alabama": 3.225806451612903
-      },
-      "attributeMeta": {
-        "Congressional District 03, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 07, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 02, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 00, Alaska": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 01, Tennessee": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 04, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 02, Colorado": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 01, Michigan": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 02, Massachusetts": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 06, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 00, Puerto Rico": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 05, Connecticut": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 03, Colorado": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 10, Georgia": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 02, Idaho": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 02, New Mexico": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 02, Maine": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 02, Minnesota": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 21, New York": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 05, Washington": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 08, Washington": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 05, California": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 03, South Carolina": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 02, Tennessee": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 09, Virginia": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 01, Idaho": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 11, North Carolina": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 02, Montana": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 13, Ohio": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 08, Tennessee": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Congressional District 01, Alabama": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "CONG_REPRESNTATIVE": {
       "uniqueValues": [
@@ -20722,165 +20050,8 @@
         "Gary J. Palmer (R)": 4,
         "Robert B. Aderholt (R)": 4
       },
-      "attributeWeights": {
-        "Mike Rogers (R)": 3.225806451612903,
-        "Terri A. Sewell (D)": 3.225806451612903,
-        "Martha Roby (R)": 3.225806451612903,
-        "Don Young (R)": 3.225806451612903,
-        "David P. Roe (R)": 3.225806451612903,
-        "Gary J. Palmer (R)": 3.225806451612903,
-        "Robert B. Aderholt (R)": 3.225806451612903,
-        "Joe Neguse (D)": 3.225806451612903,
-        "Jack Bergman (R)": 3.225806451612903,
-        "James P. McGovern (D)": 3.225806451612903,
-        "Jenniffer Gonzalez-Colon (R)": 3.225806451612903,
-        "Jahana Hayes (D)": 3.225806451612903,
-        "Scott R. Tipton (R)": 3.225806451612903,
-        "Jody B. Hice (R)": 3.225806451612903,
-        "Michael K. Simpson (R)": 3.225806451612903,
-        "Xochitl Torres Small (D)": 3.225806451612903,
-        "Jared F. Golden (D)": 3.225806451612903,
-        "Angie Craig (D)": 3.225806451612903,
-        "Anthony Brindisi (R)": 3.225806451612903,
-        "Cathy McMorris Rodgers (R)": 3.225806451612903,
-        "Suzan K. DelBene (D)": 3.225806451612903,
-        "Tom McClintock (R)": 3.225806451612903,
-        "Jeff Duncan (R)": 3.225806451612903,
-        "Tim Burchett (R)": 3.225806451612903,
-        "H. Morgan Griffith (R)": 3.225806451612903,
-        "Russ Fulcher (R)": 3.225806451612903,
-        "Mark Meadows (R)": 3.225806451612903,
-        "Greg Gianforte (R)": 3.225806451612903,
-        "Tim Ryan (D)": 3.225806451612903,
-        "Mark E. Green (R)": 3.225806451612903,
-        "Bradley Byrne (R)": 3.225806451612903
-      },
-      "attributeMeta": {
-        "Mike Rogers (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Terri A. Sewell (D)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Martha Roby (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Don Young (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "David P. Roe (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Gary J. Palmer (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Robert B. Aderholt (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Joe Neguse (D)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Jack Bergman (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "James P. McGovern (D)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Jenniffer Gonzalez-Colon (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Jahana Hayes (D)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Scott R. Tipton (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Jody B. Hice (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Michael K. Simpson (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Xochitl Torres Small (D)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Jared F. Golden (D)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Angie Craig (D)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Anthony Brindisi (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cathy McMorris Rodgers (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Suzan K. DelBene (D)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tom McClintock (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Jeff Duncan (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tim Burchett (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "H. Morgan Griffith (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Russ Fulcher (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Mark Meadows (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Greg Gianforte (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tim Ryan (D)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Mark E. Green (R)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bradley Byrne (R)": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "COUNTYSTATE": {
       "uniqueValues": [
@@ -21013,325 +20184,8 @@
         "St. Clair, Alabama": 3,
         "Clarke, Alabama": 1
       },
-      "attributeWeights": {
-        "Hale, Alabama": 1.5873015873015872,
-        "Sevier, Tennessee": 1.5873015873015872,
-        "Montgomery, Alabama": 1.5873015873015872,
-        "Larimer, Colorado": 1.5873015873015872,
-        "Ontonagon, Michigan": 1.5873015873015872,
-        "Franklin, Massachusetts": 1.5873015873015872,
-        "Calhoun, Alabama": 1.5873015873015872,
-        "Lee, Alabama": 1.5873015873015872,
-        "Tuscaloosa, Alabama": 1.5873015873015872,
-        "St. Clair, Alabama": 1.5873015873015872,
-        "Ketchikan Gateway Borough, Alaska": 1.5873015873015872,
-        "Chugach Census Area, Alaska": 1.5873015873015872,
-        "Crenshaw, Alabama": 1.5873015873015872,
-        "Pickens, Alabama": 1.5873015873015872,
-        "Clay, Alabama": 1.5873015873015872,
-        "Chambers, Alabama": 1.5873015873015872,
-        "Russell, Alabama": 1.5873015873015872,
-        "Cleburne, Alabama": 1.5873015873015872,
-        "Geneva, Alabama": 1.5873015873015872,
-        "Cullman, Alabama": 1.5873015873015872,
-        "Shelby, Alabama": 1.5873015873015872,
-        "La Plata, Colorado": 1.5873015873015872,
-        "Hancock, Georgia": 1.5873015873015872,
-        "Twin Falls, Idaho": 1.5873015873015872,
-        "Sierra, New Mexico": 1.5873015873015872,
-        "Hancock, Maine": 1.5873015873015872,
-        "Dakota, Minnesota": 1.5873015873015872,
-        "Herkimer, New York": 1.5873015873015872,
-        "Spokane, Washington": 1.5873015873015872,
-        "King, Washington": 1.5873015873015872,
-        "Calaveras, California": 1.5873015873015872,
-        "Greenwood, South Carolina": 1.5873015873015872,
-        "Blount, Tennessee": 1.5873015873015872,
-        "Grayson, Virginia": 1.5873015873015872,
-        "Kootenai, Idaho": 1.5873015873015872,
-        "Macon, North Carolina": 1.5873015873015872,
-        "Phillips, Montana": 1.5873015873015872,
-        "A\u00f1asco, Puerto Rico": 1.5873015873015872,
-        "City and Borough of Juneau, Alaska": 1.5873015873015872,
-        "New Haven, Connecticut": 1.5873015873015872,
-        "Hartford, Connecticut": 1.5873015873015872,
-        "Summit, Ohio": 1.5873015873015872,
-        "Henderson, Tennessee": 1.5873015873015872,
-        "Kenai Peninsula Borough, Alaska": 1.5873015873015872,
-        "Adjuntas, Puerto Rico": 1.5873015873015872,
-        "Marengo, Alabama": 1.5873015873015872,
-        "Aleutians West Census Area, Alaska": 1.5873015873015872,
-        "Mobile, Alabama": 1.5873015873015872,
-        "Butler, Alabama": 1.5873015873015872,
-        "Municipality of Anchorage, Alaska": 1.5873015873015872,
-        "Macon, Alabama": 1.5873015873015872,
-        "Henry, Alabama": 1.5873015873015872,
-        "Lowndes, Alabama": 1.5873015873015872,
-        "Randolph, Alabama": 1.5873015873015872,
-        "Covington, Alabama": 1.5873015873015872,
-        "Greene, Alabama": 1.5873015873015872,
-        "Tallapoosa, Alabama": 1.5873015873015872,
-        "Chilton, Alabama": 1.5873015873015872,
-        "Coosa, Alabama": 1.5873015873015872,
-        "Walker, Alabama": 1.5873015873015872,
-        "Dallas, Alabama": 1.5873015873015872,
-        "Talladega, Alabama": 1.5873015873015872,
-        "Clarke, Alabama": 1.5873015873015872
-      },
-      "attributeMeta": {
-        "Hale, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Sevier, Tennessee": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Montgomery, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Larimer, Colorado": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Ontonagon, Michigan": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Franklin, Massachusetts": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Calhoun, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lee, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tuscaloosa, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "St. Clair, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Ketchikan Gateway Borough, Alaska": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Chugach Census Area, Alaska": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Crenshaw, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Pickens, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Clay, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Chambers, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Russell, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cleburne, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Geneva, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cullman, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Shelby, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "La Plata, Colorado": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hancock, Georgia": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Twin Falls, Idaho": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Sierra, New Mexico": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hancock, Maine": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Dakota, Minnesota": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Herkimer, New York": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Spokane, Washington": {
-          "meaning": "",
-          "importance": ""
-        },
-        "King, Washington": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Calaveras, California": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Greenwood, South Carolina": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Blount, Tennessee": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Grayson, Virginia": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Kootenai, Idaho": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Macon, North Carolina": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Phillips, Montana": {
-          "meaning": "",
-          "importance": ""
-        },
-        "A\u00f1asco, Puerto Rico": {
-          "meaning": "",
-          "importance": ""
-        },
-        "City and Borough of Juneau, Alaska": {
-          "meaning": "",
-          "importance": ""
-        },
-        "New Haven, Connecticut": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hartford, Connecticut": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Summit, Ohio": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Henderson, Tennessee": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Kenai Peninsula Borough, Alaska": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Adjuntas, Puerto Rico": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Marengo, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Aleutians West Census Area, Alaska": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Mobile, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Butler, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Municipality of Anchorage, Alaska": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Macon, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Henry, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lowndes, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Randolph, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Covington, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Greene, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tallapoosa, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Chilton, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Coosa, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Walker, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Dallas, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Talladega, Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Clarke, Alabama": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "DAM_TYPES": {
       "uniqueValues": [
@@ -21362,70 +20216,8 @@
         "Buttress": 1,
         "Earth, Gravity": 1
       },
-      "attributeWeights": {
-        "Earth": 8.333333333333334,
-        "Gravity": 8.333333333333334,
-        "Concrete, Gravity": 8.333333333333334,
-        "Timber Crib": 8.333333333333334,
-        "Earth, Rockfill": 8.333333333333334,
-        "Gravity, Masonry": 8.333333333333334,
-        "Concrete, Earth, Rockfill": 8.333333333333334,
-        "Concrete": 8.333333333333334,
-        "Arch": 8.333333333333334,
-        "Rockfill": 8.333333333333334,
-        "Buttress": 8.333333333333334,
-        "Earth, Gravity": 8.333333333333334
-      },
-      "attributeMeta": {
-        "Earth": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Gravity": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Concrete, Gravity": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Timber Crib": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Earth, Rockfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Gravity, Masonry": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Concrete, Earth, Rockfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Concrete": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Arch": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Rockfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Buttress": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Earth, Gravity": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "FEDERALLY_REGULATED_DAM": {
       "uniqueValues": [
@@ -21436,20 +20228,8 @@
         "Yes": 35,
         "No": 65
       },
-      "attributeWeights": {
-        "No": 50,
-        "Yes": 50
-      },
-      "attributeMeta": {
-        "No": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Yes": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "FEDERAL_ID": {
       "uniqueValues": [
@@ -21656,510 +20436,8 @@
         "AL01501": 1,
         "AL01389": 1
       },
-      "attributeWeights": {
-        "CO00895S001": 1,
-        "CO01659S001": 1,
-        "GA00854S001": 1,
-        "ID00223S001": 1,
-        "NM00129S001": 1,
-        "ME00264S001": 1,
-        "MI00153S001": 1,
-        "MN00514S001": 1,
-        "NY12517S001": 1,
-        "WA00074S001": 1,
-        "WA00238S001": 1,
-        "CA00164S002": 1,
-        "SC00109S001": 1,
-        "TN00906S001": 1,
-        "VA077002S001": 1,
-        "CO01659S002": 1,
-        "ID00220S002": 1,
-        "MA00849S003": 1,
-        "MI00153S003": 1,
-        "MA00849S002": 1,
-        "MI00153S002": 1,
-        "NC00371S002": 1,
-        "MA00849S004": 1,
-        "CO01659S003": 1,
-        "MT00574S004": 1,
-        "PR00072": 1,
-        "AK00003": 1,
-        "AK00012": 1,
-        "AK00018": 1,
-        "CT00297S02": 1,
-        "CT00487S02": 1,
-        "OH02474": 1,
-        "TN07705S001": 1,
-        "TN15501S005": 1,
-        "TN15501S006": 1,
-        "TN15501S009": 1,
-        "AK00060": 1,
-        "PR00006": 1,
-        "AL00129": 1,
-        "AK00108": 1,
-        "AK00119": 1,
-        "AL00004": 1,
-        "AL00010": 1,
-        "AL00038": 1,
-        "AL00067": 1,
-        "AL00075": 1,
-        "AK00178": 1,
-        "AK00189": 1,
-        "TN15501S001": 1,
-        "TN15501S003": 1,
-        "AL00318": 1,
-        "AL00325": 1,
-        "AL00332": 1,
-        "AL00334": 1,
-        "AL00338": 1,
-        "AL00361": 1,
-        "AL00173": 1,
-        "AL00175": 1,
-        "AL00370": 1,
-        "AL00390": 1,
-        "AL00593": 1,
-        "AL00403": 1,
-        "AL00485": 1,
-        "AL00505": 1,
-        "AL00547": 1,
-        "AL00549": 1,
-        "AL00425": 1,
-        "AL00457": 1,
-        "AL00458": 1,
-        "AL00583": 1,
-        "AL00759": 1,
-        "AL00791": 1,
-        "AL00827": 1,
-        "AL00851": 1,
-        "AL00624": 1,
-        "AL00636": 1,
-        "AL00656": 1,
-        "AL00717": 1,
-        "AL00723": 1,
-        "AL00741": 1,
-        "AL00854": 1,
-        "AL00881": 1,
-        "AL00952": 1,
-        "AL00966": 1,
-        "AL00989": 1,
-        "AL00992": 1,
-        "AL00889": 1,
-        "AL00909": 1,
-        "AL00921": 1,
-        "AL00677": 1,
-        "AL01342": 1,
-        "AL01107": 1,
-        "AL01127": 1,
-        "AL01135": 1,
-        "AL01138": 1,
-        "AL01046": 1,
-        "AL01070": 1,
-        "AL01344": 1,
-        "AL01501": 1,
-        "AL01389": 1
-      },
-      "attributeMeta": {
-        "CO00895S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CO01659S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "GA00854S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ID00223S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "NM00129S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ME00264S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MI00153S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MN00514S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "NY12517S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "WA00074S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "WA00238S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CA00164S002": {
-          "meaning": "",
-          "importance": ""
-        },
-        "SC00109S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN00906S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "VA077002S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CO01659S002": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ID00220S002": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MA00849S003": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MI00153S003": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MA00849S002": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MI00153S002": {
-          "meaning": "",
-          "importance": ""
-        },
-        "NC00371S002": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MA00849S004": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CO01659S003": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MT00574S004": {
-          "meaning": "",
-          "importance": ""
-        },
-        "PR00072": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00003": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00012": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00018": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CT00297S02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CT00487S02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "OH02474": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN07705S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN15501S005": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN15501S006": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN15501S009": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00060": {
-          "meaning": "",
-          "importance": ""
-        },
-        "PR00006": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00129": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00108": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00119": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00004": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00010": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00038": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00067": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00075": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00178": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00189": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN15501S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN15501S003": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00318": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00325": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00332": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00334": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00338": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00361": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00173": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00175": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00370": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00390": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00593": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00403": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00485": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00505": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00547": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00549": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00425": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00457": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00458": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00583": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00759": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00791": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00827": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00851": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00624": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00636": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00656": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00717": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00723": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00741": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00854": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00881": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00952": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00966": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00989": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00992": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00889": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00909": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00921": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00677": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01342": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01107": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01127": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01135": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01138": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01046": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01070": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01344": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01501": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01389": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "FED_AGENCY_INSPECTIONS": {
       "uniqueValues": [
@@ -22176,35 +20454,8 @@
         "National Park Service": 1,
         "Tennessee Valley Authority": 6
       },
-      "attributeWeights": {
-        "Federal Energy Regulatory Commission": 20,
-        "Tennessee Valley Authority": 20,
-        "Bureau of Reclamation": 20,
-        "Natural Resources Conservation Service": 20,
-        "National Park Service": 20
-      },
-      "attributeMeta": {
-        "Federal Energy Regulatory Commission": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tennessee Valley Authority": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bureau of Reclamation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Natural Resources Conservation Service": {
-          "meaning": "",
-          "importance": ""
-        },
-        "National Park Service": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "FED_AGENCY_REGULATORIES": {
       "uniqueValues": [
@@ -22221,35 +20472,8 @@
         "Tennessee Valley Authority": 6,
         "Forest Service": 1
       },
-      "attributeWeights": {
-        "Federal Energy Regulatory Commission": 20,
-        "Tennessee Valley Authority": 20,
-        "Bureau of Reclamation": 20,
-        "National Park Service": 20,
-        "Forest Service": 20
-      },
-      "attributeMeta": {
-        "Federal Energy Regulatory Commission": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tennessee Valley Authority": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bureau of Reclamation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "National Park Service": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Forest Service": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "HAZARD_POTENTIAL": {
       "uniqueValues": [
@@ -22263,18 +20487,18 @@
         "Significant": 16
       },
       "attributeWeights": {
-        "Low": 33.333333333333336,
-        "High": 33.333333333333336,
+        "Low": 36,
+        "High": 31,
         "Significant": 33.333333333333336
       },
       "attributeMeta": {
         "Low": {
-          "meaning": "",
-          "importance": ""
+          "meaning": "WERFSA",
+          "importance": "UUUUUUU"
         },
         "High": {
-          "meaning": "",
-          "importance": ""
+          "meaning": "OOOOOO",
+          "importance": "PPPPP"
         },
         "Significant": {
           "meaning": "",
@@ -22291,20 +20515,8 @@
         "Yes": 33,
         "No": 67
       },
-      "attributeWeights": {
-        "No": 50,
-        "Yes": 50
-      },
-      "attributeMeta": {
-        "No": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Yes": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "NAME": {
       "uniqueValues": [
@@ -22511,510 +20723,8 @@
         "Burch": 1,
         "Solomon Dam": 1
       },
-      "attributeWeights": {
-        "Stagecoach                                                       ": 1,
-        "Horsetooth-Dixon Canyon": 1,
-        "Wallace Saddle Dike                                              ": 1,
-        "Milner S Embankment": 1,
-        "Elephant Butte Dike": 1,
-        "Graham Lake Flood Control                                        ": 1,
-        "Bond Falls Auxiliary Dike                                        ": 1,
-        "Lake Byllesby Perimeter Embankment                               ": 1,
-        "Little Falls State Dam - North                                   ": 1,
-        "Upriver Dam Forebay": 1,
-        "Regulating Basin South Dam": 1,
-        "Pardee South Spillway": 1,
-        "Buzzards Roost Fuse Plug                                         ": 1,
-        "Calderwood Plunge Pool Weir                                      ": 1,
-        "Fries, Canal Embankment                                          ": 1,
-        "Horsetooth-Satanka Dike": 1,
-        "Post Falls South Channel": 1,
-        "Turners Falls Dike                                               ": 1,
-        "Bond Falls Sand Lake Dike                                        ": 1,
-        "Cabot Spillway                                                   ": 1,
-        "Bond Falls Control Dam                                           ": 1,
-        "White Oak Creek Dam                                              ": 1,
-        "Cabot Station                                                    ": 1,
-        "Horsetooth-Soldier Canyon": 1,
-        "Nelson Dike D": 1,
-        "Ajies Dam Structure 2a": 1,
-        "Salmon Creek": 1,
-        "Whitman Lake": 1,
-        "Meals Lake Dam": 1,
-        "Hitchcock Lake College Place Dike": 1,
-        "South Flood Control Dike": 1,
-        "Sylvan Dam": 1,
-        "Beech Dam - Saddle Dam No. 1": 1,
-        "Douglas Dam - Saddle Dam No. 5": 1,
-        "Douglas Dam - Saddle Dam No. 6": 1,
-        "Douglas Dam - Saddle Dam No. 9": 1,
-        "Lowell Creek": 1,
-        "Garzas Dam": 1,
-        "Demopolis Country Club Dam": 1,
-        "Bonnie Rose Lake Dam": 1,
-        "Cannery Creek Dam": 1,
-        "Greenleaf - Choccolocco Site 2": 1,
-        "Echo Lake": 1,
-        "Mc Gowin": 1,
-        "Bryce Smith": 1,
-        "Magnolia Shores Lake": 1,
-        "Ward Cove Cannery Dam": 1,
-        "Lower Fire Lake Dam": 1,
-        "Douglas Dam - Saddle Dam No. 1": 1,
-        "Douglas Dam - Saddle Dam No. 3": 1,
-        "Jack Hardenbergh Dam": 1,
-        "C.H.Bryars Jr Dam No 2": 1,
-        "Kyser Lakes Dam No.6": 1,
-        "John Jay Dam": 1,
-        "Lenson Montz Dam No 1": 1,
-        "Wiggins Lake Dam": 1,
-        "Longview": 1,
-        "Parson": 1,
-        "Auburn Farm Pond No S-6": 1,
-        "Dr James Bruce No 3": 1,
-        "Ketchepedrake Creek W/S Dam Site 9": 1,
-        "Thomas Cherry": 1,
-        "Edward Myers": 1,
-        "Fannin": 1,
-        "Lafayette City Lake": 1,
-        "Jeff Beard": 1,
-        "Bridges": 1,
-        "Mead": 1,
-        "Collins": 1,
-        "Little Hillabee W/S Dam Site 1": 1,
-        "Choctawhatchee No 2": 1,
-        "Paynes Dam": 1,
-        "Nelson": 1,
-        "Golden Stream Lake": 1,
-        "Heflin": 1,
-        "Stricklin": 1,
-        "Billy Carter": 1,
-        "Lake Fox": 1,
-        "Joe Roeny No 1": 1,
-        "W.P.Mclean Dam Number 1": 1,
-        "Bush Pond": 1,
-        "Patterson": 1,
-        "Lake Fountain Head Dam": 1,
-        "Ewell C Forbus": 1,
-        "Brown Pond Dam": 1,
-        "Lick Creek Dam": 1,
-        "Boshell@S Mill Dam": 1,
-        "Choccolocco Creek W/S Dam Site 9": 1,
-        "Finks Lake": 1,
-        "Mchugh Lake Dam": 1,
-        "Rutherford Lake Dam No.1": 1,
-        "Lane": 1,
-        "Steiner Lake Dam": 1,
-        "Lake Wildwood Dam": 1,
-        "Northwood Lake Dam": 1,
-        "Tadpole": 1,
-        "Springville Estate": 1,
-        "Davis Lake Dam Number Two": 1,
-        "Burch": 1,
-        "Solomon Dam": 1
-      },
-      "attributeMeta": {
-        "Stagecoach                                                       ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Horsetooth-Dixon Canyon": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Wallace Saddle Dike                                              ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Milner S Embankment": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Elephant Butte Dike": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Graham Lake Flood Control                                        ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bond Falls Auxiliary Dike                                        ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lake Byllesby Perimeter Embankment                               ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Little Falls State Dam - North                                   ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Upriver Dam Forebay": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Regulating Basin South Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Pardee South Spillway": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Buzzards Roost Fuse Plug                                         ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Calderwood Plunge Pool Weir                                      ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fries, Canal Embankment                                          ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Horsetooth-Satanka Dike": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Post Falls South Channel": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Turners Falls Dike                                               ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bond Falls Sand Lake Dike                                        ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cabot Spillway                                                   ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bond Falls Control Dam                                           ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "White Oak Creek Dam                                              ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cabot Station                                                    ": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Horsetooth-Soldier Canyon": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Nelson Dike D": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Ajies Dam Structure 2a": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Salmon Creek": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Whitman Lake": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Meals Lake Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hitchcock Lake College Place Dike": {
-          "meaning": "",
-          "importance": ""
-        },
-        "South Flood Control Dike": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Sylvan Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Beech Dam - Saddle Dam No. 1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Douglas Dam - Saddle Dam No. 5": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Douglas Dam - Saddle Dam No. 6": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Douglas Dam - Saddle Dam No. 9": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lowell Creek": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Garzas Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Demopolis Country Club Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bonnie Rose Lake Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Cannery Creek Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Greenleaf - Choccolocco Site 2": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Echo Lake": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Mc Gowin": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bryce Smith": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Magnolia Shores Lake": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Ward Cove Cannery Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lower Fire Lake Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Douglas Dam - Saddle Dam No. 1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Douglas Dam - Saddle Dam No. 3": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Jack Hardenbergh Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "C.H.Bryars Jr Dam No 2": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Kyser Lakes Dam No.6": {
-          "meaning": "",
-          "importance": ""
-        },
-        "John Jay Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lenson Montz Dam No 1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Wiggins Lake Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Longview": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Parson": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Auburn Farm Pond No S-6": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Dr James Bruce No 3": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Ketchepedrake Creek W/S Dam Site 9": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Thomas Cherry": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Edward Myers": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fannin": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lafayette City Lake": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Jeff Beard": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bridges": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Mead": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Collins": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Little Hillabee W/S Dam Site 1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Choctawhatchee No 2": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Paynes Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Nelson": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Golden Stream Lake": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Heflin": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Stricklin": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Billy Carter": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lake Fox": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Joe Roeny No 1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "W.P.Mclean Dam Number 1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Bush Pond": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Patterson": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lake Fountain Head Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Ewell C Forbus": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Brown Pond Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lick Creek Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Boshell@S Mill Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Choccolocco Creek W/S Dam Site 9": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Finks Lake": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Mchugh Lake Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Rutherford Lake Dam No.1": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lane": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Steiner Lake Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Lake Wildwood Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Northwood Lake Dam": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tadpole": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Springville Estate": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Davis Lake Dam Number Two": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Burch": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Solomon Dam": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "NIDID": {
       "uniqueValues": [
@@ -23201,460 +20911,8 @@
         "AL01501": 1,
         "AL01389": 1
       },
-      "attributeWeights": {
-        "TN15501": 1.1111111111111112,
-        "CO01659": 1.1111111111111112,
-        "MI00153": 1.1111111111111112,
-        "MA00849": 1.1111111111111112,
-        "CO00895": 1.1111111111111112,
-        "GA00854": 1.1111111111111112,
-        "ID00223": 1.1111111111111112,
-        "NM00129": 1.1111111111111112,
-        "ME83052": 1.1111111111111112,
-        "MN00514": 1.1111111111111112,
-        "NY12517": 1.1111111111111112,
-        "WA00074": 1.1111111111111112,
-        "WA00238": 1.1111111111111112,
-        "CA00164": 1.1111111111111112,
-        "SC00109": 1.1111111111111112,
-        "TN00906": 1.1111111111111112,
-        "VA077002": 1.1111111111111112,
-        "ID00497": 1.1111111111111112,
-        "NC06494": 1.1111111111111112,
-        "MT00574": 1.1111111111111112,
-        "PR00072": 1.1111111111111112,
-        "AK00003": 1.1111111111111112,
-        "AK00012": 1.1111111111111112,
-        "AK00018": 1.1111111111111112,
-        "CT00297": 1.1111111111111112,
-        "CT00487": 1.1111111111111112,
-        "OH02474": 1.1111111111111112,
-        "TN07705": 1.1111111111111112,
-        "AK00060": 1.1111111111111112,
-        "PR00006": 1.1111111111111112,
-        "AL00129": 1.1111111111111112,
-        "AK00108": 1.1111111111111112,
-        "AK00119": 1.1111111111111112,
-        "AL00004": 1.1111111111111112,
-        "AL00010": 1.1111111111111112,
-        "AL00038": 1.1111111111111112,
-        "AL00067": 1.1111111111111112,
-        "AL00075": 1.1111111111111112,
-        "AK00178": 1.1111111111111112,
-        "AK00189": 1.1111111111111112,
-        "AL00318": 1.1111111111111112,
-        "AL00325": 1.1111111111111112,
-        "AL00332": 1.1111111111111112,
-        "AL00334": 1.1111111111111112,
-        "AL00338": 1.1111111111111112,
-        "AL00361": 1.1111111111111112,
-        "AL00173": 1.1111111111111112,
-        "AL00175": 1.1111111111111112,
-        "AL00370": 1.1111111111111112,
-        "AL00390": 1.1111111111111112,
-        "AL00593": 1.1111111111111112,
-        "AL00403": 1.1111111111111112,
-        "AL00485": 1.1111111111111112,
-        "AL00505": 1.1111111111111112,
-        "AL00547": 1.1111111111111112,
-        "AL00549": 1.1111111111111112,
-        "AL00425": 1.1111111111111112,
-        "AL00457": 1.1111111111111112,
-        "AL00458": 1.1111111111111112,
-        "AL00583": 1.1111111111111112,
-        "AL00759": 1.1111111111111112,
-        "AL00791": 1.1111111111111112,
-        "AL00827": 1.1111111111111112,
-        "AL00851": 1.1111111111111112,
-        "AL00624": 1.1111111111111112,
-        "AL00636": 1.1111111111111112,
-        "AL00656": 1.1111111111111112,
-        "AL00717": 1.1111111111111112,
-        "AL00723": 1.1111111111111112,
-        "AL00741": 1.1111111111111112,
-        "AL00854": 1.1111111111111112,
-        "AL00881": 1.1111111111111112,
-        "AL00952": 1.1111111111111112,
-        "AL00966": 1.1111111111111112,
-        "AL00989": 1.1111111111111112,
-        "AL00992": 1.1111111111111112,
-        "AL00889": 1.1111111111111112,
-        "AL00909": 1.1111111111111112,
-        "AL00921": 1.1111111111111112,
-        "AL00677": 1.1111111111111112,
-        "AL01342": 1.1111111111111112,
-        "AL01107": 1.1111111111111112,
-        "AL01127": 1.1111111111111112,
-        "AL01135": 1.1111111111111112,
-        "AL01138": 1.1111111111111112,
-        "AL01046": 1.1111111111111112,
-        "AL01070": 1.1111111111111112,
-        "AL01344": 1.1111111111111112,
-        "AL01501": 1.1111111111111112,
-        "AL01389": 1.1111111111111112
-      },
-      "attributeMeta": {
-        "TN15501": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CO01659": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MI00153": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MA00849": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CO00895": {
-          "meaning": "",
-          "importance": ""
-        },
-        "GA00854": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ID00223": {
-          "meaning": "",
-          "importance": ""
-        },
-        "NM00129": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ME83052": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MN00514": {
-          "meaning": "",
-          "importance": ""
-        },
-        "NY12517": {
-          "meaning": "",
-          "importance": ""
-        },
-        "WA00074": {
-          "meaning": "",
-          "importance": ""
-        },
-        "WA00238": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CA00164": {
-          "meaning": "",
-          "importance": ""
-        },
-        "SC00109": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN00906": {
-          "meaning": "",
-          "importance": ""
-        },
-        "VA077002": {
-          "meaning": "",
-          "importance": ""
-        },
-        "ID00497": {
-          "meaning": "",
-          "importance": ""
-        },
-        "NC06494": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MT00574": {
-          "meaning": "",
-          "importance": ""
-        },
-        "PR00072": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00003": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00012": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00018": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CT00297": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CT00487": {
-          "meaning": "",
-          "importance": ""
-        },
-        "OH02474": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TN07705": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00060": {
-          "meaning": "",
-          "importance": ""
-        },
-        "PR00006": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00129": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00108": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00119": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00004": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00010": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00038": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00067": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00075": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00178": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK00189": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00318": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00325": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00332": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00334": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00338": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00361": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00173": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00175": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00370": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00390": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00593": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00403": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00485": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00505": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00547": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00549": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00425": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00457": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00458": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00583": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00759": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00791": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00827": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00851": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00624": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00636": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00656": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00717": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00723": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00741": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00854": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00881": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00952": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00966": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00989": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00992": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00889": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00909": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00921": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL00677": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01342": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01107": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01127": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01135": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01138": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01046": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01070": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01344": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01501": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AL01389": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "NON_FED_ON_FED": {
       "uniqueValues": [
@@ -23665,20 +20923,8 @@
         "No": 94,
         "Yes": 5
       },
-      "attributeWeights": {
-        "No": 50,
-        "Yes": 50
-      },
-      "attributeMeta": {
-        "No": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Yes": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "NRCS_WATERSHED_DAM_AUTH": {
       "uniqueValues": [
@@ -23691,25 +20937,8 @@
         "Watershed Protection and Flood Prevention Act of 1954 (Public Law 83-566)": 4,
         "1962 Resource Conservation and Development Act (Public Law 87-703)": 1
       },
-      "attributeWeights": {
-        "N/A": 33.333333333333336,
-        "Watershed Protection and Flood Prevention Act of 1954 (Public Law 83-566)": 33.333333333333336,
-        "1962 Resource Conservation and Development Act (Public Law 87-703)": 33.333333333333336
-      },
-      "attributeMeta": {
-        "N/A": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Watershed Protection and Flood Prevention Act of 1954 (Public Law 83-566)": {
-          "meaning": "",
-          "importance": ""
-        },
-        "1962 Resource Conservation and Development Act (Public Law 87-703)": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "OPERATIONAL_STATUS": {
       "uniqueValues": [
@@ -23720,20 +20949,8 @@
         "Normal Operations": 21,
         "Under Remediation": 1
       },
-      "attributeWeights": {
-        "Normal Operations": 50,
-        "Under Remediation": 50
-      },
-      "attributeMeta": {
-        "Normal Operations": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Under Remediation": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "OTHER_STRUCTURE_ID": {
       "uniqueValues": [
@@ -23756,50 +20973,8 @@
         "S006": 1,
         "S009": 1
       },
-      "attributeWeights": {
-        "S001": 12.5,
-        "S002": 12.5,
-        "S003": 12.5,
-        "S004": 12.5,
-        "S02": 12.5,
-        "S005": 12.5,
-        "S006": 12.5,
-        "S009": 12.5
-      },
-      "attributeMeta": {
-        "S001": {
-          "meaning": "",
-          "importance": ""
-        },
-        "S002": {
-          "meaning": "",
-          "importance": ""
-        },
-        "S003": {
-          "meaning": "",
-          "importance": ""
-        },
-        "S004": {
-          "meaning": "",
-          "importance": ""
-        },
-        "S02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "S005": {
-          "meaning": "",
-          "importance": ""
-        },
-        "S006": {
-          "meaning": "",
-          "importance": ""
-        },
-        "S009": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "OWNER_TYPES": {
       "uniqueValues": [
@@ -23818,40 +20993,8 @@
         "Local Government": 10,
         "State": 4
       },
-      "attributeWeights": {
-        "Private": 16.666666666666668,
-        "Federal": 16.666666666666668,
-        "Local Government": 16.666666666666668,
-        "Public Utility": 16.666666666666668,
-        "Not Listed": 16.666666666666668,
-        "State": 16.666666666666668
-      },
-      "attributeMeta": {
-        "Private": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Federal": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Local Government": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Public Utility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Not Listed": {
-          "meaning": "",
-          "importance": ""
-        },
-        "State": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "PRIMARY_DAM_TYPE": {
       "uniqueValues": [
@@ -23872,45 +21015,8 @@
         "Arch": 1,
         "Buttress": 1
       },
-      "attributeWeights": {
-        "Earth": 14.285714285714286,
-        "Gravity": 14.285714285714286,
-        "Concrete": 14.285714285714286,
-        "Rockfill": 14.285714285714286,
-        "Timber Crib": 14.285714285714286,
-        "Arch": 14.285714285714286,
-        "Buttress": 14.285714285714286
-      },
-      "attributeMeta": {
-        "Earth": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Gravity": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Concrete": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Rockfill": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Timber Crib": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Arch": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Buttress": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "PRIMARY_OWNER_TYPE": {
       "uniqueValues": [
@@ -23929,40 +21035,8 @@
         "Local Government": 10,
         "State": 4
       },
-      "attributeWeights": {
-        "Private": 16.666666666666668,
-        "Federal": 16.666666666666668,
-        "Local Government": 16.666666666666668,
-        "Public Utility": 16.666666666666668,
-        "Not Listed": 16.666666666666668,
-        "State": 16.666666666666668
-      },
-      "attributeMeta": {
-        "Private": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Federal": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Local Government": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Public Utility": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Not Listed": {
-          "meaning": "",
-          "importance": ""
-        },
-        "State": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "PRIMARY_PURPOSE": {
       "uniqueValues": [
@@ -23985,50 +21059,8 @@
         "Fish and Wildlife Pond": 12,
         "Fire Protection, Stock, Or Small Fish Pond": 4
       },
-      "attributeWeights": {
-        "Recreation": 12.5,
-        "Hydroelectric": 12.5,
-        "Flood Risk Reduction": 12.5,
-        "Fish and Wildlife Pond": 12.5,
-        "Water Supply": 12.5,
-        "Irrigation": 12.5,
-        "Fire Protection, Stock, Or Small Fish Pond": 12.5,
-        "Other": 12.5
-      },
-      "attributeMeta": {
-        "Recreation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hydroelectric": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Flood Risk Reduction": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fish and Wildlife Pond": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Water Supply": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Irrigation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fire Protection, Stock, Or Small Fish Pond": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Other": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "PRIMARY_SOURCE_AGENCY": {
       "uniqueValues": [
@@ -24053,55 +21085,8 @@
         "AL": 55,
         "USDA FS": 1
       },
-      "attributeWeights": {
-        "AL": 11.11111111111111,
-        "FERC": 11.11111111111111,
-        "AK": 11.11111111111111,
-        "TVA": 11.11111111111111,
-        "DOI BR": 11.11111111111111,
-        "PR": 11.11111111111111,
-        "CT": 11.11111111111111,
-        "DOI NPS": 11.11111111111111,
-        "USDA FS": 11.11111111111111
-      },
-      "attributeMeta": {
-        "AL": {
-          "meaning": "",
-          "importance": ""
-        },
-        "FERC": {
-          "meaning": "",
-          "importance": ""
-        },
-        "AK": {
-          "meaning": "",
-          "importance": ""
-        },
-        "TVA": {
-          "meaning": "",
-          "importance": ""
-        },
-        "DOI BR": {
-          "meaning": "",
-          "importance": ""
-        },
-        "PR": {
-          "meaning": "",
-          "importance": ""
-        },
-        "CT": {
-          "meaning": "",
-          "importance": ""
-        },
-        "DOI NPS": {
-          "meaning": "",
-          "importance": ""
-        },
-        "USDA FS": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "PURPOSES": {
       "uniqueValues": [
@@ -24162,145 +21147,8 @@
         "Fire Protection, Stock, Or Small Fish Pond, Recreation": 1,
         "Other, Recreation": 1
       },
-      "attributeWeights": {
-        "Recreation": 3.7037037037037037,
-        "Hydroelectric, Recreation": 3.7037037037037037,
-        "Flood Risk Reduction": 3.7037037037037037,
-        "Water Supply": 3.7037037037037037,
-        "Flood Risk Reduction, Hydroelectric, Navigation, Recreation, Water Supply": 3.7037037037037037,
-        "Fish and Wildlife Pond, Recreation": 3.7037037037037037,
-        "Fire Protection, Stock, Or Small Fish Pond, Fish and Wildlife Pond, Recreation": 3.7037037037037037,
-        "Irrigation": 3.7037037037037037,
-        "Hydroelectric": 3.7037037037037037,
-        "Fish and Wildlife Pond": 3.7037037037037037,
-        "Fire Protection, Stock, Or Small Fish Pond": 3.7037037037037037,
-        "Hydroelectric, Water Supply": 3.7037037037037037,
-        "Hydroelectric, Recreation, Water Supply": 3.7037037037037037,
-        "Hydroelectric, Irrigation, Recreation": 3.7037037037037037,
-        "Flood Risk Reduction, Hydroelectric, Irrigation, Recreation": 3.7037037037037037,
-        "Fish and Wildlife Pond, Hydroelectric, Navigation, Recreation": 3.7037037037037037,
-        "Fish and Wildlife Pond, Hydroelectric, Recreation, Water Supply": 3.7037037037037037,
-        "Hydroelectric, Navigation": 3.7037037037037037,
-        "Irrigation, Water Supply": 3.7037037037037037,
-        "Fish and Wildlife Pond, Hydroelectric, Other, Recreation": 3.7037037037037037,
-        "Hydroelectric, Other, Recreation, Water Supply": 3.7037037037037037,
-        "Flood Risk Reduction, Recreation, Water Supply": 3.7037037037037037,
-        "Other, Water Supply": 3.7037037037037037,
-        "Other": 3.7037037037037037,
-        "Recreation, Water Supply": 3.7037037037037037,
-        "Fire Protection, Stock, Or Small Fish Pond, Recreation": 3.7037037037037037,
-        "Other, Recreation": 3.7037037037037037
-      },
-      "attributeMeta": {
-        "Recreation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hydroelectric, Recreation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Flood Risk Reduction": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Water Supply": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Flood Risk Reduction, Hydroelectric, Navigation, Recreation, Water Supply": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fish and Wildlife Pond, Recreation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fire Protection, Stock, Or Small Fish Pond, Fish and Wildlife Pond, Recreation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Irrigation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hydroelectric": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fish and Wildlife Pond": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fire Protection, Stock, Or Small Fish Pond": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hydroelectric, Water Supply": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hydroelectric, Recreation, Water Supply": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hydroelectric, Irrigation, Recreation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Flood Risk Reduction, Hydroelectric, Irrigation, Recreation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fish and Wildlife Pond, Hydroelectric, Navigation, Recreation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fish and Wildlife Pond, Hydroelectric, Recreation, Water Supply": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hydroelectric, Navigation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Irrigation, Water Supply": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fish and Wildlife Pond, Hydroelectric, Other, Recreation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Hydroelectric, Other, Recreation, Water Supply": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Flood Risk Reduction, Recreation, Water Supply": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Other, Water Supply": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Other": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Recreation, Water Supply": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Fire Protection, Stock, Or Small Fish Pond, Recreation": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Other, Recreation": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "SE_ANNO_CAD_DATA": {
       "uniqueValues": [],
@@ -24319,25 +21167,8 @@
         "None": 16,
         "Controlled": 7
       },
-      "attributeWeights": {
-        "Uncontrolled": 33.333333333333336,
-        "None": 33.333333333333336,
-        "Controlled": 33.333333333333336
-      },
-      "attributeMeta": {
-        "Uncontrolled": {
-          "meaning": "",
-          "importance": ""
-        },
-        "None": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Controlled": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "STATE": {
       "uniqueValues": [
@@ -24386,115 +21217,8 @@
         "Ohio": 1,
         "Alabama": 56
       },
-      "attributeWeights": {
-        "Alabama": 4.761904761904762,
-        "Alaska": 4.761904761904762,
-        "Tennessee": 4.761904761904762,
-        "Colorado": 4.761904761904762,
-        "Michigan": 4.761904761904762,
-        "Massachusetts": 4.761904761904762,
-        "Idaho": 4.761904761904762,
-        "Washington": 4.761904761904762,
-        "Puerto Rico": 4.761904761904762,
-        "Connecticut": 4.761904761904762,
-        "Georgia": 4.761904761904762,
-        "New Mexico": 4.761904761904762,
-        "Maine": 4.761904761904762,
-        "Minnesota": 4.761904761904762,
-        "New York": 4.761904761904762,
-        "California": 4.761904761904762,
-        "South Carolina": 4.761904761904762,
-        "Virginia": 4.761904761904762,
-        "North Carolina": 4.761904761904762,
-        "Montana": 4.761904761904762,
-        "Ohio": 4.761904761904762
-      },
-      "attributeMeta": {
-        "Alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Alaska": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Tennessee": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Colorado": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Michigan": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Massachusetts": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Idaho": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Washington": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Puerto Rico": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Connecticut": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Georgia": {
-          "meaning": "",
-          "importance": ""
-        },
-        "New Mexico": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Maine": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Minnesota": {
-          "meaning": "",
-          "importance": ""
-        },
-        "New York": {
-          "meaning": "",
-          "importance": ""
-        },
-        "California": {
-          "meaning": "",
-          "importance": ""
-        },
-        "South Carolina": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Virginia": {
-          "meaning": "",
-          "importance": ""
-        },
-        "North Carolina": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Montana": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Ohio": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "STATE_ENFORCEMENT": {
       "uniqueValues": [
@@ -24505,20 +21229,8 @@
         "Yes": 20,
         "No": 79
       },
-      "attributeWeights": {
-        "No": 50,
-        "Yes": 50
-      },
-      "attributeMeta": {
-        "No": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Yes": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "STATE_FED_AGENCY": {
       "uniqueValues": [
@@ -24575,135 +21287,8 @@
         "11841-01-01": 1,
         "080105 0004": 1
       },
-      "attributeWeights": {
-        "15529": 4,
-        "16624": 4,
-        "12589-01-02": 4,
-        "02413-01-02": 4,
-        "02899-01-02": 4,
-        "02727-02-02": 4,
-        "01864-01-02": 4,
-        "06299-01-02": 4,
-        "03509-01-02": 4,
-        "03074-01-02": 4,
-        "02959-02-02": 4,
-        "02916-01-03": 4,
-        "01267-01-02": 4,
-        "02169-02-02": 4,
-        "02883-01-02": 4,
-        "02545-05-03": 4,
-        "01889-01-04": 4,
-        "01864-01-04": 4,
-        "01889-01-03": 4,
-        "01864-01-03": 4,
-        "02692-01-03": 4,
-        "01889-01-05": 4,
-        "02307-01-01": 4,
-        "11841-01-01": 4,
-        "080105 0004": 4
-      },
-      "attributeMeta": {
-        "15529": {
-          "meaning": "",
-          "importance": ""
-        },
-        "16624": {
-          "meaning": "",
-          "importance": ""
-        },
-        "12589-01-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "02413-01-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "02899-01-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "02727-02-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "01864-01-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "06299-01-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "03509-01-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "03074-01-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "02959-02-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "02916-01-03": {
-          "meaning": "",
-          "importance": ""
-        },
-        "01267-01-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "02169-02-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "02883-01-02": {
-          "meaning": "",
-          "importance": ""
-        },
-        "02545-05-03": {
-          "meaning": "",
-          "importance": ""
-        },
-        "01889-01-04": {
-          "meaning": "",
-          "importance": ""
-        },
-        "01864-01-04": {
-          "meaning": "",
-          "importance": ""
-        },
-        "01889-01-03": {
-          "meaning": "",
-          "importance": ""
-        },
-        "01864-01-03": {
-          "meaning": "",
-          "importance": ""
-        },
-        "02692-01-03": {
-          "meaning": "",
-          "importance": ""
-        },
-        "01889-01-05": {
-          "meaning": "",
-          "importance": ""
-        },
-        "02307-01-01": {
-          "meaning": "",
-          "importance": ""
-        },
-        "11841-01-01": {
-          "meaning": "",
-          "importance": ""
-        },
-        "080105 0004": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "STATE_INSPECTION": {
       "uniqueValues": [
@@ -24714,20 +21299,8 @@
         "Yes": 21,
         "No": 78
       },
-      "attributeWeights": {
-        "No": 50,
-        "Yes": 50
-      },
-      "attributeMeta": {
-        "No": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Yes": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "STATE_JURISDICTION": {
       "uniqueValues": [
@@ -24738,20 +21311,8 @@
         "Yes": 20,
         "No": 79
       },
-      "attributeWeights": {
-        "No": 50,
-        "Yes": 50
-      },
-      "attributeMeta": {
-        "No": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Yes": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "STATE_PERMITTING": {
       "uniqueValues": [
@@ -24762,20 +21323,8 @@
         "Yes": 20,
         "No": 79
       },
-      "attributeWeights": {
-        "No": 50,
-        "Yes": 50
-      },
-      "attributeMeta": {
-        "No": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Yes": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "STATE_REGULATED": {
       "uniqueValues": [
@@ -24786,20 +21335,8 @@
         "Yes": 20,
         "No": 79
       },
-      "attributeWeights": {
-        "No": 50,
-        "Yes": 50
-      },
-      "attributeMeta": {
-        "No": {
-          "meaning": "",
-          "importance": ""
-        },
-        "Yes": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "STATE_REGULATORY_AGENCY": {
       "uniqueValues": [
@@ -24820,45 +21357,8 @@
         "AKDNR": 6,
         "DEEP": 2
       },
-      "attributeWeights": {
-        "AKDNR": 14.285714285714286,
-        "DWR": 14.285714285714286,
-        "MICHIGAN DEGLE": 14.285714285714286,
-        "IDWR": 14.285714285714286,
-        "PREPA": 14.285714285714286,
-        "DEEP": 14.285714285714286,
-        "MNDNR EWR": 14.285714285714286
-      },
-      "attributeMeta": {
-        "AKDNR": {
-          "meaning": "",
-          "importance": ""
-        },
-        "DWR": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MICHIGAN DEGLE": {
-          "meaning": "",
-          "importance": ""
-        },
-        "IDWR": {
-          "meaning": "",
-          "importance": ""
-        },
-        "PREPA": {
-          "meaning": "",
-          "importance": ""
-        },
-        "DEEP": {
-          "meaning": "",
-          "importance": ""
-        },
-        "MNDNR EWR": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     },
     "WEBSITE_URL": {
       "uniqueValues": [
@@ -24883,60 +21383,27 @@
         "https://damsafety.org/alabama": 55,
         "https://www.fs.usda.gov/eng/dams/": 1
       },
-      "attributeWeights": {
-        "https://damsafety.org/alabama": 11.11111111111111,
-        "https://www.ferc.gov/dam-safety-and-inspections": 11.11111111111111,
-        "https://damsafety.org/alaska": 11.11111111111111,
-        "https://www.tva.com/energy/our-power-system/hydroelectric/tva-dam-safety": 11.11111111111111,
-        "https://www.usbr.gov/ssle/damsafety/": 11.11111111111111,
-        "https://damsafety.org/puerto-rico": 11.11111111111111,
-        "https://damsafety.org/connecticut": 11.11111111111111,
-        "https://www.nps.gov/index.htm": 11.11111111111111,
-        "https://www.fs.usda.gov/eng/dams/": 11.11111111111111
-      },
-      "attributeMeta": {
-        "https://damsafety.org/alabama": {
-          "meaning": "",
-          "importance": ""
-        },
-        "https://www.ferc.gov/dam-safety-and-inspections": {
-          "meaning": "",
-          "importance": ""
-        },
-        "https://damsafety.org/alaska": {
-          "meaning": "",
-          "importance": ""
-        },
-        "https://www.tva.com/energy/our-power-system/hydroelectric/tva-dam-safety": {
-          "meaning": "",
-          "importance": ""
-        },
-        "https://www.usbr.gov/ssle/damsafety/": {
-          "meaning": "",
-          "importance": ""
-        },
-        "https://damsafety.org/puerto-rico": {
-          "meaning": "",
-          "importance": ""
-        },
-        "https://damsafety.org/connecticut": {
-          "meaning": "",
-          "importance": ""
-        },
-        "https://www.nps.gov/index.htm": {
-          "meaning": "",
-          "importance": ""
-        },
-        "https://www.fs.usda.gov/eng/dams/": {
-          "meaning": "",
-          "importance": ""
-        }
-      }
+      "attributeWeights": {},
+      "attributeMeta": {}
     }
   },
+  "statistics": {
+    "summary": {
+      "Total Features": 100,
+      "Selected Fields": 22,
+      "Quantitative Fields": 19,
+      "Qualitative Fields": 3
+    },
+    "details": "\n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>CONDITION_ASSESS_DATE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1526644800000, Max: 1701777600000,\n                Mean: 1662736593103.45\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>DAM_HEIGHT</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 5, Max: 245,\n                Mean: 39.16\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>DAM_LENGTH</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 60, Max: 2106,\n                Mean: 558.86\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>DATA_UPDATED</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1443614400000, Max: 1754913600000,\n                Mean: 1574872654110.00\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>EAP_LAST_REV_DATE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1042804800000, Max: 1730116800000,\n                Mean: 1557896589473.68\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>INSPECTION_FREQUENCY</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 5,\n                Mean: 1.11\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LAST_INSPECTION_DATE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 274536000000, Max: 1753272000000,\n                Mean: 1473562730769.23\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LATITUDE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 18.16667, Max: 61.350500000000004,\n                Mean: 37.14\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>LONGITUDE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: -176.67633, Max: -66.75,\n                Mean: -92.43\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>MAX_DISCHARGE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 184000,\n                Mean: 6946.20\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>MAX_STORAGE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 42, Max: 2593255,\n                Mean: 52194.16\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>NID_HEIGHT</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 245,\n                Mean: 32.56\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>NID_STORAGE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 42, Max: 2593255,\n                Mean: 53050.77\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>NORMAL_STORAGE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 2065010,\n                Mean: 46459.34\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>NUMBER_ASSOCIATED_STRUCTURES</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 11,\n                Mean: 1.19\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>OBJECTID</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1, Max: 100,\n                Mean: 50.50\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>OPERATIONAL_STATUS_DATE</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1681214400000, Max: 1695988800000,\n                Mean: 1681885963636.36\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>SPILLWAY_WIDTH</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 800,\n                Mean: 58.94\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>SURFACE_AREA</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0, Max: 48000,\n                Mean: 4158.98\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>BUILT_UNDER_SEC_OF_AG_AUTH</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>CONDITION_ASSESSMENT</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 6\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>HAZARD_POTENTIAL</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 3\n          </div>\n        </div>\n      "
+  },
+  "version": "2.0",
+  "dataInfo": {
+    "totalFeatures": 100,
+    "dataSource": "uploaded"
+  },
   "_metadata": {
-    "id": "20250825075211",
-    "created_at": "2025-08-25T07:52:11.732508",
+    "id": "20250827132148",
+    "created_at": "2025-08-27T13:21:48.452087",
     "version": "2.0"
   }
 }

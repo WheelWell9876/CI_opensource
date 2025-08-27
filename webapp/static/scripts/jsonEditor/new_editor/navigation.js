@@ -3,12 +3,17 @@
 // ============================================================================
 
 function goToStep(step) {
-  debugLog('Going to step:', step, 'for project type:', projectType);
+  debugLog('Going to step:', step, 'for project type:', projectType, 'action:', projectAction);
 
   const maxStep = getMaxStepForProjectType(projectType);
   if (step > maxStep) {
     debugLog('Step', step, 'exceeds max for', projectType, '(max:', maxStep + ')');
     return;
+  }
+
+  // For edit mode, skip certain steps based on project type
+  if (projectAction === 'edit' && currentProject) {
+    step = getEditModeStep(step);
   }
 
   currentStep = step;
@@ -17,6 +22,14 @@ function goToStep(step) {
   handleStepTransition(step);
 
   debugLog('Step transition completed to', step);
+}
+
+function getEditModeStep(requestedStep) {
+  if (projectType === PROJECT_TYPES.DATASET && requestedStep === 1) {
+    // Skip data loading for existing datasets, go directly to field selection
+    return 2;
+  }
+  return requestedStep;
 }
 
 function getMaxStepForProjectType(type) {

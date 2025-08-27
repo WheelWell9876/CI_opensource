@@ -166,10 +166,65 @@ function selectExistingProject(projectId) {
   const project = findProject(projectId);
   if (project) {
     currentProject = project;
-    projectAction = 'edit';
-    updateContinueButton();
-    continueToNextStep();
+    // Load project data into state
+    loadProjectIntoState(project);
+
+    // For viewing, just show the export step
+    if (projectAction === 'view') {
+      goToStep(getViewStep());
+    }
   }
+}
+
+function loadProjectIntoState(project) {
+  debugLog('Loading project into state:', project);
+
+  if (project.type === PROJECT_TYPES.DATASET) {
+    // Load dataset-specific data
+    if (project.data) {
+      loadedData = project.data;
+    }
+    if (project.field_info) {
+      fieldTypes = project.field_info.field_types || {};
+      fieldAttributes = project.field_info.field_attributes || {};
+    }
+    if (project.selected_fields) {
+      selectedFields = new Set(project.selected_fields);
+    }
+    if (project.field_weights) {
+      fieldWeights = project.field_weights;
+    }
+    if (project.field_meta) {
+      fieldMeta = project.field_meta;
+    }
+  } else if (project.type === PROJECT_TYPES.CATEGORY) {
+    // Category projects already have their dataset references
+    if (project.selected_fields) {
+      selectedFields = new Set(project.selected_fields);
+    }
+    if (project.field_weights) {
+      fieldWeights = project.field_weights;
+    }
+    if (project.field_meta) {
+      fieldMeta = project.field_meta;
+    }
+  } else if (project.type === PROJECT_TYPES.FEATURE_LAYER) {
+    // Feature layer projects have their category references
+    if (project.selected_fields) {
+      selectedFields = new Set(project.selected_fields);
+    }
+    if (project.field_weights) {
+      fieldWeights = project.field_weights;
+    }
+    if (project.field_meta) {
+      fieldMeta = project.field_meta;
+    }
+  }
+}
+
+function getViewStep() {
+  if (projectType === PROJECT_TYPES.DATASET) return 4;
+  return 3; // Categories and feature layers end at step 3
 }
 
 function editProject(projectId) {
