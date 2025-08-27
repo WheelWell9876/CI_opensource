@@ -96,3 +96,91 @@ function handleStep4Transition() {
     populateDatasetExportStep();
   }
 }
+
+// Enhanced export step with auto-filled information
+function populateDatasetExportStep() {
+  const container = document.querySelector('.step-content[data-step="5"]');
+  if (!container || projectType !== 'dataset') return;
+
+  // Get the stored project information
+  const projectName = currentProject?.name || window.datasetProjectName || 'Untitled Dataset';
+  const projectDescription = currentProject?.description || window.datasetProjectDescription || '';
+
+  // Auto-fill the export form
+  const finalNameInput = document.getElementById('finalProjectName');
+  const finalDescInput = document.getElementById('finalProjectDescription');
+
+  if (finalNameInput && !finalNameInput.value) {
+    finalNameInput.value = projectName;
+  }
+
+  if (finalDescInput && !finalDescInput.value) {
+    finalDescInput.value = projectDescription;
+  }
+
+  // Add a note about auto-filled data
+  const existingNote = container.querySelector('.auto-fill-note');
+  if (!existingNote) {
+    const note = document.createElement('div');
+    note.className = 'auto-fill-note status-message status-info';
+    note.style.marginBottom = '1rem';
+    note.innerHTML = `
+      <span>ℹ️</span>
+      <span>Project information has been auto-filled from your dataset configuration. You can modify it if needed.</span>
+    `;
+
+    // Insert after panel title
+    const panelTitle = container.querySelector('.panel-title');
+    if (panelTitle && panelTitle.nextSibling) {
+      panelTitle.parentNode.insertBefore(note, panelTitle.nextSibling);
+    }
+  }
+}
+
+// Streamlined export step for categories and feature layers
+function populateStreamlinedExportStep() {
+  debugLog('Populating streamlined export step');
+
+  const container = document.querySelector('.step-content[data-step="5"]');
+  if (!container) return;
+
+  const isCategory = projectType === 'category';
+  const itemType = isCategory ? 'datasets' : 'categories';
+  const itemCount = isCategory ? currentProject.datasets?.length : currentProject.categories?.length;
+
+  // Update the export step content for streamlined workflow
+  const exportContent = container.querySelector('.panel-title');
+  if (exportContent) {
+    exportContent.innerHTML = `
+      <div class="panel-icon">💾</div>
+      Export ${projectType.charAt(0).toUpperCase() + projectType.slice(1)}
+    `;
+  }
+
+  // Add streamlined export message
+  const existingMessage = container.querySelector('.streamlined-export-message');
+  if (!existingMessage) {
+    const message = document.createElement('div');
+    message.className = 'streamlined-export-message';
+    message.innerHTML = `
+      <div class="status-message status-info" style="margin-bottom: 1.5rem;">
+        <span>ℹ️</span>
+        <span>This ${projectType} includes ${itemCount} ${itemType} with their pre-configured field weights and attribute settings.
+        ${projectType === 'category' ? 'Dataset-level weights' : 'Category-level weights'} have been applied.</span>
+      </div>
+
+      <div class="field-weight-options" style="margin-bottom: 1.5rem;">
+        <button class="btn btn-secondary" onclick="showFieldWeightModal()" style="margin-right: 1rem;">
+          🎛️ Review Field Weights
+        </button>
+        <small style="color: #666;">Optional: Review or modify field and attribute weights from underlying ${itemType}</small>
+      </div>
+    `;
+
+    // Insert after panel title
+    const panelTitle = container.querySelector('.panel-title');
+    if (panelTitle && panelTitle.nextSibling) {
+      panelTitle.parentNode.insertBefore(message, panelTitle.nextSibling);
+    }
+  }
+}

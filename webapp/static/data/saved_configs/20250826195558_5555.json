@@ -1,0 +1,57 @@
+{
+  "projectType": "category",
+  "projectAction": "create",
+  "currentProject": {
+    "id": "proj_1756256146388_bu7t9xdkx",
+    "name": "5555",
+    "description": "",
+    "type": "category",
+    "datasets": [
+      "proj_1756135475254_fztjzapgs",
+      "proj_1755965221998_c4prf0fkm",
+      "proj_1756172054902_xnw50bc3q"
+    ],
+    "dataset_weights": {
+      "proj_1756135475254_fztjzapgs": 33.333333333333336,
+      "proj_1755965221998_c4prf0fkm": 33.333333333333336,
+      "proj_1756172054902_xnw50bc3q": 33.333333333333336
+    },
+    "created_at": "2025-08-27T00:55:46.388Z",
+    "updated_at": "2025-08-27T00:55:52.075Z"
+  },
+  "datasetName": "5555",
+  "description": "",
+  "timestamp": "2025-08-27T00:55:58.572Z",
+  "selectedFields": [],
+  "fieldTypes": {},
+  "fieldWeights": {},
+  "fieldMeta": {},
+  "fieldAttributes": {},
+  "statistics": {
+    "summary": {
+      "Category Name": "5555",
+      "Total Datasets": 3,
+      "Selected Fields": 0,
+      "Created": "8/26/2025"
+    },
+    "details": "\n      <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n        <strong>hhhh</strong>\n        <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n          Type: dataset<br>\n          Fields: 27\n        </div>\n      </div>\n    \n      <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n        <strong>Child Care Centers</strong>\n        <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n          Type: dataset<br>\n          Fields: 25\n        </div>\n      </div>\n    \n      <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n        <strong>Untitled Dataset</strong>\n        <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n          Type: featurelayer<br>\n          Fields: 81\n        </div>\n      </div>\n    "
+  },
+  "version": "2.0",
+  "categoryInfo": {
+    "datasets": [
+      "proj_1756135475254_fztjzapgs",
+      "proj_1755965221998_c4prf0fkm",
+      "proj_1756172054902_xnw50bc3q"
+    ],
+    "datasetWeights": {
+      "proj_1756135475254_fztjzapgs": 33.333333333333336,
+      "proj_1755965221998_c4prf0fkm": 33.333333333333336,
+      "proj_1756172054902_xnw50bc3q": 33.333333333333336
+    }
+  },
+  "_metadata": {
+    "id": "20250826195558",
+    "created_at": "2025-08-26T19:55:58.579317",
+    "version": "2.0"
+  }
+}

@@ -75,6 +75,81 @@ function populateEnhancedFeatureLayerCategorySelection() {
   `;
 }
 
+// Create enhanced category selection card with detailed breakdown
+function createCategorySelectionCard(category, isSelected) {
+  const datasetCount = category.datasets?.length || 0;
+  const totalFeatures = calculateTotalCategoryFeatures(category);
+  const createdDate = new Date(category.created_at).toLocaleDateString();
+
+  return `
+    <div class="selection-card ${isSelected ? 'selected' : ''}" onclick="toggleCategorySelection('${category.id}')">
+      <div class="card-header">
+        <div class="card-icon">📁</div>
+        <div class="card-title-area">
+          <h4 class="card-title">${category.name}</h4>
+          <div class="card-meta">Created ${createdDate}</div>
+        </div>
+        <div class="selection-indicator ${isSelected ? 'selected' : ''}">
+          ${isSelected ? '✓' : '+'}
+        </div>
+      </div>
+
+      <div class="card-content">
+        <div class="card-description">${category.description || 'No description provided'}</div>
+
+        <div class="card-stats">
+          <div class="stat-item">
+            <span class="stat-value">${datasetCount}</span>
+            <span class="stat-label">Datasets</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">${totalFeatures.toLocaleString()}</span>
+            <span class="stat-label">Total Features</span>
+          </div>
+        </div>
+
+        ${datasetCount > 0 ? `
+          <div class="field-preview">
+            <small class="field-preview-label">Included Datasets:</small>
+            <div class="field-tags">
+              ${category.datasets.slice(0, 3).map(datasetId => {
+                const dataset = findProject(datasetId);
+                return dataset ? `<span class="field-tag field-dataset">${dataset.name}</span>` : '';
+              }).join('')}
+              ${datasetCount > 3 ?
+                `<span class="field-tag-more">+${datasetCount - 3} more datasets</span>` : ''
+              }
+            </div>
+
+            ${category.dataset_weights ? `
+              <div class="weight-preview" style="margin-top: 0.5rem; font-size: 0.7rem; color: #6c757d;">
+                <strong>Dataset Weights:</strong>
+                ${Object.entries(category.dataset_weights).slice(0, 2).map(([id, weight]) => {
+                  const dataset = findProject(id);
+                  return dataset ? `${dataset.name}: ${Math.round(weight)}%` : '';
+                }).join(', ')}
+                ${Object.keys(category.dataset_weights).length > 2 ? '...' : ''}
+              </div>
+            ` : ''}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// Calculate total features across all datasets in a category
+function calculateTotalCategoryFeatures(category) {
+  if (!category.datasets || category.datasets.length === 0) return 0;
+
+  return category.datasets.reduce((total, datasetId) => {
+    const dataset = findProject(datasetId);
+    return total + (dataset?.data?.features?.length || 0);
+  }, 0);
+}
+
+
+// Toggle category selection
 function toggleCategorySelection(categoryId) {
   if (!currentProject.categories) {
     currentProject.categories = [];
@@ -87,7 +162,175 @@ function toggleCategorySelection(categoryId) {
     currentProject.categories.push(categoryId);
   }
 
-  updateCategorySelectionUI(categoryId);
+  // Update UI
+  const card = document.querySelector(`.selection-card[onclick*="${categoryId}"]`);
+  if (card) {
+    card.classList.toggle('selected');
+    const indicator = card.querySelector('.selection-indicator');
+    if (currentProject.categories.includes(categoryId)) {
+      indicator.classList.add('selected');
+      indicator.textContent = '✓';
+    } else {
+      indicator.classList.remove('selected');
+      indicator.textContent = '+';
+    }
+  }
+
+  // Update counter and continue button
+  const counter = document.getElementById('selectedCategoryCount');
+  const continueBtn = document.getElementById('continueToWeights');
+
+  if (counter) counter.textContent = currentProject.categories.length;
+  if (continueBtn) {
+    continueBtn.disabled = currentProject.categories.length === 0;
+    continueBtn.classList.toggle('btn-disabled', currentProject.categories.length === 0);
+  }
+}
+
+// Save feature layer selection and proceed
+function saveFeatureLayerSelection() {
+  const name = document.getElementById('featureLayerName').value.trim();
+  const description = document.getElementById('featureLayerDescription').value.trim();
+
+  if (!name) {
+    showMessage('Please enter a feature layer name', 'error');
+    document.getElementById('featureLayerName').focus();
+    return;
+  }
+
+  if (!currentProject.categories || currentProject.categories.length === 0) {
+    showMessage('Please select at least one category for this feature layer', 'error');
+    return;
+  }
+
+  currentProject.name = name;
+  currentProject.description = description;
+  currentProject.updated_at = new Date().toISOString();
+
+  showMessage(`Feature Layer "${name}" configured with ${currentProject.categories.length} categories!`, 'success');
+  goToStep(2); // Go to category weights
+}
+
+// Enhanced feature layer category weights with fixed navigation
+function populateFeatureLayerCategoryWeights() {
+  debugLog('Populating feature layer category weights with fixed navigation');
+
+  const container = document.getElementById('featureLayerCategoryWeights');
+  if (!container || !currentProject) return;
+
+  // Initialize category weights if not already set
+  if (!currentProject.category_weights || Object.keys(currentProject.category_weights).length === 0) {
+    currentProject.category_weights = {};
+    const equalWeight = 100 / (currentProject.categories?.length || 1);
+    currentProject.categories?.forEach(categoryId => {
+      currentProject.category_weights[categoryId] = equalWeight;
+    });
+  }
+
+  container.innerHTML = `
+    <div class="streamlined-workflow-info">
+      <div class="workflow-step-indicator">
+        <span class="step-badge">Step 2 of 3</span>
+        <h3>Apply Category Weights</h3>
+      </div>
+      <div class="workflow-description">
+        <p>Assign importance weights to each category in "${currentProject.name}". These weights determine the relative influence of each category.</p>
+      </div>
+    </div>
+
+    <div class="enhanced-weight-controls">
+      <div class="weight-controls-header">
+        <h4>📁 Category Importance Weights</h4>
+        <div class="weight-actions">
+          <button class="btn btn-secondary btn-sm" onclick="resetFeatureLayerCategoryWeightsEqual()">
+            ⚖️ Equal Weights
+          </button>
+          <div class="weight-total">
+            Total: <strong id="totalFeatureLayerCategoryWeight">100%</strong>
+          </div>
+        </div>
+      </div>
+
+      <div id="featureLayerCategoryWeightControls" style="max-height: 600px; overflow-y: auto;">
+        <!-- Category weight controls will be populated here -->
+      </div>
+    </div>
+
+    <!-- Fixed navigation buttons -->
+    <div class="streamlined-navigation">
+      <button class="btn btn-secondary" onclick="goToStep(1)">← Back to Category Selection</button>
+      <button class="btn btn-primary" onclick="finalizeFeatureLayerCreation()">Continue to Export →</button>
+    </div>
+  `;
+
+  populateFeatureLayerCategoryWeightControls();
+}
+
+// Weight control functions for feature layers
+function populateFeatureLayerCategoryWeightControls() {
+  const container = document.getElementById('featureLayerCategoryWeightControls');
+  if (!container || !currentProject?.categories) return;
+
+  container.innerHTML = '';
+
+  currentProject.categories.forEach(categoryId => {
+    const category = findProject(categoryId);
+    if (!category) return;
+
+    const currentWeight = currentProject.category_weights?.[categoryId] || 0;
+    const datasetCount = category.datasets?.length || 0;
+    const totalFeatures = calculateTotalCategoryFeatures(category);
+
+    const control = document.createElement('div');
+    control.className = 'enhanced-weight-control';
+
+    control.innerHTML = `
+      <div class="weight-control-card">
+        <div class="weight-control-header">
+          <div class="dataset-info">
+            <div class="dataset-icon">📁</div>
+            <div class="dataset-details">
+              <h5 class="dataset-name">${category.name}</h5>
+              <div class="dataset-stats">
+                <span class="stat">${datasetCount} datasets</span>
+                <span class="stat">${totalFeatures.toLocaleString()} features</span>
+              </div>
+            </div>
+          </div>
+          <div class="weight-display">
+            <span class="weight-value" id="enhancedCategoryWeightVal_${categoryId}">${Math.round(currentWeight)}%</span>
+          </div>
+        </div>
+
+        <div class="weight-slider-container">
+          <input type="range" class="enhanced-weight-slider"
+                 id="enhancedCategoryWeight_${categoryId}"
+                 min="0" max="100" value="${Math.round(currentWeight)}"
+                 oninput="updateFeatureLayerCategoryWeight('${categoryId}', this.value)">
+        </div>
+
+        ${category.description ? `
+          <div class="dataset-description">${category.description}</div>
+        ` : ''}
+      </div>
+    `;
+
+    container.appendChild(control);
+  });
+}
+
+// Similar function for feature layer finalization
+function finalizeFeatureLayerCreation() {
+  const existingIndex = projects.featurelayers.findIndex(f => f.id === currentProject.id);
+  if (existingIndex >= 0) {
+    projects.featurelayers[existingIndex] = currentProject;
+  } else {
+    projects.featurelayers.push(currentProject);
+  }
+
+  saveProjects();
+  showMessage(`Feature Layer "${currentProject.name}" created successfully!`, 'success');
+  goToStep(3); // Go to streamlined export
 }
 
 function updateFeatureLayerCategoryWeight(categoryId, value) {
