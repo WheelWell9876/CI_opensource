@@ -27,6 +27,28 @@ function loadData() {
   }
 }
 
+function reinitializeDataSources() {
+  debugLog('Reinitializing data sources');
+
+  // Clear any cached API data
+  if (typeof window.cachedApis !== 'undefined') {
+    window.cachedApis = null;
+  }
+
+  // Reinitialize the data source controller
+  if (typeof initDataSourceController === 'function') {
+    initDataSourceController();
+  }
+
+  // Reload API lists
+  if (typeof initBuiltInApis === 'function') {
+    initBuiltInApis();
+  }
+  if (typeof initUserApis === 'function') {
+    initUserApis();
+  }
+}
+
 function validateAndLoadData() {
   const datasetName = document.getElementById('datasetName')?.value?.trim();
   const datasetDescription = document.getElementById('datasetDescription')?.value?.trim();
@@ -134,8 +156,11 @@ function populateEnhancedDataLoadingSection() {
   const container = document.getElementById('dataLoadingSection');
   if (!container) return;
 
-  const existingName = document.getElementById('datasetName')?.value || '';
-  const existingDescription = document.getElementById('datasetDescription')?.value || '';
+  // Reinitialize data sources when entering this step
+  reinitializeDataSources();
+
+  const existingName = currentProject?.name || document.getElementById('datasetName')?.value || '';
+  const existingDescription = currentProject?.description || document.getElementById('datasetDescription')?.value || '';
   const existingSource = document.getElementById('dataSourceSelect')?.value || '';
 
   container.innerHTML = `
@@ -258,7 +283,14 @@ function populateEnhancedDataLoadingSection() {
     </div>
   `;
 
-  if (typeof initDataSourceController === 'function') {
-    initDataSourceController();
-  }
+  // Reinitialize all components
+  setTimeout(() => {
+    if (typeof initDataSourceController === 'function') {
+      initDataSourceController();
+    }
+    if (typeof initFileUpload === 'function') {
+      initFileUpload();
+    }
+  }, 100);
 }
+

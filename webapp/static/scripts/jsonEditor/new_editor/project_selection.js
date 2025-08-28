@@ -141,7 +141,7 @@ function createActionSelector(type, container) {
                   <span class="project-name">${project.name}</span>
                   <span class="project-date">${new Date(project.created_at).toLocaleDateString()}</span>
                   <div class="project-actions">
-                    <button onclick="editProject('${project.id}'); event.stopPropagation();">Edit</button>
+//                    <button onclick="editProject('${project.id}'); event.stopPropagation();">Edit</button>
                     <button onclick="deleteProject('${project.id}'); event.stopPropagation();" class="delete-btn">Delete</button>
                   </div>
                 </div>
@@ -179,6 +179,13 @@ function selectExistingProject(projectId) {
 function loadProjectIntoState(project) {
   debugLog('Loading project into state:', project);
 
+  // Clear previous state
+  selectedFields = new Set();
+  fieldWeights = {};
+  fieldMeta = {};
+  fieldAttributes = {};
+  fieldTypes = {};
+
   if (project.type === PROJECT_TYPES.DATASET) {
     // Load dataset-specific data
     if (project.data) {
@@ -186,9 +193,14 @@ function loadProjectIntoState(project) {
     }
     if (project.field_info) {
       fieldTypes = project.field_info.field_types || {};
-      fieldAttributes = project.field_info.field_attributes || {};
+
+      // Load field attributes from field_info if available
+      if (project.field_info.field_attributes) {
+        fieldAttributes = project.field_info.field_attributes;
+      }
     }
-    if (project.selected_fields) {
+    // Load selected fields from saved configuration
+    if (project.selected_fields && Array.isArray(project.selected_fields)) {
       selectedFields = new Set(project.selected_fields);
     }
     if (project.field_weights) {
@@ -196,10 +208,20 @@ function loadProjectIntoState(project) {
     }
     if (project.field_meta) {
       fieldMeta = project.field_meta;
+    }
+    // Load field attributes from root level if available
+    if (project.field_attributes) {
+      fieldAttributes = project.field_attributes;
     }
   } else if (project.type === PROJECT_TYPES.CATEGORY) {
-    // Category projects already have their dataset references
-    if (project.selected_fields) {
+    // Category projects - ensure datasets are loaded
+    if (project.datasets && Array.isArray(project.datasets)) {
+      currentProject.datasets = project.datasets;
+    }
+    if (project.dataset_weights) {
+      currentProject.dataset_weights = project.dataset_weights;
+    }
+    if (project.selected_fields && Array.isArray(project.selected_fields)) {
       selectedFields = new Set(project.selected_fields);
     }
     if (project.field_weights) {
@@ -207,10 +229,19 @@ function loadProjectIntoState(project) {
     }
     if (project.field_meta) {
       fieldMeta = project.field_meta;
+    }
+    if (project.field_attributes) {
+      fieldAttributes = project.field_attributes;
     }
   } else if (project.type === PROJECT_TYPES.FEATURE_LAYER) {
-    // Feature layer projects have their category references
-    if (project.selected_fields) {
+    // Feature layer projects - ensure categories are loaded
+    if (project.categories && Array.isArray(project.categories)) {
+      currentProject.categories = project.categories;
+    }
+    if (project.category_weights) {
+      currentProject.category_weights = project.category_weights;
+    }
+    if (project.selected_fields && Array.isArray(project.selected_fields)) {
       selectedFields = new Set(project.selected_fields);
     }
     if (project.field_weights) {
@@ -219,7 +250,17 @@ function loadProjectIntoState(project) {
     if (project.field_meta) {
       fieldMeta = project.field_meta;
     }
+    if (project.field_attributes) {
+      fieldAttributes = project.field_attributes;
+    }
   }
+
+  debugLog('State loaded with:', {
+    selectedFields: Array.from(selectedFields),
+    fieldWeights: Object.keys(fieldWeights).length,
+    fieldMeta: Object.keys(fieldMeta).length,
+    fieldAttributes: Object.keys(fieldAttributes).length
+  });
 }
 
 function getViewStep() {

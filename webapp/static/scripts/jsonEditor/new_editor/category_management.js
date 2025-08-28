@@ -156,11 +156,14 @@ function toggleDatasetSelection(datasetId) {
   // Update counter and continue button
   const counter = document.getElementById('selectedDatasetCount');
   const continueBtn = document.getElementById('continueToWeights');
+  const categoryName = document.getElementById('categoryName')?.value?.trim();
 
   if (counter) counter.textContent = currentProject.datasets.length;
   if (continueBtn) {
-    continueBtn.disabled = currentProject.datasets.length === 0;
-    continueBtn.classList.toggle('btn-disabled', currentProject.datasets.length === 0);
+    // Enable continue button only if name is entered AND datasets are selected
+    const shouldEnable = categoryName && categoryName.length > 0 && currentProject.datasets.length > 0;
+    continueBtn.disabled = !shouldEnable;
+    continueBtn.classList.toggle('btn-disabled', !shouldEnable);
   }
 }
 

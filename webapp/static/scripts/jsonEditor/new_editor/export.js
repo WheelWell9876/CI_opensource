@@ -22,15 +22,33 @@ function exportConfig() {
   };
 
   // Save the updated state back to the current project
-  if (projectAction === 'edit' && currentProject) {
+  if (currentProject) {
     currentProject.selected_fields = Array.from(selectedFields);
     currentProject.field_weights = fieldWeights;
     currentProject.field_meta = fieldMeta;
-    currentProject.field_info = {
-      field_types: fieldTypes,
-      field_attributes: fieldAttributes
-    };
+    currentProject.field_attributes = fieldAttributes;
+
+    // Save field info for datasets
+    if (projectType === PROJECT_TYPES.DATASET) {
+      currentProject.field_info = {
+        ...currentProject.field_info,
+        field_types: fieldTypes,
+        field_attributes: fieldAttributes
+      };
+    }
+
     currentProject.updated_at = new Date().toISOString();
+
+    // Update the project in the projects array
+    const projectKey = projectType === PROJECT_TYPES.DATASET ? 'datasets' :
+                      projectType === PROJECT_TYPES.CATEGORY ? 'categories' : 'featurelayers';
+
+    const projectIndex = projects[projectKey].findIndex(p => p.id === currentProject.id);
+    if (projectIndex >= 0) {
+      projects[projectKey][projectIndex] = currentProject;
+    } else if (projectAction === 'create') {
+      projects[projectKey].push(currentProject);
+    }
 
     // Save to storage
     saveProjects();

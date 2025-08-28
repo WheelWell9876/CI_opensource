@@ -179,11 +179,14 @@ function toggleCategorySelection(categoryId) {
   // Update counter and continue button
   const counter = document.getElementById('selectedCategoryCount');
   const continueBtn = document.getElementById('continueToWeights');
+  const featureLayerName = document.getElementById('featureLayerName')?.value?.trim();
 
   if (counter) counter.textContent = currentProject.categories.length;
   if (continueBtn) {
-    continueBtn.disabled = currentProject.categories.length === 0;
-    continueBtn.classList.toggle('btn-disabled', currentProject.categories.length === 0);
+    // Enable continue button only if name is entered AND categories are selected
+    const shouldEnable = featureLayerName && featureLayerName.length > 0 && currentProject.categories.length > 0;
+    continueBtn.disabled = !shouldEnable;
+    continueBtn.classList.toggle('btn-disabled', !shouldEnable);
   }
 }
 

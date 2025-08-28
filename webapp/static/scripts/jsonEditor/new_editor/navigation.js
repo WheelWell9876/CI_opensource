@@ -5,6 +5,11 @@
 function goToStep(step) {
   debugLog('Going to step:', step, 'for project type:', projectType, 'action:', projectAction);
 
+  // Reset state when going back to project selection
+  if (step === 0) {
+    resetApplicationState();
+  }
+
   const maxStep = getMaxStepForProjectType(projectType);
   if (step > maxStep) {
     debugLog('Step', step, 'exceeds max for', projectType, '(max:', maxStep + ')');

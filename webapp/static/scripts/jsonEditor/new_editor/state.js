@@ -22,3 +22,19 @@ let projects = {
   categories: [],
   featurelayers: []
 };
+
+function resetApplicationState() {
+  debugLog('Resetting application state');
+  currentStep = 0;
+  projectType = null;
+  projectAction = null;
+  currentProject = null;
+  loadedData = null;
+  selectedFields = new Set();
+  fieldWeights = {};
+  fieldTypes = {};
+  lockedFields = new Set();
+  fieldMeta = {};
+  fieldAttributes = {};
+  expandedFields = new Set();
+}
