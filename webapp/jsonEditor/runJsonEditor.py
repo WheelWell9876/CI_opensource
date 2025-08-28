@@ -95,6 +95,16 @@ class APIRegistry:
                         "api_type": "built_in",
                         "created_by": "system",
                         "created_at": "2025-01-01T00:00:00Z"
+                    },
+                    "dry-docks": {
+                        "id": "dry-docks",
+                        "name": "Dry Docks",
+                        "url": "https://ienccloud.us/arcgis/rest/services/IENC_Feature_Classes/DRY_DOCK_AREA/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
+                        "description": "Dry docks across the United States",
+                        "category": "Infrastructure",
+                        "api_type": "built_in",
+                        "created_by": "system",
+                        "created_at": "2025-01-01T00:00:00Z"
                     }
                 }
             }

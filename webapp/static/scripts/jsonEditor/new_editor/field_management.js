@@ -87,9 +87,14 @@ function updateFieldMeta(field, key, value) {
 
 function populateDatasetFieldSelection() {
   debugLog('Populating dataset field selection with fixed navigation');
+  debugLog('Project action:', projectAction);
+  debugLog('Selected fields from state:', Array.from(selectedFields));
 
   const container = document.getElementById('fieldList');
-  if (!container || !loadedData) return;
+  if (!container) return;
+
+  // Determine if we should show back button
+  const showBackButton = projectAction !== 'edit';
 
   container.innerHTML = `
     <h4>Fields from your dataset:</h4>
@@ -99,18 +104,28 @@ function populateDatasetFieldSelection() {
 
     <div class="panel-navigation">
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="goToStep(1)">← Back to Load Data</button>
+        ${showBackButton ?
+          '<button class="btn btn-secondary" onclick="goToStep(1)">← Back to Load Data</button>' :
+          '<button class="btn btn-secondary" onclick="goToStep(0)">← Back to Project Selection</button>'
+        }
         <button class="btn btn-primary" onclick="goToStep(3)" id="continueToWeights" disabled>Continue to Apply Weights →</button>
       </div>
     </div>
   `;
 
-  if (loadedData.features && loadedData.features.length > 0) {
-    const firstFeature = loadedData.features[0];
+  const dataToUse = projectAction === 'edit' ? (currentProject?.data || loadedData) : loadedData;
+
+  if (dataToUse?.features && dataToUse.features.length > 0) {
+    const firstFeature = dataToUse.features[0];
     const properties = firstFeature.properties || firstFeature.attributes || {};
     const fields = Object.keys(properties);
 
-    analyzeFieldAttributes(loadedData.features, fields);
+    // For edit mode, ensure we have field types
+    if (projectAction === 'edit' && currentProject?.field_info?.field_types) {
+      Object.assign(fieldTypes, currentProject.field_info.field_types);
+    }
+
+    analyzeFieldAttributes(dataToUse.features, fields);
     populateFieldList(fields, 'actualFieldList');
     updateContinueButton();
   } else {

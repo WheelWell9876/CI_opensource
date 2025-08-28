@@ -5,6 +5,11 @@
 function loadData() {
   debugLog('Loading data');
 
+  // Clear any previous data when loading new data
+  if (projectAction === 'create') {
+    clearDataState();
+  }
+
   const sourceType = document.getElementById('dataSourceSelect')?.value;
 
   if (sourceType === 'file') {
@@ -24,6 +29,27 @@ function loadData() {
     showMessage('Please complete the API creation form', 'info');
   } else {
     showMessage('Please select a data source', 'error');
+  }
+}
+
+function reinitializeApiSelects() {
+  debugLog('Reinitializing API selects');
+
+  const builtInSelect = document.getElementById('builtInApiSelect');
+  const userSelect = document.getElementById('userApiSelect');
+
+  if (builtInSelect) {
+    builtInSelect.innerHTML = '<option value="">Loading APIs...</option>';
+    if (typeof loadBuiltInApis === 'function') {
+      loadBuiltInApis();
+    }
+  }
+
+  if (userSelect) {
+    userSelect.innerHTML = '<option value="">Loading APIs...</option>';
+    if (typeof loadUserApis === 'function') {
+      loadUserApis();
+    }
   }
 }
 
@@ -156,11 +182,9 @@ function populateEnhancedDataLoadingSection() {
   const container = document.getElementById('dataLoadingSection');
   if (!container) return;
 
-  // Reinitialize data sources when entering this step
-  reinitializeDataSources();
-
-  const existingName = currentProject?.name || document.getElementById('datasetName')?.value || '';
-  const existingDescription = currentProject?.description || document.getElementById('datasetDescription')?.value || '';
+  // Get any existing values to preserve them
+  const existingName = document.getElementById('datasetName')?.value || '';
+  const existingDescription = document.getElementById('datasetDescription')?.value || '';
   const existingSource = document.getElementById('dataSourceSelect')?.value || '';
 
   container.innerHTML = `
@@ -202,6 +226,7 @@ function populateEnhancedDataLoadingSection() {
         </select>
       </div>
 
+      <!-- File Upload Container -->
       <div id="fileUploadContainer" style="display: ${existingSource === 'file' ? 'block' : 'none'};">
         <div class="upload-area" id="uploadArea">
           <div class="upload-icon">📤</div>
@@ -211,6 +236,7 @@ function populateEnhancedDataLoadingSection() {
         </div>
       </div>
 
+      <!-- Other containers remain the same -->
       <div id="builtInApiContainer" style="display: ${existingSource === 'builtin' ? 'block' : 'none'};">
         <div class="input-group">
           <label class="input-label">Select Built-in API</label>
@@ -277,20 +303,16 @@ function populateEnhancedDataLoadingSection() {
       </div>
     </div>
 
+    <!-- Fixed navigation buttons -->
     <div class="streamlined-navigation">
       <button class="btn btn-secondary" onclick="goToStep(0)">← Back to Project Type</button>
       <button class="btn btn-primary" onclick="validateAndLoadData()">Load Data & Continue →</button>
     </div>
   `;
 
-  // Reinitialize all components
-  setTimeout(() => {
-    if (typeof initDataSourceController === 'function') {
-      initDataSourceController();
-    }
-    if (typeof initFileUpload === 'function') {
-      initFileUpload();
-    }
-  }, 100);
+  // Re-initialize data source controller if it exists
+  if (typeof initDataSourceController === 'function') {
+    initDataSourceController();
+  }
 }
 

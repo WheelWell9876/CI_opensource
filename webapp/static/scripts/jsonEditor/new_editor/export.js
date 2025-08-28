@@ -136,3 +136,55 @@ function saveToServer() {
     showMessage('Error saving to server: ' + error.message, 'error');
   });
 }
+
+
+function saveAsExisting() {
+  debugLog('Saving as existing project');
+
+  const config = exportConfig();
+
+  // Update the existing project
+  if (currentProject && projectAction === 'edit') {
+    const projectKey = projectType === PROJECT_TYPES.DATASET ? 'datasets' :
+                      projectType === PROJECT_TYPES.CATEGORY ? 'categories' : 'featurelayers';
+
+    const projectIndex = projects[projectKey].findIndex(p => p.id === currentProject.id);
+    if (projectIndex >= 0) {
+      // Update with new data
+      projects[projectKey][projectIndex] = {
+        ...currentProject,
+        name: config.datasetName,
+        description: config.description,
+        selected_fields: config.selectedFields,
+        field_weights: config.fieldWeights,
+        field_meta: config.fieldMeta,
+        field_attributes: config.fieldAttributes,
+        updated_at: new Date().toISOString()
+      };
+
+      saveProjects();
+      showMessage(`Project "${config.datasetName}" updated successfully!`, 'success');
+    }
+  }
+
+  // Also save to server
+  saveToServer();
+}
+
+function saveAsNew() {
+  debugLog('Saving as new project');
+
+  // Change action to create and generate new ID
+  projectAction = 'create';
+  if (currentProject) {
+    currentProject.id = generateId();
+    currentProject.created_at = new Date().toISOString();
+    delete currentProject.updated_at;
+  }
+
+  const config = exportConfig();
+  showMessage(`New project "${config.datasetName}" created successfully!`, 'success');
+
+  // Save to server
+  saveToServer();
+}

@@ -1,0 +1,851 @@
+{
+  "projectType": "dataset",
+  "projectAction": "create",
+  "currentProject": {
+    "id": "proj_1756401011871_49l02uk8u",
+    "type": "dataset",
+    "created_at": "2025-08-28T17:10:11.871Z",
+    "name": "DF SCUTI",
+    "description": "",
+    "data": {
+      "features": [
+        {
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  -84.69766069999997,
+                  39.108345100000065
+                ],
+                [
+                  -84.69732869999996,
+                  39.10799640000005
+                ],
+                [
+                  -84.69715039999994,
+                  39.10809340000003
+                ],
+                [
+                  -84.69750049999999,
+                  39.10844210000005
+                ],
+                [
+                  -84.69766069999997,
+                  39.108345100000065
+                ]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "id": 1,
+          "properties": {
+            "Depth_Value_1": "",
+            "Horizontal_Clearance": "",
+            "Horizontal_Length": "",
+            "Horizontal_Width": "",
+            "Information": "",
+            "OBJECTID": 1,
+            "Object_Name": "C&B Marine Services",
+            "SHAPE_Area": 9.209932499972332e-08,
+            "SHAPE_Length": 0.0013658551646742038,
+            "Scale_Minimum": 18750,
+            "Source_Dataset": "U37OH439.000",
+            "Source_Date": "20191010",
+            "Source_Indication": "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001"
+          },
+          "type": "Feature"
+        },
+        {
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  -84.69451419999996,
+                  39.11002610000003
+                ],
+                [
+                  -84.69468809999995,
+                  39.10993910000008
+                ],
+                [
+                  -84.69437689999995,
+                  39.109559800000056
+                ],
+                [
+                  -84.69419449999998,
+                  39.10964780000006
+                ],
+                [
+                  -84.69451419999996,
+                  39.11002610000003
+                ]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "id": 2,
+          "properties": {
+            "Depth_Value_1": "",
+            "Horizontal_Clearance": "",
+            "Horizontal_Length": "",
+            "Horizontal_Width": "",
+            "Information": "",
+            "OBJECTID": 2,
+            "Object_Name": "McGinnis",
+            "SHAPE_Area": 9.508509498402478e-08,
+            "SHAPE_Length": 0.001382889938462425,
+            "Scale_Minimum": 18750,
+            "Source_Dataset": "U37OH439.000",
+            "Source_Date": "20191010",
+            "Source_Indication": "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001"
+          },
+          "type": "Feature"
+        }
+      ],
+      "total_features": 2,
+      "type": "FeatureCollection"
+    },
+    "field_info": {
+      "field_stats": {
+        "Depth_Value_1": {
+          "count": 2,
+          "has_data": true,
+          "top_values": [
+            [
+              "",
+              2
+            ]
+          ],
+          "type": "qualitative",
+          "unique_values": 1,
+          "value_counts": {
+            "": 2
+          }
+        },
+        "Horizontal_Clearance": {
+          "count": 2,
+          "has_data": true,
+          "top_values": [
+            [
+              "",
+              2
+            ]
+          ],
+          "type": "qualitative",
+          "unique_values": 1,
+          "value_counts": {
+            "": 2
+          }
+        },
+        "Horizontal_Length": {
+          "count": 2,
+          "has_data": true,
+          "top_values": [
+            [
+              "",
+              2
+            ]
+          ],
+          "type": "qualitative",
+          "unique_values": 1,
+          "value_counts": {
+            "": 2
+          }
+        },
+        "Horizontal_Width": {
+          "count": 2,
+          "has_data": true,
+          "top_values": [
+            [
+              "",
+              2
+            ]
+          ],
+          "type": "qualitative",
+          "unique_values": 1,
+          "value_counts": {
+            "": 2
+          }
+        },
+        "Information": {
+          "count": 2,
+          "has_data": true,
+          "top_values": [
+            [
+              "",
+              2
+            ]
+          ],
+          "type": "qualitative",
+          "unique_values": 1,
+          "value_counts": {
+            "": 2
+          }
+        },
+        "OBJECTID": {
+          "count": 2,
+          "has_data": true,
+          "max": 2,
+          "mean": 1.5,
+          "median": 1.5,
+          "min": 1,
+          "std": 0.5,
+          "type": "quantitative"
+        },
+        "Object_Name": {
+          "count": 2,
+          "has_data": true,
+          "top_values": [
+            [
+              "McGinnis",
+              1
+            ],
+            [
+              "C&B Marine Services",
+              1
+            ]
+          ],
+          "type": "qualitative",
+          "unique_values": 2,
+          "value_counts": {
+            "C&B Marine Services": 1,
+            "McGinnis": 1
+          }
+        },
+        "SHAPE_Area": {
+          "count": 2,
+          "has_data": true,
+          "max": 9.508509498402478e-08,
+          "mean": 9.359220999187405e-08,
+          "median": 9.359220999187405e-08,
+          "min": 9.209932499972332e-08,
+          "std": 1.4928849921507296e-09,
+          "type": "quantitative"
+        },
+        "SHAPE_Length": {
+          "count": 2,
+          "has_data": true,
+          "max": 0.001382889938462425,
+          "mean": 0.0013743725515683145,
+          "median": 0.0013743725515683145,
+          "min": 0.0013658551646742038,
+          "std": 8.517386894110594e-06,
+          "type": "quantitative"
+        },
+        "Scale_Minimum": {
+          "count": 2,
+          "has_data": true,
+          "max": 18750,
+          "mean": 18750,
+          "median": 18750,
+          "min": 18750,
+          "std": 0,
+          "type": "quantitative"
+        },
+        "Source_Dataset": {
+          "count": 2,
+          "has_data": true,
+          "top_values": [
+            [
+              "U37OH439.000",
+              2
+            ]
+          ],
+          "type": "qualitative",
+          "unique_values": 1,
+          "value_counts": {
+            "U37OH439.000": 2
+          }
+        },
+        "Source_Date": {
+          "count": 2,
+          "has_data": true,
+          "top_values": [
+            [
+              "20191010",
+              2
+            ]
+          ],
+          "type": "qualitative",
+          "unique_values": 1,
+          "value_counts": {
+            "20191010": 2
+          }
+        },
+        "Source_Indication": {
+          "count": 2,
+          "has_data": true,
+          "top_values": [
+            [
+              "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001",
+              2
+            ]
+          ],
+          "type": "qualitative",
+          "unique_values": 1,
+          "value_counts": {
+            "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001": 2
+          }
+        }
+      },
+      "field_types": {
+        "Depth_Value_1": "qualitative",
+        "Horizontal_Clearance": "qualitative",
+        "Horizontal_Length": "qualitative",
+        "Horizontal_Width": "qualitative",
+        "Information": "qualitative",
+        "OBJECTID": "quantitative",
+        "Object_Name": "qualitative",
+        "SHAPE_Area": "quantitative",
+        "SHAPE_Length": "quantitative",
+        "Scale_Minimum": "quantitative",
+        "Source_Dataset": "qualitative",
+        "Source_Date": "qualitative",
+        "Source_Indication": "qualitative"
+      },
+      "fields": [
+        "OBJECTID",
+        "Object_Name",
+        "Horizontal_Length",
+        "Horizontal_Width",
+        "Horizontal_Clearance",
+        "Depth_Value_1",
+        "Scale_Minimum",
+        "Information",
+        "Source_Date",
+        "Source_Indication",
+        "Source_Dataset",
+        "SHAPE_Length",
+        "SHAPE_Area"
+      ],
+      "total_features": 2,
+      "field_attributes": {
+        "Depth_Value_1": {
+          "uniqueValues": [],
+          "valueCounts": {},
+          "attributeWeights": {},
+          "attributeMeta": {}
+        },
+        "Horizontal_Clearance": {
+          "uniqueValues": [],
+          "valueCounts": {},
+          "attributeWeights": {},
+          "attributeMeta": {}
+        },
+        "Horizontal_Length": {
+          "uniqueValues": [],
+          "valueCounts": {},
+          "attributeWeights": {},
+          "attributeMeta": {}
+        },
+        "Horizontal_Width": {
+          "uniqueValues": [],
+          "valueCounts": {},
+          "attributeWeights": {},
+          "attributeMeta": {}
+        },
+        "Information": {
+          "uniqueValues": [],
+          "valueCounts": {},
+          "attributeWeights": {},
+          "attributeMeta": {}
+        },
+        "Object_Name": {
+          "uniqueValues": [
+            "C&B Marine Services",
+            "McGinnis"
+          ],
+          "valueCounts": {
+            "C&B Marine Services": 1,
+            "McGinnis": 1
+          },
+          "attributeWeights": {
+            "C&B Marine Services": 50,
+            "McGinnis": 50
+          },
+          "attributeMeta": {
+            "C&B Marine Services": {
+              "meaning": "",
+              "importance": ""
+            },
+            "McGinnis": {
+              "meaning": "",
+              "importance": ""
+            }
+          }
+        },
+        "Source_Dataset": {
+          "uniqueValues": [
+            "U37OH439.000"
+          ],
+          "valueCounts": {
+            "U37OH439.000": 2
+          },
+          "attributeWeights": {
+            "U37OH439.000": 100
+          },
+          "attributeMeta": {
+            "U37OH439.000": {
+              "meaning": "",
+              "importance": ""
+            }
+          }
+        },
+        "Source_Date": {
+          "uniqueValues": [
+            "20191010"
+          ],
+          "valueCounts": {
+            "20191010": 2
+          },
+          "attributeWeights": {
+            "20191010": 100
+          },
+          "attributeMeta": {
+            "20191010": {
+              "meaning": "",
+              "importance": ""
+            }
+          }
+        },
+        "Source_Indication": {
+          "uniqueValues": [
+            "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001"
+          ],
+          "valueCounts": {
+            "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001": 2
+          },
+          "attributeWeights": {
+            "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001": 100
+          },
+          "attributeMeta": {
+            "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001": {
+              "meaning": "",
+              "importance": ""
+            }
+          }
+        }
+      }
+    },
+    "updated_at": "2025-08-28T17:10:20.093Z",
+    "selected_fields": [
+      "Depth_Value_1",
+      "Horizontal_Clearance",
+      "Horizontal_Length",
+      "Horizontal_Width",
+      "Information",
+      "OBJECTID",
+      "Object_Name",
+      "SHAPE_Area",
+      "SHAPE_Length",
+      "Scale_Minimum",
+      "Source_Dataset",
+      "Source_Date",
+      "Source_Indication"
+    ],
+    "field_weights": {
+      "Depth_Value_1": 0.07692307692307693,
+      "Horizontal_Clearance": 0.07692307692307693,
+      "Horizontal_Length": 0.07692307692307693,
+      "Horizontal_Width": 0.07692307692307693,
+      "Information": 0.07692307692307693,
+      "OBJECTID": 0.07692307692307693,
+      "Object_Name": 0.07692307692307693,
+      "SHAPE_Area": 0.07692307692307693,
+      "SHAPE_Length": 0.07692307692307693,
+      "Scale_Minimum": 0.07692307692307693,
+      "Source_Dataset": 0.07692307692307693,
+      "Source_Date": 0.07692307692307693,
+      "Source_Indication": 0.07692307692307693
+    },
+    "field_meta": {
+      "Depth_Value_1": {
+        "meaning": "",
+        "importance": ""
+      },
+      "Horizontal_Clearance": {
+        "meaning": "",
+        "importance": ""
+      },
+      "Horizontal_Length": {
+        "meaning": "",
+        "importance": ""
+      },
+      "Horizontal_Width": {
+        "meaning": "",
+        "importance": ""
+      },
+      "Information": {
+        "meaning": "",
+        "importance": ""
+      },
+      "OBJECTID": {
+        "meaning": "",
+        "importance": ""
+      },
+      "Object_Name": {
+        "meaning": "",
+        "importance": ""
+      },
+      "SHAPE_Area": {
+        "meaning": "",
+        "importance": ""
+      },
+      "SHAPE_Length": {
+        "meaning": "",
+        "importance": ""
+      },
+      "Scale_Minimum": {
+        "meaning": "",
+        "importance": ""
+      },
+      "Source_Dataset": {
+        "meaning": "",
+        "importance": ""
+      },
+      "Source_Date": {
+        "meaning": "",
+        "importance": ""
+      },
+      "Source_Indication": {
+        "meaning": "",
+        "importance": ""
+      }
+    },
+    "field_attributes": {
+      "Depth_Value_1": {
+        "uniqueValues": [],
+        "valueCounts": {},
+        "attributeWeights": {},
+        "attributeMeta": {}
+      },
+      "Horizontal_Clearance": {
+        "uniqueValues": [],
+        "valueCounts": {},
+        "attributeWeights": {},
+        "attributeMeta": {}
+      },
+      "Horizontal_Length": {
+        "uniqueValues": [],
+        "valueCounts": {},
+        "attributeWeights": {},
+        "attributeMeta": {}
+      },
+      "Horizontal_Width": {
+        "uniqueValues": [],
+        "valueCounts": {},
+        "attributeWeights": {},
+        "attributeMeta": {}
+      },
+      "Information": {
+        "uniqueValues": [],
+        "valueCounts": {},
+        "attributeWeights": {},
+        "attributeMeta": {}
+      },
+      "Object_Name": {
+        "uniqueValues": [
+          "C&B Marine Services",
+          "McGinnis"
+        ],
+        "valueCounts": {
+          "C&B Marine Services": 1,
+          "McGinnis": 1
+        },
+        "attributeWeights": {
+          "C&B Marine Services": 50,
+          "McGinnis": 50
+        },
+        "attributeMeta": {
+          "C&B Marine Services": {
+            "meaning": "",
+            "importance": ""
+          },
+          "McGinnis": {
+            "meaning": "",
+            "importance": ""
+          }
+        }
+      },
+      "Source_Dataset": {
+        "uniqueValues": [
+          "U37OH439.000"
+        ],
+        "valueCounts": {
+          "U37OH439.000": 2
+        },
+        "attributeWeights": {
+          "U37OH439.000": 100
+        },
+        "attributeMeta": {
+          "U37OH439.000": {
+            "meaning": "",
+            "importance": ""
+          }
+        }
+      },
+      "Source_Date": {
+        "uniqueValues": [
+          "20191010"
+        ],
+        "valueCounts": {
+          "20191010": 2
+        },
+        "attributeWeights": {
+          "20191010": 100
+        },
+        "attributeMeta": {
+          "20191010": {
+            "meaning": "",
+            "importance": ""
+          }
+        }
+      },
+      "Source_Indication": {
+        "uniqueValues": [
+          "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001"
+        ],
+        "valueCounts": {
+          "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001": 2
+        },
+        "attributeWeights": {
+          "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001": 100
+        },
+        "attributeMeta": {
+          "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001": {
+            "meaning": "",
+            "importance": ""
+          }
+        }
+      }
+    }
+  },
+  "datasetName": "DF SCUTI",
+  "description": "",
+  "timestamp": "2025-08-28T17:10:20.093Z",
+  "selectedFields": [
+    "Depth_Value_1",
+    "Horizontal_Clearance",
+    "Horizontal_Length",
+    "Horizontal_Width",
+    "Information",
+    "OBJECTID",
+    "Object_Name",
+    "SHAPE_Area",
+    "SHAPE_Length",
+    "Scale_Minimum",
+    "Source_Dataset",
+    "Source_Date",
+    "Source_Indication"
+  ],
+  "fieldTypes": {
+    "Depth_Value_1": "qualitative",
+    "Horizontal_Clearance": "qualitative",
+    "Horizontal_Length": "qualitative",
+    "Horizontal_Width": "qualitative",
+    "Information": "qualitative",
+    "OBJECTID": "quantitative",
+    "Object_Name": "qualitative",
+    "SHAPE_Area": "quantitative",
+    "SHAPE_Length": "quantitative",
+    "Scale_Minimum": "quantitative",
+    "Source_Dataset": "qualitative",
+    "Source_Date": "qualitative",
+    "Source_Indication": "qualitative"
+  },
+  "fieldWeights": {
+    "Depth_Value_1": 0.07692307692307693,
+    "Horizontal_Clearance": 0.07692307692307693,
+    "Horizontal_Length": 0.07692307692307693,
+    "Horizontal_Width": 0.07692307692307693,
+    "Information": 0.07692307692307693,
+    "OBJECTID": 0.07692307692307693,
+    "Object_Name": 0.07692307692307693,
+    "SHAPE_Area": 0.07692307692307693,
+    "SHAPE_Length": 0.07692307692307693,
+    "Scale_Minimum": 0.07692307692307693,
+    "Source_Dataset": 0.07692307692307693,
+    "Source_Date": 0.07692307692307693,
+    "Source_Indication": 0.07692307692307693
+  },
+  "fieldMeta": {
+    "Depth_Value_1": {
+      "meaning": "",
+      "importance": ""
+    },
+    "Horizontal_Clearance": {
+      "meaning": "",
+      "importance": ""
+    },
+    "Horizontal_Length": {
+      "meaning": "",
+      "importance": ""
+    },
+    "Horizontal_Width": {
+      "meaning": "",
+      "importance": ""
+    },
+    "Information": {
+      "meaning": "",
+      "importance": ""
+    },
+    "OBJECTID": {
+      "meaning": "",
+      "importance": ""
+    },
+    "Object_Name": {
+      "meaning": "",
+      "importance": ""
+    },
+    "SHAPE_Area": {
+      "meaning": "",
+      "importance": ""
+    },
+    "SHAPE_Length": {
+      "meaning": "",
+      "importance": ""
+    },
+    "Scale_Minimum": {
+      "meaning": "",
+      "importance": ""
+    },
+    "Source_Dataset": {
+      "meaning": "",
+      "importance": ""
+    },
+    "Source_Date": {
+      "meaning": "",
+      "importance": ""
+    },
+    "Source_Indication": {
+      "meaning": "",
+      "importance": ""
+    }
+  },
+  "fieldAttributes": {
+    "Depth_Value_1": {
+      "uniqueValues": [],
+      "valueCounts": {},
+      "attributeWeights": {},
+      "attributeMeta": {}
+    },
+    "Horizontal_Clearance": {
+      "uniqueValues": [],
+      "valueCounts": {},
+      "attributeWeights": {},
+      "attributeMeta": {}
+    },
+    "Horizontal_Length": {
+      "uniqueValues": [],
+      "valueCounts": {},
+      "attributeWeights": {},
+      "attributeMeta": {}
+    },
+    "Horizontal_Width": {
+      "uniqueValues": [],
+      "valueCounts": {},
+      "attributeWeights": {},
+      "attributeMeta": {}
+    },
+    "Information": {
+      "uniqueValues": [],
+      "valueCounts": {},
+      "attributeWeights": {},
+      "attributeMeta": {}
+    },
+    "Object_Name": {
+      "uniqueValues": [
+        "C&B Marine Services",
+        "McGinnis"
+      ],
+      "valueCounts": {
+        "C&B Marine Services": 1,
+        "McGinnis": 1
+      },
+      "attributeWeights": {
+        "C&B Marine Services": 50,
+        "McGinnis": 50
+      },
+      "attributeMeta": {
+        "C&B Marine Services": {
+          "meaning": "",
+          "importance": ""
+        },
+        "McGinnis": {
+          "meaning": "",
+          "importance": ""
+        }
+      }
+    },
+    "Source_Dataset": {
+      "uniqueValues": [
+        "U37OH439.000"
+      ],
+      "valueCounts": {
+        "U37OH439.000": 2
+      },
+      "attributeWeights": {
+        "U37OH439.000": 100
+      },
+      "attributeMeta": {
+        "U37OH439.000": {
+          "meaning": "",
+          "importance": ""
+        }
+      }
+    },
+    "Source_Date": {
+      "uniqueValues": [
+        "20191010"
+      ],
+      "valueCounts": {
+        "20191010": 2
+      },
+      "attributeWeights": {
+        "20191010": 100
+      },
+      "attributeMeta": {
+        "20191010": {
+          "meaning": "",
+          "importance": ""
+        }
+      }
+    },
+    "Source_Indication": {
+      "uniqueValues": [
+        "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001"
+      ],
+      "valueCounts": {
+        "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001": 2
+      },
+      "attributeWeights": {
+        "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001": 100
+      },
+      "attributeMeta": {
+        "US,U3,SURVY,USACE Louisville Markland Pool Field Check - IENC-20-001": {
+          "meaning": "",
+          "importance": ""
+        }
+      }
+    }
+  },
+  "statistics": {
+    "summary": {
+      "Total Features": 2,
+      "Selected Fields": 13,
+      "Quantitative Fields": 4,
+      "Qualitative Fields": 9
+    },
+    "details": "\n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Depth_Value_1</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Horizontal_Clearance</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Horizontal_Length</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Horizontal_Width</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Information</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>OBJECTID</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 1, Max: 2,\n                Mean: 1.50\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Object_Name</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 2\n          </div>\n        </div>\n      \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>SHAPE_Area</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 9.209932499972332e-8, Max: 9.508509498402478e-8,\n                Mean: 0.00\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>SHAPE_Length</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 0.0013658551646742038, Max: 0.001382889938462425,\n                Mean: 0.00\n              </div>\n            </div>\n          \n            <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n              <strong>Scale_Minimum</strong> (quantitative)\n              <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n                Min: 18750, Max: 18750,\n                Mean: 18750.00\n              </div>\n            </div>\n          \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Source_Dataset</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Source_Date</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      \n        <div style=\"margin-bottom: 1rem; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;\">\n          <strong>Source_Indication</strong> (qualitative)\n          <div style=\"font-size: 0.85rem; margin-top: 0.25rem;\">\n            Unique values: 1\n          </div>\n        </div>\n      "
+  },
+  "version": "2.0",
+  "dataInfo": {
+    "totalFeatures": 2,
+    "dataSource": "uploaded"
+  },
+  "_metadata": {
+    "id": "20250828121020",
+    "created_at": "2025-08-28T12:10:20.123778",
+    "version": "2.0"
+  }
+}

@@ -43,10 +43,11 @@ function initializeAttributeWeights(field) {
   if (!fieldAttributes[field]) return;
 
   const uniqueValues = fieldAttributes[field].uniqueValues;
-  const equalWeight = 100.0 / uniqueValues.length;
+  const equalWeight = uniqueValues.length > 0 ? 100.0 / uniqueValues.length : 100.0;
 
+  // Only initialize if not already set or if creating new
   uniqueValues.forEach(value => {
-    if (!(value in fieldAttributes[field].attributeWeights)) {
+    if (!(value in fieldAttributes[field].attributeWeights) || projectAction === 'create') {
       fieldAttributes[field].attributeWeights[value] = equalWeight;
     }
     if (!(value in fieldAttributes[field].attributeMeta)) {

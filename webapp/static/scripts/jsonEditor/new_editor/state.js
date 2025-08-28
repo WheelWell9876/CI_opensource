@@ -24,7 +24,7 @@ let projects = {
 };
 
 function resetApplicationState() {
-  debugLog('Resetting application state');
+  debugLog('Resetting application state completely');
   currentStep = 0;
   projectType = null;
   projectAction = null;
@@ -37,4 +37,26 @@ function resetApplicationState() {
   fieldMeta = {};
   fieldAttributes = {};
   expandedFields = new Set();
+
+  // Clear any temporary data
+  window.datasetProjectName = '';
+  window.datasetProjectDescription = '';
+
+  // Clear selected project highlighting
+  document.querySelectorAll('.project-item').forEach(item => {
+    item.classList.remove('selected', 'editing', 'viewing');
+  });
 }
+
+function clearDataState() {
+  debugLog('Clearing data state');
+  loadedData = null;
+  selectedFields = new Set();
+  fieldWeights = {};
+  fieldTypes = {};
+  fieldMeta = {};
+  fieldAttributes = {};
+  lockedFields = new Set();
+  expandedFields = new Set();
+}
+

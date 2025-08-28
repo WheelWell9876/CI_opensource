@@ -103,12 +103,26 @@ function continueToNextStep() {
       };
       goToStep(1); // Go to category selection
     }
-  } else if (projectAction === 'edit' || projectAction === 'view') {
-    // Editing or viewing existing project
-    if (currentProject) {
-      goToStep(1);
+  } else if (projectAction === 'edit') {
+    // Editing existing project
+    if (!currentProject) {
+      showMessage('Please select a project to edit', 'error');
+      return;
+    }
+
+    if (projectType === 'dataset') {
+      // For datasets, skip directly to field selection (step 2)
+      goToStep(2);
     } else {
-      showMessage('Please select a project to ' + projectAction, 'error');
+      // For categories and feature layers, go to step 1
+      goToStep(1);
+    }
+  } else if (projectAction === 'view') {
+    // Viewing existing project
+    if (currentProject) {
+      goToStep(getViewStep());
+    } else {
+      showMessage('Please select a project to view', 'error');
     }
   } else {
     showMessage('Unknown action: ' + projectAction, 'error');

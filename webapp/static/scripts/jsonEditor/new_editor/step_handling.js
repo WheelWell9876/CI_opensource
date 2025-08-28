@@ -90,6 +90,13 @@ function handleStep1Transition() {
 
 function handleStep2Transition() {
   if (projectType === PROJECT_TYPES.DATASET) {
+    // For dataset editing, load the field selection with existing data
+    if (projectAction === 'edit' && currentProject) {
+      // Ensure we have the data loaded
+      if (!loadedData && currentProject.data) {
+        loadedData = currentProject.data;
+      }
+    }
     populateFieldSelection();
   } else if (projectType === PROJECT_TYPES.CATEGORY) {
     populateEnhancedCategoryDatasetWeights();
@@ -159,43 +166,51 @@ function populateStreamlinedExportStep() {
   const container = document.querySelector('.step-content[data-step="5"]');
   if (!container) return;
 
-  const isCategory = projectType === 'category';
-  const itemType = isCategory ? 'datasets' : 'categories';
-  const itemCount = isCategory ? currentProject.datasets?.length : currentProject.categories?.length;
+  // Load project name and description
+  const projectName = currentProject?.name || '';
+  const projectDescription = currentProject?.description || '';
 
-  // Update the export step content for streamlined workflow
-  const exportContent = container.querySelector('.panel-title');
-  if (exportContent) {
-    exportContent.innerHTML = `
-      <div class="panel-icon">💾</div>
-      Export ${projectType.charAt(0).toUpperCase() + projectType.slice(1)}
-    `;
+  // Auto-fill the export form
+  const finalNameInput = document.getElementById('finalProjectName');
+  const finalDescInput = document.getElementById('finalProjectDescription');
+
+  if (finalNameInput) {
+    finalNameInput.value = projectName;
   }
 
-  // Add streamlined export message
-  const existingMessage = container.querySelector('.streamlined-export-message');
-  if (!existingMessage) {
-    const message = document.createElement('div');
-    message.className = 'streamlined-export-message';
-    message.innerHTML = `
-      <div class="status-message status-info" style="margin-bottom: 1.5rem;">
-        <span>ℹ️</span>
-        <span>This ${projectType} includes ${itemCount} ${itemType} with their pre-configured field weights and attribute settings.
-        ${projectType === 'category' ? 'Dataset-level weights' : 'Category-level weights'} have been applied.</span>
-      </div>
+  if (finalDescInput) {
+    finalDescInput.value = projectDescription;
+  }
 
-      <div class="field-weight-options" style="margin-bottom: 1.5rem;">
-        <button class="btn btn-secondary" onclick="showFieldWeightModal()" style="margin-right: 1rem;">
-          🎛️ Review Field Weights
-        </button>
-        <small style="color: #666;">Optional: Review or modify field and attribute weights from underlying ${itemType}</small>
+  // Determine back button based on project type
+  let backButtonHtml = '';
+  let backStep = 3;
+
+  if (projectType === PROJECT_TYPES.DATASET) {
+    backButtonHtml = '<button class="btn btn-secondary" onclick="goToStep(3)">← Back to Apply Weights</button>';
+  } else if (projectType === PROJECT_TYPES.CATEGORY) {
+    backButtonHtml = '<button class="btn btn-secondary" onclick="goToStep(2)">← Back to Dataset Weights</button>';
+    backStep = 2;
+  } else if (projectType === PROJECT_TYPES.FEATURE_LAYER) {
+    backButtonHtml = '<button class="btn btn-secondary" onclick="goToStep(2)">← Back to Category Weights</button>';
+    backStep = 2;
+  }
+
+  // Update navigation buttons
+  const navigationContainer = container.querySelector('.panel-navigation');
+  if (navigationContainer) {
+    navigationContainer.innerHTML = `
+      <div class="btn-group">
+        ${backButtonHtml}
+        <div class="export-actions">
+          ${projectAction === 'edit' ? `
+            <button class="btn btn-primary" onclick="saveAsExisting()">💾 Save Changes</button>
+            <button class="btn btn-secondary" onclick="saveAsNew()">📄 Save as New</button>
+          ` : `
+            <button class="btn btn-primary" onclick="saveToServer()">💾 Save to Server</button>
+          `}
+        </div>
       </div>
     `;
-
-    // Insert after panel title
-    const panelTitle = container.querySelector('.panel-title');
-    if (panelTitle && panelTitle.nextSibling) {
-      panelTitle.parentNode.insertBefore(message, panelTitle.nextSibling);
-    }
   }
 }

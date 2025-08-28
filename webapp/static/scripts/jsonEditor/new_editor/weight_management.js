@@ -3,10 +3,20 @@
 // ============================================================================
 
 function populateWeightControls() {
-  debugLog('Populating weight controls');
+  debugLog('Populating weight controls with equal distribution');
 
   const container = document.getElementById('weightControls');
   if (!container) return;
+
+  // Determine back button based on project type and action
+  let backButtonHtml = '';
+  if (projectType === PROJECT_TYPES.DATASET) {
+    backButtonHtml = '<button class="btn btn-secondary" onclick="goToStep(2)">← Back to Select Fields</button>';
+  } else if (projectType === PROJECT_TYPES.CATEGORY) {
+    backButtonHtml = '<button class="btn btn-secondary" onclick="goToStep(2)">← Back to Dataset Weights</button>';
+  } else if (projectType === PROJECT_TYPES.FEATURE_LAYER) {
+    backButtonHtml = '<button class="btn btn-secondary" onclick="goToStep(2)">← Back to Category Weights</button>';
+  }
 
   container.innerHTML = `
     <div id="actualWeightControls"></div>
@@ -15,8 +25,8 @@ function populateWeightControls() {
     </div>
     <div class="panel-navigation">
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
-        <button class="btn btn-primary" onclick="goToStep(4)">Continue →</button>
+        ${backButtonHtml}
+        <button class="btn btn-primary" onclick="goToStep(4)">Continue to Export →</button>
       </div>
     </div>
   `;
@@ -24,32 +34,39 @@ function populateWeightControls() {
   const actualContainer = document.getElementById('actualWeightControls');
   if (!actualContainer) return;
 
-  // In edit mode, show all fields that have weights, not just selected ones
-  let fieldsToShow = selectedFields;
-  if (projectAction === 'edit' && Object.keys(fieldWeights).length > 0) {
-    fieldsToShow = new Set([...selectedFields, ...Object.keys(fieldWeights)]);
-  }
+  // Calculate equal weight for selected fields only
+  const selectedFieldsArray = Array.from(selectedFields);
 
-  if (fieldsToShow.size === 0) {
+  if (selectedFieldsArray.length === 0) {
     actualContainer.innerHTML = '<p style="color: #999;">No fields selected.</p>';
     return;
   }
 
-  const fieldCount = selectedFields.size || 1; // Avoid division by zero
-  const equalWeight = 1.0 / fieldCount;
+  const equalWeight = 100.0 / selectedFieldsArray.length;
 
-  fieldsToShow.forEach(field => {
-    if (!(field in fieldWeights)) {
+  // Initialize weights for selected fields with equal distribution
+  selectedFieldsArray.forEach(field => {
+    if (!(field in fieldWeights) || projectAction === 'create') {
       fieldWeights[field] = equalWeight;
     }
     if (!(field in fieldMeta)) {
       fieldMeta[field] = { meaning: '', importance: '' };
     }
 
+    // Initialize attribute weights with equal distribution
     if (fieldTypes[field] === FIELD_TYPES.QUALITATIVE && fieldAttributes[field]) {
       initializeAttributeWeights(field);
     }
+  });
 
+  // For edit mode, also show deselected fields that have weights
+  let fieldsToShow = selectedFieldsArray;
+  if (projectAction === 'edit' && Object.keys(fieldWeights).length > 0) {
+    const allFieldsWithWeights = new Set([...selectedFieldsArray, ...Object.keys(fieldWeights)]);
+    fieldsToShow = Array.from(allFieldsWithWeights);
+  }
+
+  fieldsToShow.forEach(field => {
     const control = createFieldWeightControl(field, equalWeight);
     actualContainer.appendChild(control);
   });
@@ -217,10 +234,11 @@ function updateTotalWeightDisplay() {
   const totalWeightElement = document.getElementById('totalWeight');
   if (!totalWeightElement) return;
 
+  // Only sum weights for currently selected fields
   const totalWeight = Array.from(selectedFields)
     .reduce((sum, field) => sum + (fieldWeights[field] || 0), 0);
 
-  const totalPercent = Math.round(totalWeight * 100);
+  const totalPercent = Math.round(totalWeight);
   totalWeightElement.textContent = `${totalPercent}%`;
 
   totalWeightElement.style.color = (totalPercent < 95 || totalPercent > 105) ? '#d32f2f' : '#2e7d32';

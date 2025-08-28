@@ -5,22 +5,33 @@
 function goToStep(step) {
   debugLog('Going to step:', step, 'for project type:', projectType, 'action:', projectAction);
 
-  // Reset state when going back to project selection
+  // Special handling for going back to project selection
   if (step === 0) {
-    resetApplicationState();
-  }
+    // Clear all workflow indicators
+    ['datasetSteps', 'categorySteps', 'featurelayerSteps'].forEach(stepsId => {
+      const container = document.getElementById(stepsId);
+      if (container) {
+        container.querySelectorAll('.step').forEach(s => {
+          s.classList.remove('active', 'completed');
+        });
+      }
+    });
 
-  const maxStep = getMaxStepForProjectType(projectType);
-  if (step > maxStep) {
-    debugLog('Step', step, 'exceeds max for', projectType, '(max:', maxStep + ')');
+    resetApplicationState();
+    currentStep = 0;
+    showStepContentWithWorkflow(0);
+    populateProjectSelection();
     return;
   }
 
-  // For edit mode, skip certain steps based on project type
-  if (projectAction === 'edit' && currentProject) {
-    step = getEditModeStep(step);
+  // Validate step based on project type and action
+  const maxStep = getMaxStepForProjectType(projectType);
+  if (step > maxStep) {
+    debugLog('Step exceeds max for', projectType);
+    return;
   }
 
+  // No special skipping here - just proceed normally
   currentStep = step;
   updateStepIndicators();
   showStepContentWithWorkflow(step);
@@ -56,10 +67,24 @@ function updateStepIndicators() {
     const stepNum = parseInt(s.dataset.step);
     s.classList.remove('active', 'completed');
 
-    if (stepNum === currentStep) {
-      s.classList.add('active');
-    } else if (stepNum < currentStep) {
-      s.classList.add('completed');
+    // For edit mode datasets, adjust step numbers
+    if (projectAction === 'edit' && projectType === PROJECT_TYPES.DATASET) {
+      if (stepNum === 1) {
+        // Skip step 1 indicator for edit mode
+        s.style.opacity = '0.3';
+        s.style.pointerEvents = 'none';
+      } else if (stepNum === currentStep || (currentStep === 2 && stepNum === 1)) {
+        s.classList.add('active');
+      } else if (stepNum < currentStep) {
+        s.classList.add('completed');
+      }
+    } else {
+      // Normal flow
+      if (stepNum === currentStep) {
+        s.classList.add('active');
+      } else if (stepNum < currentStep) {
+        s.classList.add('completed');
+      }
     }
   });
 }

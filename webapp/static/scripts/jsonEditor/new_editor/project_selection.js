@@ -69,39 +69,26 @@ function selectProjectType(type) {
 
 function selectAction(action) {
   debugLog('Action selected:', action);
+
+  // Clear any previously selected project when changing action
+  currentProject = null;
+  document.querySelectorAll('.project-item').forEach(item => {
+    item.classList.remove('selected', 'editing', 'viewing');
+  });
+
   projectAction = action;
 
-  // Update UI with animation
-  const actionBtns = document.querySelectorAll('.action-btn');
-  actionBtns.forEach(btn => {
+  // Update UI
+  document.querySelectorAll('.action-btn').forEach(btn => {
     btn.classList.remove('selected');
   });
 
-  // Find and select the clicked button
   const clickedBtn = event.target.closest('.action-btn');
   if (clickedBtn) {
     clickedBtn.classList.add('selected');
   }
 
-  // Update the continue button state
   updateContinueButton();
-
-  // If editing or viewing, highlight the project list
-  if ((action === 'edit' || action === 'view') && projectType) {
-    const projectList = document.querySelector('.existing-projects');
-    if (projectList) {
-      projectList.style.border = '2px solid #2196f3';
-      projectList.style.borderRadius = '8px';
-      projectList.style.padding = '1rem';
-      projectList.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-      // Remove highlight after a moment
-      setTimeout(() => {
-        projectList.style.border = '';
-        projectList.style.padding = '';
-      }, 2000);
-    }
-  }
 }
 
 
@@ -162,17 +149,30 @@ function createActionSelector(type, container) {
 // ============================================================================
 
 function selectExistingProject(projectId) {
-  debugLog('Existing project selected:', projectId);
+  debugLog('Selecting existing project:', projectId);
+
+  // Clear any previous selection
+  document.querySelectorAll('.project-item').forEach(item => {
+    item.classList.remove('selected', 'editing', 'viewing');
+  });
+
   const project = findProject(projectId);
   if (project) {
-    currentProject = project;
-    // Load project data into state
-    loadProjectIntoState(project);
+    currentProject = JSON.parse(JSON.stringify(project)); // Deep clone
+    loadProjectIntoState(currentProject);
 
-    // For viewing, just show the export step
-    if (projectAction === 'view') {
-      goToStep(getViewStep());
+    // Highlight the selected project
+    const projectItem = document.querySelector(`[onclick*="${projectId}"]`);
+    if (projectItem) {
+      projectItem.classList.add('selected');
+      if (projectAction === 'edit') {
+        projectItem.classList.add('editing');
+      } else if (projectAction === 'view') {
+        projectItem.classList.add('viewing');
+      }
     }
+
+    updateContinueButton();
   }
 }
 
